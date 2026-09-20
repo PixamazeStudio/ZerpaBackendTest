@@ -1,0 +1,193 @@
+{
+  "controller": "IBSpecificationMonthwiseController",
+  "file": "Controllers/IBSpecificationMonthwiseController.cs",
+  "module": "Reporting",
+  "base_route": "api/IBSpecificationMonthwise",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles IB specification monthwise: get IB specification monthwise",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "rpt/ib-reports/ib-specification-monthwise",
+        "module_code": "rpt",
+        "section": "ib-reports",
+        "sub_section": "ib-specification-monthwise",
+        "frontend_routes": [
+          "/rpt/ib-reports/ib-specification-monthwise"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "ib_specification_monthwise_get_ib_specification_monthwise",
+      "name": "Get IB Specification Monthwise",
+      "action_method": "GetIBSpecificationMonthwise",
+      "http_method": "GET",
+      "route": "api/IBSpecificationMonthwise",
+      "business_purpose": "Retrieve IB specification monthwise",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "financial_year_id",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "selectedUserId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/ib-reports/ib-specification-monthwise:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve IB specification monthwise",
+      "detailed_description": "Retrieve IB specification monthwise. It validates the request, then calls ICommon.getUserByToken, IIBSpecificationMonthwise.GetIBSpecificationMonthwiseData, ICommon.GetAllIBUsers. Data access uses stored procedure(s): GetIBSpecificationMonthwise. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Financial year not found [when selectedFinancialYear == null]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid user [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve IB specification monthwise",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/IBSpecificationMonthwise"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "ib_specification_monthwise_get_ib_specification_monthwise",
+        "description": "Retrieve IB specification monthwise",
+        "http_method": "GET",
+        "endpoint": "api/IBSpecificationMonthwise",
+        "parameters": {
+          "financial_year_id": {
+            "type": "int",
+            "required": false,
+            "description": "financial year id (query)"
+          },
+          "selectedUserId": {
+            "type": "int",
+            "required": false,
+            "description": "selected User Id (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IBSpecificationMonthwiseController.cs",
+        "action_method": "GetIBSpecificationMonthwise",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/IBSpecificationMonthwise_repo.cs",
+          "Interfaces/IIBSpecificationMonthwise.cs"
+        ]
+      },
+      "module": "Reporting",
+      "business_logic": {
+        "operation_summary": "Retrieve IB specification monthwise — validates the request, calls ICommon.getUserByToken, IIBSpecificationMonthwise.GetIBSpecificationMonthwiseData, ICommon.GetAllIBUsers",
+        "preconditions": "Valid Bearer JWT; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Financial year not found",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIBSpecificationMonthwise.GetIBSpecificationMonthwiseData",
+          "ICommon.GetAllIBUsers"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IBSpecificationMonthwise_repo (Repositories/IBSpecificationMonthwise_repo.cs) via IIBSpecificationMonthwise"
+        ],
+        "stored_procedures": [
+          "GetIBSpecificationMonthwise"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid user",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Financial year not found",
+            "when": "selectedFinancialYear == null"
+          }
+        ]
+      }
+    }
+  ]
+}

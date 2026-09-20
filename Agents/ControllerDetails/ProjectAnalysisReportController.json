@@ -1,0 +1,141 @@
+{
+  "controller": "ProjectAnalysisReportController",
+  "file": "Controllers/ProjectAnalysisReportController.cs",
+  "module": "Reporting",
+  "base_route": "api/ProjectAnalysisReport",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles project analysis report: get report",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "rpt/crm-reports/project-analysis-report",
+        "module_code": "rpt",
+        "section": "crm-reports",
+        "sub_section": "project-analysis-report",
+        "frontend_routes": [
+          "/rpt/crm-reports/project-analysis-report"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "project_analysis_report_get_report",
+      "name": "Get Report",
+      "action_method": "GetReport",
+      "http_method": "GET",
+      "route": "api/ProjectAnalysisReport",
+      "business_purpose": "Retrieve report",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "branch",
+          "type": "string",
+          "required": false,
+          "default": "\"\""
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/crm-reports/project-analysis-report:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve report",
+      "detailed_description": "Retrieve report. It calls ICommon.getUserByToken, IProjectDashboard.GetAllCrmProjects, IProjectDashboard.GetAllBranches. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve report",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/ProjectAnalysisReport"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "project_analysis_report_get_report",
+        "description": "Retrieve report",
+        "http_method": "GET",
+        "endpoint": "api/ProjectAnalysisReport",
+        "parameters": {
+          "branch": {
+            "type": "string",
+            "required": false,
+            "description": "branch (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ProjectAnalysisReportController.cs",
+        "action_method": "GetReport",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/ProjectDashboardRepo.cs",
+          "Interfaces/IProjectDashboard.cs"
+        ]
+      },
+      "module": "Reporting",
+      "business_logic": {
+        "operation_summary": "Retrieve report — calls ICommon.getUserByToken, IProjectDashboard.GetAllCrmProjects, IProjectDashboard.GetAllBranches",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IProjectDashboard.GetAllCrmProjects",
+          "IProjectDashboard.GetAllBranches"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ProjectDashboardRepo (Repository/ProjectDashboardRepo.cs) via IProjectDashboard"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    }
+  ]
+}

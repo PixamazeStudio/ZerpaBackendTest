@@ -1,0 +1,912 @@
+{
+  "controller": "DealerMappingController",
+  "file": "Controllers/DealerMappingController.cs",
+  "module": "Dealer Management",
+  "base_route": "api/DealerMapping",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages dealer mapping records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/dealer-settings/dealer-mapping",
+        "module_code": "settings",
+        "section": "dealer-settings",
+        "sub_section": "dealer-mapping",
+        "frontend_routes": [
+          "/settings/dealer-settings/dealer-mapping",
+          "/settings/dealer-settings/dealer-mapping/create-dealer-mapping",
+          "/settings/dealer-settings/dealer-mapping/edit-dealer-mapping/:id"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "dealerMapping"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Settings",
+        "section": "Dealer Settings",
+        "sub_section": "Dealer Mappings"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "dealer_mapping_get_all_dealer_mappings",
+      "name": "Get All Dealer Mappings",
+      "action_method": "GetAllDealerMappings",
+      "http_method": "GET",
+      "route": "api/DealerMapping",
+      "business_purpose": "Retrieve all dealer mappings",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "DealerMapping[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/dealer-settings/dealer-mapping:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all dealer mappings",
+      "detailed_description": "Retrieve all dealer mappings. It calls IDealerMapping.GetDealerMappingData, IDealerMapping.GetDealerMappingActions, ICommon.GetPagination. Data access uses stored procedure(s): GetDealerMapping, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all dealer mappings",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/DealerMapping",
+          "GET api/DealerMapping/{id}",
+          "GET api/DealerMapping/getMappingByDealer/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "dealer_mapping_get_all_dealer_mappings",
+        "description": "Retrieve all dealer mappings",
+        "http_method": "GET",
+        "endpoint": "api/DealerMapping",
+        "parameters": {
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/DealerMappingController.cs",
+        "action_method": "GetAllDealerMappings",
+        "related_dto_files": [
+          "Models/DealerMapping.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/DealerMapping_repo.cs",
+          "Interfaces/IDealerMapping.cs",
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Dealer Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all dealer mappings — calls IDealerMapping.GetDealerMappingData, IDealerMapping.GetDealerMappingActions, ICommon.GetPagination",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IDealerMapping.GetDealerMappingData",
+          "IDealerMapping.GetDealerMappingActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "DealerMapping_repo (Repository/DealerMapping_repo.cs) via IDealerMapping",
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [
+          "GetDealerMapping",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "dealer_mapping_get_dealer_mapping_by_id",
+      "name": "Get Dealer Mapping By Id",
+      "action_method": "GetDealerMappingById",
+      "http_method": "GET",
+      "route": "api/DealerMapping/{id}",
+      "business_purpose": "Retrieve dealer mapping by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/dealer-settings/dealer-mapping:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve dealer mapping by ID",
+      "detailed_description": "Retrieve dealer mapping by ID. It validates the request, then calls ICommon.getUserByToken, IDealerMapping.GetDealerMappingByIdAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid scheduler ID is required [when id <= 0]",
+        "not_found": "404: Dealer mapping not found [when mapping == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve dealer mapping by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/DealerMapping",
+          "GET api/DealerMapping/{id}",
+          "GET api/DealerMapping/getMappingByDealer/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "dealer_mapping_get_dealer_mapping_by_id",
+        "description": "Retrieve dealer mapping by ID",
+        "http_method": "GET",
+        "endpoint": "api/DealerMapping/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/DealerMappingController.cs",
+        "action_method": "GetDealerMappingById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/DealerMapping_repo.cs",
+          "Interfaces/IDealerMapping.cs"
+        ]
+      },
+      "module": "Dealer Management",
+      "business_logic": {
+        "operation_summary": "Retrieve dealer mapping by ID — validates the request, calls ICommon.getUserByToken, IDealerMapping.GetDealerMappingByIdAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid scheduler ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IDealerMapping.GetDealerMappingByIdAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "DealerMapping_repo (Repository/DealerMapping_repo.cs) via IDealerMapping"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid scheduler ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Dealer mapping not found",
+            "when": "mapping == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "dealer_mapping_create_dealer_mapping",
+      "name": "Create Dealer Mapping",
+      "action_method": "CreateDealerMapping",
+      "http_method": "POST",
+      "route": "api/DealerMapping",
+      "business_purpose": "Create dealer mapping",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateDealerMappingRequest (inline)",
+        "properties": [
+          {
+            "name": "userid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "categoryid",
+            "type": "List<int>",
+            "required": true
+          },
+          {
+            "name": "dealerid",
+            "type": "int",
+            "required": true
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "settings/dealer-settings/dealer-mapping:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create dealer mapping",
+      "detailed_description": "Create dealer mapping. It validates the request, then calls ICommon.getUserByToken, IDealerMapping.GetDealerById, IDealerMapping.GetDealerMappingsByDealerId. Persists changes to: DealerMapping: DELETE, DealerMapping: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; At least one category ID is required. [when request.categoryid == null || request.categoryid.Count == 0]; Valid dealer ID is required. [when request.dealerid <= 0]; Dealer not found. [when dealer == null]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create dealer mapping",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateDealerMappingRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/DealerMapping"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "dealer_mapping_create_dealer_mapping",
+        "description": "Create dealer mapping",
+        "http_method": "POST",
+        "endpoint": "api/DealerMapping",
+        "parameters": {
+          "userid": {
+            "type": "int",
+            "required": false,
+            "description": "userid (body)"
+          },
+          "categoryid": {
+            "type": "List<int>",
+            "required": true,
+            "description": "categoryid (body)"
+          },
+          "dealerid": {
+            "type": "int",
+            "required": true,
+            "description": "dealerid (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/DealerMappingController.cs",
+        "action_method": "CreateDealerMapping",
+        "related_dto_files": [
+          "Controllers/DealerMappingController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/DealerMapping_repo.cs",
+          "Interfaces/IDealerMapping.cs"
+        ]
+      },
+      "module": "Dealer Management",
+      "business_logic": {
+        "operation_summary": "Create dealer mapping — validates the request, calls ICommon.getUserByToken, IDealerMapping.GetDealerById, IDealerMapping.GetDealerMappingsByDealerId",
+        "preconditions": "Valid Bearer JWT; request body of type CreateDealerMappingRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "DealerMapping: DELETE; DealerMapping: INSERT",
+        "validations": "ModelState (DTO data-annotation) validation; Invalid data provided.; At least one category ID is required.; Valid dealer ID is required.; Dealer not found.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IDealerMapping.GetDealerById",
+          "IDealerMapping.GetDealerMappingsByDealerId",
+          "IDealerMapping.DeleteDealerMapping",
+          "IDealerMapping.GetCategoryById",
+          "IDealerMapping.IsDealerMappingDuplicateAsync",
+          "IDealerMapping.CreateDealerMappingAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "DealerMapping_repo (Repository/DealerMapping_repo.cs) via IDealerMapping"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "At least one category ID is required.",
+            "when": "request.categoryid == null || request.categoryid.Count == 0"
+          },
+          {
+            "returns": 400,
+            "message": "Valid dealer ID is required.",
+            "when": "request.dealerid <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Dealer not found.",
+            "when": "dealer == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "dealer_mapping_update_dealer_mapping",
+      "name": "Update Dealer Mapping",
+      "action_method": "UpdateDealerMapping",
+      "http_method": "PUT",
+      "route": "api/DealerMapping/{dealerId}",
+      "business_purpose": "Update dealer mapping",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "dealerId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateDealerMappingRequest (inline)",
+        "properties": [
+          {
+            "name": "userid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "categoryid",
+            "type": "List<int>",
+            "required": true
+          },
+          {
+            "name": "dealerid",
+            "type": "int",
+            "required": true
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "settings/dealer-settings/dealer-mapping:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update dealer mapping",
+      "detailed_description": "Update dealer mapping. It validates the request, then calls ICommon.getUserByToken, IDealerMapping.GetDealerById, IDealerMapping.DeleteDealerMapping. Persists changes to: DealerMapping: DELETE, DealerMapping: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid dealer ID is required. [when dealerId <= 0]; At least one category ID is required. [when request.categoryid == null || request.categoryid.Count == 0]; Valid dealer ID is required. [when request.dealerid <= 0]; Dealer not found. [when dealer == null]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update dealer mapping",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "dealerId (route)",
+          "request body UpdateDealerMappingRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/DealerMapping/{id}",
+          "GET api/DealerMapping/getMappingByDealer/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "dealer_mapping_update_dealer_mapping",
+        "description": "Update dealer mapping",
+        "http_method": "PUT",
+        "endpoint": "api/DealerMapping/{dealerId}",
+        "parameters": {
+          "dealerId": {
+            "type": "int",
+            "required": true,
+            "description": "dealer Id (route)"
+          },
+          "userid": {
+            "type": "int",
+            "required": false,
+            "description": "userid (body)"
+          },
+          "categoryid": {
+            "type": "List<int>",
+            "required": true,
+            "description": "categoryid (body)"
+          },
+          "dealerid": {
+            "type": "int",
+            "required": true,
+            "description": "dealerid (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/DealerMappingController.cs",
+        "action_method": "UpdateDealerMapping",
+        "related_dto_files": [
+          "Controllers/DealerMappingController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/DealerMapping_repo.cs",
+          "Interfaces/IDealerMapping.cs"
+        ]
+      },
+      "module": "Dealer Management",
+      "business_logic": {
+        "operation_summary": "Update dealer mapping — validates the request, calls ICommon.getUserByToken, IDealerMapping.GetDealerById, IDealerMapping.DeleteDealerMapping",
+        "preconditions": "Valid Bearer JWT; route parameter(s) dealerId; request body of type UpdateDealerMappingRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "DealerMapping: DELETE; DealerMapping: INSERT",
+        "validations": "Valid dealer ID is required.; At least one category ID is required.; Dealer not found.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IDealerMapping.GetDealerById",
+          "IDealerMapping.DeleteDealerMapping",
+          "IDealerMapping.GetCategoryById",
+          "IDealerMapping.IsDealerMappingDuplicateAsync",
+          "IDealerMapping.CreateDealerMappingAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "DealerMapping_repo (Repository/DealerMapping_repo.cs) via IDealerMapping"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid dealer ID is required.",
+            "when": "dealerId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one category ID is required.",
+            "when": "request.categoryid == null || request.categoryid.Count == 0"
+          },
+          {
+            "returns": 400,
+            "message": "Valid dealer ID is required.",
+            "when": "request.dealerid <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Dealer not found.",
+            "when": "dealer == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "dealer_mapping_delete_dealer_mapping",
+      "name": "Delete Dealer Mapping",
+      "action_method": "DeleteDealerMapping",
+      "http_method": "DELETE",
+      "route": "api/DealerMapping/{userId}",
+      "business_purpose": "Delete dealer mapping",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "userId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [
+        {
+          "name": "mappingId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "settings/dealer-settings/dealer-mapping:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete dealer mapping",
+      "detailed_description": "Delete dealer mapping. It validates the request, then calls ICommon.getUserByToken, IDealerMapping.GetDealerById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: DealerMapping: DELETE, AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid user ID is required. [when userId <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Dealer mapping not found. [when existingDealerMapping == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete dealer mapping",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "userId (route)",
+          "mappingId (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/DealerMapping/{id}",
+          "GET api/DealerMapping/getMappingByDealer/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "dealer_mapping_delete_dealer_mapping",
+        "description": "Delete dealer mapping",
+        "http_method": "DELETE",
+        "endpoint": "api/DealerMapping/{userId}",
+        "parameters": {
+          "userId": {
+            "type": "int",
+            "required": true,
+            "description": "user Id (route)"
+          },
+          "mappingId": {
+            "type": "int",
+            "required": true,
+            "description": "mapping Id (query)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/DealerMappingController.cs",
+        "action_method": "DeleteDealerMapping",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/DealerMapping_repo.cs",
+          "Interfaces/IDealerMapping.cs"
+        ]
+      },
+      "module": "Dealer Management",
+      "business_logic": {
+        "operation_summary": "Delete dealer mapping — validates the request, calls ICommon.getUserByToken, IDealerMapping.GetDealerById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) userId must reference existing record(s); required query parameter(s): mappingId; passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "DealerMapping: DELETE; AuditLog: INSERT",
+        "validations": "Valid user ID is required.",
+        "side_effects": "AuditLog DELETE (Settings > Dealer Settings > Dealer Mappings)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IDealerMapping.GetDealerById",
+          "ICommon.ToJsonString",
+          "IDealerMapping.DeleteDealerMapping",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "DealerMapping_repo (Repository/DealerMapping_repo.cs) via IDealerMapping"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid user ID is required.",
+            "when": "userId <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Dealer mapping not found.",
+            "when": "existingDealerMapping == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "dealer_mapping_get_categories_by_user",
+      "name": "Get Categories By User",
+      "action_method": "GetCategoriesByUser",
+      "http_method": "GET",
+      "route": "api/DealerMapping/getMappingByDealer/{dealerId}",
+      "business_purpose": "Retrieve categories by user",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "dealerId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/dealer-settings/dealer-mapping:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve categories by user",
+      "detailed_description": "Retrieve categories by user. It calls ICommon.getUserByToken, IDealerMapping.GetDealerMappingsByDealerId. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve categories by user",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "dealerId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/DealerMapping",
+          "GET api/DealerMapping/{id}",
+          "GET api/DealerMapping/getMappingByDealer/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "dealer_mapping_get_categories_by_user",
+        "description": "Retrieve categories by user",
+        "http_method": "GET",
+        "endpoint": "api/DealerMapping/getMappingByDealer/{dealerId}",
+        "parameters": {
+          "dealerId": {
+            "type": "int",
+            "required": true,
+            "description": "dealer Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/DealerMappingController.cs",
+        "action_method": "GetCategoriesByUser",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/DealerMapping_repo.cs",
+          "Interfaces/IDealerMapping.cs"
+        ]
+      },
+      "module": "Dealer Management",
+      "business_logic": {
+        "operation_summary": "Retrieve categories by user — calls ICommon.getUserByToken, IDealerMapping.GetDealerMappingsByDealerId",
+        "preconditions": "Valid Bearer JWT; route parameter(s) dealerId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IDealerMapping.GetDealerMappingsByDealerId"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "DealerMapping_repo (Repository/DealerMapping_repo.cs) via IDealerMapping"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    }
+  ]
+}

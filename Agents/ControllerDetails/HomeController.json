@@ -1,0 +1,2339 @@
+{
+  "controller": "HomeController",
+  "file": "Controllers/HomeController.cs",
+  "module": "Dashboards",
+  "base_route": "api/Home",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles home: get SM dashboard data, get BM dashboard data, get ABM dashboard data, get region dashboard data, get management dashboard data, get management dashboard region branch outstanding and 12 more",
+  "menu_permission": {
+    "status": "not referenced by frontend",
+    "menu_keys": [],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "home_get_sm_dashboard_data",
+      "name": "Get SM Dashboard Data",
+      "action_method": "GetSMDashboardData",
+      "http_method": "GET",
+      "route": "api/Home/sm_dashboard",
+      "business_purpose": "Retrieve SM dashboard data",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve SM dashboard data",
+      "detailed_description": "Retrieve SM dashboard data. It validates the request, then calls ICommon.getUserByToken, IHome.GetSMDashboardData, IHome.GetPjpWithAttendanceData. Data access uses stored procedure(s): sp_SMDashboard, sp_GetInfluencerSupplySummaryByUserAndDate, GetInfluencersKYCPercentByUser. Possible responses: 200, 400, 401.",
+      "error_handling": {
+        "validation_errors": "400: message built at runtime",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve SM dashboard data",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Home/sm_dashboard",
+          "GET api/Home/bm_dashboard",
+          "GET api/Home/abm_dashboard"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "home_get_sm_dashboard_data",
+        "description": "Retrieve SM dashboard data",
+        "http_method": "GET",
+        "endpoint": "api/Home/sm_dashboard",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/HomeController.cs",
+        "action_method": "GetSMDashboardData",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/HomeRepo.cs",
+          "Interfaces/IHome.cs",
+          "Repository/WeaklyPlanner_repo.cs",
+          "Interfaces/IWeaklyPlanner.cs",
+          "Repositories/InfluencerPlanner_repo.cs",
+          "Interfaces/IInfluencerPlanner.cs"
+        ]
+      },
+      "module": "Dashboards",
+      "business_logic": {
+        "operation_summary": "Retrieve SM dashboard data — validates the request, calls ICommon.getUserByToken, IHome.GetSMDashboardData, IHome.GetPjpWithAttendanceData",
+        "preconditions": "Valid Bearer JWT; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IHome.GetSMDashboardData",
+          "IHome.GetPjpWithAttendanceData",
+          "IWeaklyPlanner.GetInfluencerSupplySummary",
+          "IWeaklyPlanner.GetUserLasstWeaklyPlanner",
+          "IHome.GetLatestAnnouncements",
+          "IHome.GetTopFiveSalesManData",
+          "IHome.GetTopFiveSalesManAsPerFLData",
+          "IHome.GetInfluencersKYCPercentByUser",
+          "IInfluencerPlanner.getPlannerByyearandMonth",
+          "IHome.MonthlySheetsAchievedCount"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "HomeRepo (Repository/HomeRepo.cs) via IHome",
+          "WeaklyPlanner_repo (Repository/WeaklyPlanner_repo.cs) via IWeaklyPlanner",
+          "InfluencerPlanner_repo (Repositories/InfluencerPlanner_repo.cs) via IInfluencerPlanner"
+        ],
+        "stored_procedures": [
+          "sp_SMDashboard",
+          "sp_GetInfluencerSupplySummaryByUserAndDate",
+          "GetInfluencersKYCPercentByUser"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "message built at runtime",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "home_get_bm_dashboard_data",
+      "name": "Get BM Dashboard Data",
+      "action_method": "GetBMDashboardData",
+      "http_method": "GET",
+      "route": "api/Home/bm_dashboard",
+      "business_purpose": "Retrieve BM dashboard data",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve BM dashboard data",
+      "detailed_description": "Retrieve BM dashboard data. It validates the request, then calls ICommon.getUserByToken, IBranchManagerDashboard.GetBranchOutstandingData, IHome.GetComplaintAging. Data access uses stored procedure(s): GetComplaintAging, GetPrimaryVsSecondarySales. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Primary branch is not assigned for this user",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve BM dashboard data",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Home/sm_dashboard",
+          "GET api/Home/bm_dashboard",
+          "GET api/Home/abm_dashboard"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "home_get_bm_dashboard_data",
+        "description": "Retrieve BM dashboard data",
+        "http_method": "GET",
+        "endpoint": "api/Home/bm_dashboard",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/HomeController.cs",
+        "action_method": "GetBMDashboardData",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/BranchManagerDashboard_repo.cs",
+          "Interfaces/IBranchManagerDashboard.cs",
+          "Repository/HomeRepo.cs",
+          "Interfaces/IHome.cs"
+        ]
+      },
+      "module": "Dashboards",
+      "business_logic": {
+        "operation_summary": "Retrieve BM dashboard data — validates the request, calls ICommon.getUserByToken, IBranchManagerDashboard.GetBranchOutstandingData, IHome.GetComplaintAging",
+        "preconditions": "Valid Bearer JWT; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Primary branch is not assigned for this user",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBranchManagerDashboard.GetBranchOutstandingData",
+          "IHome.GetComplaintAging",
+          "IHome.GetLast30DaysInfluencersData",
+          "IHome.GetDealerCount",
+          "IHome.GetInfluencerCount",
+          "IHome.GetCurrentMonthInfluecnersPlanned",
+          "IHome.GetCurrentMonthDealerData",
+          "IHome.GetInfluencerPlannerData",
+          "IHome.GetInfluencerPlannerDataAsPerFL",
+          "IHome.GetCrmHierarchyMembers",
+          "IHome.GetSecondaryAchievedByUsers",
+          "IHome.GetTotalTarget",
+          "IHome.GetLast10BranchRequests",
+          "IHome.GetSalesmanOfTheMonth",
+          "IHome.GetUserWiseKYCCompletionSummary",
+          "IHome.GetLatestAnnouncements",
+          "IHome.GetTopFiveSalesManData",
+          "IHome.GetTopFiveSalesManAsPerFLData",
+          "IHome.GetPrimarySecondaryYTDTrucks",
+          "IHome.GetInfluencerPlannerSheetSummary"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "BranchManagerDashboard_repo (Repositories/BranchManagerDashboard_repo.cs) via IBranchManagerDashboard",
+          "HomeRepo (Repository/HomeRepo.cs) via IHome"
+        ],
+        "stored_procedures": [
+          "GetComplaintAging",
+          "GetPrimaryVsSecondarySales"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Primary branch is not assigned for this user",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "home_get_abm_dashboard_data",
+      "name": "Get ABM Dashboard Data",
+      "action_method": "GetABMDashboardData",
+      "http_method": "GET",
+      "route": "api/Home/abm_dashboard",
+      "business_purpose": "Retrieve ABM dashboard data",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve ABM dashboard data",
+      "detailed_description": "Retrieve ABM dashboard data. It validates the request, then calls ICommon.getUserByToken, IHome.GetBranchIdsByUserLocations, IHome.GetCrmHierarchyMembers. Data access uses stored procedure(s): GetPrimaryVsSecondarySales. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: No locations are assigned for this user [when branchIds == null || branchIds.Count == 0]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve ABM dashboard data",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Home/sm_dashboard",
+          "GET api/Home/bm_dashboard",
+          "GET api/Home/abm_dashboard"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "home_get_abm_dashboard_data",
+        "description": "Retrieve ABM dashboard data",
+        "http_method": "GET",
+        "endpoint": "api/Home/abm_dashboard",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/HomeController.cs",
+        "action_method": "GetABMDashboardData",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/HomeRepo.cs",
+          "Interfaces/IHome.cs",
+          "Repositories/BranchManagerDashboard_repo.cs",
+          "Interfaces/IBranchManagerDashboard.cs"
+        ]
+      },
+      "module": "Dashboards",
+      "business_logic": {
+        "operation_summary": "Retrieve ABM dashboard data — validates the request, calls ICommon.getUserByToken, IHome.GetBranchIdsByUserLocations, IHome.GetCrmHierarchyMembers",
+        "preconditions": "Valid Bearer JWT; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "No locations are assigned for this user",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IHome.GetBranchIdsByUserLocations",
+          "IHome.GetCrmHierarchyMembers",
+          "IBranchManagerDashboard.GetOutstandingDataByUserLocations",
+          "IHome.GetLast30DaysInfluencersData",
+          "IHome.GetDealerCount",
+          "IHome.GetInfluencerCount",
+          "IHome.GetCurrentMonthInfluecnersPlanned",
+          "IHome.GetLast30DaysDealerDataByUserLocations",
+          "IHome.GetInfluencerPlannerData",
+          "IHome.GetInfluencerPlannerDataAsPerFL",
+          "IHome.GetSecondaryAchievedByUsers",
+          "IHome.GetTotalTarget",
+          "IHome.GetLast10BranchRequestsForUsers",
+          "IHome.GetSalesmanOfTheMonth",
+          "IHome.GetUserWiseKYCCompletionSummary",
+          "IHome.GetLatestAnnouncements",
+          "IHome.GetTopFiveSalesManData",
+          "IHome.GetTopFiveSalesManAsPerFLData",
+          "IHome.GetPrimarySecondaryYTDTrucks",
+          "IHome.GetInfluencerPlannerSheetSummary",
+          "IHome.GetPendingComplaintAgingSummary"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "HomeRepo (Repository/HomeRepo.cs) via IHome",
+          "BranchManagerDashboard_repo (Repositories/BranchManagerDashboard_repo.cs) via IBranchManagerDashboard"
+        ],
+        "stored_procedures": [
+          "GetPrimaryVsSecondarySales"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "No locations are assigned for this user",
+            "when": "branchIds == null || branchIds.Count == 0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "home_get_region_dashboard_data",
+      "name": "Get Region Dashboard Data",
+      "action_method": "GetRegionDashboardData",
+      "http_method": "GET",
+      "route": "api/Home/region_dashboard",
+      "business_purpose": "Retrieve region dashboard data",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve region dashboard data",
+      "detailed_description": "Retrieve region dashboard data. It calls ICommon.getUserByToken, IHome.GetBranchIdsByUserId, IBranchManagerDashboard.GetBranchOutstandingData. Data access uses stored procedure(s): GetComplaintAging, GetPrimaryVsSecondarySales. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve region dashboard data",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Home/sm_dashboard",
+          "GET api/Home/bm_dashboard",
+          "GET api/Home/abm_dashboard"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "home_get_region_dashboard_data",
+        "description": "Retrieve region dashboard data",
+        "http_method": "GET",
+        "endpoint": "api/Home/region_dashboard",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/HomeController.cs",
+        "action_method": "GetRegionDashboardData",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/HomeRepo.cs",
+          "Interfaces/IHome.cs",
+          "Repositories/BranchManagerDashboard_repo.cs",
+          "Interfaces/IBranchManagerDashboard.cs"
+        ]
+      },
+      "module": "Dashboards",
+      "business_logic": {
+        "operation_summary": "Retrieve region dashboard data — calls ICommon.getUserByToken, IHome.GetBranchIdsByUserId, IBranchManagerDashboard.GetBranchOutstandingData",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IHome.GetBranchIdsByUserId",
+          "IBranchManagerDashboard.GetBranchOutstandingData",
+          "IHome.GetComplaintAging",
+          "IHome.GetLast30DaysInfluencersData",
+          "IHome.GetDealerCount",
+          "IHome.GetInfluencerCount",
+          "IHome.GetCurrentMonthInfluecnersPlanned",
+          "IHome.GetLast30DaysDealerData",
+          "IHome.GetInfluencerPlannerData",
+          "IHome.GetInfluencerPlannerDataAsPerFL",
+          "IHome.GetTotalTarget",
+          "IHome.GetLast10BranchRequests",
+          "IHome.GetSalesmanOfTheMonth",
+          "IHome.GetUserWiseKYCCompletionSummary",
+          "IHome.GetLatestAnnouncements",
+          "IHome.GetTopFiveSalesManData",
+          "IHome.GetTopFiveSalesManAsPerFLData",
+          "IHome.GetPrimarySecondaryYTDTrucks",
+          "IHome.GetInfluencerPlannerSheetSummary"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "HomeRepo (Repository/HomeRepo.cs) via IHome",
+          "BranchManagerDashboard_repo (Repositories/BranchManagerDashboard_repo.cs) via IBranchManagerDashboard"
+        ],
+        "stored_procedures": [
+          "GetComplaintAging",
+          "GetPrimaryVsSecondarySales"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "home_get_management_dashboard_data",
+      "name": "Get Management Dashboard Data",
+      "action_method": "GetManagementDashboardData",
+      "http_method": "GET",
+      "route": "api/Home/management_dashboard",
+      "business_purpose": "Retrieve management dashboard data",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve management dashboard data",
+      "detailed_description": "Retrieve management dashboard data. It validates the request, then calls ICommon.getUserByToken, IHome.GetRegionIdsByUserLocations, IHome.GetTopFiveSalesManData. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: No locations are assigned for this user [when regionIds == null || regionIds.Count == 0]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve management dashboard data",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Home/sm_dashboard",
+          "GET api/Home/bm_dashboard",
+          "GET api/Home/abm_dashboard"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "home_get_management_dashboard_data",
+        "description": "Retrieve management dashboard data",
+        "http_method": "GET",
+        "endpoint": "api/Home/management_dashboard",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/HomeController.cs",
+        "action_method": "GetManagementDashboardData",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/HomeRepo.cs",
+          "Interfaces/IHome.cs",
+          "Repository/ProjectDashboardRepo.cs",
+          "Interfaces/IProjectDashboard.cs",
+          "Repositories/BranchManagerDashboard_repo.cs",
+          "Interfaces/IBranchManagerDashboard.cs",
+          "Repository/BranchReviewRepo.cs",
+          "Interfaces/IBranchReview.cs"
+        ]
+      },
+      "module": "Dashboards",
+      "business_logic": {
+        "operation_summary": "Retrieve management dashboard data — validates the request, calls ICommon.getUserByToken, IHome.GetRegionIdsByUserLocations, IHome.GetTopFiveSalesManData",
+        "preconditions": "Valid Bearer JWT; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "No locations are assigned for this user",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IHome.GetRegionIdsByUserLocations",
+          "IHome.GetTopFiveSalesManData",
+          "IHome.GetTopFiveSalesManAsPerFLData",
+          "IProjectDashboard.GetTopProjectCreatorsByDepartment",
+          "IHome.GetOutstandingByRegion",
+          "IBranchManagerDashboard.GetOutstandingByFactory",
+          "IHome.GetRegionLevelInfluencerPerformance",
+          "IHome.GetRegionLevelKYCCompletion",
+          "IHome.GetRegionLevelPrimarySecondaryContribution",
+          "IHome.GetRegionLevelDealerPerformance",
+          "IHome.GetRegionLevelComplaints",
+          "IHome.GetProductWiseSales",
+          "IBranchReview.GetProductSalesPercentageCalculated",
+          "IBranchReview.GetPVCSalesPercentageCalculated"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "HomeRepo (Repository/HomeRepo.cs) via IHome",
+          "ProjectDashboardRepo (Repository/ProjectDashboardRepo.cs) via IProjectDashboard",
+          "BranchManagerDashboard_repo (Repositories/BranchManagerDashboard_repo.cs) via IBranchManagerDashboard",
+          "BranchReviewRepo (Repository/BranchReviewRepo.cs) via IBranchReview"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "No locations are assigned for this user",
+            "when": "regionIds == null || regionIds.Count == 0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "home_get_management_dashboard_region_branch_outstanding",
+      "name": "Get Management Dashboard Region Branch Outstanding",
+      "action_method": "GetManagementDashboardRegionBranchOutstanding",
+      "http_method": "GET",
+      "route": "api/Home/management_dashboard/region_branch_outstanding/{regionId}",
+      "business_purpose": "Retrieve management dashboard region branch outstanding",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "regionId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          403,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve management dashboard region branch outstanding",
+      "detailed_description": "Retrieve management dashboard region branch outstanding. It calls ICommon.getUserByToken, IHome.GetRegionIdsByUserLocations, IHome.GetBranchIdsByRegionIds. Possible responses: 200, 401, 403, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]; You do not have access to this region [when !allowedRegionIds.Contains(regionId)]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve management dashboard region branch outstanding",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "regionId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Home/sm_dashboard",
+          "GET api/Home/bm_dashboard",
+          "GET api/Home/abm_dashboard"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "home_get_management_dashboard_region_branch_outstanding",
+        "description": "Retrieve management dashboard region branch outstanding",
+        "http_method": "GET",
+        "endpoint": "api/Home/management_dashboard/region_branch_outstanding/{regionId}",
+        "parameters": {
+          "regionId": {
+            "type": "int",
+            "required": true,
+            "description": "region Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/HomeController.cs",
+        "action_method": "GetManagementDashboardRegionBranchOutstanding",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/HomeRepo.cs",
+          "Interfaces/IHome.cs",
+          "Repositories/BranchManagerDashboard_repo.cs",
+          "Interfaces/IBranchManagerDashboard.cs"
+        ]
+      },
+      "module": "Dashboards",
+      "business_logic": {
+        "operation_summary": "Retrieve management dashboard region branch outstanding — calls ICommon.getUserByToken, IHome.GetRegionIdsByUserLocations, IHome.GetBranchIdsByRegionIds",
+        "preconditions": "Valid Bearer JWT; route parameter(s) regionId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IHome.GetRegionIdsByUserLocations",
+          "IHome.GetBranchIdsByRegionIds",
+          "IBranchManagerDashboard.GetOutstandingByBranch"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "HomeRepo (Repository/HomeRepo.cs) via IHome",
+          "BranchManagerDashboard_repo (Repositories/BranchManagerDashboard_repo.cs) via IBranchManagerDashboard"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 403,
+            "message": "You do not have access to this region",
+            "when": "!allowedRegionIds.Contains(regionId)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "home_get_management_dashboard_region_branch_outstanding_dealers",
+      "name": "Get Management Dashboard Region Branch Outstanding Dealers",
+      "action_method": "GetManagementDashboardRegionBranchOutstandingDealers",
+      "http_method": "GET",
+      "route": "api/Home/management_dashboard/region_branch_outstanding/{regionId}/dealers/{branchId}",
+      "business_purpose": "Retrieve management dashboard region branch outstanding dealers",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "regionId",
+          "type": "int",
+          "required": true
+        },
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          403,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve management dashboard region branch outstanding dealers",
+      "detailed_description": "Retrieve management dashboard region branch outstanding dealers. It calls ICommon.getUserByToken, IHome.GetRegionIdsByUserLocations, IHome.GetBranchIdsByRegionIds. Possible responses: 200, 401, 403, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]; You do not have access to this region [when !allowedRegionIds.Contains(regionId)]; This branch does not belong to the given region [when !branchIdsInRegion.Contains(branchId)]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve management dashboard region branch outstanding dealers",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "regionId (route)",
+          "branchId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Home/sm_dashboard",
+          "GET api/Home/bm_dashboard",
+          "GET api/Home/abm_dashboard"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "home_get_management_dashboard_region_branch_outstanding_dealers",
+        "description": "Retrieve management dashboard region branch outstanding dealers",
+        "http_method": "GET",
+        "endpoint": "api/Home/management_dashboard/region_branch_outstanding/{regionId}/dealers/{branchId}",
+        "parameters": {
+          "regionId": {
+            "type": "int",
+            "required": true,
+            "description": "region Id (route)"
+          },
+          "branchId": {
+            "type": "int",
+            "required": true,
+            "description": "branch Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/HomeController.cs",
+        "action_method": "GetManagementDashboardRegionBranchOutstandingDealers",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/HomeRepo.cs",
+          "Interfaces/IHome.cs",
+          "Repositories/BranchManagerDashboard_repo.cs",
+          "Interfaces/IBranchManagerDashboard.cs"
+        ]
+      },
+      "module": "Dashboards",
+      "business_logic": {
+        "operation_summary": "Retrieve management dashboard region branch outstanding dealers — calls ICommon.getUserByToken, IHome.GetRegionIdsByUserLocations, IHome.GetBranchIdsByRegionIds",
+        "preconditions": "Valid Bearer JWT; route parameter(s) regionId, branchId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IHome.GetRegionIdsByUserLocations",
+          "IHome.GetBranchIdsByRegionIds",
+          "IBranchManagerDashboard.GetBranchOutstandingData"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "HomeRepo (Repository/HomeRepo.cs) via IHome",
+          "BranchManagerDashboard_repo (Repositories/BranchManagerDashboard_repo.cs) via IBranchManagerDashboard"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 403,
+            "message": "You do not have access to this region",
+            "when": "!allowedRegionIds.Contains(regionId)"
+          },
+          {
+            "returns": 403,
+            "message": "This branch does not belong to the given region",
+            "when": "!branchIdsInRegion.Contains(branchId)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "home_get_management_dashboard_region_branch_dealer_performance",
+      "name": "Get Management Dashboard Region Branch Dealer Performance",
+      "action_method": "GetManagementDashboardRegionBranchDealerPerformance",
+      "http_method": "GET",
+      "route": "api/Home/management_dashboard/region_branch_dealer_performance/{regionId}",
+      "business_purpose": "Retrieve management dashboard region branch dealer performance",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "regionId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [
+        {
+          "name": "category",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          403,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve management dashboard region branch dealer performance",
+      "detailed_description": "Retrieve management dashboard region branch dealer performance. It calls ICommon.getUserByToken, IHome.GetRegionIdsByUserLocations, IHome.GetBranchLevelDealerPerformanceByRegion. Possible responses: 200, 401, 403, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]; You do not have access to this region [when !allowedRegionIds.Contains(regionId)]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve management dashboard region branch dealer performance",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "regionId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Home/sm_dashboard",
+          "GET api/Home/bm_dashboard",
+          "GET api/Home/abm_dashboard"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "home_get_management_dashboard_region_branch_dealer_performance",
+        "description": "Retrieve management dashboard region branch dealer performance",
+        "http_method": "GET",
+        "endpoint": "api/Home/management_dashboard/region_branch_dealer_performance/{regionId}",
+        "parameters": {
+          "regionId": {
+            "type": "int",
+            "required": true,
+            "description": "region Id (route)"
+          },
+          "category": {
+            "type": "string",
+            "required": false,
+            "description": "category (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/HomeController.cs",
+        "action_method": "GetManagementDashboardRegionBranchDealerPerformance",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/HomeRepo.cs",
+          "Interfaces/IHome.cs"
+        ]
+      },
+      "module": "Dashboards",
+      "business_logic": {
+        "operation_summary": "Retrieve management dashboard region branch dealer performance — calls ICommon.getUserByToken, IHome.GetRegionIdsByUserLocations, IHome.GetBranchLevelDealerPerformanceByRegion",
+        "preconditions": "Valid Bearer JWT; route parameter(s) regionId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IHome.GetRegionIdsByUserLocations",
+          "IHome.GetBranchLevelDealerPerformanceByRegion"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "HomeRepo (Repository/HomeRepo.cs) via IHome"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 403,
+            "message": "You do not have access to this region",
+            "when": "!allowedRegionIds.Contains(regionId)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "home_get_management_dashboard_region_branch_complaints",
+      "name": "Get Management Dashboard Region Branch Complaints",
+      "action_method": "GetManagementDashboardRegionBranchComplaints",
+      "http_method": "GET",
+      "route": "api/Home/management_dashboard/region_branch_complaints/{regionId}",
+      "business_purpose": "Retrieve management dashboard region branch complaints",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "regionId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          403,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve management dashboard region branch complaints",
+      "detailed_description": "Retrieve management dashboard region branch complaints. It calls ICommon.getUserByToken, IHome.GetRegionIdsByUserLocations, IHome.GetBranchLevelComplaintsByRegion. Possible responses: 200, 401, 403, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]; You do not have access to this region [when !allowedRegionIds.Contains(regionId)]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve management dashboard region branch complaints",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "regionId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Home/sm_dashboard",
+          "GET api/Home/bm_dashboard",
+          "GET api/Home/abm_dashboard"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "home_get_management_dashboard_region_branch_complaints",
+        "description": "Retrieve management dashboard region branch complaints",
+        "http_method": "GET",
+        "endpoint": "api/Home/management_dashboard/region_branch_complaints/{regionId}",
+        "parameters": {
+          "regionId": {
+            "type": "int",
+            "required": true,
+            "description": "region Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/HomeController.cs",
+        "action_method": "GetManagementDashboardRegionBranchComplaints",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/HomeRepo.cs",
+          "Interfaces/IHome.cs"
+        ]
+      },
+      "module": "Dashboards",
+      "business_logic": {
+        "operation_summary": "Retrieve management dashboard region branch complaints — calls ICommon.getUserByToken, IHome.GetRegionIdsByUserLocations, IHome.GetBranchLevelComplaintsByRegion",
+        "preconditions": "Valid Bearer JWT; route parameter(s) regionId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IHome.GetRegionIdsByUserLocations",
+          "IHome.GetBranchLevelComplaintsByRegion"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "HomeRepo (Repository/HomeRepo.cs) via IHome"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 403,
+            "message": "You do not have access to this region",
+            "when": "!allowedRegionIds.Contains(regionId)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "home_get_management_dashboard_region_branch_complaints_dealers",
+      "name": "Get Management Dashboard Region Branch Complaints Dealers",
+      "action_method": "GetManagementDashboardRegionBranchComplaintsDealers",
+      "http_method": "GET",
+      "route": "api/Home/management_dashboard/region_branch_complaints/{regionId}/dealers/{branchId}",
+      "business_purpose": "Retrieve management dashboard region branch complaints dealers",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "regionId",
+          "type": "int",
+          "required": true
+        },
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          403,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve management dashboard region branch complaints dealers",
+      "detailed_description": "Retrieve management dashboard region branch complaints dealers. It calls ICommon.getUserByToken, IHome.GetRegionIdsByUserLocations, IHome.GetBranchIdsByRegionIds. Possible responses: 200, 401, 403, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]; You do not have access to this region [when !allowedRegionIds.Contains(regionId)]; This branch does not belong to the given region [when !branchIdsInRegion.Contains(branchId)]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve management dashboard region branch complaints dealers",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "regionId (route)",
+          "branchId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Home/sm_dashboard",
+          "GET api/Home/bm_dashboard",
+          "GET api/Home/abm_dashboard"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "home_get_management_dashboard_region_branch_complaints_dealers",
+        "description": "Retrieve management dashboard region branch complaints dealers",
+        "http_method": "GET",
+        "endpoint": "api/Home/management_dashboard/region_branch_complaints/{regionId}/dealers/{branchId}",
+        "parameters": {
+          "regionId": {
+            "type": "int",
+            "required": true,
+            "description": "region Id (route)"
+          },
+          "branchId": {
+            "type": "int",
+            "required": true,
+            "description": "branch Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/HomeController.cs",
+        "action_method": "GetManagementDashboardRegionBranchComplaintsDealers",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/HomeRepo.cs",
+          "Interfaces/IHome.cs"
+        ]
+      },
+      "module": "Dashboards",
+      "business_logic": {
+        "operation_summary": "Retrieve management dashboard region branch complaints dealers — calls ICommon.getUserByToken, IHome.GetRegionIdsByUserLocations, IHome.GetBranchIdsByRegionIds",
+        "preconditions": "Valid Bearer JWT; route parameter(s) regionId, branchId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IHome.GetRegionIdsByUserLocations",
+          "IHome.GetBranchIdsByRegionIds",
+          "IHome.GetDealerLevelComplaintsByBranch"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "HomeRepo (Repository/HomeRepo.cs) via IHome"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 403,
+            "message": "You do not have access to this region",
+            "when": "!allowedRegionIds.Contains(regionId)"
+          },
+          {
+            "returns": 403,
+            "message": "This branch does not belong to the given region",
+            "when": "!branchIdsInRegion.Contains(branchId)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "home_get_management_dashboard_region_branch_dealer_performance_dealers",
+      "name": "Get Management Dashboard Region Branch Dealer Performance Dealers",
+      "action_method": "GetManagementDashboardRegionBranchDealerPerformanceDealers",
+      "http_method": "GET",
+      "route": "api/Home/management_dashboard/region_branch_dealer_performance/{regionId}/dealers/{branchId}",
+      "business_purpose": "Retrieve management dashboard region branch dealer performance dealers",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "regionId",
+          "type": "int",
+          "required": true
+        },
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [
+        {
+          "name": "category",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          403,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve management dashboard region branch dealer performance dealers",
+      "detailed_description": "Retrieve management dashboard region branch dealer performance dealers. It calls ICommon.getUserByToken, IHome.GetRegionIdsByUserLocations, IHome.GetBranchIdsByRegionIds. Possible responses: 200, 401, 403, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]; You do not have access to this region [when !allowedRegionIds.Contains(regionId)]; This branch does not belong to the given region [when !branchIdsInRegion.Contains(branchId)]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve management dashboard region branch dealer performance dealers",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "regionId (route)",
+          "branchId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Home/sm_dashboard",
+          "GET api/Home/bm_dashboard",
+          "GET api/Home/abm_dashboard"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "home_get_management_dashboard_region_branch_dealer_performance_dealers",
+        "description": "Retrieve management dashboard region branch dealer performance dealers",
+        "http_method": "GET",
+        "endpoint": "api/Home/management_dashboard/region_branch_dealer_performance/{regionId}/dealers/{branchId}",
+        "parameters": {
+          "regionId": {
+            "type": "int",
+            "required": true,
+            "description": "region Id (route)"
+          },
+          "branchId": {
+            "type": "int",
+            "required": true,
+            "description": "branch Id (route)"
+          },
+          "category": {
+            "type": "string",
+            "required": false,
+            "description": "category (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/HomeController.cs",
+        "action_method": "GetManagementDashboardRegionBranchDealerPerformanceDealers",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/HomeRepo.cs",
+          "Interfaces/IHome.cs"
+        ]
+      },
+      "module": "Dashboards",
+      "business_logic": {
+        "operation_summary": "Retrieve management dashboard region branch dealer performance dealers — calls ICommon.getUserByToken, IHome.GetRegionIdsByUserLocations, IHome.GetBranchIdsByRegionIds",
+        "preconditions": "Valid Bearer JWT; route parameter(s) regionId, branchId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IHome.GetRegionIdsByUserLocations",
+          "IHome.GetBranchIdsByRegionIds",
+          "IHome.GetCurrentMonthDealerData"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "HomeRepo (Repository/HomeRepo.cs) via IHome"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 403,
+            "message": "You do not have access to this region",
+            "when": "!allowedRegionIds.Contains(regionId)"
+          },
+          {
+            "returns": 403,
+            "message": "This branch does not belong to the given region",
+            "when": "!branchIdsInRegion.Contains(branchId)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "home_get_management_dashboard_region_branch_influencer_performance",
+      "name": "Get Management Dashboard Region Branch Influencer Performance",
+      "action_method": "GetManagementDashboardRegionBranchInfluencerPerformance",
+      "http_method": "GET",
+      "route": "api/Home/management_dashboard/region_branch_influencer_performance/{regionId}",
+      "business_purpose": "Retrieve management dashboard region branch influencer performance",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "regionId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          403,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve management dashboard region branch influencer performance",
+      "detailed_description": "Retrieve management dashboard region branch influencer performance. It calls ICommon.getUserByToken, IHome.GetRegionIdsByUserLocations, IHome.GetBranchLevelInfluencerPerformanceByRegion. Possible responses: 200, 401, 403, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]; You do not have access to this region [when !allowedRegionIds.Contains(regionId)]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve management dashboard region branch influencer performance",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "regionId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Home/sm_dashboard",
+          "GET api/Home/bm_dashboard",
+          "GET api/Home/abm_dashboard"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "home_get_management_dashboard_region_branch_influencer_performance",
+        "description": "Retrieve management dashboard region branch influencer performance",
+        "http_method": "GET",
+        "endpoint": "api/Home/management_dashboard/region_branch_influencer_performance/{regionId}",
+        "parameters": {
+          "regionId": {
+            "type": "int",
+            "required": true,
+            "description": "region Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/HomeController.cs",
+        "action_method": "GetManagementDashboardRegionBranchInfluencerPerformance",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/HomeRepo.cs",
+          "Interfaces/IHome.cs"
+        ]
+      },
+      "module": "Dashboards",
+      "business_logic": {
+        "operation_summary": "Retrieve management dashboard region branch influencer performance — calls ICommon.getUserByToken, IHome.GetRegionIdsByUserLocations, IHome.GetBranchLevelInfluencerPerformanceByRegion",
+        "preconditions": "Valid Bearer JWT; route parameter(s) regionId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IHome.GetRegionIdsByUserLocations",
+          "IHome.GetBranchLevelInfluencerPerformanceByRegion"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "HomeRepo (Repository/HomeRepo.cs) via IHome"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 403,
+            "message": "You do not have access to this region",
+            "when": "!allowedRegionIds.Contains(regionId)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "home_get_management_dashboard_region_branch_kyc_summary",
+      "name": "Get Management Dashboard Region Branch KYC Summary",
+      "action_method": "GetManagementDashboardRegionBranchKYCSummary",
+      "http_method": "GET",
+      "route": "api/Home/management_dashboard/region_branch_kyc_summary/{regionId}",
+      "business_purpose": "Retrieve management dashboard region branch KYC summary",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "regionId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          403,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve management dashboard region branch KYC summary",
+      "detailed_description": "Retrieve management dashboard region branch KYC summary. It calls ICommon.getUserByToken, IHome.GetRegionIdsByUserLocations, IHome.GetBranchLevelKYCCompletionByRegion. Possible responses: 200, 401, 403, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]; You do not have access to this region [when !allowedRegionIds.Contains(regionId)]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve management dashboard region branch KYC summary",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "regionId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Home/sm_dashboard",
+          "GET api/Home/bm_dashboard",
+          "GET api/Home/abm_dashboard"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "home_get_management_dashboard_region_branch_kyc_summary",
+        "description": "Retrieve management dashboard region branch KYC summary",
+        "http_method": "GET",
+        "endpoint": "api/Home/management_dashboard/region_branch_kyc_summary/{regionId}",
+        "parameters": {
+          "regionId": {
+            "type": "int",
+            "required": true,
+            "description": "region Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/HomeController.cs",
+        "action_method": "GetManagementDashboardRegionBranchKYCSummary",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/HomeRepo.cs",
+          "Interfaces/IHome.cs"
+        ]
+      },
+      "module": "Dashboards",
+      "business_logic": {
+        "operation_summary": "Retrieve management dashboard region branch KYC summary — calls ICommon.getUserByToken, IHome.GetRegionIdsByUserLocations, IHome.GetBranchLevelKYCCompletionByRegion",
+        "preconditions": "Valid Bearer JWT; route parameter(s) regionId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IHome.GetRegionIdsByUserLocations",
+          "IHome.GetBranchLevelKYCCompletionByRegion"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "HomeRepo (Repository/HomeRepo.cs) via IHome"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 403,
+            "message": "You do not have access to this region",
+            "when": "!allowedRegionIds.Contains(regionId)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "home_get_management_dashboard_region_branch_primary_secondary_contribution",
+      "name": "Get Management Dashboard Region Branch Primary Secondary Contribution",
+      "action_method": "GetManagementDashboardRegionBranchPrimarySecondaryContribution",
+      "http_method": "GET",
+      "route": "api/Home/management_dashboard/region_branch_primary_secondary_contribution/{regionId}",
+      "business_purpose": "Retrieve management dashboard region branch primary secondary contribution",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "regionId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          403,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve management dashboard region branch primary secondary contribution",
+      "detailed_description": "Retrieve management dashboard region branch primary secondary contribution. It calls ICommon.getUserByToken, IHome.GetRegionIdsByUserLocations, IHome.GetBranchIdsByRegionIds. Possible responses: 200, 401, 403, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]; You do not have access to this region [when !allowedRegionIds.Contains(regionId)]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve management dashboard region branch primary secondary contribution",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "regionId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Home/sm_dashboard",
+          "GET api/Home/bm_dashboard",
+          "GET api/Home/abm_dashboard"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "home_get_management_dashboard_region_branch_primary_secondary_contribution",
+        "description": "Retrieve management dashboard region branch primary secondary contribution",
+        "http_method": "GET",
+        "endpoint": "api/Home/management_dashboard/region_branch_primary_secondary_contribution/{regionId}",
+        "parameters": {
+          "regionId": {
+            "type": "int",
+            "required": true,
+            "description": "region Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/HomeController.cs",
+        "action_method": "GetManagementDashboardRegionBranchPrimarySecondaryContribution",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/HomeRepo.cs",
+          "Interfaces/IHome.cs",
+          "Repositories/BranchManagerDashboard_repo.cs",
+          "Interfaces/IBranchManagerDashboard.cs"
+        ]
+      },
+      "module": "Dashboards",
+      "business_logic": {
+        "operation_summary": "Retrieve management dashboard region branch primary secondary contribution — calls ICommon.getUserByToken, IHome.GetRegionIdsByUserLocations, IHome.GetBranchIdsByRegionIds",
+        "preconditions": "Valid Bearer JWT; route parameter(s) regionId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IHome.GetRegionIdsByUserLocations",
+          "IHome.GetBranchIdsByRegionIds",
+          "IBranchManagerDashboard.GetBranchLevelPrimarySecondaryContribution"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "HomeRepo (Repository/HomeRepo.cs) via IHome",
+          "BranchManagerDashboard_repo (Repositories/BranchManagerDashboard_repo.cs) via IBranchManagerDashboard"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 403,
+            "message": "You do not have access to this region",
+            "when": "!allowedRegionIds.Contains(regionId)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "home_get_management_dashboard_region_branch_top_performing",
+      "name": "Get Management Dashboard Region Branch Top Performing",
+      "action_method": "GetManagementDashboardRegionBranchTopPerforming",
+      "http_method": "GET",
+      "route": "api/Home/management_dashboard/region_branch_top_performing/{regionId}",
+      "business_purpose": "Retrieve management dashboard region branch top performing",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "regionId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          403,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve management dashboard region branch top performing",
+      "detailed_description": "Retrieve management dashboard region branch top performing. It calls ICommon.getUserByToken, IHome.GetRegionIdsByUserLocations, IHome.GetBranchIdsByRegionIds. Possible responses: 200, 401, 403, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]; You do not have access to this region [when !allowedRegionIds.Contains(regionId)]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve management dashboard region branch top performing",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "regionId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Home/sm_dashboard",
+          "GET api/Home/bm_dashboard",
+          "GET api/Home/abm_dashboard"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "home_get_management_dashboard_region_branch_top_performing",
+        "description": "Retrieve management dashboard region branch top performing",
+        "http_method": "GET",
+        "endpoint": "api/Home/management_dashboard/region_branch_top_performing/{regionId}",
+        "parameters": {
+          "regionId": {
+            "type": "int",
+            "required": true,
+            "description": "region Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/HomeController.cs",
+        "action_method": "GetManagementDashboardRegionBranchTopPerforming",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/HomeRepo.cs",
+          "Interfaces/IHome.cs",
+          "Repositories/BranchManagerDashboard_repo.cs",
+          "Interfaces/IBranchManagerDashboard.cs"
+        ]
+      },
+      "module": "Dashboards",
+      "business_logic": {
+        "operation_summary": "Retrieve management dashboard region branch top performing — calls ICommon.getUserByToken, IHome.GetRegionIdsByUserLocations, IHome.GetBranchIdsByRegionIds",
+        "preconditions": "Valid Bearer JWT; route parameter(s) regionId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IHome.GetRegionIdsByUserLocations",
+          "IHome.GetBranchIdsByRegionIds",
+          "IBranchManagerDashboard.GetTopPerformingBranchData"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "HomeRepo (Repository/HomeRepo.cs) via IHome",
+          "BranchManagerDashboard_repo (Repositories/BranchManagerDashboard_repo.cs) via IBranchManagerDashboard"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 403,
+            "message": "You do not have access to this region",
+            "when": "!allowedRegionIds.Contains(regionId)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "home_get_account_dashboard_data",
+      "name": "Get Account Dashboard Data",
+      "action_method": "GetAccountDashboardData",
+      "http_method": "GET",
+      "route": "api/Home/account_dashboard",
+      "business_purpose": "Retrieve account dashboard data",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve account dashboard data",
+      "detailed_description": "Retrieve account dashboard data. It calls ICommon.getUserByToken, IHome.GetLatestAnnouncements. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Account dashboard data file not found [when !System.IO.File.Exists(jsonFilePath)]",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve account dashboard data",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Home/sm_dashboard",
+          "GET api/Home/bm_dashboard",
+          "GET api/Home/abm_dashboard"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "home_get_account_dashboard_data",
+        "description": "Retrieve account dashboard data",
+        "http_method": "GET",
+        "endpoint": "api/Home/account_dashboard",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/HomeController.cs",
+        "action_method": "GetAccountDashboardData",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/HomeRepo.cs",
+          "Interfaces/IHome.cs"
+        ]
+      },
+      "module": "Dashboards",
+      "business_logic": {
+        "operation_summary": "Retrieve account dashboard data — calls ICommon.getUserByToken, IHome.GetLatestAnnouncements",
+        "preconditions": "Valid Bearer JWT; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IHome.GetLatestAnnouncements"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "HomeRepo (Repository/HomeRepo.cs) via IHome"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Account dashboard data file not found",
+            "when": "!System.IO.File.Exists(jsonFilePath)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "home_get_factory_dashboard_data",
+      "name": "Get Factory Dashboard Data",
+      "action_method": "GetFactoryDashboardData",
+      "http_method": "GET",
+      "route": "api/Home/factory_dashboard",
+      "business_purpose": "Retrieve factory dashboard data",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve factory dashboard data",
+      "detailed_description": "Retrieve factory dashboard data. It validates the request, then calls ICommon.getUserByToken, IHome.GetFactoryIdsByUser, IHome.GetFactoryDashboardAggregate. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: No factory is assigned for this user [when factoryIds == null || factoryIds.Count == 0]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve factory dashboard data",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Home/sm_dashboard",
+          "GET api/Home/bm_dashboard",
+          "GET api/Home/abm_dashboard"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "home_get_factory_dashboard_data",
+        "description": "Retrieve factory dashboard data",
+        "http_method": "GET",
+        "endpoint": "api/Home/factory_dashboard",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/HomeController.cs",
+        "action_method": "GetFactoryDashboardData",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/HomeRepo.cs",
+          "Interfaces/IHome.cs"
+        ]
+      },
+      "module": "Dashboards",
+      "business_logic": {
+        "operation_summary": "Retrieve factory dashboard data — validates the request, calls ICommon.getUserByToken, IHome.GetFactoryIdsByUser, IHome.GetFactoryDashboardAggregate",
+        "preconditions": "Valid Bearer JWT; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "No factory is assigned for this user",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IHome.GetFactoryIdsByUser",
+          "IHome.GetFactoryDashboardAggregate",
+          "IHome.GetLatestAnnouncements"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "HomeRepo (Repository/HomeRepo.cs) via IHome"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "No factory is assigned for this user",
+            "when": "factoryIds == null || factoryIds.Count == 0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "home_get_ib_dashboard_data",
+      "name": "Get IB Dashboard Data",
+      "action_method": "GetIBDashboardData",
+      "http_method": "GET",
+      "route": "api/Home/ib_dashboard",
+      "business_purpose": "Retrieve IB dashboard data",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve IB dashboard data",
+      "detailed_description": "Retrieve IB dashboard data. It validates the request, then calls ICommon.getUserByToken, IHome.GetBranchIdsByUserId, IHome.GetPjpWithAttendanceData. Data access uses stored procedure(s): sp_GetInfluencerSupplySummaryByUserAndDate, GetInfluencersKYCPercentByUser. Possible responses: 200, 400, 401.",
+      "error_handling": {
+        "validation_errors": "400: message built at runtime",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve IB dashboard data",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Home/sm_dashboard",
+          "GET api/Home/bm_dashboard",
+          "GET api/Home/abm_dashboard"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "home_get_ib_dashboard_data",
+        "description": "Retrieve IB dashboard data",
+        "http_method": "GET",
+        "endpoint": "api/Home/ib_dashboard",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/HomeController.cs",
+        "action_method": "GetIBDashboardData",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/HomeRepo.cs",
+          "Interfaces/IHome.cs",
+          "Repository/WeaklyPlanner_repo.cs",
+          "Interfaces/IWeaklyPlanner.cs",
+          "Repository/ProjectDashboardRepo.cs",
+          "Interfaces/IProjectDashboard.cs"
+        ]
+      },
+      "module": "Dashboards",
+      "business_logic": {
+        "operation_summary": "Retrieve IB dashboard data — validates the request, calls ICommon.getUserByToken, IHome.GetBranchIdsByUserId, IHome.GetPjpWithAttendanceData",
+        "preconditions": "Valid Bearer JWT; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IHome.GetBranchIdsByUserId",
+          "IHome.GetPjpWithAttendanceData",
+          "IWeaklyPlanner.GetInfluencerSupplySummary",
+          "IWeaklyPlanner.GetUserLasstWeaklyPlanner",
+          "IHome.GetLatestAnnouncements",
+          "IHome.GetTopFiveSalesManData",
+          "IHome.GetTopFiveSalesManAsPerFLData",
+          "IHome.GetInfluencersKYCPercentByUser",
+          "IProjectDashboard.GetTopProjectsCreatedLastMonth",
+          "IHome.GetInfluencerCount",
+          "IHome.GetInfluencerPlannerDataAsPerFL",
+          "IProjectDashboard.GetLast6MonthsData",
+          "IHome.GetActiveProjectCountsByClientIds",
+          "IHome.GetActiveProjectCountsByUserIds",
+          "IProjectDashboard.GetTopProjectCreatorsByDepartment"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "HomeRepo (Repository/HomeRepo.cs) via IHome",
+          "WeaklyPlanner_repo (Repository/WeaklyPlanner_repo.cs) via IWeaklyPlanner",
+          "ProjectDashboardRepo (Repository/ProjectDashboardRepo.cs) via IProjectDashboard"
+        ],
+        "stored_procedures": [
+          "sp_GetInfluencerSupplySummaryByUserAndDate",
+          "GetInfluencersKYCPercentByUser"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "message built at runtime",
+            "when": null
+          }
+        ]
+      }
+    }
+  ]
+}

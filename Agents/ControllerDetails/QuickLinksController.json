@@ -1,0 +1,393 @@
+{
+  "controller": "QuickLinksController",
+  "file": "Controllers/QuickLinksController.cs",
+  "module": "Common and Utilities",
+  "base_route": "api/QuickLinks",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles quick links: get all quick links, create quick link, delete quick link",
+  "menu_permission": {
+    "status": "not referenced by frontend",
+    "menu_keys": [],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "quick_links_get_all_quick_links",
+      "name": "Get All Quick Links",
+      "action_method": "GetAllQuickLinks",
+      "http_method": "GET",
+      "route": "api/QuickLinks",
+      "business_purpose": "Retrieve all quick links",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve all quick links",
+      "detailed_description": "Retrieve all quick links. It calls ICommon.getUserByToken, IQuickLinks.GetAllQuickLinksByUserAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all quick links",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/QuickLinks"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "quick_links_get_all_quick_links",
+        "description": "Retrieve all quick links",
+        "http_method": "GET",
+        "endpoint": "api/QuickLinks",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/QuickLinksController.cs",
+        "action_method": "GetAllQuickLinks",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/QuickLinks_repo.cs",
+          "Interfaces/IQuickLinks.cs"
+        ]
+      },
+      "module": "Common and Utilities",
+      "business_logic": {
+        "operation_summary": "Retrieve all quick links — calls ICommon.getUserByToken, IQuickLinks.GetAllQuickLinksByUserAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IQuickLinks.GetAllQuickLinksByUserAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "QuickLinks_repo (Repository/QuickLinks_repo.cs) via IQuickLinks"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "quick_links_create_quick_link",
+      "name": "Create Quick Link",
+      "action_method": "CreateQuickLink",
+      "http_method": "POST",
+      "route": "api/QuickLinks",
+      "business_purpose": "Create quick link",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "QuickLinksCreateDto",
+        "properties": [
+          {
+            "name": "slug",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "path",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "order",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Create quick link",
+      "detailed_description": "Create quick link. It validates the request, then calls ICommon.getUserByToken, IQuickLinks.CreateQuickLinkAsync. Persists changes to: QuickLinks: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Section and path are required [when string.IsNullOrWhiteSpace(dto.slug) || string.IsNullOrWhiteSpace(dto.path)]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create quick link",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body QuickLinksCreateDto"
+        ],
+        "follow_up_apis": [
+          "GET api/QuickLinks"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "quick_links_create_quick_link",
+        "description": "Create quick link",
+        "http_method": "POST",
+        "endpoint": "api/QuickLinks",
+        "parameters": {
+          "slug": {
+            "type": "string",
+            "required": false,
+            "description": "slug (body)"
+          },
+          "path": {
+            "type": "string",
+            "required": false,
+            "description": "path (body)"
+          },
+          "order": {
+            "type": "int",
+            "required": false,
+            "description": "order (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/QuickLinksController.cs",
+        "action_method": "CreateQuickLink",
+        "related_dto_files": [
+          "DTOs/Request/QuickLinksDto.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/QuickLinks_repo.cs",
+          "Interfaces/IQuickLinks.cs"
+        ]
+      },
+      "module": "Common and Utilities",
+      "business_logic": {
+        "operation_summary": "Create quick link — validates the request, calls ICommon.getUserByToken, IQuickLinks.CreateQuickLinkAsync",
+        "preconditions": "Valid Bearer JWT; request body of type QuickLinksCreateDto; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "QuickLinks: INSERT",
+        "validations": "Section and path are required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IQuickLinks.CreateQuickLinkAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "QuickLinks_repo (Repository/QuickLinks_repo.cs) via IQuickLinks"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Section and path are required",
+            "when": "string.IsNullOrWhiteSpace(dto.slug) || string.IsNullOrWhiteSpace(dto.path)"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "quick_links_delete_quick_link",
+      "name": "Delete Quick Link",
+      "action_method": "DeleteQuickLink",
+      "http_method": "DELETE",
+      "route": "api/QuickLinks/{id}",
+      "business_purpose": "Delete quick link",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          403,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Delete quick link",
+      "detailed_description": "Delete quick link. It validates the request, then calls ICommon.getUserByToken, IQuickLinks.GetQuickLinkByIdAsync, IQuickLinks.DeleteQuickLinkAsync. Persists changes to: soft delete (is_deleted flag). Possible responses: 200, 400, 401, 403, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid quick Menu ID [when id <= 0]",
+        "not_found": "404: Quick Menu not found [when existingLink == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]; (no message) [when existingLink.created_by?.Id != currentUser.Id]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete quick link",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": []
+      },
+      "llm_tool_definition": {
+        "name": "quick_links_delete_quick_link",
+        "description": "Delete quick link",
+        "http_method": "DELETE",
+        "endpoint": "api/QuickLinks/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/QuickLinksController.cs",
+        "action_method": "DeleteQuickLink",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/QuickLinks_repo.cs",
+          "Interfaces/IQuickLinks.cs"
+        ]
+      },
+      "module": "Common and Utilities",
+      "business_logic": {
+        "operation_summary": "Delete quick link — validates the request, calls ICommon.getUserByToken, IQuickLinks.GetQuickLinkByIdAsync, IQuickLinks.DeleteQuickLinkAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "soft delete (is_deleted flag)",
+        "validations": "Invalid quick Menu ID",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IQuickLinks.GetQuickLinkByIdAsync",
+          "IQuickLinks.DeleteQuickLinkAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "QuickLinks_repo (Repository/QuickLinks_repo.cs) via IQuickLinks"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid quick Menu ID",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Quick Menu not found",
+            "when": "existingLink == null"
+          },
+          {
+            "returns": 403,
+            "message": null,
+            "when": "existingLink.created_by?.Id != currentUser.Id"
+          }
+        ]
+      }
+    }
+  ]
+}

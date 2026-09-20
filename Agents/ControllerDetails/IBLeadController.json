@@ -1,0 +1,881 @@
+{
+  "controller": "IBLeadController",
+  "file": "Controllers/IBLeadController.cs",
+  "module": "Lead and Client Management",
+  "base_route": "api/IBLead",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages IB lead records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "lms/ibleads",
+        "module_code": "lms",
+        "section": "ibleads",
+        "sub_section": null,
+        "frontend_routes": [
+          "/lms/ibleads"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "lms/ib-leads/ops",
+        "module_code": "lms",
+        "section": "ib-leads",
+        "sub_section": "ops",
+        "frontend_routes": [
+          "/lms/ib-leads/ops",
+          "/lms/ib-leads/ops/:leadId"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "ib_lead_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/IBLead",
+      "business_purpose": "Retrieve all IB lead records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "clientType",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "createdBy",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "status",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "lms/ibleads:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all IB lead records",
+      "detailed_description": "Retrieve all IB lead records. It calls ICommon.getUserByToken, IIBLead.GetIBLeadData, IIBLead.GetIBLeadActions. Data access uses stored procedure(s): GetIBLead. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all IB lead records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/IBLead",
+          "GET api/IBLead/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "ib_lead_get_all",
+        "description": "Retrieve all IB lead records",
+        "http_method": "GET",
+        "endpoint": "api/IBLead",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "date range (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "clientType": {
+            "type": "int",
+            "required": false,
+            "description": "client Type (query)"
+          },
+          "createdBy": {
+            "type": "int",
+            "required": false,
+            "description": "created By (query)"
+          },
+          "status": {
+            "type": "int",
+            "required": false,
+            "description": "status (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IBLeadController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/IBLead_repo.cs",
+          "Interfaces/IIBLead.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all IB lead records — calls ICommon.getUserByToken, IIBLead.GetIBLeadData, IIBLead.GetIBLeadActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIBLead.GetIBLeadData",
+          "IIBLead.GetIBLeadActions",
+          "ICommon.GetPagination",
+          "IIBLead.GetContactTypes",
+          "IIBLead.GetStatusOptions",
+          "IIBLead.GetCreatedByOptions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IBLead_repo (Repositories/IBLead_repo.cs) via IIBLead"
+        ],
+        "stored_procedures": [
+          "GetIBLead"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "ib_lead_get_ib_lead_by_id",
+      "name": "Get IB Lead By Id",
+      "action_method": "GetIBLeadById",
+      "http_method": "GET",
+      "route": "api/IBLead/{id}",
+      "business_purpose": "Retrieve IB lead by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "lms/ibleads:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve IB lead by ID",
+      "detailed_description": "Retrieve IB lead by ID. It validates the request, then calls ICommon.getUserByToken, IIBLead.GetIBLeadById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid IB Lead ID is required [when id <= 0]",
+        "not_found": "404: IB Lead not found [when lead == null || lead.is_deleted]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve IB lead by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/IBLead",
+          "GET api/IBLead/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "ib_lead_get_ib_lead_by_id",
+        "description": "Retrieve IB lead by ID",
+        "http_method": "GET",
+        "endpoint": "api/IBLead/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IBLeadController.cs",
+        "action_method": "GetIBLeadById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/IBLead_repo.cs",
+          "Interfaces/IIBLead.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Retrieve IB lead by ID — validates the request, calls ICommon.getUserByToken, IIBLead.GetIBLeadById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid IB Lead ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIBLead.GetIBLeadById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IBLead_repo (Repositories/IBLead_repo.cs) via IIBLead"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid IB Lead ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "IB Lead not found",
+            "when": "lead == null || lead.is_deleted"
+          }
+        ]
+      }
+    },
+    {
+      "id": "ib_lead_create_ib_lead",
+      "name": "Create IB Lead",
+      "action_method": "CreateIBLead",
+      "http_method": "POST",
+      "route": "api/IBLead",
+      "business_purpose": "Create IB lead",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateIBLeadDto (inline)",
+        "properties": [
+          {
+            "name": "IBLeadName",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "ClientId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Remarks",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "DueDate",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "VisitId",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "lms/ib-leads/ops:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "lms/ibleads"
+      ],
+      "short_description": "Create IB lead",
+      "detailed_description": "Create IB lead. It validates the request, then calls ICommon.getUserByToken, IIBLead.GetClientById, IIBLead.GetVisitById. Persists changes to: IBLeads: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: IB Lead name is required. [when string.IsNullOrWhiteSpace(request.IBLeadName)]; Invalid Client. [when client == null]; Invalid Visit. [when visit == null]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create IB lead",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateIBLeadDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/IBLead"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "ib_lead_create_ib_lead",
+        "description": "Create IB lead",
+        "http_method": "POST",
+        "endpoint": "api/IBLead",
+        "parameters": {
+          "IBLeadName": {
+            "type": "string",
+            "required": false,
+            "description": "IB Lead Name (body)"
+          },
+          "ClientId": {
+            "type": "int",
+            "required": false,
+            "description": "Client Id (body)"
+          },
+          "Remarks": {
+            "type": "string",
+            "required": false,
+            "description": "Remarks (body)"
+          },
+          "DueDate": {
+            "type": "datetime",
+            "required": false,
+            "description": "Due Date (body)"
+          },
+          "VisitId": {
+            "type": "int",
+            "required": false,
+            "description": "Visit Id (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/IBLeadController.cs",
+        "action_method": "CreateIBLead",
+        "related_dto_files": [
+          "Controllers/IBLeadController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/IBLead_repo.cs",
+          "Interfaces/IIBLead.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Create IB lead — validates the request, calls ICommon.getUserByToken, IIBLead.GetClientById, IIBLead.GetVisitById",
+        "preconditions": "Valid Bearer JWT; request body of type CreateIBLeadDto (inline); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "IBLeads: INSERT",
+        "validations": "IB Lead name is required.; Invalid Client.; Invalid Visit.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIBLead.GetClientById",
+          "IIBLead.GetVisitById",
+          "IIBLead.CreateIBLeadAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IBLead_repo (Repositories/IBLead_repo.cs) via IIBLead"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "IB Lead name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.IBLeadName)"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Client.",
+            "when": "client == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Visit.",
+            "when": "visit == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "ib_lead_delete_ib_lead",
+      "name": "Delete IB Lead",
+      "action_method": "DeleteIBLead",
+      "http_method": "DELETE",
+      "route": "api/IBLead/{id}",
+      "business_purpose": "Delete IB lead",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "lms/ibleads:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete IB lead",
+      "detailed_description": "Delete IB lead. It validates the request, then calls ICommon.getUserByToken, IIBLead.DeleteIBLead. Persists changes to: IBLeads: UPDATE, soft delete (is_deleted flag). Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid lead ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete IB lead",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/IBLead/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "ib_lead_delete_ib_lead",
+        "description": "Delete IB lead",
+        "http_method": "DELETE",
+        "endpoint": "api/IBLead/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/IBLeadController.cs",
+        "action_method": "DeleteIBLead",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/IBLead_repo.cs",
+          "Interfaces/IIBLead.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Delete IB lead — validates the request, calls ICommon.getUserByToken, IIBLead.DeleteIBLead",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "IBLeads: UPDATE; soft delete (is_deleted flag)",
+        "validations": "Valid lead ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIBLead.DeleteIBLead"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IBLead_repo (Repositories/IBLead_repo.cs) via IIBLead"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid lead ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "ib_lead_update_ib_lead",
+      "name": "Update IB Lead",
+      "action_method": "UpdateIBLead",
+      "http_method": "PUT",
+      "route": "api/IBLead/{ibLeadId}",
+      "business_purpose": "Update IB lead",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "ibLeadId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateIBLeadDto (inline)",
+        "properties": [
+          {
+            "name": "IBLeadName",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "ClientId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Remarks",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "IBStatusId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "DueDate",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "VisitId",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "lms/ib-leads/ops:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "lms/ibleads"
+      ],
+      "short_description": "Update IB lead",
+      "detailed_description": "Update IB lead. It validates the request, then calls ICommon.getUserByToken, IIBLead.UpdateIBLeadAsync. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid IB Lead ID is required. [when ibLeadId <= 0]; At least one field must be provided for update. [when string.IsNullOrWhiteSpace(request.IBLeadName) && request.ClientId == null && string.IsNull]; message returned by the called service/repository (result.Message) [when !result.Success]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update IB lead",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "ibLeadId (route)",
+          "request body UpdateIBLeadDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/IBLead/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "ib_lead_update_ib_lead",
+        "description": "Update IB lead",
+        "http_method": "PUT",
+        "endpoint": "api/IBLead/{ibLeadId}",
+        "parameters": {
+          "ibLeadId": {
+            "type": "int",
+            "required": true,
+            "description": "ib Lead Id (route)"
+          },
+          "IBLeadName": {
+            "type": "string",
+            "required": false,
+            "description": "IB Lead Name (body)"
+          },
+          "ClientId": {
+            "type": "int",
+            "required": false,
+            "description": "Client Id (body)"
+          },
+          "Remarks": {
+            "type": "string",
+            "required": false,
+            "description": "Remarks (body)"
+          },
+          "IBStatusId": {
+            "type": "int",
+            "required": false,
+            "description": "IB Status Id (body)"
+          },
+          "DueDate": {
+            "type": "datetime",
+            "required": false,
+            "description": "Due Date (body)"
+          },
+          "VisitId": {
+            "type": "int",
+            "required": false,
+            "description": "Visit Id (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/IBLeadController.cs",
+        "action_method": "UpdateIBLead",
+        "related_dto_files": [
+          "Controllers/IBLeadController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/IBLead_repo.cs",
+          "Interfaces/IIBLead.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Update IB lead — validates the request, calls ICommon.getUserByToken, IIBLead.UpdateIBLeadAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) ibLeadId; request body of type UpdateIBLeadDto (inline); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "validations": "Valid IB Lead ID is required.; At least one field must be provided for update.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIBLead.UpdateIBLeadAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IBLead_repo (Repositories/IBLead_repo.cs) via IIBLead"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid IB Lead ID is required.",
+            "when": "ibLeadId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field must be provided for update.",
+            "when": "string.IsNullOrWhiteSpace(request.IBLeadName) && request.ClientId == null && string.IsNullOrWhiteSpace(request.Remarks) && request.IBStatusId == null && request.DueDate == null && request.VisitId == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": "!result.Success"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,1661 @@
+{
+  "controller": "LeadController",
+  "file": "Controllers/LeadController.cs",
+  "module": "Lead and Client Management",
+  "base_route": "api/Lead",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages lead records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "lms/leads",
+        "module_code": "lms",
+        "section": "leads",
+        "sub_section": null,
+        "frontend_routes": [
+          "/lms/leads",
+          "/lms/leads/create-leads",
+          "/lms/leads/edit-leads/:leadId"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "also_called_from_menus": [
+      "lms/assigned-leads",
+      "lms/leads"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "lead_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/Lead",
+      "business_purpose": "Retrieve all lead records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "status",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "lms/leads:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all lead records",
+      "detailed_description": "Retrieve all lead records. It calls ICommon.getUserByToken, IIndent.BuildFilterContext, ILead.GetLeadData. Data access uses stored procedure(s): GetLead. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all lead records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Lead",
+          "GET api/Lead/{id}",
+          "GET api/Lead/states"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "lead_get_all",
+        "description": "Retrieve all lead records",
+        "http_method": "GET",
+        "endpoint": "api/Lead",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "status": {
+            "type": "int",
+            "required": false,
+            "description": "status (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/LeadController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs",
+          "Repositories/LeadRepository.cs",
+          "Interfaces/ILead.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all lead records — calls ICommon.getUserByToken, IIndent.BuildFilterContext, ILead.GetLeadData",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndent.BuildFilterContext",
+          "ILead.GetLeadData",
+          "ILead.GetLeadActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent",
+          "LeadRepository (Repositories/LeadRepository.cs) via ILead"
+        ],
+        "stored_procedures": [
+          "GetLead"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lead_get_lead_by_id",
+      "name": "Get Lead By Id",
+      "action_method": "GetLeadById",
+      "http_method": "GET",
+      "route": "api/Lead/{id}",
+      "business_purpose": "Retrieve lead by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "lms/leads:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve lead by ID",
+      "detailed_description": "Retrieve lead by ID. It validates the request, then calls ICommon.getUserByToken, ILead.GetLeadById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid scheduler ID is required [when id <= 0]",
+        "not_found": "404: Lead not found [when lead == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve lead by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Lead",
+          "GET api/Lead/{id}",
+          "GET api/Lead/states"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "lead_get_lead_by_id",
+        "description": "Retrieve lead by ID",
+        "http_method": "GET",
+        "endpoint": "api/Lead/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/LeadController.cs",
+        "action_method": "GetLeadById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/LeadRepository.cs",
+          "Interfaces/ILead.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Retrieve lead by ID — validates the request, calls ICommon.getUserByToken, ILead.GetLeadById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid scheduler ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ILead.GetLeadById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "LeadRepository (Repositories/LeadRepository.cs) via ILead"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid scheduler ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Lead not found",
+            "when": "lead == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lead_delete_lead",
+      "name": "Delete Lead",
+      "action_method": "DeleteLead",
+      "http_method": "DELETE",
+      "route": "api/Lead/{id}",
+      "business_purpose": "Delete lead",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "lms/leads:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete lead",
+      "detailed_description": "Delete lead. It validates the request, then calls ICommon.getUserByToken, ILead.DeleteLead. Persists changes to: LMSHeader: UPDATE, soft delete (is_deleted flag). Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid lead ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete lead",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Lead/{id}",
+          "GET api/Lead/states/{stateName}/districts"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "lead_delete_lead",
+        "description": "Delete lead",
+        "http_method": "DELETE",
+        "endpoint": "api/Lead/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/LeadController.cs",
+        "action_method": "DeleteLead",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/LeadRepository.cs",
+          "Interfaces/ILead.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Delete lead — validates the request, calls ICommon.getUserByToken, ILead.DeleteLead",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "LMSHeader: UPDATE; soft delete (is_deleted flag)",
+        "validations": "Valid lead ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ILead.DeleteLead"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "LeadRepository (Repositories/LeadRepository.cs) via ILead"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid lead ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "lead_create_lead",
+      "name": "Create Lead",
+      "action_method": "CreateLead",
+      "http_method": "POST",
+      "route": "api/Lead",
+      "business_purpose": "Create lead",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateLeadDto",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Contact",
+            "type": "long",
+            "required": false
+          },
+          {
+            "name": "State",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "District",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "SocialMediaPlatform",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "LeadStatusId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Remark",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "lms/leads:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create lead",
+      "detailed_description": "Create lead. It validates the request, then calls ICommon.getUserByToken, ILead.GetLeadById, ILead.GetLeadStatusByIdAsync. Persists changes to: LMSHeader: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Lead name is required. [when string.IsNullOrWhiteSpace(request.Name)]; Valid contact number is required. [when request.Contact <= 0]; District is required. [when string.IsNullOrWhiteSpace(request.District)]; Valid lead status ID is required. [when leadStatus == null]",
+        "not_found": "404: Lead not found. [when lmsHeader == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create lead",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateLeadDto"
+        ],
+        "follow_up_apis": [
+          "GET api/Lead",
+          "GET api/Lead/states",
+          "GET api/Lead/socialmediaplatform"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "lead_create_lead",
+        "description": "Create lead",
+        "http_method": "POST",
+        "endpoint": "api/Lead",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "Name": {
+            "type": "string",
+            "required": false,
+            "description": "Name (body)"
+          },
+          "Contact": {
+            "type": "long",
+            "required": false,
+            "description": "Contact (body)"
+          },
+          "State": {
+            "type": "string",
+            "required": false,
+            "description": "State (body)"
+          },
+          "District": {
+            "type": "string",
+            "required": false,
+            "description": "District (body)"
+          },
+          "SocialMediaPlatform": {
+            "type": "string",
+            "required": false,
+            "description": "Social Media Platform (body)"
+          },
+          "LeadStatusId": {
+            "type": "int",
+            "required": false,
+            "description": "Lead Status Id (body)"
+          },
+          "Remark": {
+            "type": "string",
+            "required": false,
+            "description": "Remark (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/LeadController.cs",
+        "action_method": "CreateLead",
+        "related_dto_files": [
+          "DTOs/Request/CreateLeadDto.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/LeadRepository.cs",
+          "Interfaces/ILead.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Create lead — validates the request, calls ICommon.getUserByToken, ILead.GetLeadById, ILead.GetLeadStatusByIdAsync",
+        "preconditions": "Valid Bearer JWT; request body of type CreateLeadDto; passes 5 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "LMSHeader: INSERT",
+        "validations": "Lead name is required.; Valid contact number is required.; District is required.; Valid lead status ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ILead.GetLeadById",
+          "ILead.GetLeadStatusByIdAsync",
+          "ILead.CreateLeadAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "LeadRepository (Repositories/LeadRepository.cs) via ILead"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Lead name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.Name)"
+          },
+          {
+            "returns": 400,
+            "message": "Valid contact number is required.",
+            "when": "request.Contact <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "District is required.",
+            "when": "string.IsNullOrWhiteSpace(request.District)"
+          },
+          {
+            "returns": 404,
+            "message": "Lead not found.",
+            "when": "lmsHeader == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid lead status ID is required.",
+            "when": "leadStatus == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lead_get_states",
+      "name": "Get States",
+      "action_method": "GetStates",
+      "http_method": "GET",
+      "route": "api/Lead/states",
+      "business_purpose": "Retrieve states",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "lms/leads:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve states",
+      "detailed_description": "Retrieve states. It calls ICommon.getUserByToken, ILead.GetStates. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve states",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Lead",
+          "GET api/Lead/{id}",
+          "GET api/Lead/states"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "lead_get_states",
+        "description": "Retrieve states",
+        "http_method": "GET",
+        "endpoint": "api/Lead/states",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/LeadController.cs",
+        "action_method": "GetStates",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/LeadRepository.cs",
+          "Interfaces/ILead.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Retrieve states — calls ICommon.getUserByToken, ILead.GetStates",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ILead.GetStates"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "LeadRepository (Repositories/LeadRepository.cs) via ILead"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lead_get_social_media_platform",
+      "name": "Get Social Media Platform",
+      "action_method": "GetSocialMediaPlatform",
+      "http_method": "GET",
+      "route": "api/Lead/socialmediaplatform",
+      "business_purpose": "Retrieve social media platform",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "lms/leads:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve social media platform",
+      "detailed_description": "Retrieve social media platform. It calls ICommon.getUserByToken, ILead.GetSocialMediaPlatforms. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve social media platform",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Lead",
+          "GET api/Lead/{id}",
+          "GET api/Lead/states"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "lead_get_social_media_platform",
+        "description": "Retrieve social media platform",
+        "http_method": "GET",
+        "endpoint": "api/Lead/socialmediaplatform",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/LeadController.cs",
+        "action_method": "GetSocialMediaPlatform",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/LeadRepository.cs",
+          "Interfaces/ILead.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Retrieve social media platform — calls ICommon.getUserByToken, ILead.GetSocialMediaPlatforms",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ILead.GetSocialMediaPlatforms"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "LeadRepository (Repositories/LeadRepository.cs) via ILead"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lead_create_website_lead",
+      "name": "Create Website Lead",
+      "action_method": "CreateWebsiteLead",
+      "http_method": "POST",
+      "route": "api/Lead/website-lead",
+      "business_purpose": "Create website lead",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": false,
+        "attributes": [
+          "[AllowAnonymous]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "WebsiteLeadDto",
+        "properties": [
+          {
+            "name": "Name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Phone",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "RegionId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "RegionName",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "AreaId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "AreaName",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Enquiry",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "RecaptchaToken",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "lms/leads:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Create website lead",
+      "detailed_description": "Create website lead. It validates the request, then calls IHttpClientFactory.CreateClient, ILead.CreateLeadAsync. Persists changes to: LMSHeader: INSERT. Possible responses: 200, 400, 500.",
+      "error_handling": {
+        "validation_errors": "400: Name is required. [when string.IsNullOrWhiteSpace(request.Name)]; Valid phone number is required. [when string.IsNullOrWhiteSpace(request.Phone) || request.Phone.Length < 10]; reCAPTCHA token is required. [when string.IsNullOrWhiteSpace(request.RecaptchaToken)]; reCAPTCHA verification failed. [when !recaptchaJson.GetProperty(\"success\").GetBoolean()]",
+        "not_found": "None found in controller code",
+        "unauthorized": "None found in controller code",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create website lead",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "request body WebsiteLeadDto"
+        ],
+        "follow_up_apis": [
+          "GET api/Lead",
+          "GET api/Lead/states",
+          "GET api/Lead/socialmediaplatform"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "lead_create_website_lead",
+        "description": "Create website lead",
+        "http_method": "POST",
+        "endpoint": "api/Lead/website-lead",
+        "parameters": {
+          "Name": {
+            "type": "string",
+            "required": false,
+            "description": "Name (body)"
+          },
+          "Phone": {
+            "type": "string",
+            "required": false,
+            "description": "Phone (body)"
+          },
+          "RegionId": {
+            "type": "int",
+            "required": false,
+            "description": "Region Id (body)"
+          },
+          "RegionName": {
+            "type": "string",
+            "required": false,
+            "description": "Region Name (body)"
+          },
+          "AreaId": {
+            "type": "int",
+            "required": false,
+            "description": "Area Id (body)"
+          },
+          "AreaName": {
+            "type": "string",
+            "required": false,
+            "description": "Area Name (body)"
+          },
+          "Enquiry": {
+            "type": "string",
+            "required": false,
+            "description": "Enquiry (body)"
+          },
+          "RecaptchaToken": {
+            "type": "string",
+            "required": false,
+            "description": "Recaptcha Token (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/LeadController.cs",
+        "action_method": "CreateWebsiteLead",
+        "related_dto_files": [
+          "DTOs/Request/WebsiteLeadDto.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/LeadRepository.cs",
+          "Interfaces/ILead.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Create website lead — validates the request, calls IHttpClientFactory.CreateClient, ILead.CreateLeadAsync",
+        "preconditions": "No authentication required; request body of type WebsiteLeadDto; passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "LMSHeader: INSERT",
+        "validations": "Name is required.; Valid phone number is required.; reCAPTCHA token is required.; reCAPTCHA verification failed.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IHttpClientFactory.CreateClient",
+          "ILead.CreateLeadAsync"
+        ],
+        "calls_repositories": [
+          "LeadRepository (Repositories/LeadRepository.cs) via ILead"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.Name)"
+          },
+          {
+            "returns": 400,
+            "message": "Valid phone number is required.",
+            "when": "string.IsNullOrWhiteSpace(request.Phone) || request.Phone.Length < 10"
+          },
+          {
+            "returns": 400,
+            "message": "reCAPTCHA token is required.",
+            "when": "string.IsNullOrWhiteSpace(request.RecaptchaToken)"
+          },
+          {
+            "returns": 400,
+            "message": "reCAPTCHA verification failed.",
+            "when": "!recaptchaJson.GetProperty(\"success\").GetBoolean()"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lead_get_districts",
+      "name": "Get Districts",
+      "action_method": "GetDistricts",
+      "http_method": "GET",
+      "route": "api/Lead/states/{stateName}/districts",
+      "business_purpose": "Retrieve districts",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "stateName",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "lms/leads:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve districts",
+      "detailed_description": "Retrieve districts. It calls ILead.GetDistrictsByState. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve districts",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "stateName (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Lead",
+          "GET api/Lead/{id}",
+          "GET api/Lead/states"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "lead_get_districts",
+        "description": "Retrieve districts",
+        "http_method": "GET",
+        "endpoint": "api/Lead/states/{stateName}/districts",
+        "parameters": {
+          "stateName": {
+            "type": "string",
+            "required": true,
+            "description": "state Name (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/LeadController.cs",
+        "action_method": "GetDistricts",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/LeadRepository.cs",
+          "Interfaces/ILead.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Retrieve districts — calls ILead.GetDistrictsByState",
+        "preconditions": "Valid Bearer JWT; route parameter(s) stateName",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ILead.GetDistrictsByState"
+        ],
+        "calls_repositories": [
+          "LeadRepository (Repositories/LeadRepository.cs) via ILead"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "lead_save_lead",
+      "name": "Save Lead",
+      "action_method": "SaveLead",
+      "http_method": "POST",
+      "route": "api/Lead/save",
+      "business_purpose": "Save lead",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "SaveLeadDto",
+        "properties": [
+          {
+            "name": "name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "phone",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "regionId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "regionName",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "areaId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "areaName",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "enquiry",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "lms/leads:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Save lead",
+      "detailed_description": "Save lead. It validates the request, then calls ICommon.getUserByToken, ILead.CreateLeadAsync. Persists changes to: LMSHeader: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Name is required. [when string.IsNullOrWhiteSpace(request.name)]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to save lead",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body SaveLeadDto"
+        ],
+        "follow_up_apis": [
+          "GET api/Lead",
+          "GET api/Lead/states",
+          "GET api/Lead/socialmediaplatform"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "lead_save_lead",
+        "description": "Save lead",
+        "http_method": "POST",
+        "endpoint": "api/Lead/save",
+        "parameters": {
+          "name": {
+            "type": "string",
+            "required": false,
+            "description": "name (body)"
+          },
+          "phone": {
+            "type": "string",
+            "required": false,
+            "description": "phone (body)"
+          },
+          "regionId": {
+            "type": "int",
+            "required": false,
+            "description": "region Id (body)"
+          },
+          "regionName": {
+            "type": "string",
+            "required": false,
+            "description": "region Name (body)"
+          },
+          "areaId": {
+            "type": "int",
+            "required": false,
+            "description": "area Id (body)"
+          },
+          "areaName": {
+            "type": "string",
+            "required": false,
+            "description": "area Name (body)"
+          },
+          "enquiry": {
+            "type": "string",
+            "required": false,
+            "description": "enquiry (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/LeadController.cs",
+        "action_method": "SaveLead",
+        "related_dto_files": [
+          "DTOs/Request/SaveLeadDto.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/LeadRepository.cs",
+          "Interfaces/ILead.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Save lead — validates the request, calls ICommon.getUserByToken, ILead.CreateLeadAsync",
+        "preconditions": "Valid Bearer JWT; request body of type SaveLeadDto; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "LMSHeader: INSERT",
+        "validations": "Name is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ILead.CreateLeadAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "LeadRepository (Repositories/LeadRepository.cs) via ILead"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.name)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lead_update_observation_report",
+      "name": "Update Observation Report",
+      "action_method": "UpdateObservationReport",
+      "http_method": "PUT",
+      "route": "api/Lead/{leadId}",
+      "business_purpose": "Update observation report",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "leadId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateLeadDto (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Contact",
+            "type": "long",
+            "required": false
+          },
+          {
+            "name": "State",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "District",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "SocialMediaPlatform",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "LeadStatusId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "LeadTypeId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "IsLost",
+            "type": "bool",
+            "required": false
+          },
+          {
+            "name": "LeadLostReasonId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "IsClosed",
+            "type": "bool",
+            "required": false
+          },
+          {
+            "name": "AssignedToId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Remark",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "lms/leads:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "lms/assigned-leads"
+      ],
+      "short_description": "Update observation report",
+      "detailed_description": "Update observation report. It validates the request, then calls ICommon.getUserByToken, ILead.UpdateLeadAsync. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid lead ID is required. [when leadId <= 0]; At least one field must be provided for update.; message returned by the called service/repository (result.Message) [when !result.Success]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update observation report",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "leadId (route)",
+          "request body UpdateLeadDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Lead/{id}",
+          "GET api/Lead/states/{stateName}/districts"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "lead_update_observation_report",
+        "description": "Update observation report",
+        "http_method": "PUT",
+        "endpoint": "api/Lead/{leadId}",
+        "parameters": {
+          "leadId": {
+            "type": "int",
+            "required": true,
+            "description": "lead Id (route)"
+          },
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "Name": {
+            "type": "string",
+            "required": false,
+            "description": "Name (body)"
+          },
+          "Contact": {
+            "type": "long",
+            "required": false,
+            "description": "Contact (body)"
+          },
+          "State": {
+            "type": "string",
+            "required": false,
+            "description": "State (body)"
+          },
+          "District": {
+            "type": "string",
+            "required": false,
+            "description": "District (body)"
+          },
+          "SocialMediaPlatform": {
+            "type": "string",
+            "required": false,
+            "description": "Social Media Platform (body)"
+          },
+          "LeadStatusId": {
+            "type": "int",
+            "required": false,
+            "description": "Lead Status Id (body)"
+          },
+          "LeadTypeId": {
+            "type": "int",
+            "required": false,
+            "description": "Lead Type Id (body)"
+          },
+          "IsLost": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Lost (body)"
+          },
+          "LeadLostReasonId": {
+            "type": "int",
+            "required": false,
+            "description": "Lead Lost Reason Id (body)"
+          },
+          "IsClosed": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Closed (body)"
+          },
+          "AssignedToId": {
+            "type": "int",
+            "required": false,
+            "description": "Assigned To Id (body)"
+          },
+          "Remark": {
+            "type": "string",
+            "required": false,
+            "description": "Remark (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/LeadController.cs",
+        "action_method": "UpdateObservationReport",
+        "related_dto_files": [
+          "Controllers/LeadController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/LeadRepository.cs",
+          "Interfaces/ILead.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Update observation report — validates the request, calls ICommon.getUserByToken, ILead.UpdateLeadAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) leadId; request body of type UpdateLeadDto (inline); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "validations": "Valid lead ID is required.; At least one field must be provided for update.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ILead.UpdateLeadAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "LeadRepository (Repositories/LeadRepository.cs) via ILead"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid lead ID is required.",
+            "when": "leadId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field must be provided for update.",
+            "when": null
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": "!result.Success"
+          }
+        ]
+      }
+    }
+  ]
+}

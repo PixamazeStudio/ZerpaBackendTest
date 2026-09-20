@@ -1,0 +1,714 @@
+{
+  "controller": "FactorymappingController",
+  "file": "Controllers/FactorymappingController.cs",
+  "base_route": "api/Factorymapping",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/company-settings/factory-mapping",
+        "module_code": "settings",
+        "section": "company-settings",
+        "sub_section": "factory-mapping",
+        "frontend_routes": [
+          "/settings/company-settings/factory-mapping",
+          "/settings/company-settings/factory-mapping/create-factory-mapping",
+          "/settings/company-settings/factory-mapping/edit-factory-mapping/:id"
+        ],
+        "menu_route_confirmed": true,
+        "display_names": {
+          "module": "Settings",
+          "section": "Company Settings",
+          "sub_section": "Factory Mapping"
+        }
+      },
+      {
+        "path": "settings/user-settings/factory-mapping",
+        "module_code": "settings",
+        "section": "user-settings",
+        "sub_section": "factory-mapping",
+        "frontend_routes": [
+          "/settings/user-settings/factory-mapping",
+          "/settings/user-settings/factory-mapping/create-factory-mapping"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "Factorymapping"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Settings",
+        "section": "Company Settings",
+        "sub_section": "Factory Mapping"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "fm_001",
+      "name": "GetAllFactoryMappings",
+      "http_method": "GET",
+      "route": "api/Factorymapping",
+      "business_purpose": "Retrieve paginated list of factory-to-user mappings.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": 10
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": 0
+        }
+      ],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          500
+        ],
+        "dto_name": "FactoryMappingListResponse"
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "Retrieves factory mappings with pagination and optional text filtering.",
+        "preconditions": "UNKNOWN - NO EXPLICIT PRECONDITIONS IN SOURCE",
+        "validations": "UNKNOWN - NO EXPLICIT VALIDATIONS IN SOURCE",
+        "side_effects": "Fetches actions and pagination info.",
+        "calls_services": [
+          "IFactoryMapping",
+          "ICommon"
+        ],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [
+          "GetFactoryMapping",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "notes": "Read-only operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FactorymappingController.cs",
+        "action_method": "GetAllFactoryMappings"
+      },
+      "required_permission": "settings/company-settings/factory-mapping:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "settings/user-settings/factory-mapping"
+      ],
+      "short_description": "Retrieve paginated list of factory-to-user mappings.",
+      "detailed_description": "Retrieve paginated list of factory-to-user mappings. It calls IFactoryMapping.GetFactoryMappingData, IFactoryMapping.GetFactoryMappingActions, ICommon.GetPagination. Data access uses stored procedure(s): GetFactoryMapping, GetSectionActions. Possible responses: 200, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve paginated list of factory-to-user mappings.",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Factorymapping",
+          "GET api/Factorymapping/getFactoriesByUser/{userId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "factorymapping_get_all_factory_mappings",
+        "description": "Retrieve paginated list of factory-to-user mappings.",
+        "http_method": "GET",
+        "endpoint": "api/Factorymapping",
+        "parameters": {
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "fm_002",
+      "name": "CreateFactoryMapping",
+      "http_method": "POST",
+      "route": "api/Factorymapping",
+      "business_purpose": "Create factory mappings for a user. Replaces existing mappings for the user with new factory IDs.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateFactoryMappingRequest",
+        "properties": [
+          "selecteduserId",
+          "factoryid (List<int>)"
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ],
+        "dto_name": "FactoryMappingCreateResponse"
+      },
+      "data_effect": "CREATE/DELETE",
+      "business_logic": {
+        "operation_summary": "Creates new factory mappings for user. First deletes all existing mappings for the user, then creates new ones for each factory ID.",
+        "preconditions": "Valid token. User (creator) exists. Selected user exists. At least one factory ID provided. Factories must exist.",
+        "validations": "Token validation. selecteduserId > 0. User exists. At least one factory ID. Factories exist.",
+        "side_effects": "Existing mappings deleted. New mappings created. Audit log created for each successful mapping.",
+        "calls_services": [
+          "IFactoryMapping",
+          "ICommon"
+        ],
+        "calls_repositories": [
+          "FactoryMapping",
+          "Users",
+          "Factories"
+        ],
+        "state_changes": "FactoryMapping: DELETE; FactoryMapping: INSERT; AuditLog: INSERT",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "Valid selected user ID is required.",
+            "when": "request.selecteduserId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one factory ID is required.",
+            "when": "request.factoryid == null || request.factoryid.Count == 0"
+          },
+          {
+            "returns": 400,
+            "message": "User(s) not found or inactive.",
+            "when": "creator == null || selectedUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "HIGH",
+        "notes": "Deletes and recreates mappings. Multiple calls delete intermediate mappings."
+      },
+      "source": {
+        "controller_file": "Controllers/FactorymappingController.cs",
+        "action_method": "CreateFactoryMapping"
+      },
+      "required_permission": "settings/company-settings/factory-mapping:delete",
+      "permission_flags": [
+        "delete",
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "settings/user-settings/factory-mapping"
+      ],
+      "short_description": "Create factory mappings for a user. Replaces existing mappings for the user with new factory IDs.",
+      "detailed_description": "Create factory mappings for a user. Replaces existing mappings for the user with new factory IDs. It validates the request, then calls ICommon.getUserByToken, IFactoryMapping.GetUserById, IFactoryMapping.GetFactoriesByUserId, then writes an audit log entry. Persists changes to: FactoryMapping: DELETE, FactoryMapping: INSERT, AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; Valid selected user ID is required. [when request.selecteduserId <= 0]; At least one factory ID is required. [when request.factoryid == null || request.factoryid.Count == 0]; User(s) not found or inactive. [when creator == null || selectedUser == null]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create factory mappings for a user. replaces existing mappings for the user with new factory ids.",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateFactoryMappingRequest"
+        ],
+        "follow_up_apis": [
+          "GET api/Factorymapping"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "factorymapping_create_factory_mapping",
+        "description": "Create factory mappings for a user. Replaces existing mappings for the user with new factory IDs.",
+        "http_method": "POST",
+        "endpoint": "api/Factorymapping",
+        "parameters": {
+          "selecteduserId": {
+            "type": "string",
+            "required": false,
+            "description": "selecteduser Id (body)"
+          },
+          "factoryid (List<int>)": {
+            "type": "string",
+            "required": false,
+            "description": "factoryid (List<int>) (body)"
+          }
+        },
+        "operation_type": "CREATE/DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "fm_003",
+      "name": "UpdateFactoryMapping",
+      "http_method": "PUT",
+      "route": "api/Factorymapping/{mappingId}",
+      "business_purpose": "Update factory mappings by mapping ID.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "mappingId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateFactoryMappingRequest",
+        "properties": [
+          "selecteduserId",
+          "factoryid (List<int>)"
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ],
+        "dto_name": "FactoryMappingUpdateResponse"
+      },
+      "data_effect": "UPDATE",
+      "business_logic": {
+        "operation_summary": "Updates factory mapping record. Validates mapping exists. Updates for each factory in request.",
+        "preconditions": "Valid token. User (creator) exists. mappingId > 0. Mapping exists. At least one factory ID provided.",
+        "validations": "Token validation. mappingId > 0. Mapping exists. At least one factory ID.",
+        "side_effects": "Mapping updated per factory. Audit log created for successful updates.",
+        "calls_services": [
+          "IFactoryMapping",
+          "ICommon"
+        ],
+        "calls_repositories": [
+          "FactoryMapping",
+          "Factories"
+        ],
+        "state_changes": "FactoryMapping: UPDATE; AuditLog: INSERT",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid mapping ID is required.",
+            "when": "mappingId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one factory ID is required.",
+            "when": "request.factoryid == null || request.factoryid.Count == 0"
+          },
+          {
+            "returns": 404,
+            "message": "Factory Mapping not found.",
+            "when": "existingFactoryMapping == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          },
+          {
+            "returns": 400,
+            "message": "No mappings were updated. Check factory IDs or duplicates.",
+            "when": "updatedMappings.Count == 0"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Updates per factory. Audit log tracks changes."
+      },
+      "source": {
+        "controller_file": "Controllers/FactorymappingController.cs",
+        "action_method": "UpdateFactoryMapping"
+      },
+      "required_permission": "settings/company-settings/factory-mapping:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "settings/user-settings/factory-mapping"
+      ],
+      "short_description": "Update factory mappings by mapping ID.",
+      "detailed_description": "Update factory mappings by mapping ID. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IFactoryMapping.GetUsersByMappingId, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: FactoryMapping: UPDATE, AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid mapping ID is required. [when mappingId <= 0]; At least one factory ID is required. [when request.factoryid == null || request.factoryid.Count == 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Factory Mapping not found. [when existingFactoryMapping == null]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "No mappings were updated. Check factory IDs or duplicates. [when updatedMappings.Count == 0]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update factory mappings by mapping ID.",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "mappingId (route)",
+          "request body UpdateFactoryMappingRequest"
+        ],
+        "follow_up_apis": [
+          "GET api/Factorymapping/getFactoriesByUser/{userId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "factorymapping_update_factory_mapping",
+        "description": "Update factory mappings by mapping ID.",
+        "http_method": "PUT",
+        "endpoint": "api/Factorymapping/{mappingId}",
+        "parameters": {
+          "mappingId": {
+            "type": "int",
+            "required": true,
+            "description": "mapping Id (route)"
+          },
+          "selecteduserId": {
+            "type": "string",
+            "required": false,
+            "description": "selecteduser Id (body)"
+          },
+          "factoryid (List<int>)": {
+            "type": "string",
+            "required": false,
+            "description": "factoryid (List<int>) (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "fm_004",
+      "name": "DeleteFactoryMapping",
+      "http_method": "DELETE",
+      "route": "api/Factorymapping/{mappingId}",
+      "business_purpose": "Delete a factory mapping record.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "mappingId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [
+        {
+          "name": "factoryId",
+          "type": "int",
+          "required": false
+        }
+      ],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ],
+        "dto_name": "FactoryMappingDeleteResponse"
+      },
+      "data_effect": "DELETE",
+      "business_logic": {
+        "operation_summary": "Soft deletes factory mapping record. Creates audit log.",
+        "preconditions": "Valid token. User (creator) exists. mappingId > 0. Mapping must exist.",
+        "validations": "Token validation. mappingId > 0. Mapping exists.",
+        "side_effects": "Mapping deleted. Audit log created.",
+        "calls_services": [
+          "IFactoryMapping",
+          "ICommon"
+        ],
+        "calls_repositories": [
+          "FactoryMapping"
+        ],
+        "state_changes": "FactoryMapping: DELETE; AuditLog: INSERT",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid mapping ID is required.",
+            "when": "mappingId <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Factory Mapping not found.",
+            "when": "existingFactoryMapping == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "HIGH",
+        "notes": "Repeated DELETE fails once deleted."
+      },
+      "source": {
+        "controller_file": "Controllers/FactorymappingController.cs",
+        "action_method": "DeleteFactoryMapping"
+      },
+      "required_permission": "settings/company-settings/factory-mapping:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "settings/user-settings/factory-mapping"
+      ],
+      "short_description": "Delete a factory mapping record.",
+      "detailed_description": "Delete a factory mapping record. It validates the request, then calls ICommon.getUserByToken, IFactoryMapping.GetUsersByMappingId, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: FactoryMapping: DELETE, AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid mapping ID is required. [when mappingId <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Factory Mapping not found. [when existingFactoryMapping == null]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete a factory mapping record.",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "mappingId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Factorymapping/getFactoriesByUser/{userId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "factorymapping_delete_factory_mapping",
+        "description": "Delete a factory mapping record.",
+        "http_method": "DELETE",
+        "endpoint": "api/Factorymapping/{mappingId}",
+        "parameters": {
+          "mappingId": {
+            "type": "int",
+            "required": true,
+            "description": "mapping Id (route)"
+          },
+          "factoryId": {
+            "type": "int",
+            "required": false,
+            "description": "factory Id (query)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "fm_005",
+      "name": "GetFactoriesByUser",
+      "http_method": "GET",
+      "route": "api/Factorymapping/getFactoriesByUser/{userId}",
+      "business_purpose": "Retrieve list of factories assigned to a specific user.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "userId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "FactoriesForUserResponse"
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "Retrieves factories mapped to a user with ID and name.",
+        "preconditions": "Valid token. User exists.",
+        "validations": "Token validation.",
+        "side_effects": "None",
+        "calls_services": [
+          "IFactoryMapping",
+          "ICommon"
+        ],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "current_user == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "notes": "Read-only operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FactorymappingController.cs",
+        "action_method": "GetFactoriesByUser"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "settings/company-settings/factory-mapping",
+        "settings/user-settings/factory-mapping"
+      ],
+      "short_description": "Retrieve list of factories assigned to a specific user.",
+      "detailed_description": "Retrieve list of factories assigned to a specific user. It calls ICommon.getUserByToken, IFactoryMapping.GetFactoriesByUserId. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve list of factories assigned to a specific user.",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "userId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Factorymapping",
+          "GET api/Factorymapping/getFactoriesByUser/{userId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "factorymapping_get_factories_by_user",
+        "description": "Retrieve list of factories assigned to a specific user.",
+        "http_method": "GET",
+        "endpoint": "api/Factorymapping/getFactoriesByUser/{userId}",
+        "parameters": {
+          "userId": {
+            "type": "int",
+            "required": true,
+            "description": "user Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    }
+  ]
+}

@@ -1,0 +1,208 @@
+{
+  "controller": "IncentiveReportController",
+  "file": "Controllers/IncentiveReportController.cs",
+  "module": "Reporting",
+  "base_route": "api/IncentiveReport",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles incentive report: get all",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "rpt/incentive-reports/incentive-report",
+        "module_code": "rpt",
+        "section": "incentive-reports",
+        "sub_section": "incentive-report",
+        "frontend_routes": [
+          "/rpt/incentive-reports/incentive-report"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "IncentiveReport"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "incentive_report_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/IncentiveReport",
+      "business_purpose": "Retrieve all incentive report records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate_str",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate_str",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "quarter_id",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "100"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/incentive-reports/incentive-report:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all incentive report records",
+      "detailed_description": "Retrieve all incentive report records. It validates the request, then calls ICommon.getUserByToken, IIncentiveReport.GetFinancialQuartersById, IIncentiveReport.GetAllFinancialQuartersAsync. Data access uses stored procedure(s): GetIncentiveReportData. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid quarter ID [when quarter == null]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: (no message) [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all incentive report records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveReport"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_report_get_all",
+        "description": "Retrieve all incentive report records",
+        "http_method": "GET",
+        "endpoint": "api/IncentiveReport",
+        "parameters": {
+          "fromdate_str": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate str (query)"
+          },
+          "todate_str": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate str (query)"
+          },
+          "quarter_id": {
+            "type": "int",
+            "required": false,
+            "description": "quarter id (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveReportController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/IncentiveReport_repo.cs",
+          "Interfaces/IIncentiveReport.cs"
+        ]
+      },
+      "module": "Reporting",
+      "business_logic": {
+        "operation_summary": "Retrieve all incentive report records — validates the request, calls ICommon.getUserByToken, IIncentiveReport.GetFinancialQuartersById, IIncentiveReport.GetAllFinancialQuartersAsync",
+        "preconditions": "Valid Bearer JWT; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Invalid quarter ID",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIncentiveReport.GetFinancialQuartersById",
+          "IIncentiveReport.GetAllFinancialQuartersAsync",
+          "IIncentiveReport.GetIncentiveReports"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IncentiveReport_repo (Repositories/IncentiveReport_repo.cs) via IIncentiveReport"
+        ],
+        "stored_procedures": [
+          "GetIncentiveReportData"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": null,
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid quarter ID",
+            "when": "quarter == null"
+          }
+        ]
+      }
+    }
+  ]
+}

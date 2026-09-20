@@ -1,0 +1,1209 @@
+{
+  "controller": "UsersController",
+  "file": "Controllers/UsersController.cs",
+  "module": "User and Access Management",
+  "base_route": "api/Users",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages users records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/user-settings/users",
+        "module_code": "settings",
+        "section": "user-settings",
+        "sub_section": "users",
+        "frontend_routes": [
+          "/settings/user-settings/users",
+          "/settings/user-settings/users/create-users",
+          "/settings/user-settings/users/edit-users/:id"
+        ],
+        "menu_route_confirmed": true,
+        "display_names": {
+          "module": "Settings",
+          "section": "User Settings",
+          "sub_section": "Users"
+        }
+      }
+    ],
+    "section_configuration_keys": [
+      "users"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Settings",
+        "section": "User Settings",
+        "sub_section": "Users"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "users_get_all_users",
+      "name": "Get All Users",
+      "action_method": "GetAllUsers",
+      "http_method": "GET",
+      "route": "api/Users",
+      "business_purpose": "Retrieve all users",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/user-settings/users:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all users",
+      "detailed_description": "Retrieve all users. It calls IUsers.GetUsersData, IUsers.GetUsersActions, ICommon.GetPagination. Data access uses stored procedure(s): GetUsers. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all users",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Users",
+          "GET api/Users/{id}",
+          "GET api/Users/getInternalDepartments"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "users_get_all_users",
+        "description": "Retrieve all users",
+        "http_method": "GET",
+        "endpoint": "api/Users",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/UsersController.cs",
+        "action_method": "GetAllUsers",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/Users_repo.cs",
+          "Interfaces/IUsers.cs",
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "User and Access Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all users — calls IUsers.GetUsersData, IUsers.GetUsersActions, ICommon.GetPagination",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IUsers.GetUsersData",
+          "IUsers.GetUsersActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Users_repo (Repositories/Users_repo.cs) via IUsers",
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [
+          "GetUsers"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "users_get_user_by_id",
+      "name": "Get User By Id",
+      "action_method": "GetUserById",
+      "http_method": "GET",
+      "route": "api/Users/{id}",
+      "business_purpose": "Retrieve user by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/user-settings/users:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve user by ID",
+      "detailed_description": "Retrieve user by ID. It validates the request, then calls ICommon.getUserByToken, IUsers.GetUserById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid scheduler ID is required [when id <= 0]",
+        "not_found": "404: User not found [when user == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve user by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Users",
+          "GET api/Users/{id}",
+          "GET api/Users/getInternalDepartments"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "users_get_user_by_id",
+        "description": "Retrieve user by ID",
+        "http_method": "GET",
+        "endpoint": "api/Users/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/UsersController.cs",
+        "action_method": "GetUserById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Users_repo.cs",
+          "Interfaces/IUsers.cs"
+        ]
+      },
+      "module": "User and Access Management",
+      "business_logic": {
+        "operation_summary": "Retrieve user by ID — validates the request, calls ICommon.getUserByToken, IUsers.GetUserById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid scheduler ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IUsers.GetUserById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Users_repo (Repositories/Users_repo.cs) via IUsers"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid scheduler ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "User not found",
+            "when": "user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "users_create_user",
+      "name": "Create User",
+      "action_method": "CreateUser",
+      "http_method": "POST",
+      "route": "api/Users",
+      "business_purpose": "Create user",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateUserRequest (inline)",
+        "properties": [
+          {
+            "name": "userid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "userroleid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "username",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "password",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "fullname",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Email",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "PhoneNumber",
+            "type": "long",
+            "required": false
+          },
+          {
+            "name": "Address",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "DateOfBirth",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "internal_department",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "role_level",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Designation",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "BaseLocation",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "VehicleType",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "FuelType",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Grade",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; a duplicate check exists so repeating usually fails with a conflict/validation message"
+      },
+      "required_permission": "settings/user-settings/users:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create user",
+      "detailed_description": "Create user. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IUsers.GetUserRoleById, IUsers.IsUsernameDuplicateAsync, then writes an audit log entry. Persists changes to: Users: INSERT, AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; Valid user role ID is required. [when request.userroleid <= 0]; Username is required. [when string.IsNullOrWhiteSpace(request.username)]; Password is required. [when string.IsNullOrWhiteSpace(request.password)]; Full name is required. [when string.IsNullOrWhiteSpace(request.fullname)]; Invalid internal department. [when department == null]; (+1 more)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "Username already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create user",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateUserRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Users",
+          "GET api/Users/getInternalDepartments"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "users_create_user",
+        "description": "Create user",
+        "http_method": "POST",
+        "endpoint": "api/Users",
+        "parameters": {
+          "userid": {
+            "type": "int",
+            "required": false,
+            "description": "userid (body)"
+          },
+          "userroleid": {
+            "type": "int",
+            "required": false,
+            "description": "userroleid (body)"
+          },
+          "username": {
+            "type": "string",
+            "required": false,
+            "description": "username (body)"
+          },
+          "password": {
+            "type": "string",
+            "required": false,
+            "description": "password (body)"
+          },
+          "fullname": {
+            "type": "string",
+            "required": false,
+            "description": "fullname (body)"
+          },
+          "Email": {
+            "type": "string",
+            "required": false,
+            "description": "Email (body)"
+          },
+          "PhoneNumber": {
+            "type": "long",
+            "required": false,
+            "description": "Phone Number (body)"
+          },
+          "Address": {
+            "type": "string",
+            "required": false,
+            "description": "Address (body)"
+          },
+          "DateOfBirth": {
+            "type": "datetime",
+            "required": false,
+            "description": "Date Of Birth (body)"
+          },
+          "internal_department": {
+            "type": "int",
+            "required": false,
+            "description": "internal department (body)"
+          },
+          "role_level": {
+            "type": "string",
+            "required": false,
+            "description": "role level (body)"
+          },
+          "Designation": {
+            "type": "string",
+            "required": false,
+            "description": "Designation (body)"
+          },
+          "BaseLocation": {
+            "type": "string",
+            "required": false,
+            "description": "Base Location (body)"
+          },
+          "VehicleType": {
+            "type": "string",
+            "required": false,
+            "description": "Vehicle Type (body)"
+          },
+          "FuelType": {
+            "type": "string",
+            "required": false,
+            "description": "Fuel Type (body)"
+          },
+          "Grade": {
+            "type": "string",
+            "required": false,
+            "description": "Grade (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/UsersController.cs",
+        "action_method": "CreateUser",
+        "related_dto_files": [
+          "Controllers/UsersController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Users_repo.cs",
+          "Interfaces/IUsers.cs"
+        ]
+      },
+      "module": "User and Access Management",
+      "business_logic": {
+        "operation_summary": "Create user — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, IUsers.GetUserRoleById, IUsers.IsUsernameDuplicateAsync, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; request body of type CreateUserRequest (inline); passes 8 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Users: INSERT; AuditLog: INSERT",
+        "validations": "ModelState (DTO data-annotation) validation; Invalid data provided.; Valid user role ID is required.; Username is required.; Password is required.; Full name is required.; (+1 more)",
+        "side_effects": "AuditLog CREATE (Settings > User Settings > Users)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IUsers.GetUserRoleById",
+          "IUsers.IsUsernameDuplicateAsync",
+          "IUsers.CreateUserAsync",
+          "ICommon.ToJsonString",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Users_repo (Repositories/Users_repo.cs) via IUsers"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "Valid user role ID is required.",
+            "when": "request.userroleid <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Username is required.",
+            "when": "string.IsNullOrWhiteSpace(request.username)"
+          },
+          {
+            "returns": 400,
+            "message": "Password is required.",
+            "when": "string.IsNullOrWhiteSpace(request.password)"
+          },
+          {
+            "returns": 400,
+            "message": "Full name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.fullname)"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid internal department.",
+            "when": "department == null"
+          },
+          {
+            "returns": 400,
+            "message": "Username already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "users_get_internal_departments",
+      "name": "Get Internal Departments",
+      "action_method": "GetInternalDepartments",
+      "http_method": "GET",
+      "route": "api/Users/getInternalDepartments",
+      "business_purpose": "Retrieve internal departments",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/user-settings/users:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve internal departments",
+      "detailed_description": "Retrieve internal departments. It calls ICommon.getUserByToken, IUsers.GetInternalDepartments. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve internal departments",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Users",
+          "GET api/Users/{id}",
+          "GET api/Users/getInternalDepartments"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "users_get_internal_departments",
+        "description": "Retrieve internal departments",
+        "http_method": "GET",
+        "endpoint": "api/Users/getInternalDepartments",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/UsersController.cs",
+        "action_method": "GetInternalDepartments",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Users_repo.cs",
+          "Interfaces/IUsers.cs"
+        ]
+      },
+      "module": "User and Access Management",
+      "business_logic": {
+        "operation_summary": "Retrieve internal departments — calls ICommon.getUserByToken, IUsers.GetInternalDepartments",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IUsers.GetInternalDepartments"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Users_repo (Repositories/Users_repo.cs) via IUsers"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "users_update_user",
+      "name": "Update User",
+      "action_method": "UpdateUser",
+      "http_method": "PUT",
+      "route": "api/Users/{userId}",
+      "business_purpose": "Update user",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "userId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateUserRequest (inline)",
+        "properties": [
+          {
+            "name": "userid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "userroleid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "username",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "password",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "fullname",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Email",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "PhoneNumber",
+            "type": "long",
+            "required": false
+          },
+          {
+            "name": "Address",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "DateOfBirth",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "internal_department",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "role_level",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Designation",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "BaseLocation",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "VehicleType",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "FuelType",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Grade",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Inactive",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values; each call writes another audit log entry"
+      },
+      "required_permission": "settings/user-settings/users:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update user",
+      "detailed_description": "Update user. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IUsers.GetUserById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: Users: UPDATE, AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid user ID is required. [when userId <= 0]; Valid user role ID is required. [when request.userroleid <= 0]; At least one field (username, password, fullname) must be provided for update. [when string.IsNullOrWhiteSpace(request.username) && string.IsNullOrWhiteSpace(request.password)]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: User not found. [when existingUser == null]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "Username already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update user",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "userId (route)",
+          "request body UpdateUserRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Users/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "users_update_user",
+        "description": "Update user",
+        "http_method": "PUT",
+        "endpoint": "api/Users/{userId}",
+        "parameters": {
+          "userId": {
+            "type": "int",
+            "required": true,
+            "description": "user Id (route)"
+          },
+          "userid": {
+            "type": "int",
+            "required": false,
+            "description": "userid (body)"
+          },
+          "userroleid": {
+            "type": "int",
+            "required": false,
+            "description": "userroleid (body)"
+          },
+          "username": {
+            "type": "string",
+            "required": false,
+            "description": "username (body)"
+          },
+          "password": {
+            "type": "string",
+            "required": false,
+            "description": "password (body)"
+          },
+          "fullname": {
+            "type": "string",
+            "required": false,
+            "description": "fullname (body)"
+          },
+          "Email": {
+            "type": "string",
+            "required": false,
+            "description": "Email (body)"
+          },
+          "PhoneNumber": {
+            "type": "long",
+            "required": false,
+            "description": "Phone Number (body)"
+          },
+          "Address": {
+            "type": "string",
+            "required": false,
+            "description": "Address (body)"
+          },
+          "DateOfBirth": {
+            "type": "datetime",
+            "required": false,
+            "description": "Date Of Birth (body)"
+          },
+          "internal_department": {
+            "type": "int",
+            "required": false,
+            "description": "internal department (body)"
+          },
+          "role_level": {
+            "type": "string",
+            "required": false,
+            "description": "role level (body)"
+          },
+          "Designation": {
+            "type": "string",
+            "required": false,
+            "description": "Designation (body)"
+          },
+          "BaseLocation": {
+            "type": "string",
+            "required": false,
+            "description": "Base Location (body)"
+          },
+          "VehicleType": {
+            "type": "string",
+            "required": false,
+            "description": "Vehicle Type (body)"
+          },
+          "FuelType": {
+            "type": "string",
+            "required": false,
+            "description": "Fuel Type (body)"
+          },
+          "Grade": {
+            "type": "string",
+            "required": false,
+            "description": "Grade (body)"
+          },
+          "Inactive": {
+            "type": "bool",
+            "required": false,
+            "description": "Inactive (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/UsersController.cs",
+        "action_method": "UpdateUser",
+        "related_dto_files": [
+          "Controllers/UsersController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Users_repo.cs",
+          "Interfaces/IUsers.cs"
+        ]
+      },
+      "module": "User and Access Management",
+      "business_logic": {
+        "operation_summary": "Update user — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, IUsers.GetUserById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) userId must reference existing record(s); request body of type UpdateUserRequest (inline); passes 6 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Users: UPDATE; AuditLog: INSERT",
+        "validations": "Valid user ID is required.; Valid user role ID is required.; At least one field (username, password, fullname) must be provided for update.",
+        "side_effects": "AuditLog UPDATE (Settings > User Settings > Users)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IUsers.GetUserById",
+          "ICommon.ToJsonString",
+          "IUsers.IsUsernameDuplicateAsync",
+          "IUsers.UpdateUserAsync",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Users_repo (Repositories/Users_repo.cs) via IUsers"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid user ID is required.",
+            "when": "userId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Valid user role ID is required.",
+            "when": "request.userroleid <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field (username, password, fullname) must be provided for update.",
+            "when": "string.IsNullOrWhiteSpace(request.username) && string.IsNullOrWhiteSpace(request.password) && string.IsNullOrWhiteSpace(request.fullname)"
+          },
+          {
+            "returns": 404,
+            "message": "User not found.",
+            "when": "existingUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Username already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "users_delete_user",
+      "name": "Delete User",
+      "action_method": "DeleteUser",
+      "http_method": "DELETE",
+      "route": "api/Users/{userId}",
+      "business_purpose": "Delete user",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "userId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "settings/user-settings/users:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete user",
+      "detailed_description": "Delete user. It validates the request, then calls ICommon.getUserByToken, IUsers.GetUserById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid user ID is required. [when userId <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Region not found. [when existingUser == null]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete user",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "userId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Users/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "users_delete_user",
+        "description": "Delete user",
+        "http_method": "DELETE",
+        "endpoint": "api/Users/{userId}",
+        "parameters": {
+          "userId": {
+            "type": "int",
+            "required": true,
+            "description": "user Id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/UsersController.cs",
+        "action_method": "DeleteUser",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Users_repo.cs",
+          "Interfaces/IUsers.cs"
+        ]
+      },
+      "module": "User and Access Management",
+      "business_logic": {
+        "operation_summary": "Delete user — validates the request, calls ICommon.getUserByToken, IUsers.GetUserById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) userId must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "soft delete (is_deleted flag); AuditLog: INSERT",
+        "validations": "Valid user ID is required.",
+        "side_effects": "AuditLog DELETE (Settings > User Settings > Users)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IUsers.GetUserById",
+          "ICommon.ToJsonString",
+          "IUsers.DeleteUser",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Users_repo (Repositories/Users_repo.cs) via IUsers"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid user ID is required.",
+            "when": "userId <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Region not found.",
+            "when": "existingUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    }
+  ]
+}

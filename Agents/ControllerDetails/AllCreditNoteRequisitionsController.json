@@ -1,0 +1,1808 @@
+{
+  "controller": "AllCreditNoteRequisitionsController",
+  "file": "Controllers/AllCreditNoteRequisitionsController.cs",
+  "module": "Credit Note Management",
+  "base_route": "api/AllCreditNoteRequisitions",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles all credit note requisitions: get all credit note requisitions, get all credit note requisition by id, credit notes hold, credit notes approval, credit notes reject, get all pending credit note requisitions and 5 more",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "acs/accounts/all-creditnote-requisitions",
+        "module_code": "acs",
+        "section": "accounts",
+        "sub_section": "all-creditnote-requisitions",
+        "frontend_routes": [
+          "/acs/accounts/all-creditnote-requisitions",
+          "/acs/accounts/all-creditnote-requisitions/view-all-creditnote-requisitions/:id"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "also_called_from_menus": [
+      "acs/accounts/all-creditnote-requisitions",
+      "acs/accounts/holding-creditnote-requisitions",
+      "acs/accounts/pending-acknowledgement",
+      "acs/accounts/pending-creditnote-requisitions"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "all_credit_note_requisitions_get_all_credit_note_requisitions",
+      "name": "Get All Credit Note Requisitions",
+      "action_method": "GetAllCreditNoteRequisitions",
+      "http_method": "GET",
+      "route": "api/AllCreditNoteRequisitions",
+      "business_purpose": "Retrieve all credit note requisitions",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "\"this_month\""
+        },
+        {
+          "name": "creditNoteType",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "CreditNotesDetails[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "acs/accounts/all-creditnote-requisitions:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all credit note requisitions",
+      "detailed_description": "Retrieve all credit note requisitions. It calls ICommon.getUserByToken, IAllCreditNoteRequisitions.GetAllCreditNoteRequisitionsData, IAllCreditNoteRequisitions.GetCreditNoteRequisitionActions. Data access uses stored procedure(s): GetAllCreditNoteRequisitions, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all credit note requisitions",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/AllCreditNoteRequisitions",
+          "GET api/AllCreditNoteRequisitions/{id}",
+          "GET api/AllCreditNoteRequisitions/pendingcreditnotereq"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "all_credit_note_requisitions_get_all_credit_note_requisitions",
+        "description": "Retrieve all credit note requisitions",
+        "http_method": "GET",
+        "endpoint": "api/AllCreditNoteRequisitions",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "date range (query)"
+          },
+          "creditNoteType": {
+            "type": "int",
+            "required": false,
+            "description": "credit Note Type (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AllCreditNoteRequisitionsController.cs",
+        "action_method": "GetAllCreditNoteRequisitions",
+        "related_dto_files": [
+          "Models/CreditNotesDetails.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/AllCreditNoteRequisitions_repo.cs",
+          "Interfaces/IAllCreditNoteRequisitions.cs",
+          "Repositories/PendingCreditNoteRequisition_repo.cs",
+          "Interfaces/IPendingCreditNoteRequisition.cs"
+        ]
+      },
+      "module": "Credit Note Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all credit note requisitions — calls ICommon.getUserByToken, IAllCreditNoteRequisitions.GetAllCreditNoteRequisitionsData, IAllCreditNoteRequisitions.GetCreditNoteRequisitionActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAllCreditNoteRequisitions.GetAllCreditNoteRequisitionsData",
+          "IAllCreditNoteRequisitions.GetCreditNoteRequisitionActions",
+          "IPendingCreditNoteRequisition.GetActiveCreditNoteTypesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AllCreditNoteRequisitions_repo (Repositories/AllCreditNoteRequisitions_repo.cs) via IAllCreditNoteRequisitions",
+          "PendingCreditNoteRequisitionRepository (Repositories/PendingCreditNoteRequisition_repo.cs) via IPendingCreditNoteRequisition"
+        ],
+        "stored_procedures": [
+          "GetAllCreditNoteRequisitions",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "all_credit_note_requisitions_get_all_credit_note_requisition_by_id",
+      "name": "Get All Credit Note Requisition By Id",
+      "action_method": "GetAllCreditNoteRequisitionById",
+      "http_method": "GET",
+      "route": "api/AllCreditNoteRequisitions/{id}",
+      "business_purpose": "Retrieve all credit note requisition by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ],
+        "dto_name": "CreditNotesDetails"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "acs/accounts/all-creditnote-requisitions:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all credit note requisition by ID",
+      "detailed_description": "Retrieve all credit note requisition by ID. It calls IAllCreditNoteRequisitions.GetAllCreditNoteRequisitionById, ICommon.GetComplaintFilesById. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Credit Note Requisition not found [when creditNoteRequisition == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all credit note requisition by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/AllCreditNoteRequisitions",
+          "GET api/AllCreditNoteRequisitions/{id}",
+          "GET api/AllCreditNoteRequisitions/pendingcreditnotereq"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "all_credit_note_requisitions_get_all_credit_note_requisition_by_id",
+        "description": "Retrieve all credit note requisition by ID",
+        "http_method": "GET",
+        "endpoint": "api/AllCreditNoteRequisitions/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AllCreditNoteRequisitionsController.cs",
+        "action_method": "GetAllCreditNoteRequisitionById",
+        "related_dto_files": [
+          "Models/CreditNotesDetails.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/AllCreditNoteRequisitions_repo.cs",
+          "Interfaces/IAllCreditNoteRequisitions.cs",
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Credit Note Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all credit note requisition by ID — calls IAllCreditNoteRequisitions.GetAllCreditNoteRequisitionById, ICommon.GetComplaintFilesById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IAllCreditNoteRequisitions.GetAllCreditNoteRequisitionById",
+          "ICommon.GetComplaintFilesById"
+        ],
+        "calls_repositories": [
+          "AllCreditNoteRequisitions_repo (Repositories/AllCreditNoteRequisitions_repo.cs) via IAllCreditNoteRequisitions",
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 404,
+            "message": "Credit Note Requisition not found",
+            "when": "creditNoteRequisition == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "all_credit_note_requisitions_credit_notes_hold_post",
+      "name": "Credit Notes Hold",
+      "action_method": "CreditNotesHold",
+      "http_method": "POST",
+      "route": "api/AllCreditNoteRequisitions/hold",
+      "business_purpose": "Handle credit notes hold",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreditNoteHoldRequest (inline)",
+        "properties": [
+          {
+            "name": "id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_hold",
+            "type": "bool",
+            "required": false
+          },
+          {
+            "name": "hold_reason",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "acs/accounts/all-creditnote-requisitions:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "acs/accounts/pending-acknowledgement",
+        "acs/accounts/pending-creditnote-requisitions",
+        "acs/accounts/holding-creditnote-requisitions"
+      ],
+      "short_description": "Handle credit notes hold",
+      "detailed_description": "Handle credit notes hold. It validates the request, then calls ICommon.getUserByToken, IAllCreditNoteRequisitions.GetAllCreditNoteRequisitionById, IAllCreditNoteRequisitions.SaveChangesAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID required [when request.id <= 0]",
+        "not_found": "404: Credit note not found [when creditNote == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle credit notes hold",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreditNoteHoldRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/AllCreditNoteRequisitions",
+          "GET api/AllCreditNoteRequisitions/pendingcreditnotereq",
+          "GET api/AllCreditNoteRequisitions/holdingcreditnotereq"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "all_credit_note_requisitions_credit_notes_hold",
+        "description": "Handle credit notes hold",
+        "http_method": "POST",
+        "endpoint": "api/AllCreditNoteRequisitions/hold",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": false,
+            "description": "id (body)"
+          },
+          "is_hold": {
+            "type": "bool",
+            "required": false,
+            "description": "is hold (body)"
+          },
+          "hold_reason": {
+            "type": "string",
+            "required": false,
+            "description": "hold reason (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/AllCreditNoteRequisitionsController.cs",
+        "action_method": "CreditNotesHold",
+        "related_dto_files": [
+          "Controllers/AllCreditNoteRequisitionsController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/AllCreditNoteRequisitions_repo.cs",
+          "Interfaces/IAllCreditNoteRequisitions.cs"
+        ]
+      },
+      "module": "Credit Note Management",
+      "business_logic": {
+        "operation_summary": "Handle credit notes hold — validates the request, calls ICommon.getUserByToken, IAllCreditNoteRequisitions.GetAllCreditNoteRequisitionById, IAllCreditNoteRequisitions.SaveChangesAsync",
+        "preconditions": "Valid Bearer JWT; request body of type CreditNoteHoldRequest (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets creditNote.is_hold, creditNote.hold_reason, creditNote.account_operated_by, creditNote.account_operated_date, creditNote.status, creditNote.modified_by and saves changes",
+        "validations": "Valid ID required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAllCreditNoteRequisitions.GetAllCreditNoteRequisitionById",
+          "IAllCreditNoteRequisitions.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AllCreditNoteRequisitions_repo (Repositories/AllCreditNoteRequisitions_repo.cs) via IAllCreditNoteRequisitions"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid ID required",
+            "when": "request.id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Credit note not found",
+            "when": "creditNote == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "all_credit_note_requisitions_credit_notes_approval_post",
+      "name": "Credit Notes Approval",
+      "action_method": "CreditNotesApproval",
+      "http_method": "POST",
+      "route": "api/AllCreditNoteRequisitions/approval",
+      "business_purpose": "Handle credit notes approval",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreditNoteApprovalRequest (inline)",
+        "properties": [
+          {
+            "name": "id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_approved",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "acs/accounts/all-creditnote-requisitions:approve",
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "acs/accounts/pending-acknowledgement",
+        "acs/accounts/pending-creditnote-requisitions",
+        "acs/accounts/holding-creditnote-requisitions"
+      ],
+      "short_description": "Handle credit notes approval",
+      "detailed_description": "Handle credit notes approval. It calls ICommon.getUserByToken, IAllCreditNoteRequisitions.GetAllCreditNoteRequisitionById, IAllCreditNoteRequisitions.SaveChangesAsync. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Credit note not found [when creditNote == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle credit notes approval",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreditNoteApprovalRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/AllCreditNoteRequisitions",
+          "GET api/AllCreditNoteRequisitions/pendingcreditnotereq",
+          "GET api/AllCreditNoteRequisitions/holdingcreditnotereq"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "all_credit_note_requisitions_credit_notes_approval",
+        "description": "Handle credit notes approval",
+        "http_method": "POST",
+        "endpoint": "api/AllCreditNoteRequisitions/approval",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": false,
+            "description": "id (body)"
+          },
+          "is_approved": {
+            "type": "bool",
+            "required": false,
+            "description": "is approved (body)"
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Approves the record and advances its workflow"
+      },
+      "source": {
+        "controller_file": "Controllers/AllCreditNoteRequisitionsController.cs",
+        "action_method": "CreditNotesApproval",
+        "related_dto_files": [
+          "Controllers/AllCreditNoteRequisitionsController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/AllCreditNoteRequisitions_repo.cs",
+          "Interfaces/IAllCreditNoteRequisitions.cs"
+        ]
+      },
+      "module": "Credit Note Management",
+      "business_logic": {
+        "operation_summary": "Handle credit notes approval — calls ICommon.getUserByToken, IAllCreditNoteRequisitions.GetAllCreditNoteRequisitionById, IAllCreditNoteRequisitions.SaveChangesAsync",
+        "preconditions": "Valid Bearer JWT; request body of type CreditNoteApprovalRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets creditNote.is_account_approved, creditNote.is_account_rejected, creditNote.status, creditNote.account_operated_by, creditNote.account_operated_date, creditNote.modified_by and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAllCreditNoteRequisitions.GetAllCreditNoteRequisitionById",
+          "IAllCreditNoteRequisitions.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AllCreditNoteRequisitions_repo (Repositories/AllCreditNoteRequisitions_repo.cs) via IAllCreditNoteRequisitions"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Credit note not found",
+            "when": "creditNote == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "all_credit_note_requisitions_credit_notes_reject_post",
+      "name": "Credit Notes Reject",
+      "action_method": "CreditNotesReject",
+      "http_method": "POST",
+      "route": "api/AllCreditNoteRequisitions/reject",
+      "business_purpose": "Handle credit notes reject",
+      "data_effect": "REJECTION",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreditNoteRejectRequest (inline)",
+        "properties": [
+          {
+            "name": "id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_rejected",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "REJECTION",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "acs/accounts/all-creditnote-requisitions:reject",
+      "permission_flags": [
+        "reject"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "acs/accounts/pending-acknowledgement",
+        "acs/accounts/pending-creditnote-requisitions",
+        "acs/accounts/holding-creditnote-requisitions"
+      ],
+      "short_description": "Handle credit notes reject",
+      "detailed_description": "Handle credit notes reject. It calls ICommon.getUserByToken, IAllCreditNoteRequisitions.GetAllCreditNoteRequisitionById, IAllCreditNoteRequisitions.SaveChangesAsync. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Credit note not found [when creditNote == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle credit notes reject",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreditNoteRejectRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/AllCreditNoteRequisitions",
+          "GET api/AllCreditNoteRequisitions/pendingcreditnotereq",
+          "GET api/AllCreditNoteRequisitions/holdingcreditnotereq"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "all_credit_note_requisitions_credit_notes_reject",
+        "description": "Handle credit notes reject",
+        "http_method": "POST",
+        "endpoint": "api/AllCreditNoteRequisitions/reject",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": false,
+            "description": "id (body)"
+          },
+          "is_rejected": {
+            "type": "bool",
+            "required": false,
+            "description": "is rejected (body)"
+          }
+        },
+        "operation_type": "REJECTION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Rejects the record"
+      },
+      "source": {
+        "controller_file": "Controllers/AllCreditNoteRequisitionsController.cs",
+        "action_method": "CreditNotesReject",
+        "related_dto_files": [
+          "Controllers/AllCreditNoteRequisitionsController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/AllCreditNoteRequisitions_repo.cs",
+          "Interfaces/IAllCreditNoteRequisitions.cs"
+        ]
+      },
+      "module": "Credit Note Management",
+      "business_logic": {
+        "operation_summary": "Handle credit notes reject — calls ICommon.getUserByToken, IAllCreditNoteRequisitions.GetAllCreditNoteRequisitionById, IAllCreditNoteRequisitions.SaveChangesAsync",
+        "preconditions": "Valid Bearer JWT; request body of type CreditNoteRejectRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets creditNote.is_account_rejected, creditNote.is_account_approved, creditNote.account_operated_by, creditNote.status, creditNote.account_operated_date, creditNote.modified_by and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAllCreditNoteRequisitions.GetAllCreditNoteRequisitionById",
+          "IAllCreditNoteRequisitions.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AllCreditNoteRequisitions_repo (Repositories/AllCreditNoteRequisitions_repo.cs) via IAllCreditNoteRequisitions"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Credit note not found",
+            "when": "creditNote == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "all_credit_note_requisitions_get_all_pending_credit_note_requisitions",
+      "name": "Get All Pending Credit Note Requisitions",
+      "action_method": "GetAllPendingCreditNoteRequisitions",
+      "http_method": "GET",
+      "route": "api/AllCreditNoteRequisitions/pendingcreditnotereq",
+      "business_purpose": "Retrieve all pending credit note requisitions",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "category",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "creditnotetype",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "CMS_CreditNotesHeader[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "acs/accounts/all-creditnote-requisitions:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all pending credit note requisitions",
+      "detailed_description": "Retrieve all pending credit note requisitions. It calls ICommon.getUserByToken, IPendingCreditNoteRequisition.GetPendingCreditNoteRequisitionActions, IPendingCreditNoteRequisition.GetCategoriesAsync. Data access uses stored procedure(s): GetSectionActions, GetPagination. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all pending credit note requisitions",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/AllCreditNoteRequisitions",
+          "GET api/AllCreditNoteRequisitions/{id}",
+          "GET api/AllCreditNoteRequisitions/pendingcreditnotereq"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "all_credit_note_requisitions_get_all_pending_credit_note_requisitions",
+        "description": "Retrieve all pending credit note requisitions",
+        "http_method": "GET",
+        "endpoint": "api/AllCreditNoteRequisitions/pendingcreditnotereq",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "category": {
+            "type": "int",
+            "required": false,
+            "description": "category (query)"
+          },
+          "creditnotetype": {
+            "type": "int",
+            "required": false,
+            "description": "creditnotetype (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AllCreditNoteRequisitionsController.cs",
+        "action_method": "GetAllPendingCreditNoteRequisitions",
+        "related_dto_files": [
+          "Models/CMS_CreditNotesHeader.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/PendingCreditNoteRequisition_repo.cs",
+          "Interfaces/IPendingCreditNoteRequisition.cs"
+        ]
+      },
+      "module": "Credit Note Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all pending credit note requisitions — calls ICommon.getUserByToken, IPendingCreditNoteRequisition.GetPendingCreditNoteRequisitionActions, IPendingCreditNoteRequisition.GetCategoriesAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IPendingCreditNoteRequisition.GetPendingCreditNoteRequisitionActions",
+          "IPendingCreditNoteRequisition.GetCategoriesAsync",
+          "IPendingCreditNoteRequisition.GetActiveCreditNoteTypesAsync",
+          "IPendingCreditNoteRequisition.GetPagination"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "PendingCreditNoteRequisitionRepository (Repositories/PendingCreditNoteRequisition_repo.cs) via IPendingCreditNoteRequisition"
+        ],
+        "stored_procedures": [
+          "GetSectionActions",
+          "GetPagination"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "all_credit_note_requisitions_get_all_holding_credit_note_requisitions",
+      "name": "Get All Holding Credit Note Requisitions",
+      "action_method": "GetAllHoldingCreditNoteRequisitions",
+      "http_method": "GET",
+      "route": "api/AllCreditNoteRequisitions/holdingcreditnotereq",
+      "business_purpose": "Retrieve all holding credit note requisitions",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "category",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "creditnotetype",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "CMS_CreditNotesHeader[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "acs/accounts/all-creditnote-requisitions:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all holding credit note requisitions",
+      "detailed_description": "Retrieve all holding credit note requisitions. It calls ICommon.getUserByToken, IHoldingCreditNoteRequisition.GetHoldingCreditNoteRequisitionData, IHoldingCreditNoteRequisition.GetHoldingCreditNoteRequisitionActions. Data access uses stored procedure(s): GetHoldingCreditNoteRequisition, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all holding credit note requisitions",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/AllCreditNoteRequisitions",
+          "GET api/AllCreditNoteRequisitions/{id}",
+          "GET api/AllCreditNoteRequisitions/pendingcreditnotereq"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "all_credit_note_requisitions_get_all_holding_credit_note_requisitions",
+        "description": "Retrieve all holding credit note requisitions",
+        "http_method": "GET",
+        "endpoint": "api/AllCreditNoteRequisitions/holdingcreditnotereq",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "category": {
+            "type": "int",
+            "required": false,
+            "description": "category (query)"
+          },
+          "creditnotetype": {
+            "type": "int",
+            "required": false,
+            "description": "creditnotetype (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AllCreditNoteRequisitionsController.cs",
+        "action_method": "GetAllHoldingCreditNoteRequisitions",
+        "related_dto_files": [
+          "Models/CMS_CreditNotesHeader.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/HoldingCreditnoteRequisition_repo.cs",
+          "Interfaces/IHoldingCreditNoteRequisition.cs"
+        ]
+      },
+      "module": "Credit Note Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all holding credit note requisitions — calls ICommon.getUserByToken, IHoldingCreditNoteRequisition.GetHoldingCreditNoteRequisitionData, IHoldingCreditNoteRequisition.GetHoldingCreditNoteRequisitionActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IHoldingCreditNoteRequisition.GetHoldingCreditNoteRequisitionData",
+          "IHoldingCreditNoteRequisition.GetHoldingCreditNoteRequisitionActions",
+          "IHoldingCreditNoteRequisition.GetCategoriesAsync",
+          "IHoldingCreditNoteRequisition.GetActiveCreditNoteTypesAsync",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "HoldingCreditnoteRequisition_repo (Repositories/HoldingCreditnoteRequisition_repo.cs) via IHoldingCreditNoteRequisition"
+        ],
+        "stored_procedures": [
+          "GetHoldingCreditNoteRequisition",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "all_credit_note_requisitions_credit_notes_approval_post_2",
+      "name": "Credit Notes Approval",
+      "action_method": "CreditNotesApproval",
+      "http_method": "POST",
+      "route": "api/AllCreditNoteRequisitions/pending-approval",
+      "business_purpose": "Handle credit notes approval",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreditNotesApprovalRequest (inline)",
+        "properties": [
+          {
+            "name": "id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_approved",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "acs/accounts/all-creditnote-requisitions:approve",
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Handle credit notes approval",
+      "detailed_description": "Handle credit notes approval. It validates the request, then calls ICommon.getUserByToken, ICMSCreditNotesHeader.GetCMSCreditNotedById, ICMSCreditNotesHeader.SaveChanges. Possible responses: 200, 400, 401, 404.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data received [when request == null]; Valid credit note ID is required [when request.id <= 0]; message built at runtime",
+        "not_found": "404: Credit note not found [when credit_note == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle credit notes approval",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreditNotesApprovalRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/AllCreditNoteRequisitions",
+          "GET api/AllCreditNoteRequisitions/pendingcreditnotereq",
+          "GET api/AllCreditNoteRequisitions/holdingcreditnotereq"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "all_credit_note_requisitions_credit_notes_approval",
+        "description": "Handle credit notes approval",
+        "http_method": "POST",
+        "endpoint": "api/AllCreditNoteRequisitions/pending-approval",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": false,
+            "description": "id (body)"
+          },
+          "is_approved": {
+            "type": "bool",
+            "required": false,
+            "description": "is approved (body)"
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Approves the record and advances its workflow"
+      },
+      "source": {
+        "controller_file": "Controllers/AllCreditNoteRequisitionsController.cs",
+        "action_method": "CreditNotesApproval",
+        "related_dto_files": [
+          "Controllers/PendingCreditNoteRequisitionController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/CreditNotesHeader_repo.cs",
+          "Interfaces/ICMSCreditNotesHeader.cs"
+        ]
+      },
+      "module": "Credit Note Management",
+      "business_logic": {
+        "operation_summary": "Handle credit notes approval — validates the request, calls ICommon.getUserByToken, ICMSCreditNotesHeader.GetCMSCreditNotedById, ICMSCreditNotesHeader.SaveChanges",
+        "preconditions": "Valid Bearer JWT; request body of type CreditNotesApprovalRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets credit_note.is_account_approved, credit_note.is_account_rejected, credit_note.account_operated_by, credit_note.account_operated_date, credit_note.status, credit_note.modified_by and saves changes",
+        "validations": "Invalid data received; Valid credit note ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMSCreditNotesHeader.GetCMSCreditNotedById",
+          "ICMSCreditNotesHeader.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "CreditNotesHeader_repo (Repository/CreditNotesHeader_repo.cs) via ICMSCreditNotesHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid data received",
+            "when": "request == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid credit note ID is required",
+            "when": "request.id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Credit note not found",
+            "when": "credit_note == null"
+          },
+          {
+            "returns": 400,
+            "message": "message built at runtime",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "all_credit_note_requisitions_credit_notes_reject_post_2",
+      "name": "Credit Notes Reject",
+      "action_method": "CreditNotesReject",
+      "http_method": "POST",
+      "route": "api/AllCreditNoteRequisitions/pending-reject",
+      "business_purpose": "Handle credit notes reject",
+      "data_effect": "REJECTION",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreditNotesRejectRequest (inline)",
+        "properties": [
+          {
+            "name": "id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_rejected",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "REJECTION",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "acs/accounts/all-creditnote-requisitions:reject",
+      "permission_flags": [
+        "reject"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Handle credit notes reject",
+      "detailed_description": "Handle credit notes reject. It validates the request, then calls ICommon.getUserByToken, ICMSCreditNotesHeader.GetCMSCreditNotedById, ICMSCreditNotesHeader.SaveChanges. Possible responses: 200, 400, 401, 404.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data received [when request == null]; Valid credit note ID is required [when request.id <= 0]; message built at runtime",
+        "not_found": "404: Credit note not found [when credit_note == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle credit notes reject",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreditNotesRejectRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/AllCreditNoteRequisitions",
+          "GET api/AllCreditNoteRequisitions/pendingcreditnotereq",
+          "GET api/AllCreditNoteRequisitions/holdingcreditnotereq"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "all_credit_note_requisitions_credit_notes_reject",
+        "description": "Handle credit notes reject",
+        "http_method": "POST",
+        "endpoint": "api/AllCreditNoteRequisitions/pending-reject",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": false,
+            "description": "id (body)"
+          },
+          "is_rejected": {
+            "type": "bool",
+            "required": false,
+            "description": "is rejected (body)"
+          }
+        },
+        "operation_type": "REJECTION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Rejects the record"
+      },
+      "source": {
+        "controller_file": "Controllers/AllCreditNoteRequisitionsController.cs",
+        "action_method": "CreditNotesReject",
+        "related_dto_files": [
+          "Controllers/PendingCreditNoteRequisitionController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/CreditNotesHeader_repo.cs",
+          "Interfaces/ICMSCreditNotesHeader.cs"
+        ]
+      },
+      "module": "Credit Note Management",
+      "business_logic": {
+        "operation_summary": "Handle credit notes reject — validates the request, calls ICommon.getUserByToken, ICMSCreditNotesHeader.GetCMSCreditNotedById, ICMSCreditNotesHeader.SaveChanges",
+        "preconditions": "Valid Bearer JWT; request body of type CreditNotesRejectRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets credit_note.is_account_rejected, credit_note.is_account_approved, credit_note.account_operated_by, credit_note.account_operated_date, credit_note.status, credit_note.modified_by and saves changes",
+        "validations": "Invalid data received; Valid credit note ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMSCreditNotesHeader.GetCMSCreditNotedById",
+          "ICMSCreditNotesHeader.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "CreditNotesHeader_repo (Repository/CreditNotesHeader_repo.cs) via ICMSCreditNotesHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid data received",
+            "when": "request == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid credit note ID is required",
+            "when": "request.id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Credit note not found",
+            "when": "credit_note == null"
+          },
+          {
+            "returns": 400,
+            "message": "message built at runtime",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "all_credit_note_requisitions_credit_notes_hold_revoke",
+      "name": "Credit Notes Hold Revoke",
+      "action_method": "CreditNotesHoldRevoke",
+      "http_method": "POST",
+      "route": "api/AllCreditNoteRequisitions/pending-hold-revoke",
+      "business_purpose": "Handle credit notes hold revoke",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreditNotesHoldRevokeRequest (inline)",
+        "properties": [
+          {
+            "name": "id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_hold",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "acs/accounts/all-creditnote-requisitions:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Handle credit notes hold revoke",
+      "detailed_description": "Handle credit notes hold revoke. It validates the request, then calls ICommon.getUserByToken, ICMSCreditNotesHeader.GetCMSCreditNotedById, ICMSCreditNotesHeader.SaveChanges. Possible responses: 200, 400, 401, 404.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data received [when request == null]; Valid credit note ID is required [when request.id <= 0]; message built at runtime",
+        "not_found": "404: Credit note not found [when credit_note == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle credit notes hold revoke",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreditNotesHoldRevokeRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/AllCreditNoteRequisitions",
+          "GET api/AllCreditNoteRequisitions/pendingcreditnotereq",
+          "GET api/AllCreditNoteRequisitions/holdingcreditnotereq"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "all_credit_note_requisitions_credit_notes_hold_revoke",
+        "description": "Handle credit notes hold revoke",
+        "http_method": "POST",
+        "endpoint": "api/AllCreditNoteRequisitions/pending-hold-revoke",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": false,
+            "description": "id (body)"
+          },
+          "is_hold": {
+            "type": "bool",
+            "required": false,
+            "description": "is hold (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/AllCreditNoteRequisitionsController.cs",
+        "action_method": "CreditNotesHoldRevoke",
+        "related_dto_files": [
+          "Controllers/AllCreditNoteRequisitionsController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/CreditNotesHeader_repo.cs",
+          "Interfaces/ICMSCreditNotesHeader.cs"
+        ]
+      },
+      "module": "Credit Note Management",
+      "business_logic": {
+        "operation_summary": "Handle credit notes hold revoke — validates the request, calls ICommon.getUserByToken, ICMSCreditNotesHeader.GetCMSCreditNotedById, ICMSCreditNotesHeader.SaveChanges",
+        "preconditions": "Valid Bearer JWT; request body of type CreditNotesHoldRevokeRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets credit_note.is_hold, credit_note.account_operated_by, credit_note.account_operated_date, credit_note.status, credit_note.modified_by, credit_note.modified_date and saves changes",
+        "validations": "Invalid data received; Valid credit note ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMSCreditNotesHeader.GetCMSCreditNotedById",
+          "ICMSCreditNotesHeader.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "CreditNotesHeader_repo (Repository/CreditNotesHeader_repo.cs) via ICMSCreditNotesHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid data received",
+            "when": "request == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid credit note ID is required",
+            "when": "request.id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Credit note not found",
+            "when": "credit_note == null"
+          },
+          {
+            "returns": 400,
+            "message": "message built at runtime",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "all_credit_note_requisitions_credit_notes_hold_post_2",
+      "name": "Credit Notes Hold",
+      "action_method": "CreditNotesHold",
+      "http_method": "POST",
+      "route": "api/AllCreditNoteRequisitions/pending-hold",
+      "business_purpose": "Handle credit notes hold",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreditNotesHoldRequest (inline)",
+        "properties": [
+          {
+            "name": "id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_hold",
+            "type": "bool",
+            "required": false
+          },
+          {
+            "name": "hold_reason",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "acs/accounts/all-creditnote-requisitions:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Handle credit notes hold",
+      "detailed_description": "Handle credit notes hold. It validates the request, then calls ICommon.getUserByToken, ICMSCreditNotesHeader.GetCMSCreditNotedById, ICMSCreditNotesHeader.SaveChanges. Possible responses: 200, 400, 401, 404.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data received [when request == null]; Valid credit note ID is required [when request.id <= 0]; Hold reason is required when holding a CN. [when string.IsNullOrWhiteSpace(request.hold_reason)]; message built at runtime",
+        "not_found": "404: Credit note not found [when credit_note == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle credit notes hold",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreditNotesHoldRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/AllCreditNoteRequisitions",
+          "GET api/AllCreditNoteRequisitions/pendingcreditnotereq",
+          "GET api/AllCreditNoteRequisitions/holdingcreditnotereq"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "all_credit_note_requisitions_credit_notes_hold",
+        "description": "Handle credit notes hold",
+        "http_method": "POST",
+        "endpoint": "api/AllCreditNoteRequisitions/pending-hold",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": false,
+            "description": "id (body)"
+          },
+          "is_hold": {
+            "type": "bool",
+            "required": false,
+            "description": "is hold (body)"
+          },
+          "hold_reason": {
+            "type": "string",
+            "required": false,
+            "description": "hold reason (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/AllCreditNoteRequisitionsController.cs",
+        "action_method": "CreditNotesHold",
+        "related_dto_files": [
+          "Controllers/PendingCreditNoteRequisitionController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/CreditNotesHeader_repo.cs",
+          "Interfaces/ICMSCreditNotesHeader.cs"
+        ]
+      },
+      "module": "Credit Note Management",
+      "business_logic": {
+        "operation_summary": "Handle credit notes hold — validates the request, calls ICommon.getUserByToken, ICMSCreditNotesHeader.GetCMSCreditNotedById, ICMSCreditNotesHeader.SaveChanges",
+        "preconditions": "Valid Bearer JWT; request body of type CreditNotesHoldRequest (inline); passes 5 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets credit_note.is_hold, credit_note.hold_reason, credit_note.account_operated_by, credit_note.account_operated_date, credit_note.status, credit_note.modified_by and saves changes",
+        "validations": "Invalid data received; Valid credit note ID is required; Hold reason is required when holding a CN.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMSCreditNotesHeader.GetCMSCreditNotedById",
+          "ICMSCreditNotesHeader.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "CreditNotesHeader_repo (Repository/CreditNotesHeader_repo.cs) via ICMSCreditNotesHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid data received",
+            "when": "request == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid credit note ID is required",
+            "when": "request.id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Credit note not found",
+            "when": "credit_note == null"
+          },
+          {
+            "returns": 400,
+            "message": "Hold reason is required when holding a CN.",
+            "when": "string.IsNullOrWhiteSpace(request.hold_reason)"
+          },
+          {
+            "returns": 400,
+            "message": "message built at runtime",
+            "when": null
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,828 @@
+{
+  "controller": "SupplierController",
+  "file": "Controllers/SupplierController.cs",
+  "module": "Master Data - Product",
+  "base_route": "api/Supplier",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages supplier records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/factory-settings/supplier",
+        "module_code": "settings",
+        "section": "factory-settings",
+        "sub_section": "supplier",
+        "frontend_routes": [
+          "/settings/factory-settings/supplier"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "Supplier"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "supplier_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/Supplier",
+      "business_purpose": "Retrieve all supplier records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/factory-settings/supplier:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all supplier records",
+      "detailed_description": "Retrieve all supplier records. It calls ICommon.getUserByToken, ISupplier.GetSupplierData, ISupplier.GetSupplierActions. Data access uses stored procedure(s): GetSupplier, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all supplier records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Supplier",
+          "GET api/Supplier/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "supplier_get_all",
+        "description": "Retrieve all supplier records",
+        "http_method": "GET",
+        "endpoint": "api/Supplier",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SupplierController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Supplier_repo.cs",
+          "Interfaces/ISupplier.cs"
+        ]
+      },
+      "module": "Master Data - Product",
+      "business_logic": {
+        "operation_summary": "Retrieve all supplier records — calls ICommon.getUserByToken, ISupplier.GetSupplierData, ISupplier.GetSupplierActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISupplier.GetSupplierData",
+          "ISupplier.GetSupplierActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Supplier_repo (Repositories/Supplier_repo.cs) via ISupplier"
+        ],
+        "stored_procedures": [
+          "GetSupplier",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "supplier_get_supplier_by_id",
+      "name": "Get Supplier By Id",
+      "action_method": "GetSupplierById",
+      "http_method": "GET",
+      "route": "api/Supplier/{id}",
+      "business_purpose": "Retrieve supplier by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/factory-settings/supplier:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve supplier by ID",
+      "detailed_description": "Retrieve supplier by ID. It validates the request, then calls ICommon.getUserByToken, ISupplier.GetSupplierById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid supplier ID is required [when id <= 0]",
+        "not_found": "404: Supplier not found [when supplier == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve supplier by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Supplier",
+          "GET api/Supplier/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "supplier_get_supplier_by_id",
+        "description": "Retrieve supplier by ID",
+        "http_method": "GET",
+        "endpoint": "api/Supplier/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SupplierController.cs",
+        "action_method": "GetSupplierById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Supplier_repo.cs",
+          "Interfaces/ISupplier.cs"
+        ]
+      },
+      "module": "Master Data - Product",
+      "business_logic": {
+        "operation_summary": "Retrieve supplier by ID — validates the request, calls ICommon.getUserByToken, ISupplier.GetSupplierById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid supplier ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISupplier.GetSupplierById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Supplier_repo (Repositories/Supplier_repo.cs) via ISupplier"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid supplier ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Supplier not found",
+            "when": "supplier == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "supplier_create_supplier",
+      "name": "Create Supplier",
+      "action_method": "CreateSupplier",
+      "http_method": "POST",
+      "route": "api/Supplier/create",
+      "business_purpose": "Create supplier",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateSupplierDto (inline)",
+        "properties": [
+          {
+            "name": "SupplierName",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Address",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Phone",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "GST",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "AreaId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "RegionId",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; a duplicate check exists so repeating usually fails with a conflict/validation message"
+      },
+      "required_permission": "settings/factory-settings/supplier:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Create supplier",
+      "detailed_description": "Create supplier. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, ISupplier.GetAreaByIdAsync, ISupplier.GetRegionByIdAsync. Persists changes to: Supplier: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Supplier name is required. [when string.IsNullOrWhiteSpace(request.SupplierName)]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "Duplicate supplier found. [when duplicateCheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create supplier",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateSupplierDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Supplier"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "supplier_create_supplier",
+        "description": "Create supplier",
+        "http_method": "POST",
+        "endpoint": "api/Supplier/create",
+        "parameters": {
+          "SupplierName": {
+            "type": "string",
+            "required": false,
+            "description": "Supplier Name (body)"
+          },
+          "Address": {
+            "type": "string",
+            "required": false,
+            "description": "Address (body)"
+          },
+          "Phone": {
+            "type": "string",
+            "required": false,
+            "description": "Phone (body)"
+          },
+          "GST": {
+            "type": "string",
+            "required": false,
+            "description": "GST (body)"
+          },
+          "AreaId": {
+            "type": "int",
+            "required": false,
+            "description": "Area Id (body)"
+          },
+          "RegionId": {
+            "type": "int",
+            "required": false,
+            "description": "Region Id (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/SupplierController.cs",
+        "action_method": "CreateSupplier",
+        "related_dto_files": [
+          "Controllers/SupplierController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Supplier_repo.cs",
+          "Interfaces/ISupplier.cs"
+        ]
+      },
+      "module": "Master Data - Product",
+      "business_logic": {
+        "operation_summary": "Create supplier — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, ISupplier.GetAreaByIdAsync, ISupplier.GetRegionByIdAsync",
+        "preconditions": "Valid Bearer JWT; request body of type CreateSupplierDto (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Supplier: INSERT",
+        "validations": "Supplier name is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISupplier.GetAreaByIdAsync",
+          "ISupplier.GetRegionByIdAsync",
+          "ISupplier.IsSupplierDuplicateAsync",
+          "ISupplier.CreateSupplierAsync",
+          "ISupplier.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Supplier_repo (Repositories/Supplier_repo.cs) via ISupplier"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Supplier name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.SupplierName)"
+          },
+          {
+            "returns": 400,
+            "message": "Duplicate supplier found.",
+            "when": "duplicateCheck"
+          }
+        ]
+      }
+    },
+    {
+      "id": "supplier_delete_supplier",
+      "name": "Delete Supplier",
+      "action_method": "DeleteSupplier",
+      "http_method": "DELETE",
+      "route": "api/Supplier/{id}",
+      "business_purpose": "Delete supplier",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "settings/factory-settings/supplier:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete supplier",
+      "detailed_description": "Delete supplier. It validates the request, then calls ICommon.getUserByToken, ISupplier.DeleteSupplier. Persists changes to: Supplier: UPDATE, soft delete (is_deleted flag). Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid supplier ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete supplier",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Supplier/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "supplier_delete_supplier",
+        "description": "Delete supplier",
+        "http_method": "DELETE",
+        "endpoint": "api/Supplier/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/SupplierController.cs",
+        "action_method": "DeleteSupplier",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Supplier_repo.cs",
+          "Interfaces/ISupplier.cs"
+        ]
+      },
+      "module": "Master Data - Product",
+      "business_logic": {
+        "operation_summary": "Delete supplier — validates the request, calls ICommon.getUserByToken, ISupplier.DeleteSupplier",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Supplier: UPDATE; soft delete (is_deleted flag)",
+        "validations": "Valid supplier ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISupplier.DeleteSupplier"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Supplier_repo (Repositories/Supplier_repo.cs) via ISupplier"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid supplier ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "supplier_update_supplier",
+      "name": "Update Supplier",
+      "action_method": "UpdateSupplier",
+      "http_method": "PUT",
+      "route": "api/Supplier/{supplierId}",
+      "business_purpose": "Update supplier",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "supplierId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateSupplierDto (inline)",
+        "properties": [
+          {
+            "name": "SupplierName",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Address",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Phone",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "GST",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "AreaId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "RegionId",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "settings/factory-settings/supplier:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update supplier",
+      "detailed_description": "Update supplier. It validates the request, then calls ICommon.getUserByToken, ISupplier.UpdateSupplierAsync. Persists changes to: Supplier: UPDATE. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid supplier ID is required. [when supplierId <= 0]; At least one field must be provided for update. [when string.IsNullOrWhiteSpace(request.SupplierName) && string.IsNullOrWhiteSpace(request.Addre]; message returned by the called service/repository (result.Message) [when !result.Success]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update supplier",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "supplierId (route)",
+          "request body UpdateSupplierDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Supplier/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "supplier_update_supplier",
+        "description": "Update supplier",
+        "http_method": "PUT",
+        "endpoint": "api/Supplier/{supplierId}",
+        "parameters": {
+          "supplierId": {
+            "type": "int",
+            "required": true,
+            "description": "supplier Id (route)"
+          },
+          "SupplierName": {
+            "type": "string",
+            "required": false,
+            "description": "Supplier Name (body)"
+          },
+          "Address": {
+            "type": "string",
+            "required": false,
+            "description": "Address (body)"
+          },
+          "Phone": {
+            "type": "string",
+            "required": false,
+            "description": "Phone (body)"
+          },
+          "GST": {
+            "type": "string",
+            "required": false,
+            "description": "GST (body)"
+          },
+          "AreaId": {
+            "type": "int",
+            "required": false,
+            "description": "Area Id (body)"
+          },
+          "RegionId": {
+            "type": "int",
+            "required": false,
+            "description": "Region Id (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/SupplierController.cs",
+        "action_method": "UpdateSupplier",
+        "related_dto_files": [
+          "Controllers/SupplierController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Supplier_repo.cs",
+          "Interfaces/ISupplier.cs"
+        ]
+      },
+      "module": "Master Data - Product",
+      "business_logic": {
+        "operation_summary": "Update supplier — validates the request, calls ICommon.getUserByToken, ISupplier.UpdateSupplierAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) supplierId; request body of type UpdateSupplierDto (inline); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Supplier: UPDATE",
+        "validations": "Valid supplier ID is required.; At least one field must be provided for update.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISupplier.UpdateSupplierAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Supplier_repo (Repositories/Supplier_repo.cs) via ISupplier"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid supplier ID is required.",
+            "when": "supplierId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field must be provided for update.",
+            "when": "string.IsNullOrWhiteSpace(request.SupplierName) && string.IsNullOrWhiteSpace(request.Address) && string.IsNullOrWhiteSpace(request.Phone) && string.IsNullOrWhiteSpace(request.GST) && request.AreaId == null && request.RegionId == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": "!result.Success"
+          }
+        ]
+      }
+    }
+  ]
+}

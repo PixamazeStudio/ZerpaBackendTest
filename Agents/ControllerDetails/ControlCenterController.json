@@ -1,0 +1,1008 @@
+{
+  "controller": "ControlCenterController",
+  "file": "Controllers/ControlCenterController.cs",
+  "module": "Indent Management - Control Center",
+  "base_route": "api/ControlCenter",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages indent approval workflows including credit approval, director approval, and VP approval. Handles factory and scenario application with discount calculations. Provides dashboard view with indent status cards.",
+  "notes": null,
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "ims/control-center/all-indents",
+        "module_code": "ims",
+        "section": "control-center",
+        "sub_section": "all-indents",
+        "frontend_routes": [
+          "/ims/control-center/all-indents",
+          "/ims/control-center/all-indents/view-All-Indents/:indentId"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "ims/control-center/pending-indents",
+        "module_code": "ims",
+        "section": "control-center",
+        "sub_section": "pending-indents",
+        "frontend_routes": [
+          "/ims/control-center/pending-indents/view-pending-indents/:indentId"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "ims/control-center/rejected-indents",
+        "module_code": "ims",
+        "section": "control-center",
+        "sub_section": "rejected-indents",
+        "frontend_routes": [
+          "/ims/control-center/rejected-indents/view-rejected-indents-control-center/:indentId"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "cc_get_all_control_centers",
+      "name": "Get All Control Centers",
+      "action_method": "GetAllControlCenters",
+      "http_method": "GET",
+      "route": "api/ControlCenter",
+      "module": "Indent Management - Control Center",
+      "business_purpose": "Retrieve paginated list of indents with filter options (region, branch, area, category, status)",
+      "short_description": "Fetches all control center indent records with pagination, filtering, and summary cards",
+      "detailed_description": "Extracts JWT token from Authorization header, validates current user, applies filters based on region/branch/area/category/status, builds filter context, scopes results to user's assigned regions if no explicit region selected, retrieves control center data with pagination, fetches action definitions and control center cards (Total Indents, Approved, Pending, Rejected, On Hold, Hold Dispatch)",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ],
+        "roles_or_policy": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_claims": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_headers": [
+          "Authorization: Bearer <token>"
+        ],
+        "notes": "Token required and validated via _common.getUserByToken()"
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": null,
+          "description": "Search text for indent filtering",
+          "example": "IND001"
+        },
+        {
+          "name": "regionId",
+          "type": "int",
+          "required": false,
+          "default": null,
+          "description": "Region filter ID",
+          "example": 5
+        },
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": false,
+          "default": null,
+          "description": "Branch filter ID",
+          "example": 2
+        },
+        {
+          "name": "areaId",
+          "type": "int",
+          "required": false,
+          "default": null,
+          "description": "Area filter ID",
+          "example": 3
+        },
+        {
+          "name": "categoryId",
+          "type": "int",
+          "required": false,
+          "default": null,
+          "description": "Category filter ID",
+          "example": 1
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "required": false,
+          "default": null,
+          "description": "Indent status filter",
+          "example": "waiting_branch"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10",
+          "description": "Records per page",
+          "example": 20
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1",
+          "description": "Page number for pagination",
+          "example": 2
+        }
+      ],
+      "request_body": null,
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ],
+        "dto_name": "Anonymous object",
+        "properties": [
+          {
+            "name": "cards",
+            "type": "array",
+            "nullable": false,
+            "description": "Summary cards with counts"
+          },
+          {
+            "name": "data",
+            "type": "array",
+            "nullable": false,
+            "description": "Paginated indent list"
+          },
+          {
+            "name": "actions",
+            "type": "object",
+            "nullable": false,
+            "description": "Available actions"
+          },
+          {
+            "name": "pagination",
+            "type": "object",
+            "nullable": false,
+            "description": "Pagination info"
+          },
+          {
+            "name": "filters",
+            "type": "array",
+            "nullable": false,
+            "description": "Available filters"
+          }
+        ],
+        "success_example": {
+          "cards": [
+            {
+              "key": "total_indents",
+              "label": "Total Indents",
+              "count": 45
+            }
+          ],
+          "data": [],
+          "actions": {},
+          "pagination": {},
+          "filters": []
+        },
+        "error_example": {
+          "success": false,
+          "message": "Invalid token or user not found"
+        },
+        "notes": null
+      },
+      "business_logic": {
+        "operation_summary": "Retrieves filtered list of indents with cards showing summary statistics",
+        "preconditions": "Valid JWT token, current user must exist",
+        "state_changes": "No state changes - read only",
+        "validations": "page_no >= 1, limit >= 1",
+        "side_effects": "None",
+        "calls_services": [
+          "IControlCenter",
+          "ICommon",
+          "IIndent"
+        ],
+        "calls_repositories": [
+          "DbTables (UserLocations, Region, Area, Category)"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "INFERRED FROM CODE: Scopes results to user's regions from UserLocations table",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      },
+      "ai_agent_guidance": {
+        "use_when": "Fetch list of indents for dashboard, apply filters, get summary statistics",
+        "do_not_use_when": "Retrieving single indent details - use GetControlCenterById instead",
+        "preconditions_needed": [
+          "Valid Bearer token in Authorization header"
+        ],
+        "follow_up_apis": [
+          "GetControlCenterById",
+          "ApplyFactoryAndScenario",
+          "IndentCreditApproval"
+        ]
+      },
+      "error_handling": {
+        "validation_errors": "page_no < 1 or limit < 1 automatically adjusted",
+        "not_found": "Unauthorized if token invalid or user not found",
+        "unauthorized": "Returns 401 with message 'Invalid token or user not found'",
+        "business_rule_errors": "None documented",
+        "exceptions": "Generic 500 error returns ex.Message"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Pure read operation - fully idempotent"
+      },
+      "llm_tool_definition": {
+        "name": "get_control_centers_list",
+        "description": "Fetch filtered list of indents with status, pagination, and summary cards",
+        "http_method": "GET",
+        "endpoint": "api/ControlCenter",
+        "parameters": {
+          "regionId": {
+            "type": "integer",
+            "required": false
+          },
+          "branchId": {
+            "type": "integer",
+            "required": false
+          },
+          "status": {
+            "type": "string",
+            "required": false
+          },
+          "page_no": {
+            "type": "integer",
+            "required": false
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": null
+      },
+      "source": {
+        "controller_file": "Controllers/ControlCenterController.cs",
+        "action_method": "GetAllControlCenters",
+        "related_dto_files": [
+          "ZerpaAiTrojanApis.DTOs.Request (inline)"
+        ],
+        "related_service_files": [
+          "Services/IControlCenter.cs",
+          "Services/ICommon.cs",
+          "Services/IIndent.cs"
+        ],
+        "related_repository_files": [
+          "DbClasses/DbTables.cs"
+        ]
+      },
+      "required_permission": "ims/control-center/all-indents:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match"
+    },
+    {
+      "id": "cc_get_by_id",
+      "name": "Get Control Center By ID",
+      "action_method": "GetControlCenterById",
+      "http_method": "GET",
+      "route": "api/ControlCenter/{id}",
+      "module": "Indent Management - Control Center",
+      "business_purpose": "Retrieve detailed indent information by ID with full structure including products, items, and approval status",
+      "short_description": "Fetches complete indent details including account, products, items, and file attachments",
+      "detailed_description": "Validates JWT token and user, checks indent ID validity, retrieves indent header with mapper, maps to IndentDto and DealerDto, calculates isApplied flag based on factory/scenario/discount presence, fetches associated files (IMSInvoice and IndentsInitialFile), retrieves control center actions and director access flags, returns comprehensive response with AccountDetails, IndentDetails, ProductwiseDetails, ItemDetails",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ],
+        "roles_or_policy": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_claims": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_headers": [
+          "Authorization: Bearer <token>"
+        ],
+        "notes": null
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true,
+          "description": "Indent ID",
+          "example": 123
+        }
+      ],
+      "query_parameters": [],
+      "request_body": null,
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ],
+        "dto_name": "Anonymous object wrapping IndentDto and DealerDto",
+        "properties": [],
+        "success_example": null,
+        "error_example": {
+          "Success": false,
+          "Message": "Indent not found."
+        },
+        "notes": "Returns nested structure with AccountDetails (factory, scenario, discount), IndentDetails (code, status, approval flags), ProductwiseDetails, ItemDetails"
+      },
+      "business_logic": {
+        "operation_summary": "Retrieves full indent record with nested product/item details and approval state",
+        "preconditions": "Indent must exist, user must have valid token",
+        "state_changes": "No state changes",
+        "validations": "id > 0",
+        "side_effects": "None",
+        "calls_services": [
+          "ICommon",
+          "IIndent"
+        ],
+        "calls_repositories": [
+          "DbTables (Users for file retrieval)"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "INFERRED FROM CODE: Token extracted and user validated, but specific authorization checks not visible",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid indent ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Indent not found.",
+            "when": "indent == null"
+          }
+        ]
+      },
+      "ai_agent_guidance": {
+        "use_when": "Display indent details page with all product info and approval history",
+        "do_not_use_when": "Bulk fetching multiple indents - use GetAllControlCenters",
+        "preconditions_needed": [
+          "Valid indent ID",
+          "Bearer token"
+        ],
+        "follow_up_apis": [
+          "ApplyFactoryAndScenario",
+          "IndentCreditApproval",
+          "IndentDirectorApproval"
+        ]
+      },
+      "error_handling": {
+        "validation_errors": "id <= 0 returns BadRequest",
+        "not_found": "Indent not found returns 404",
+        "unauthorized": "Invalid token returns 401 'Invalid token or user not found'",
+        "business_rule_errors": "None explicit",
+        "exceptions": "Returns 500 with ex.Message"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Pure read operation"
+      },
+      "llm_tool_definition": {
+        "name": "get_control_center_detail",
+        "description": "Fetch detailed indent information including products, items, and approval status",
+        "http_method": "GET",
+        "endpoint": "api/ControlCenter/{id}",
+        "parameters": {
+          "id": {
+            "type": "integer",
+            "required": true,
+            "description": "Indent ID"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": null
+      },
+      "source": {
+        "controller_file": "Controllers/ControlCenterController.cs",
+        "action_method": "GetControlCenterById",
+        "related_dto_files": [
+          "ZerpaAiTrojanApis.DTOs.Response.IndentDto",
+          "ZerpaAiTrojanApis.DTOs.Response.DealerDto"
+        ],
+        "related_service_files": [
+          "Services/ICommon.cs",
+          "Services/IIndent.cs"
+        ],
+        "related_repository_files": []
+      },
+      "required_permission": "ims/control-center/all-indents:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match"
+    },
+    {
+      "id": "cc_apply_factory_scenario",
+      "name": "Apply Factory And Scenario",
+      "action_method": "ApplyFactoryAndScenario",
+      "http_method": "POST",
+      "route": "api/ControlCenter/apply",
+      "module": "Indent Management - Control Center",
+      "business_purpose": "Apply factory, discount type, and scenario (standard or custom) to indent with discount calculations",
+      "short_description": "Applies factory and discount scenario to indent, supporting both pre-defined and custom scenarios",
+      "detailed_description": "Extracts and validates JWT token, validates request parameters (IndentId, FactoryId, IndentDiscountTypeId), handles custom scenario creation if IsCustomScenario flag true, validates ScenarioId when not custom, calls _indent.ApplyFactoryAndScenarioAsync with all parameters, fetches updated scenario entity with discount details, returns success response with scenario name and custom discount breakdown",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ],
+        "roles_or_policy": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_claims": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_headers": [
+          "Authorization: Bearer <token>"
+        ],
+        "notes": null
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "ApplyFactoryAndScenarioDto",
+        "source_file": "Controllers/ControlCenterController.cs (inline - inferred)",
+        "properties": [
+          {
+            "name": "IndentId",
+            "type": "int",
+            "required": true,
+            "nullable": false,
+            "validation": "> 0",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "ID of indent to update",
+            "example": 5
+          },
+          {
+            "name": "FactoryId",
+            "type": "int",
+            "required": true,
+            "nullable": false,
+            "validation": "> 0",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "Factory ID to apply",
+            "example": 2
+          },
+          {
+            "name": "ScenarioId",
+            "type": "int",
+            "required": false,
+            "nullable": true,
+            "validation": "> 0 if not custom",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "Discount scenario ID",
+            "example": 10
+          },
+          {
+            "name": "IndentDiscountTypeId",
+            "type": "int",
+            "required": true,
+            "nullable": false,
+            "validation": "> 0",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "Indent discount type ID",
+            "example": 3
+          },
+          {
+            "name": "IsCustomScenario",
+            "type": "bool",
+            "required": false,
+            "nullable": true,
+            "validation": "none found",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": false,
+            "description": "Whether using custom scenario",
+            "example": false
+          },
+          {
+            "name": "CustomScenario",
+            "type": "object",
+            "required": false,
+            "nullable": true,
+            "validation": "Required if IsCustomScenario true",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "Custom scenario details (discounts)",
+            "example": {}
+          }
+        ],
+        "example_json": {
+          "IndentId": 5,
+          "FactoryId": 2,
+          "ScenarioId": 10,
+          "IndentDiscountTypeId": 3,
+          "IsCustomScenario": false
+        }
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ],
+        "dto_name": "Anonymous object",
+        "properties": [
+          {
+            "name": "Success",
+            "type": "bool",
+            "nullable": false,
+            "description": "Operation success"
+          },
+          {
+            "name": "Message",
+            "type": "string",
+            "nullable": false,
+            "description": "Result message"
+          },
+          {
+            "name": "IndentId",
+            "type": "int",
+            "nullable": false,
+            "description": "Updated indent ID"
+          },
+          {
+            "name": "Scenario",
+            "type": "object",
+            "nullable": true,
+            "description": "Scenario details with discounts"
+          }
+        ],
+        "success_example": null,
+        "error_example": {
+          "Success": false,
+          "Message": "Valid Factory ID is required."
+        },
+        "notes": "Returns scenario with TradeDiscount, ApdPpdDiscount, TruckLoadDiscount, SpecialDiscount, CashDiscount, AdditionalDiscount for custom scenarios"
+      },
+      "business_logic": {
+        "operation_summary": "Associates factory and discount scenario with indent, optionally creating custom scenario",
+        "preconditions": "Indent must exist, factory must exist, scenario must exist or be creatable",
+        "state_changes": "Updates indent with factory_id, scenario_id, indent_discount_type_id; creates DiscountScenarioHeader row if custom",
+        "validations": "IndentId > 0, FactoryId > 0, IndentDiscountTypeId > 0, CustomScenario required if IsCustomScenario=true, ScenarioId > 0 if not custom",
+        "side_effects": "Creates custom discount scenario if IsCustomScenario flag set",
+        "calls_services": [
+          "ICommon",
+          "IIndent"
+        ],
+        "calls_repositories": [
+          "DbTables (DiscountScenarioHeader)"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Token-based user required",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Indent ID is required.",
+            "when": "request.IndentId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Factory ID is required.",
+            "when": "request.FactoryId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Indent Discount Type ID is required.",
+            "when": "request.IndentDiscountTypeId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Custom scenario details are required.",
+            "when": "request.CustomScenario == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Scenario ID is required.",
+            "when": "request.ScenarioId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": "!result.Success"
+          }
+        ]
+      },
+      "ai_agent_guidance": {
+        "use_when": "User applies factory and discount scenario to indent before approval",
+        "do_not_use_when": "Indent already has factory/scenario applied - use GetControlCenterById to check first",
+        "preconditions_needed": [
+          "Valid indent ID",
+          "Valid factory ID",
+          "Valid scenario ID or custom scenario object"
+        ],
+        "follow_up_apis": [
+          "GetControlCenterById",
+          "IndentCreditApproval"
+        ]
+      },
+      "error_handling": {
+        "validation_errors": "IndentId, FactoryId, IndentDiscountTypeId required and > 0; CustomScenario required if IsCustomScenario true",
+        "not_found": "None explicit",
+        "unauthorized": "Invalid token returns 401",
+        "business_rule_errors": "Factory/scenario application may fail with result.Success = false, returning BadRequest",
+        "exceptions": "Returns 500 'Error while applying factory and scenario: ' + ex.Message"
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Creates custom scenario on each call if IsCustomScenario=true without deduplication check visible"
+      },
+      "llm_tool_definition": {
+        "name": "apply_factory_scenario",
+        "description": "Apply factory and discount scenario to indent with optional custom discount values",
+        "http_method": "POST",
+        "endpoint": "api/ControlCenter/apply",
+        "parameters": {
+          "IndentId": {
+            "type": "integer",
+            "required": true
+          },
+          "FactoryId": {
+            "type": "integer",
+            "required": true
+          },
+          "ScenarioId": {
+            "type": "integer",
+            "required": false
+          },
+          "IndentDiscountTypeId": {
+            "type": "integer",
+            "required": true
+          },
+          "IsCustomScenario": {
+            "type": "boolean",
+            "required": false
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Permanently modifies indent factory and scenario associations"
+      },
+      "source": {
+        "controller_file": "Controllers/ControlCenterController.cs",
+        "action_method": "ApplyFactoryAndScenario",
+        "related_dto_files": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE (ApplyFactoryAndScenarioDto inferred from usage)"
+        ],
+        "related_service_files": [
+          "Services/ICommon.cs",
+          "Services/IIndent.cs"
+        ],
+        "related_repository_files": []
+      },
+      "required_permission": "ims/control-center/all-indents:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "ims/control-center/pending-indents",
+        "ims/control-center/rejected-indents"
+      ]
+    },
+    {
+      "id": "cc_indent_credit_approval",
+      "name": "Indent Credit Approval",
+      "action_method": "IndentCreditApproval",
+      "http_method": "POST",
+      "route": "api/ControlCenter/indent-credit-approval",
+      "module": "Indent Management - Control Center",
+      "business_purpose": "Process indent credit approval/rejection/hold from control center with optional remarks",
+      "short_description": "Sets indent approval status (APPROVE, HOLD, HOLD_DISPATCH) with remarks validation",
+      "detailed_description": "Extracts JWT token, validates current user, validates request (id > 0), retrieves indent header, determines action type (APPROVE, HOLD, HOLD_DISPATCH, or default), validates remarks required for HOLD/HOLD_DISPATCH, updates indent flags (is_credit_approved, is_approved_from_credit, indent_status), sets approval user and date, updates modification fields, persists changes, returns updated indent status",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ],
+        "roles_or_policy": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_claims": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_headers": [
+          "Authorization: Bearer <token>"
+        ],
+        "notes": null
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "IndentCreditApprovalRequest",
+        "source_file": "Controllers/ControlCenterController.cs (inline)",
+        "properties": [
+          {
+            "name": "id",
+            "type": "int",
+            "required": true,
+            "nullable": false,
+            "validation": "> 0",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "Indent ID",
+            "example": 5
+          },
+          {
+            "name": "is_approved",
+            "type": "bool",
+            "required": true,
+            "nullable": false,
+            "validation": "none found",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "Approval flag (legacy)",
+            "example": true
+          },
+          {
+            "name": "approvalAction",
+            "type": "string",
+            "required": false,
+            "nullable": true,
+            "validation": "APPROVE, HOLD, HOLD_DISPATCH",
+            "allowed_values": "APPROVE | HOLD | HOLD_DISPATCH",
+            "default": null,
+            "description": "Action to take",
+            "example": "APPROVE"
+          },
+          {
+            "name": "credit_approve_reason",
+            "type": "string",
+            "required": false,
+            "nullable": true,
+            "validation": "Required if action is HOLD or HOLD_DISPATCH",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "Remarks/reason for action",
+            "example": "Approved pending review"
+          }
+        ],
+        "example_json": {
+          "id": 5,
+          "is_approved": true,
+          "approvalAction": "APPROVE",
+          "credit_approve_reason": "Credit limit verified"
+        }
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ],
+        "dto_name": "Anonymous object",
+        "properties": [
+          {
+            "name": "success",
+            "type": "bool",
+            "nullable": false,
+            "description": "Operation result"
+          },
+          {
+            "name": "message",
+            "type": "string",
+            "nullable": false,
+            "description": "Result message"
+          },
+          {
+            "name": "indent_id",
+            "type": "int",
+            "nullable": false,
+            "description": "Updated indent ID"
+          },
+          {
+            "name": "status",
+            "type": "string",
+            "nullable": false,
+            "description": "New indent status"
+          },
+          {
+            "name": "is_credit_approved",
+            "type": "bool",
+            "nullable": false,
+            "description": "Approval flag"
+          },
+          {
+            "name": "credit_approved_by",
+            "type": "string",
+            "nullable": true,
+            "description": "Approver name"
+          },
+          {
+            "name": "credit_approved_date",
+            "type": "datetime",
+            "nullable": true,
+            "description": "Approval date"
+          },
+          {
+            "name": "remarks",
+            "type": "string",
+            "nullable": true,
+            "description": "Stored reason"
+          }
+        ],
+        "success_example": {
+          "success": true,
+          "message": "",
+          "indent_id": 5,
+          "status": "Approved from Control Center",
+          "is_credit_approved": true
+        },
+        "error_example": {
+          "success": false,
+          "message": "Remarks are mandatory for HOLD and HOLD_DISPATCH."
+        },
+        "notes": null
+      },
+      "business_logic": {
+        "operation_summary": "Updates indent approval status with mandatory remarks for hold actions",
+        "preconditions": "Indent must exist, user must have valid token",
+        "state_changes": "Sets is_credit_approved, is_approved_from_credit, indent_status, credit_approved_by, credit_approved_date, modified_by, modified_date",
+        "validations": "id > 0; remarks required if action HOLD or HOLD_DISPATCH; approvalAction upper-cased for comparison",
+        "side_effects": "None beyond database update",
+        "calls_services": [
+          "ICommon",
+          "IIndent"
+        ],
+        "calls_repositories": [],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "INFERRED FROM CODE: Current user set as credit_approved_by",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid data received",
+            "when": "request == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid indent ID is required",
+            "when": "request.id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Indent not found",
+            "when": "indent == null"
+          },
+          {
+            "returns": 400,
+            "message": "Remarks are mandatory for HOLD and HOLD_DISPATCH.",
+            "when": "string.IsNullOrWhiteSpace(request.credit_approve_reason)"
+          },
+          {
+            "returns": 400,
+            "message": "message built at runtime",
+            "when": null
+          }
+        ]
+      },
+      "ai_agent_guidance": {
+        "use_when": "Control center user approves, holds, or rejects indent at credit stage",
+        "do_not_use_when": "Indent already approved - use GetControlCenterById to check status first",
+        "preconditions_needed": [
+          "Valid indent ID",
+          "Bearer token",
+          "Remarks if action is HOLD/HOLD_DISPATCH"
+        ],
+        "follow_up_apis": [
+          "IndentDirectorApproval",
+          "IndentDirectorApprovalRequest"
+        ]
+      },
+      "error_handling": {
+        "validation_errors": "id <= 0, remarks missing for HOLD/HOLD_DISPATCH",
+        "not_found": "Indent not found returns 404",
+        "unauthorized": "Invalid token returns 401",
+        "business_rule_errors": "UpdateIndentHeaderAsync failure returns 500",
+        "exceptions": "Returns 400 with ex.Message"
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Repeated calls with same approval action will overwrite date/user, creating audit trail"
+      },
+      "llm_tool_definition": {
+        "name": "approve_indent_credit",
+        "description": "Process indent credit approval with optional remarks",
+        "http_method": "POST",
+        "endpoint": "api/ControlCenter/indent-credit-approval",
+        "parameters": {
+          "id": {
+            "type": "integer",
+            "required": true
+          },
+          "approvalAction": {
+            "type": "string",
+            "required": true,
+            "enum": [
+              "APPROVE",
+              "HOLD",
+              "HOLD_DISPATCH"
+            ]
+          },
+          "credit_approve_reason": {
+            "type": "string",
+            "required": false
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Permanently updates indent approval status"
+      },
+      "source": {
+        "controller_file": "Controllers/ControlCenterController.cs",
+        "action_method": "IndentCreditApproval",
+        "related_dto_files": [
+          "Controllers/ControlCenterController.cs (inline: IndentCreditApprovalRequest)"
+        ],
+        "related_service_files": [
+          "Services/ICommon.cs",
+          "Services/IIndent.cs"
+        ],
+        "related_repository_files": []
+      },
+      "required_permission": "ims/control-center/all-indents:approve",
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "ims/control-center/pending-indents",
+        "ims/control-center/rejected-indents"
+      ]
+    }
+  ]
+}

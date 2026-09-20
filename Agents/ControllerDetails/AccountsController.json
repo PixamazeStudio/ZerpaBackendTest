@@ -1,0 +1,2850 @@
+{
+  "controller": "AccountsController",
+  "file": "Controllers/AccountsController.cs",
+  "module": "Account Management",
+  "base_route": "api/Accounts",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles accounts: get all main headers, create account transfer, get account transfer by id, get account transfer view, get account transfer files, get mention users and 14 more",
+  "menu_permission": {
+    "status": "lookup-only",
+    "menu_keys": [],
+    "also_called_from_menus": [
+      "acs/account-transfer",
+      "acs/accounts/all-account-transfers",
+      "acs/accounts/confirmed-account-transfers",
+      "acs/accounts/holding-account-transfers",
+      "acs/accounts/pending-account-transfers",
+      "settings/company-settings/account-transfer-head"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "accounts_get_all_main_headers",
+      "name": "Get All Main Headers",
+      "action_method": "GetAllMainHeaders",
+      "http_method": "GET",
+      "route": "api/Accounts/main-headers",
+      "business_purpose": "Retrieve all main headers",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Retrieve all main headers",
+      "detailed_description": "Retrieve all main headers. It calls IAccounts.GetAllAccountTransferMainHeaders. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all main headers",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Accounts/main-headers",
+          "GET api/Accounts/{id}",
+          "GET api/Accounts/view/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "accounts_get_all_main_headers",
+        "description": "Retrieve all main headers",
+        "http_method": "GET",
+        "endpoint": "api/Accounts/main-headers",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AccountsController.cs",
+        "action_method": "GetAllMainHeaders",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/AccountsRepo.cs",
+          "Interfaces/IAccounts.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all main headers — calls IAccounts.GetAllAccountTransferMainHeaders",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IAccounts.GetAllAccountTransferMainHeaders"
+        ],
+        "calls_repositories": [
+          "AccountsRepo (Repository/AccountsRepo.cs) via IAccounts"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "accounts_create_account_transfer",
+      "name": "Create Account Transfer",
+      "action_method": "CreateAccountTransfer",
+      "http_method": "POST",
+      "route": "api/Accounts",
+      "business_purpose": "Create account transfer",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "AccountTransferDTO",
+        "properties": [
+          {
+            "name": "related_id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "related_section",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "vendor_name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "message",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "creditnote_type_id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "branch_id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "main_head_id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "sub_head_id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "amount",
+            "type": "float",
+            "required": false
+          },
+          {
+            "name": "deductions_amount",
+            "type": "float",
+            "required": false
+          },
+          {
+            "name": "deductions",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "net_amount",
+            "type": "float",
+            "required": false
+          },
+          {
+            "name": "acknowledge_no",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "payment_date",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "files",
+            "type": "List<FileDTO>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Create account transfer",
+      "detailed_description": "Create account transfer. It validates the request, then calls ICommon.getUserByToken, IAccounts.CreateCurrentFinYearCNRCode, IAccounts.GetAccountTransferMainHeaderById. Persists changes to: AccountTransfer: INSERT, ComplaintsFile: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: MainHeadId {dto.main_head_id.Value} does not exist [when mainHead == null]; SubHeadId {dto.sub_head_id.Value} does not exist [when subHead == null]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create account transfer",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body AccountTransferDTO"
+        ],
+        "follow_up_apis": [
+          "GET api/Accounts/main-headers",
+          "GET api/Accounts/search-users",
+          "GET api/Accounts/overview"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "accounts_create_account_transfer",
+        "description": "Create account transfer",
+        "http_method": "POST",
+        "endpoint": "api/Accounts",
+        "parameters": {
+          "related_id": {
+            "type": "int",
+            "required": false,
+            "description": "related id (body)"
+          },
+          "related_section": {
+            "type": "string",
+            "required": false,
+            "description": "related section (body)"
+          },
+          "vendor_name": {
+            "type": "string",
+            "required": false,
+            "description": "vendor name (body)"
+          },
+          "message": {
+            "type": "string",
+            "required": false,
+            "description": "message (body)"
+          },
+          "creditnote_type_id": {
+            "type": "int",
+            "required": false,
+            "description": "creditnote type id (body)"
+          },
+          "branch_id": {
+            "type": "int",
+            "required": false,
+            "description": "branch id (body)"
+          },
+          "main_head_id": {
+            "type": "int",
+            "required": false,
+            "description": "main head id (body)"
+          },
+          "sub_head_id": {
+            "type": "int",
+            "required": false,
+            "description": "sub head id (body)"
+          },
+          "amount": {
+            "type": "float",
+            "required": false,
+            "description": "amount (body)"
+          },
+          "deductions_amount": {
+            "type": "float",
+            "required": false,
+            "description": "deductions amount (body)"
+          },
+          "deductions": {
+            "type": "string",
+            "required": false,
+            "description": "deductions (body)"
+          },
+          "net_amount": {
+            "type": "float",
+            "required": false,
+            "description": "net amount (body)"
+          },
+          "acknowledge_no": {
+            "type": "string",
+            "required": false,
+            "description": "acknowledge no (body)"
+          },
+          "payment_date": {
+            "type": "datetime",
+            "required": false,
+            "description": "payment date (body)"
+          },
+          "files": {
+            "type": "List<FileDTO>",
+            "required": false,
+            "description": "files (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/AccountsController.cs",
+        "action_method": "CreateAccountTransfer",
+        "related_dto_files": [
+          "DTOs/AccountTransferDTO.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/AccountsRepo.cs",
+          "Interfaces/IAccounts.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Create account transfer — validates the request, calls ICommon.getUserByToken, IAccounts.CreateCurrentFinYearCNRCode, IAccounts.GetAccountTransferMainHeaderById",
+        "preconditions": "Valid Bearer JWT; request body of type AccountTransferDTO; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "AccountTransfer: INSERT; ComplaintsFile: INSERT",
+        "validations": "MainHeadId {dto.main_head_id.Value} does not exist; SubHeadId {dto.sub_head_id.Value} does not exist",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAccounts.CreateCurrentFinYearCNRCode",
+          "IAccounts.GetAccountTransferMainHeaderById",
+          "IAccounts.GetAllSubHeadigByMainHead",
+          "IAccounts.CreateAccountTransfer",
+          "IAccounts.SaveChanges",
+          "IAccounts.CreateComplaintFilesRange"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AccountsRepo (Repository/AccountsRepo.cs) via IAccounts"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "MainHeadId {dto.main_head_id.Value} does not exist",
+            "when": "mainHead == null"
+          },
+          {
+            "returns": 400,
+            "message": "SubHeadId {dto.sub_head_id.Value} does not exist",
+            "when": "subHead == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "accounts_get_account_transfer_by_id",
+      "name": "Get Account Transfer By Id",
+      "action_method": "GetAccountTransferById",
+      "http_method": "GET",
+      "route": "api/Accounts/{id}",
+      "business_purpose": "Retrieve account transfer by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Retrieve account transfer by ID",
+      "detailed_description": "Retrieve account transfer by ID. It validates the request, then calls ICommon.getUserByToken, IAccounts.GetAccountTransferActions, IAccounts.GetAccountTransferById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required. [when id <= 0]",
+        "not_found": "404: Account transfer not found. [when account == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve account transfer by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Accounts/main-headers",
+          "GET api/Accounts/{id}",
+          "GET api/Accounts/view/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "accounts_get_account_transfer_by_id",
+        "description": "Retrieve account transfer by ID",
+        "http_method": "GET",
+        "endpoint": "api/Accounts/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AccountsController.cs",
+        "action_method": "GetAccountTransferById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/AccountsRepo.cs",
+          "Interfaces/IAccounts.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Retrieve account transfer by ID — validates the request, calls ICommon.getUserByToken, IAccounts.GetAccountTransferActions, IAccounts.GetAccountTransferById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAccounts.GetAccountTransferActions",
+          "IAccounts.GetAccountTransferById",
+          "IAccounts.GetAccountTransferFiles",
+          "IAccounts.GetUserLevelBySection",
+          "IAccounts.GetAllAssociateUsersByAccountsId",
+          "IAccounts.GetRelativeAccountTransfersByBaseId",
+          "IAccounts.GetAccountsRemarksWithMentions",
+          "IAccounts.MarkRemarksAsVisited",
+          "IAccounts.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AccountsRepo (Repository/AccountsRepo.cs) via IAccounts"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Account transfer not found.",
+            "when": "account == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "accounts_get_account_transfer_view",
+      "name": "Get Account Transfer View",
+      "action_method": "GetAccountTransferView",
+      "http_method": "GET",
+      "route": "api/Accounts/view/{id}",
+      "business_purpose": "Retrieve account transfer view",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [
+        {
+          "name": "section",
+          "type": "string",
+          "required": false,
+          "default": "\"BlockDefaultAccountTransferUsers\""
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Retrieve account transfer view",
+      "detailed_description": "Retrieve account transfer view. It validates the request, then calls ICommon.getUserByToken, IAccounts.GetAccountTransferViewById, IAccounts.GetAccountsRemarksWithMentions. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required. [when id <= 0]",
+        "not_found": "404: Account transfer not found. [when account == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve account transfer view",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Accounts/main-headers",
+          "GET api/Accounts/{id}",
+          "GET api/Accounts/view/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "accounts_get_account_transfer_view",
+        "description": "Retrieve account transfer view",
+        "http_method": "GET",
+        "endpoint": "api/Accounts/view/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "section": {
+            "type": "string",
+            "required": false,
+            "description": "section (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AccountsController.cs",
+        "action_method": "GetAccountTransferView",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/AccountsRepo.cs",
+          "Interfaces/IAccounts.cs",
+          "Repository/BranchRequest_repo.cs",
+          "Interfaces/IBranchRequest.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Retrieve account transfer view — validates the request, calls ICommon.getUserByToken, IAccounts.GetAccountTransferViewById, IAccounts.GetAccountsRemarksWithMentions",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAccounts.GetAccountTransferViewById",
+          "IAccounts.GetAccountsRemarksWithMentions",
+          "IAccounts.MarkRemarksAsVisited",
+          "IAccounts.GetAccountTransferFiles",
+          "IAccounts.GetUserLevelBySection",
+          "IAccounts.GetAllAssociateUsersByAccountsId",
+          "IAccounts.GetRelativeAccountTransfersByBaseId",
+          "IBranchRequest.GetBranchRequestById",
+          "IAccounts.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AccountsRepo (Repository/AccountsRepo.cs) via IAccounts",
+          "BranchRequest_repo (Repository/BranchRequest_repo.cs) via IBranchRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Account transfer not found.",
+            "when": "account == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "accounts_get_account_transfer_files",
+      "name": "Get Account Transfer Files",
+      "action_method": "GetAccountTransferFiles",
+      "http_method": "GET",
+      "route": "api/Accounts/files/{id}",
+      "business_purpose": "Retrieve account transfer files",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Retrieve account transfer files",
+      "detailed_description": "Retrieve account transfer files. It validates the request, then calls ICommon.getUserByToken, IAccounts.GetAccountTransferFiles. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required. [when id <= 0]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve account transfer files",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Accounts/main-headers",
+          "GET api/Accounts/{id}",
+          "GET api/Accounts/view/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "accounts_get_account_transfer_files",
+        "description": "Retrieve account transfer files",
+        "http_method": "GET",
+        "endpoint": "api/Accounts/files/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AccountsController.cs",
+        "action_method": "GetAccountTransferFiles",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/AccountsRepo.cs",
+          "Interfaces/IAccounts.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Retrieve account transfer files — validates the request, calls ICommon.getUserByToken, IAccounts.GetAccountTransferFiles",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAccounts.GetAccountTransferFiles"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AccountsRepo (Repository/AccountsRepo.cs) via IAccounts"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid ID is required.",
+            "when": "id <= 0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "accounts_get_mention_users",
+      "name": "Get Mention Users",
+      "action_method": "GetMentionUsers",
+      "http_method": "GET",
+      "route": "api/Accounts/search-users",
+      "business_purpose": "Retrieve mention users",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "query",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Retrieve mention users",
+      "detailed_description": "Retrieve mention users. It calls IAccounts.GetMentionUsers. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve mention users",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "query (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/Accounts/main-headers",
+          "GET api/Accounts/{id}",
+          "GET api/Accounts/view/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "accounts_get_mention_users",
+        "description": "Retrieve mention users",
+        "http_method": "GET",
+        "endpoint": "api/Accounts/search-users",
+        "parameters": {
+          "query": {
+            "type": "string",
+            "required": true,
+            "description": "query (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AccountsController.cs",
+        "action_method": "GetMentionUsers",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/AccountsRepo.cs",
+          "Interfaces/IAccounts.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Retrieve mention users — calls IAccounts.GetMentionUsers",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): query",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IAccounts.GetMentionUsers"
+        ],
+        "calls_repositories": [
+          "AccountsRepo (Repository/AccountsRepo.cs) via IAccounts"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "accounts_get_accounts_overview",
+      "name": "Get Accounts Overview",
+      "action_method": "GetAccountsOverview",
+      "http_method": "GET",
+      "route": "api/Accounts/overview",
+      "business_purpose": "Retrieve accounts overview",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Retrieve accounts overview",
+      "detailed_description": "Retrieve accounts overview. It calls ICommon.getUserByToken, IAccounts.GetAllConfirmedAccountTransfers, IBranchRequest.GetBranchRequestData. Data access uses stored procedure(s): GetBranchRequest. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve accounts overview",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Accounts/main-headers",
+          "GET api/Accounts/{id}",
+          "GET api/Accounts/view/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "accounts_get_accounts_overview",
+        "description": "Retrieve accounts overview",
+        "http_method": "GET",
+        "endpoint": "api/Accounts/overview",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AccountsController.cs",
+        "action_method": "GetAccountsOverview",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/AccountsRepo.cs",
+          "Interfaces/IAccounts.cs",
+          "Repository/BranchRequest_repo.cs",
+          "Interfaces/IBranchRequest.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Retrieve accounts overview — calls ICommon.getUserByToken, IAccounts.GetAllConfirmedAccountTransfers, IBranchRequest.GetBranchRequestData",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAccounts.GetAllConfirmedAccountTransfers",
+          "IBranchRequest.GetBranchRequestData"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AccountsRepo (Repository/AccountsRepo.cs) via IAccounts",
+          "BranchRequest_repo (Repository/BranchRequest_repo.cs) via IBranchRequest"
+        ],
+        "stored_procedures": [
+          "GetBranchRequest"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "accounts_hold_account_transfer",
+      "name": "Hold Account Transfer",
+      "action_method": "HoldAccountTransfer",
+      "http_method": "POST",
+      "route": "api/Accounts/hold",
+      "business_purpose": "Hold account transfer",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "HoldAccountTransferRequest (inline)",
+        "properties": [
+          {
+            "name": "id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_hold",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "settings/company-settings/account-transfer-head:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "acs/accounts/holding-account-transfers",
+        "acs/accounts/all-account-transfers",
+        "acs/accounts/pending-account-transfers",
+        "acs/accounts/confirmed-account-transfers",
+        "acs/account-transfer"
+      ],
+      "short_description": "Hold account transfer",
+      "detailed_description": "Hold account transfer. It validates the request, then calls ICommon.getUserByToken, IAccounts.GetAccountTransferById, IAccounts.GetSchemeOrderById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required. [when request.id <= 0]",
+        "not_found": "404: Account transfer not found. [when accountTransfer == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to hold account transfer",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body HoldAccountTransferRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Accounts/main-headers",
+          "GET api/Accounts/search-users",
+          "GET api/Accounts/overview"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "accounts_hold_account_transfer",
+        "description": "Hold account transfer",
+        "http_method": "POST",
+        "endpoint": "api/Accounts/hold",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": false,
+            "description": "id (body)"
+          },
+          "is_hold": {
+            "type": "bool",
+            "required": false,
+            "description": "is hold (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/AccountsController.cs",
+        "action_method": "HoldAccountTransfer",
+        "related_dto_files": [
+          "Controllers/AccountsController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/AccountsRepo.cs",
+          "Interfaces/IAccounts.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Hold account transfer — validates the request, calls ICommon.getUserByToken, IAccounts.GetAccountTransferById, IAccounts.GetSchemeOrderById",
+        "preconditions": "Valid Bearer JWT; request body of type HoldAccountTransferRequest (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets accountTransfer.is_hold, accountTransfer.account_operated_by, accountTransfer.account_operated_date, accountTransfer.modified_by, accountTransfer.modified_date, schemeOrder.status and saves changes",
+        "validations": "Valid ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAccounts.GetAccountTransferById",
+          "IAccounts.GetSchemeOrderById",
+          "IAccounts.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AccountsRepo (Repository/AccountsRepo.cs) via IAccounts"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid ID is required.",
+            "when": "request.id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Account transfer not found.",
+            "when": "accountTransfer == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "accounts_accounts_approval",
+      "name": "Accounts Approval",
+      "action_method": "AccountsApproval",
+      "http_method": "POST",
+      "route": "api/Accounts/approve",
+      "business_purpose": "Handle accounts approval",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "ApprovalRequest (inline)",
+        "properties": [
+          {
+            "name": "id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_approved",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Handle accounts approval",
+      "detailed_description": "Handle accounts approval. It validates the request, then calls ICommon.getUserByToken, IAccounts.GetAccountTransferById, IAccounts.GetSchemeOrderById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required. [when request.id <= 0]",
+        "not_found": "404: Account transfer not found. [when accountTransfer == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle accounts approval",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body ApprovalRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Accounts/main-headers",
+          "GET api/Accounts/search-users",
+          "GET api/Accounts/overview"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "accounts_accounts_approval",
+        "description": "Handle accounts approval",
+        "http_method": "POST",
+        "endpoint": "api/Accounts/approve",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": false,
+            "description": "id (body)"
+          },
+          "is_approved": {
+            "type": "bool",
+            "required": false,
+            "description": "is approved (body)"
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Approves the record and advances its workflow"
+      },
+      "source": {
+        "controller_file": "Controllers/AccountsController.cs",
+        "action_method": "AccountsApproval",
+        "related_dto_files": [
+          "Controllers/ClosedBranchRequestController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/AccountsRepo.cs",
+          "Interfaces/IAccounts.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Handle accounts approval — validates the request, calls ICommon.getUserByToken, IAccounts.GetAccountTransferById, IAccounts.GetSchemeOrderById",
+        "preconditions": "Valid Bearer JWT; request body of type ApprovalRequest (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets accountTransfer.is_account_approved, accountTransfer.account_operated_by, accountTransfer.account_operated_date, accountTransfer.modified_by, accountTransfer.modified_date, schemeOrder.status and saves changes",
+        "validations": "Valid ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAccounts.GetAccountTransferById",
+          "IAccounts.GetSchemeOrderById",
+          "IAccounts.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AccountsRepo (Repository/AccountsRepo.cs) via IAccounts"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid ID is required.",
+            "when": "request.id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Account transfer not found.",
+            "when": "accountTransfer == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "accounts_director_approval",
+      "name": "Director Approval",
+      "action_method": "DirectorApproval",
+      "http_method": "POST",
+      "route": "api/Accounts/director-approve",
+      "business_purpose": "Handle director approval",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "DirectorApprovalRequest (inline)",
+        "properties": [
+          {
+            "name": "id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_approved",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Handle director approval",
+      "detailed_description": "Handle director approval. It validates the request, then calls ICommon.getUserByToken, IAccounts.GetAccountTransferById, IAccounts.GetSchemeOrderById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required. [when request.id <= 0]",
+        "not_found": "404: Account transfer not found. [when accountTransfer == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle director approval",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body DirectorApprovalRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Accounts/main-headers",
+          "GET api/Accounts/search-users",
+          "GET api/Accounts/overview"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "accounts_director_approval",
+        "description": "Handle director approval",
+        "http_method": "POST",
+        "endpoint": "api/Accounts/director-approve",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": false,
+            "description": "id (body)"
+          },
+          "is_approved": {
+            "type": "bool",
+            "required": false,
+            "description": "is approved (body)"
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Approves the record and advances its workflow"
+      },
+      "source": {
+        "controller_file": "Controllers/AccountsController.cs",
+        "action_method": "DirectorApproval",
+        "related_dto_files": [
+          "Controllers/AccountsController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/AccountsRepo.cs",
+          "Interfaces/IAccounts.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Handle director approval — validates the request, calls ICommon.getUserByToken, IAccounts.GetAccountTransferById, IAccounts.GetSchemeOrderById",
+        "preconditions": "Valid Bearer JWT; request body of type DirectorApprovalRequest (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets accountTransfer.is_approved, accountTransfer.operated_by, accountTransfer.operated_date, accountTransfer.modified_by, accountTransfer.modified_date, schemeOrder.status and saves changes",
+        "validations": "Valid ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAccounts.GetAccountTransferById",
+          "IAccounts.GetSchemeOrderById",
+          "IAccounts.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AccountsRepo (Repository/AccountsRepo.cs) via IAccounts"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid ID is required.",
+            "when": "request.id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Account transfer not found.",
+            "when": "accountTransfer == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "accounts_director_reject",
+      "name": "Director Reject",
+      "action_method": "DirectorReject",
+      "http_method": "POST",
+      "route": "api/Accounts/director-reject",
+      "business_purpose": "Handle director reject",
+      "data_effect": "REJECTION",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "DirectorRejectRequest (inline)",
+        "properties": [
+          {
+            "name": "id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_rejected",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "REJECTION",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "reject"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Handle director reject",
+      "detailed_description": "Handle director reject. It validates the request, then calls ICommon.getUserByToken, IAccounts.GetAccountTransferById, IAccounts.GetSchemeOrderById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required. [when request.id <= 0]",
+        "not_found": "404: Account transfer not found. [when accountTransfer == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle director reject",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body DirectorRejectRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Accounts/main-headers",
+          "GET api/Accounts/search-users",
+          "GET api/Accounts/overview"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "accounts_director_reject",
+        "description": "Handle director reject",
+        "http_method": "POST",
+        "endpoint": "api/Accounts/director-reject",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": false,
+            "description": "id (body)"
+          },
+          "is_rejected": {
+            "type": "bool",
+            "required": false,
+            "description": "is rejected (body)"
+          }
+        },
+        "operation_type": "REJECTION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Rejects the record"
+      },
+      "source": {
+        "controller_file": "Controllers/AccountsController.cs",
+        "action_method": "DirectorReject",
+        "related_dto_files": [
+          "Controllers/AccountsController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/AccountsRepo.cs",
+          "Interfaces/IAccounts.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Handle director reject — validates the request, calls ICommon.getUserByToken, IAccounts.GetAccountTransferById, IAccounts.GetSchemeOrderById",
+        "preconditions": "Valid Bearer JWT; request body of type DirectorRejectRequest (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets accountTransfer.is_rejected, accountTransfer.operated_by, accountTransfer.operated_date, accountTransfer.modified_by, accountTransfer.modified_date, schemeOrder.status and saves changes",
+        "validations": "Valid ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAccounts.GetAccountTransferById",
+          "IAccounts.GetSchemeOrderById",
+          "IAccounts.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AccountsRepo (Repository/AccountsRepo.cs) via IAccounts"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid ID is required.",
+            "when": "request.id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Account transfer not found.",
+            "when": "accountTransfer == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "accounts_amount_submission",
+      "name": "Amount Submission",
+      "action_method": "AmountSubmission",
+      "http_method": "POST",
+      "route": "api/Accounts/confirm-amount",
+      "business_purpose": "Handle amount submission",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "AmountSubmissionRequest (inline)",
+        "properties": [
+          {
+            "name": "id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "confirmed_amount",
+            "type": "float",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Handle amount submission",
+      "detailed_description": "Handle amount submission. It validates the request, then calls ICommon.getUserByToken, IAccounts.GetAccountTransferById, IAccounts.SaveChanges. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required. [when request.id <= 0]",
+        "not_found": "404: Account transfer not found. [when accountTransfer == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle amount submission",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body AmountSubmissionRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Accounts/main-headers",
+          "GET api/Accounts/search-users",
+          "GET api/Accounts/overview"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "accounts_amount_submission",
+        "description": "Handle amount submission",
+        "http_method": "POST",
+        "endpoint": "api/Accounts/confirm-amount",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": false,
+            "description": "id (body)"
+          },
+          "confirmed_amount": {
+            "type": "float",
+            "required": false,
+            "description": "confirmed amount (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/AccountsController.cs",
+        "action_method": "AmountSubmission",
+        "related_dto_files": [
+          "Controllers/AccountsController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/AccountsRepo.cs",
+          "Interfaces/IAccounts.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Handle amount submission — validates the request, calls ICommon.getUserByToken, IAccounts.GetAccountTransferById, IAccounts.SaveChanges",
+        "preconditions": "Valid Bearer JWT; request body of type AmountSubmissionRequest (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets accountTransfer.confirmed_amount and saves changes",
+        "validations": "Valid ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAccounts.GetAccountTransferById",
+          "IAccounts.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AccountsRepo (Repository/AccountsRepo.cs) via IAccounts"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid ID is required.",
+            "when": "request.id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Account transfer not found.",
+            "when": "accountTransfer == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "accounts_add_users",
+      "name": "Add Users",
+      "action_method": "AddUsers",
+      "http_method": "POST",
+      "route": "api/Accounts/add-users",
+      "business_purpose": "Add users",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "AddUserRequest (inline)",
+        "properties": [
+          {
+            "name": "users",
+            "type": "List<AddUserItem>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Add users",
+      "detailed_description": "Add users. It validates the request, then calls ICommon.getUserByToken, IAccounts.GetAccountTransferById, IAccounts.GetUserById. Persists changes to: SectionUsers: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: At least one user is required. [when request.users == null || !request.users.Any()]; Valid accountsId and userId are required for all entries. [when item.accountsId <= 0 || item.userId <= 0]",
+        "not_found": "404: Account transfer with ID {item.accountsId} not found. [when accountTransfer == null]; User with ID {item.userId} not found. [when user == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to add users",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body AddUserRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Accounts/main-headers",
+          "GET api/Accounts/search-users",
+          "GET api/Accounts/overview"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "accounts_add_users",
+        "description": "Add users",
+        "http_method": "POST",
+        "endpoint": "api/Accounts/add-users",
+        "parameters": {
+          "users": {
+            "type": "List<AddUserItem>",
+            "required": false,
+            "description": "users (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/AccountsController.cs",
+        "action_method": "AddUsers",
+        "related_dto_files": [
+          "Controllers/AccountsController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/AccountsRepo.cs",
+          "Interfaces/IAccounts.cs",
+          "Repositories/ProjectRepo.cs",
+          "Interfaces/IProject.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Add users — validates the request, calls ICommon.getUserByToken, IAccounts.GetAccountTransferById, IAccounts.GetUserById",
+        "preconditions": "Valid Bearer JWT; request body of type AddUserRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "SectionUsers: INSERT",
+        "validations": "At least one user is required.; Valid accountsId and userId are required for all entries.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAccounts.GetAccountTransferById",
+          "IAccounts.GetUserById",
+          "IProject.CreateAssociatedUsersDataRange",
+          "IAccounts.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AccountsRepo (Repository/AccountsRepo.cs) via IAccounts",
+          "ProjectRepo (Repositories/ProjectRepo.cs) via IProject"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "At least one user is required.",
+            "when": "request.users == null || !request.users.Any()"
+          },
+          {
+            "returns": 400,
+            "message": "Valid accountsId and userId are required for all entries.",
+            "when": "item.accountsId <= 0 || item.userId <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Account transfer with ID {item.accountsId} not found.",
+            "when": "accountTransfer == null"
+          },
+          {
+            "returns": 404,
+            "message": "User with ID {item.userId} not found.",
+            "when": "user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "accounts_accounts_reject",
+      "name": "Accounts Reject",
+      "action_method": "AccountsReject",
+      "http_method": "POST",
+      "route": "api/Accounts/reject",
+      "business_purpose": "Handle accounts reject",
+      "data_effect": "REJECTION",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "RejectRequest (inline)",
+        "properties": [
+          {
+            "name": "id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_rejected",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "REJECTION",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "reject"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Handle accounts reject",
+      "detailed_description": "Handle accounts reject. It validates the request, then calls ICommon.getUserByToken, IAccounts.GetAccountTransferById, IAccounts.GetSchemeOrderById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required. [when request.id <= 0]",
+        "not_found": "404: Account transfer not found. [when accountTransfer == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle accounts reject",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body RejectRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Accounts/main-headers",
+          "GET api/Accounts/search-users",
+          "GET api/Accounts/overview"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "accounts_accounts_reject",
+        "description": "Handle accounts reject",
+        "http_method": "POST",
+        "endpoint": "api/Accounts/reject",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": false,
+            "description": "id (body)"
+          },
+          "is_rejected": {
+            "type": "bool",
+            "required": false,
+            "description": "is rejected (body)"
+          }
+        },
+        "operation_type": "REJECTION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Rejects the record"
+      },
+      "source": {
+        "controller_file": "Controllers/AccountsController.cs",
+        "action_method": "AccountsReject",
+        "related_dto_files": [
+          "Controllers/ClosedBranchRequestController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/AccountsRepo.cs",
+          "Interfaces/IAccounts.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Handle accounts reject — validates the request, calls ICommon.getUserByToken, IAccounts.GetAccountTransferById, IAccounts.GetSchemeOrderById",
+        "preconditions": "Valid Bearer JWT; request body of type RejectRequest (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets accountTransfer.is_account_rejected, accountTransfer.account_operated_by, accountTransfer.account_operated_date, accountTransfer.modified_by, accountTransfer.modified_date, schemeOrder.status and saves changes",
+        "validations": "Valid ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAccounts.GetAccountTransferById",
+          "IAccounts.GetSchemeOrderById",
+          "IAccounts.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AccountsRepo (Repository/AccountsRepo.cs) via IAccounts"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid ID is required.",
+            "when": "request.id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Account transfer not found.",
+            "when": "accountTransfer == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "accounts_get_sub_headings",
+      "name": "Get Sub Headings",
+      "action_method": "GetSubHeadings",
+      "http_method": "GET",
+      "route": "api/Accounts/sub-headings/{mainId}",
+      "business_purpose": "Retrieve sub headings",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "mainId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Retrieve sub headings",
+      "detailed_description": "Retrieve sub headings. It validates the request, then calls IAccounts.GetAllSubHeadigByMainHead. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid main heading ID is required. [when mainId <= 0]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve sub headings",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "mainId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Accounts/main-headers",
+          "GET api/Accounts/{id}",
+          "GET api/Accounts/view/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "accounts_get_sub_headings",
+        "description": "Retrieve sub headings",
+        "http_method": "GET",
+        "endpoint": "api/Accounts/sub-headings/{mainId}",
+        "parameters": {
+          "mainId": {
+            "type": "int",
+            "required": true,
+            "description": "main Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AccountsController.cs",
+        "action_method": "GetSubHeadings",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/AccountsRepo.cs",
+          "Interfaces/IAccounts.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Retrieve sub headings — validates the request, calls IAccounts.GetAllSubHeadigByMainHead",
+        "preconditions": "Valid Bearer JWT; route parameter(s) mainId; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid main heading ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IAccounts.GetAllSubHeadigByMainHead"
+        ],
+        "calls_repositories": [
+          "AccountsRepo (Repository/AccountsRepo.cs) via IAccounts"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid main heading ID is required.",
+            "when": "mainId <= 0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "accounts_get_branch_request_by_id",
+      "name": "Get Branch Request By Id",
+      "action_method": "GetBranchRequestById",
+      "http_method": "GET",
+      "route": "api/Accounts/branch-request/{id}",
+      "business_purpose": "Retrieve branch request by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Retrieve branch request by ID",
+      "detailed_description": "Retrieve branch request by ID. It validates the request, then calls ICommon.getUserByToken, IBranchRequest.GetBranchRequestById, IAccounts.GetCreditNotesFilesByComplaintId. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required. [when id <= 0]",
+        "not_found": "404: Branch request not found. [when requisition == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve branch request by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Accounts/main-headers",
+          "GET api/Accounts/{id}",
+          "GET api/Accounts/view/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "accounts_get_branch_request_by_id",
+        "description": "Retrieve branch request by ID",
+        "http_method": "GET",
+        "endpoint": "api/Accounts/branch-request/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AccountsController.cs",
+        "action_method": "GetBranchRequestById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/BranchRequest_repo.cs",
+          "Interfaces/IBranchRequest.cs",
+          "Repository/AccountsRepo.cs",
+          "Interfaces/IAccounts.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Retrieve branch request by ID — validates the request, calls ICommon.getUserByToken, IBranchRequest.GetBranchRequestById, IAccounts.GetCreditNotesFilesByComplaintId",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBranchRequest.GetBranchRequestById",
+          "IAccounts.GetCreditNotesFilesByComplaintId",
+          "IAccounts.GetCreditNoteRemarksWithMentions",
+          "IAccounts.MarkCreditNoteRemarksAsVisited",
+          "IAccounts.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "BranchRequest_repo (Repository/BranchRequest_repo.cs) via IBranchRequest",
+          "AccountsRepo (Repository/AccountsRepo.cs) via IAccounts"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Branch request not found.",
+            "when": "requisition == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "accounts_delete_account_transfer",
+      "name": "Delete Account Transfer",
+      "action_method": "DeleteAccountTransfer",
+      "http_method": "DELETE",
+      "route": "api/Accounts/{id}",
+      "business_purpose": "Delete account transfer",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Delete account transfer",
+      "detailed_description": "Delete account transfer. It validates the request, then calls ICommon.getUserByToken, IAccounts.GetAccountTransferById, IAccounts.SaveChanges. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required. [when id <= 0]",
+        "not_found": "404: Account transfer not found. [when account == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete account transfer",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Accounts/{id}",
+          "GET api/Accounts/view/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "accounts_delete_account_transfer",
+        "description": "Delete account transfer",
+        "http_method": "DELETE",
+        "endpoint": "api/Accounts/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/AccountsController.cs",
+        "action_method": "DeleteAccountTransfer",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/AccountsRepo.cs",
+          "Interfaces/IAccounts.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Delete account transfer — validates the request, calls ICommon.getUserByToken, IAccounts.GetAccountTransferById, IAccounts.SaveChanges",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets account.is_deleted, account.modified_date, account.modified_by and saves changes",
+        "validations": "Valid ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAccounts.GetAccountTransferById",
+          "IAccounts.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AccountsRepo (Repository/AccountsRepo.cs) via IAccounts"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Account transfer not found.",
+            "when": "account == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "accounts_delete_account_transfer_file",
+      "name": "Delete Account Transfer File",
+      "action_method": "DeleteAccountTransferFile",
+      "http_method": "DELETE",
+      "route": "api/Accounts/file/{fileId}",
+      "business_purpose": "Delete account transfer file",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "fileId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [
+        {
+          "name": "accountTransferId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Delete account transfer file",
+      "detailed_description": "Delete account transfer file. It validates the request, then calls ICommon.getUserByToken, IAccounts.GetCreditNotesFile, IAccounts.DeleteFile. Persists changes to: ComplaintsFile: DELETE. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid file ID is required. [when fileId <= 0]",
+        "not_found": "404: File not found. [when complaintFile == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete account transfer file",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "fileId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Accounts/{id}",
+          "GET api/Accounts/view/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "accounts_delete_account_transfer_file",
+        "description": "Delete account transfer file",
+        "http_method": "DELETE",
+        "endpoint": "api/Accounts/file/{fileId}",
+        "parameters": {
+          "fileId": {
+            "type": "int",
+            "required": true,
+            "description": "file Id (route)"
+          },
+          "accountTransferId": {
+            "type": "int",
+            "required": false,
+            "description": "account Transfer Id (query)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/AccountsController.cs",
+        "action_method": "DeleteAccountTransferFile",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/AccountsRepo.cs",
+          "Interfaces/IAccounts.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Delete account transfer file — validates the request, calls ICommon.getUserByToken, IAccounts.GetCreditNotesFile, IAccounts.DeleteFile",
+        "preconditions": "Valid Bearer JWT; route parameter(s) fileId must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "ComplaintsFile: DELETE",
+        "validations": "Valid file ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAccounts.GetCreditNotesFile",
+          "IAccounts.DeleteFile",
+          "IAccounts.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AccountsRepo (Repository/AccountsRepo.cs) via IAccounts"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid file ID is required.",
+            "when": "fileId <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "File not found.",
+            "when": "complaintFile == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "accounts_download_closed_report",
+      "name": "Download Closed Report",
+      "action_method": "DownloadClosedReport",
+      "http_method": "GET",
+      "route": "api/Accounts/download-closed-report/{id}",
+      "business_purpose": "Download closed report",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Download closed report",
+      "detailed_description": "Download closed report. It validates the request, then calls ICommon.getUserByToken, IAccounts.GetAccountTransferViewById, IAccounts.GetAccountTransferFiles. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required. [when id <= 0]",
+        "not_found": "404: Account transfer not found. [when account == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to download closed report",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Accounts/main-headers",
+          "GET api/Accounts/{id}",
+          "GET api/Accounts/view/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "accounts_download_closed_report",
+        "description": "Download closed report",
+        "http_method": "GET",
+        "endpoint": "api/Accounts/download-closed-report/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AccountsController.cs",
+        "action_method": "DownloadClosedReport",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/AccountsRepo.cs",
+          "Interfaces/IAccounts.cs",
+          "Repository/BranchRequest_repo.cs",
+          "Interfaces/IBranchRequest.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Download closed report — validates the request, calls ICommon.getUserByToken, IAccounts.GetAccountTransferViewById, IAccounts.GetAccountTransferFiles",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAccounts.GetAccountTransferViewById",
+          "IAccounts.GetAccountTransferFiles",
+          "IAccounts.GetRelativeAccountTransfersByBaseId",
+          "IBranchRequest.GetBranchRequestById",
+          "IAccounts.GetAccountsRemarksWithMentions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AccountsRepo (Repository/AccountsRepo.cs) via IAccounts",
+          "BranchRequest_repo (Repository/BranchRequest_repo.cs) via IBranchRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Account transfer not found.",
+            "when": "account == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "accounts_revoke_branch_request_closure",
+      "name": "Revoke Branch Request Closure",
+      "action_method": "RevokeBranchRequestClosure",
+      "http_method": "POST",
+      "route": "api/Accounts/branch-request/revoke-closure",
+      "business_purpose": "Revoke branch request closure",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "RevokeClosureRequest (inline)",
+        "properties": [
+          {
+            "name": "id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_closed",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Revoke branch request closure",
+      "detailed_description": "Revoke branch request closure. It validates the request, then calls ICommon.getUserByToken, IBranchRequest.GetBranchRequestById, IAccounts.SaveChanges. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required. [when request.id <= 0]",
+        "not_found": "404: Branch request not found. [when cnr == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to revoke branch request closure",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body RevokeClosureRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Accounts/main-headers",
+          "GET api/Accounts/search-users",
+          "GET api/Accounts/overview"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "accounts_revoke_branch_request_closure",
+        "description": "Revoke branch request closure",
+        "http_method": "POST",
+        "endpoint": "api/Accounts/branch-request/revoke-closure",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": false,
+            "description": "id (body)"
+          },
+          "is_closed": {
+            "type": "bool",
+            "required": false,
+            "description": "is closed (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/AccountsController.cs",
+        "action_method": "RevokeBranchRequestClosure",
+        "related_dto_files": [
+          "Controllers/AccountsController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/BranchRequest_repo.cs",
+          "Interfaces/IBranchRequest.cs",
+          "Repository/AccountsRepo.cs",
+          "Interfaces/IAccounts.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Revoke branch request closure — validates the request, calls ICommon.getUserByToken, IBranchRequest.GetBranchRequestById, IAccounts.SaveChanges",
+        "preconditions": "Valid Bearer JWT; request body of type RevokeClosureRequest (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets cnr.is_closed, cnr.operated_by, cnr.operated_date, cnr.branch_closing_reason, cnr.remarks and saves changes",
+        "validations": "Valid ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBranchRequest.GetBranchRequestById",
+          "IAccounts.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "BranchRequest_repo (Repository/BranchRequest_repo.cs) via IBranchRequest",
+          "AccountsRepo (Repository/AccountsRepo.cs) via IAccounts"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid ID is required.",
+            "when": "request.id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Branch request not found.",
+            "when": "cnr == null"
+          }
+        ]
+      }
+    }
+  ]
+}

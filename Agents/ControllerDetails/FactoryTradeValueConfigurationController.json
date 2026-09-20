@@ -1,0 +1,228 @@
+{
+  "controller": "FactoryTradeValueConfigurationController",
+  "file": "Controllers/FactoryTradeValueConfigurationController.cs",
+  "base_route": "api/FactoryTradeValueConfiguration",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/company-settings/factory-trade-value-configuration",
+        "module_code": "settings",
+        "section": "company-settings",
+        "sub_section": "factory-trade-value-configuration",
+        "frontend_routes": [
+          "/settings/company-settings/factory-trade-value-configuration"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "ftvc_001",
+      "name": "SaveAllFactoryTradeConfigurations",
+      "http_method": "POST",
+      "route": "api/FactoryTradeValueConfiguration",
+      "business_purpose": "Create or update multiple factory trade value configurations (brand/percentage pairs).",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "List<FactoryTradeValueConfigurationDto>",
+        "properties": [
+          "BrandName",
+          "PercentageValue"
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ],
+        "dto_name": "FactoryTradeValueConfigResponse"
+      },
+      "data_effect": "CREATE/UPDATE",
+      "business_logic": {
+        "operation_summary": "Creates or updates trade value configurations. For each brand: if exists, update percentage and modified_date; else create new.",
+        "preconditions": "Valid token. User exists. Non-empty configurations list.",
+        "validations": "Token validation. Non-empty configurations list.",
+        "side_effects": "Configurations persisted. Modified_date updated.",
+        "calls_services": [
+          "IFactoryTradeValueConfiguration",
+          "ICommon"
+        ],
+        "calls_repositories": [],
+        "state_changes": "FactoryTradeValueConfiguration: INSERT",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "No configurations provided.",
+            "when": "configurationsDto == null || !configurationsDto.Any()"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Idempotent for updates. Multiple calls update same records."
+      },
+      "source": {
+        "controller_file": "Controllers/FactoryTradeValueConfigurationController.cs",
+        "action_method": "SaveAllFactoryTradeConfigurations"
+      },
+      "required_permission": "settings/company-settings/factory-trade-value-configuration:add",
+      "permission_flags": [
+        "add",
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create or update multiple factory trade value configurations (brand/percentage pairs).",
+      "detailed_description": "Create or update multiple factory trade value configurations (brand/percentage pairs). It validates the request, then calls ICommon.getUserByToken, IFactoryTradeValueConfiguration.CreateAsync, IFactoryTradeValueConfiguration.SaveChangesAsync. Persists changes to: FactoryTradeValueConfiguration: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: No configurations provided. [when configurationsDto == null || !configurationsDto.Any()]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create or update multiple factory trade value configurations (brand/percentage pairs).",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body List<FactoryTradeValueConfigurationDto>"
+        ],
+        "follow_up_apis": [
+          "GET api/FactoryTradeValueConfiguration/products"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "factory_trade_value_configuration_save_all_factory_trade_configurations",
+        "description": "Create or update multiple factory trade value configurations (brand/percentage pairs).",
+        "http_method": "POST",
+        "endpoint": "api/FactoryTradeValueConfiguration",
+        "parameters": {
+          "BrandName": {
+            "type": "string",
+            "required": false,
+            "description": "Brand Name (body)"
+          },
+          "PercentageValue": {
+            "type": "string",
+            "required": false,
+            "description": "Percentage Value (body)"
+          }
+        },
+        "operation_type": "CREATE/UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "ftvc_002",
+      "name": "GetProducts",
+      "http_method": "GET",
+      "route": "api/FactoryTradeValueConfiguration/products",
+      "business_purpose": "Retrieve list of products for trade value configuration with existing brands and unassigned products.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "ProductListResponse"
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "Retrieves all configured brands with their percentage values, plus unconfigured products with 0 value.",
+        "preconditions": "Valid token. User exists.",
+        "validations": "Token validation.",
+        "side_effects": "None",
+        "calls_services": [
+          "IFactoryTradeValueConfiguration",
+          "ICommon"
+        ],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "notes": "Read-only operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FactoryTradeValueConfigurationController.cs",
+        "action_method": "GetProducts"
+      },
+      "required_permission": "settings/company-settings/factory-trade-value-configuration:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve list of products for trade value configuration with existing brands and unassigned products.",
+      "detailed_description": "Retrieve list of products for trade value configuration with existing brands and unassigned products. It calls ICommon.getUserByToken, IFactoryTradeValueConfiguration.GetAllFactoryTradeValueConfigurations, IFactoryTradeValueConfiguration.GetProducts. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve list of products for trade value configuration with existing brands and unassigned products.",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/FactoryTradeValueConfiguration/products"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "factory_trade_value_configuration_get_products",
+        "description": "Retrieve list of products for trade value configuration with existing brands and unassigned products.",
+        "http_method": "GET",
+        "endpoint": "api/FactoryTradeValueConfiguration/products",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    }
+  ]
+}

@@ -1,0 +1,1147 @@
+{
+  "controller": "UserLocationsController",
+  "file": "Controllers/UserLocationsController.cs",
+  "module": "User and Access Management",
+  "base_route": "api/UserLocations",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages user locations records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/user-settings/user-location",
+        "module_code": "settings",
+        "section": "user-settings",
+        "sub_section": "user-location",
+        "frontend_routes": [
+          "/settings/user-settings/user-location",
+          "/settings/user-settings/user-location/create-user-location",
+          "/settings/user-settings/user-location/edit-user-location/:id"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "UserLocation"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Settings",
+        "section": "User Settings",
+        "sub_section": "User Locations"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "user_locations_get_all_user_locations",
+      "name": "Get All User Locations",
+      "action_method": "GetAllUserLocations",
+      "http_method": "GET",
+      "route": "api/UserLocations",
+      "business_purpose": "Retrieve all user locations",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/user-settings/user-location:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all user locations",
+      "detailed_description": "Retrieve all user locations. It calls IUserLocations.GetUserLocationsData, IUserLocations.GetUserLocationsActions, ICommon.GetPagination. Data access uses stored procedure(s): GetUserLocations. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all user locations",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/UserLocations",
+          "GET api/UserLocations/{userid}",
+          "GET api/UserLocations/users"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "user_locations_get_all_user_locations",
+        "description": "Retrieve all user locations",
+        "http_method": "GET",
+        "endpoint": "api/UserLocations",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/UserLocationsController.cs",
+        "action_method": "GetAllUserLocations",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/UserLocations_repo.cs",
+          "Interfaces/IUserLocations.cs",
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "User and Access Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all user locations — calls IUserLocations.GetUserLocationsData, IUserLocations.GetUserLocationsActions, ICommon.GetPagination",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IUserLocations.GetUserLocationsData",
+          "IUserLocations.GetUserLocationsActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "UserLocations_repo (Repositories/UserLocations_repo.cs) via IUserLocations",
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [
+          "GetUserLocations"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "user_locations_create_user_location",
+      "name": "Create User Location",
+      "action_method": "CreateUserLocation",
+      "http_method": "POST",
+      "route": "api/UserLocations",
+      "business_purpose": "Create user location",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateUserLocationRequest (inline)",
+        "properties": [
+          {
+            "name": "userid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "regionids",
+            "type": "List<int>",
+            "required": false
+          },
+          {
+            "name": "areaids",
+            "type": "List<int>",
+            "required": false
+          },
+          {
+            "name": "subareaids",
+            "type": "List<int>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; a duplicate check exists so repeating usually fails with a conflict/validation message"
+      },
+      "required_permission": "settings/user-settings/user-location:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create user location",
+      "detailed_description": "Create user location. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IUserLocations.GetUserById, IUserLocations.GetSubAreaById. Persists changes to: UserLocations: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; Valid user ID is required. [when request.userid <= 0]; At least one location (region, area, or subarea) must be specified. [when !request.subareaids.Any() && !request.areaids.Any() && !request.regionids.Any()]; User not found. [when user == null]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "No locations were created. They may already exist or the provided IDs were invalid. [when !createdLocations.Any()]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create user location",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateUserLocationRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/UserLocations",
+          "GET api/UserLocations/users",
+          "GET api/UserLocations/byregion"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "user_locations_create_user_location",
+        "description": "Create user location",
+        "http_method": "POST",
+        "endpoint": "api/UserLocations",
+        "parameters": {
+          "userid": {
+            "type": "int",
+            "required": false,
+            "description": "userid (body)"
+          },
+          "regionids": {
+            "type": "List<int>",
+            "required": false,
+            "description": "regionids (body)"
+          },
+          "areaids": {
+            "type": "List<int>",
+            "required": false,
+            "description": "areaids (body)"
+          },
+          "subareaids": {
+            "type": "List<int>",
+            "required": false,
+            "description": "subareaids (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/UserLocationsController.cs",
+        "action_method": "CreateUserLocation",
+        "related_dto_files": [
+          "Controllers/UserLocationsController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/UserLocations_repo.cs",
+          "Interfaces/IUserLocations.cs"
+        ]
+      },
+      "module": "User and Access Management",
+      "business_logic": {
+        "operation_summary": "Create user location — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, IUserLocations.GetUserById, IUserLocations.GetSubAreaById",
+        "preconditions": "Valid Bearer JWT; request body of type CreateUserLocationRequest (inline); passes 5 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "UserLocations: INSERT",
+        "validations": "ModelState (DTO data-annotation) validation; Invalid data provided.; Valid user ID is required.; At least one location (region, area, or subarea) must be specified.; User not found.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IUserLocations.GetUserById",
+          "IUserLocations.GetSubAreaById",
+          "IUserLocations.IsUserLocationDuplicateAsync",
+          "IUserLocations.CreateUserLocationAsync",
+          "IUserLocations.GetAreaById",
+          "IUserLocations.GetRegionById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "UserLocations_repo (Repositories/UserLocations_repo.cs) via IUserLocations"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid user ID is required.",
+            "when": "request.userid <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one location (region, area, or subarea) must be specified.",
+            "when": "!request.subareaids.Any() && !request.areaids.Any() && !request.regionids.Any()"
+          },
+          {
+            "returns": 400,
+            "message": "User not found.",
+            "when": "user == null"
+          },
+          {
+            "returns": 400,
+            "message": "No locations were created. They may already exist or the provided IDs were invalid.",
+            "when": "!createdLocations.Any()"
+          }
+        ]
+      }
+    },
+    {
+      "id": "user_locations_get_user_locations_by_user_id",
+      "name": "Get User Locations By User Id",
+      "action_method": "GetUserLocationsByUserId",
+      "http_method": "GET",
+      "route": "api/UserLocations/{userid}",
+      "business_purpose": "Retrieve user locations by user id",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "userid",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/user-settings/user-location:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve user locations by user id",
+      "detailed_description": "Retrieve user locations by user id. It validates the request, then calls ICommon.getUserByToken, IUserLocations.GetUserLocationsByUserIdAsync. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid user ID is required. [when userid <= 0]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: User not found. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve user locations by user id",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "userid (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/UserLocations",
+          "GET api/UserLocations/{userid}",
+          "GET api/UserLocations/users"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "user_locations_get_user_locations_by_user_id",
+        "description": "Retrieve user locations by user id",
+        "http_method": "GET",
+        "endpoint": "api/UserLocations/{userid}",
+        "parameters": {
+          "userid": {
+            "type": "int",
+            "required": true,
+            "description": "userid (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/UserLocationsController.cs",
+        "action_method": "GetUserLocationsByUserId",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/UserLocations_repo.cs",
+          "Interfaces/IUserLocations.cs"
+        ]
+      },
+      "module": "User and Access Management",
+      "business_logic": {
+        "operation_summary": "Retrieve user locations by user id — validates the request, calls ICommon.getUserByToken, IUserLocations.GetUserLocationsByUserIdAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) userid; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid user ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IUserLocations.GetUserLocationsByUserIdAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "UserLocations_repo (Repositories/UserLocations_repo.cs) via IUserLocations"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "User not found.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid user ID is required.",
+            "when": "userid <= 0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "user_locations_update_user_location",
+      "name": "Update User Location",
+      "action_method": "UpdateUserLocation",
+      "http_method": "PUT",
+      "route": "api/UserLocations/{userid}",
+      "business_purpose": "Update user location",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "userid",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateUserLocationRequest (inline)",
+        "properties": [
+          {
+            "name": "userid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "regionids",
+            "type": "List<int>",
+            "required": false
+          },
+          {
+            "name": "areaids",
+            "type": "List<int>",
+            "required": false
+          },
+          {
+            "name": "subareaids",
+            "type": "List<int>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "settings/user-settings/user-location:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update user location",
+      "detailed_description": "Update user location. It validates the request, then calls ICommon.getUserByToken, IUserLocations.GetUserLocationsByUserIdAsync, IUserLocations.GetUserById. Persists changes to: UserLocations: DELETE, UserLocations: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; Valid user ID in request is required. [when request.userid <= 0]; At least one location (region, area, or subarea) must be specified. [when !request.regionids.Any() && !request.areaids.Any() && !request.subareaids.Any()]; Failed to remove existing locations: {deleteResult.Message} [when !deleteResult.Success]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update user location",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "userid (route)",
+          "request body UpdateUserLocationRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/UserLocations/{userid}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "user_locations_update_user_location",
+        "description": "Update user location",
+        "http_method": "PUT",
+        "endpoint": "api/UserLocations/{userid}",
+        "parameters": {
+          "userid": {
+            "type": "int",
+            "required": false,
+            "description": "userid (body)"
+          },
+          "regionids": {
+            "type": "List<int>",
+            "required": false,
+            "description": "regionids (body)"
+          },
+          "areaids": {
+            "type": "List<int>",
+            "required": false,
+            "description": "areaids (body)"
+          },
+          "subareaids": {
+            "type": "List<int>",
+            "required": false,
+            "description": "subareaids (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/UserLocationsController.cs",
+        "action_method": "UpdateUserLocation",
+        "related_dto_files": [
+          "Controllers/UserLocationsController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/UserLocations_repo.cs",
+          "Interfaces/IUserLocations.cs"
+        ]
+      },
+      "module": "User and Access Management",
+      "business_logic": {
+        "operation_summary": "Update user location — validates the request, calls ICommon.getUserByToken, IUserLocations.GetUserLocationsByUserIdAsync, IUserLocations.GetUserById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) userid; request body of type UpdateUserLocationRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "UserLocations: DELETE; UserLocations: INSERT",
+        "validations": "ModelState (DTO data-annotation) validation; Invalid data provided.; Valid user ID in request is required.; At least one location (region, area, or subarea) must be specified.; Failed to remove existing locations: {deleteResult.Message}",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IUserLocations.GetUserLocationsByUserIdAsync",
+          "IUserLocations.GetUserById",
+          "IUserLocations.DeleteUserLocationsByUserIdAsync",
+          "IUserLocations.GetSubAreaById",
+          "IUserLocations.CreateUserLocationAsync",
+          "IUserLocations.GetAreaById",
+          "IUserLocations.GetRegionById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "UserLocations_repo (Repositories/UserLocations_repo.cs) via IUserLocations"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "Valid user ID in request is required.",
+            "when": "request.userid <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one location (region, area, or subarea) must be specified.",
+            "when": "!request.regionids.Any() && !request.areaids.Any() && !request.subareaids.Any()"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Failed to remove existing locations: {deleteResult.Message}",
+            "when": "!deleteResult.Success"
+          }
+        ]
+      }
+    },
+    {
+      "id": "user_locations_delete_user_location",
+      "name": "Delete User Location",
+      "action_method": "DeleteUserLocation",
+      "http_method": "DELETE",
+      "route": "api/UserLocations/{id}",
+      "business_purpose": "Delete user location",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "settings/user-settings/user-location:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete user location",
+      "detailed_description": "Delete user location. It validates the request, then calls ICommon.getUserByToken, IUserLocations.GetUserById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: UserLocations: DELETE, AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: User location not found. [when existingUserLocation == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete user location",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/UserLocations/{userid}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "user_locations_delete_user_location",
+        "description": "Delete user location",
+        "http_method": "DELETE",
+        "endpoint": "api/UserLocations/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/UserLocationsController.cs",
+        "action_method": "DeleteUserLocation",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/UserLocations_repo.cs",
+          "Interfaces/IUserLocations.cs"
+        ]
+      },
+      "module": "User and Access Management",
+      "business_logic": {
+        "operation_summary": "Delete user location — validates the request, calls ICommon.getUserByToken, IUserLocations.GetUserById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "UserLocations: DELETE; AuditLog: INSERT",
+        "validations": "Valid ID is required.",
+        "side_effects": "AuditLog DELETE (Settings > User Settings > User Locations)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IUserLocations.GetUserById",
+          "ICommon.ToJsonString",
+          "IUserLocations.DeleteUserLocation",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "UserLocations_repo (Repositories/UserLocations_repo.cs) via IUserLocations"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "User location not found.",
+            "when": "existingUserLocation == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "user_locations_get_users",
+      "name": "Get Users",
+      "action_method": "GetUsers",
+      "http_method": "GET",
+      "route": "api/UserLocations/users",
+      "business_purpose": "Retrieve users",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/user-settings/user-location:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve users",
+      "detailed_description": "Retrieve users. It calls ICommon.getUserByToken, IUserLocations.GetAllUsers. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve users",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/UserLocations",
+          "GET api/UserLocations/{userid}",
+          "GET api/UserLocations/users"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "user_locations_get_users",
+        "description": "Retrieve users",
+        "http_method": "GET",
+        "endpoint": "api/UserLocations/users",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/UserLocationsController.cs",
+        "action_method": "GetUsers",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/UserLocations_repo.cs",
+          "Interfaces/IUserLocations.cs"
+        ]
+      },
+      "module": "User and Access Management",
+      "business_logic": {
+        "operation_summary": "Retrieve users — calls ICommon.getUserByToken, IUserLocations.GetAllUsers",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IUserLocations.GetAllUsers"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "UserLocations_repo (Repositories/UserLocations_repo.cs) via IUserLocations"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "user_locations_get_area_by_region",
+      "name": "Get Area By Region",
+      "action_method": "GetAreaByRegion",
+      "http_method": "GET",
+      "route": "api/UserLocations/byregion",
+      "business_purpose": "Retrieve area by region",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "regionIds",
+          "type": "List<int>",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/user-settings/user-location:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve area by region",
+      "detailed_description": "Retrieve area by region. It validates the request, then calls IUserLocations.GetAreaByRegion. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid region IDs are required. [when regionIds == null || !regionIds.Any()]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve area by region",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "regionIds (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/UserLocations",
+          "GET api/UserLocations/{userid}",
+          "GET api/UserLocations/users"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "user_locations_get_area_by_region",
+        "description": "Retrieve area by region",
+        "http_method": "GET",
+        "endpoint": "api/UserLocations/byregion",
+        "parameters": {
+          "regionIds": {
+            "type": "List<int>",
+            "required": true,
+            "description": "region Ids (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/UserLocationsController.cs",
+        "action_method": "GetAreaByRegion",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/UserLocations_repo.cs",
+          "Interfaces/IUserLocations.cs"
+        ]
+      },
+      "module": "User and Access Management",
+      "business_logic": {
+        "operation_summary": "Retrieve area by region — validates the request, calls IUserLocations.GetAreaByRegion",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): regionIds; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid region IDs are required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IUserLocations.GetAreaByRegion"
+        ],
+        "calls_repositories": [
+          "UserLocations_repo (Repositories/UserLocations_repo.cs) via IUserLocations"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid region IDs are required.",
+            "when": "regionIds == null || !regionIds.Any()"
+          }
+        ]
+      }
+    },
+    {
+      "id": "user_locations_get_sub_area_by_area",
+      "name": "Get Sub Area By Area",
+      "action_method": "GetSubAreaByArea",
+      "http_method": "GET",
+      "route": "api/UserLocations/byarea",
+      "business_purpose": "Retrieve sub area by area",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "areaIds",
+          "type": "List<int>",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/user-settings/user-location:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve sub area by area",
+      "detailed_description": "Retrieve sub area by area. It validates the request, then calls IUserLocations.GetSubAreaByArea. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid region IDs are required. [when areaIds == null || !areaIds.Any()]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve sub area by area",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "areaIds (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/UserLocations",
+          "GET api/UserLocations/{userid}",
+          "GET api/UserLocations/users"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "user_locations_get_sub_area_by_area",
+        "description": "Retrieve sub area by area",
+        "http_method": "GET",
+        "endpoint": "api/UserLocations/byarea",
+        "parameters": {
+          "areaIds": {
+            "type": "List<int>",
+            "required": true,
+            "description": "area Ids (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/UserLocationsController.cs",
+        "action_method": "GetSubAreaByArea",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/UserLocations_repo.cs",
+          "Interfaces/IUserLocations.cs"
+        ]
+      },
+      "module": "User and Access Management",
+      "business_logic": {
+        "operation_summary": "Retrieve sub area by area — validates the request, calls IUserLocations.GetSubAreaByArea",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): areaIds; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid region IDs are required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IUserLocations.GetSubAreaByArea"
+        ],
+        "calls_repositories": [
+          "UserLocations_repo (Repositories/UserLocations_repo.cs) via IUserLocations"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid region IDs are required.",
+            "when": "areaIds == null || !areaIds.Any()"
+          }
+        ]
+      }
+    }
+  ]
+}

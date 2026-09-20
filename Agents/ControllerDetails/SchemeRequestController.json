@@ -1,0 +1,1305 @@
+{
+  "controller": "SchemeRequestController",
+  "file": "Controllers/SchemeRequestController.cs",
+  "module": "Scheme Management",
+  "base_route": "api/SchemeRequest",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles scheme request: get all scheme requests, get by id, create scheme request, create FL scheme request, delete scheme request, branch approval and 2 more",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "crm/scheme-request",
+        "module_code": "crm",
+        "section": "scheme-request",
+        "sub_section": null,
+        "frontend_routes": [
+          "/crm/scheme-request",
+          "/crm/scheme-request/view-scheme-inclusion-request/:code"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "also_called_from_menus": [
+      "crm/contacts",
+      "crm/firms",
+      "crm/scheme-request"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "scheme_request_get_all_scheme_requests",
+      "name": "Get All Scheme Requests",
+      "action_method": "GetAllSchemeRequests",
+      "http_method": "GET",
+      "route": "api/SchemeRequest",
+      "business_purpose": "Retrieve all scheme requests",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "teamMemberId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "SchemeRequest[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/scheme-request:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all scheme requests",
+      "detailed_description": "Retrieve all scheme requests. It calls ICommon.getUserByToken, ISchemeRequest.GetSchemeRequestData, ISchemeRequest.GetSchemeRequestActions. Data access uses stored procedure(s): GetSchemeRequest. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all scheme requests",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/SchemeRequest",
+          "GET api/SchemeRequest/{id}",
+          "GET api/SchemeRequest/getInfluencers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "scheme_request_get_all_scheme_requests",
+        "description": "Retrieve all scheme requests",
+        "http_method": "GET",
+        "endpoint": "api/SchemeRequest",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "teamMemberId": {
+            "type": "int",
+            "required": false,
+            "description": "team Member Id (query)"
+          },
+          "status": {
+            "type": "string",
+            "required": false,
+            "description": "status (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SchemeRequestController.cs",
+        "action_method": "GetAllSchemeRequests",
+        "related_dto_files": [
+          "Models/SchemeRequest.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/SchemeRequest_repo.cs",
+          "Interfaces/ISchemeRequest.cs"
+        ]
+      },
+      "module": "Scheme Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all scheme requests — calls ICommon.getUserByToken, ISchemeRequest.GetSchemeRequestData, ISchemeRequest.GetSchemeRequestActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISchemeRequest.GetSchemeRequestData",
+          "ISchemeRequest.GetSchemeRequestActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SchemeRequest_repo (Repository/SchemeRequest_repo.cs) via ISchemeRequest"
+        ],
+        "stored_procedures": [
+          "GetSchemeRequest"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scheme_request_get_by_id",
+      "name": "Get By Id",
+      "action_method": "GetById",
+      "http_method": "GET",
+      "route": "api/SchemeRequest/{id}",
+      "business_purpose": "Retrieve a scheme request record by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/scheme-request:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve a scheme request record by ID",
+      "detailed_description": "Retrieve a scheme request record by ID. It validates the request, then calls ICommon.getUserByToken, ISchemeRequest.GetSchemeRequestByIdAsync, ISchemeRequest.GetSchemeRequestActions. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid scheme request ID is required. [when id <= 0]",
+        "not_found": "404: Scheme request not found. [when schemeRequest == null]",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve a scheme request record by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/SchemeRequest",
+          "GET api/SchemeRequest/{id}",
+          "GET api/SchemeRequest/getInfluencers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "scheme_request_get_by_id",
+        "description": "Retrieve a scheme request record by ID",
+        "http_method": "GET",
+        "endpoint": "api/SchemeRequest/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SchemeRequestController.cs",
+        "action_method": "GetById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/SchemeRequest_repo.cs",
+          "Interfaces/ISchemeRequest.cs"
+        ]
+      },
+      "module": "Scheme Management",
+      "business_logic": {
+        "operation_summary": "Retrieve a scheme request record by ID — validates the request, calls ICommon.getUserByToken, ISchemeRequest.GetSchemeRequestByIdAsync, ISchemeRequest.GetSchemeRequestActions",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid scheme request ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISchemeRequest.GetSchemeRequestByIdAsync",
+          "ISchemeRequest.GetSchemeRequestActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SchemeRequest_repo (Repository/SchemeRequest_repo.cs) via ISchemeRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid scheme request ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Scheme request not found.",
+            "when": "schemeRequest == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scheme_request_create_scheme_request",
+      "name": "Create Scheme Request",
+      "action_method": "CreateSchemeRequest",
+      "http_method": "POST",
+      "route": "api/SchemeRequest",
+      "business_purpose": "Create scheme request",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateSchemeRequestDto (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Message",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "InfluencerIds",
+            "type": "List<int>",
+            "required": false
+          },
+          {
+            "name": "SchemeId",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "crm/scheme-request:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create scheme request",
+      "detailed_description": "Create scheme request. It validates the request, then calls ICommon.getUserByToken, ISchemeRequest.GetSchemeRequestByIdAsync, ISchemeRequest.GetBranchByUserAsync. Persists changes to: SchemeRequest: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; No branch found for the current user. [when branch == null]; Selected scheme not found. [when selectedSchemeHeader == null]",
+        "not_found": "404: Scheme request not found for editing. [when existingRequest == null]",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create scheme request",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateSchemeRequestDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/SchemeRequest",
+          "GET api/SchemeRequest/getInfluencers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "scheme_request_create_scheme_request",
+        "description": "Create scheme request",
+        "http_method": "POST",
+        "endpoint": "api/SchemeRequest",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "Message": {
+            "type": "string",
+            "required": false,
+            "description": "Message (body)"
+          },
+          "InfluencerIds": {
+            "type": "List<int>",
+            "required": false,
+            "description": "Influencer Ids (body)"
+          },
+          "SchemeId": {
+            "type": "int",
+            "required": false,
+            "description": "Scheme Id (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/SchemeRequestController.cs",
+        "action_method": "CreateSchemeRequest",
+        "related_dto_files": [
+          "Controllers/SchemeRequestController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/SchemeRequest_repo.cs",
+          "Interfaces/ISchemeRequest.cs"
+        ]
+      },
+      "module": "Scheme Management",
+      "business_logic": {
+        "operation_summary": "Create scheme request — validates the request, calls ICommon.getUserByToken, ISchemeRequest.GetSchemeRequestByIdAsync, ISchemeRequest.GetBranchByUserAsync",
+        "preconditions": "Valid Bearer JWT; request body of type CreateSchemeRequestDto (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "SchemeRequest: INSERT",
+        "validations": "ModelState (DTO data-annotation) validation; Invalid data provided.; No branch found for the current user.; Selected scheme not found.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISchemeRequest.GetSchemeRequestByIdAsync",
+          "ISchemeRequest.GetBranchByUserAsync",
+          "ISchemeRequest.GetMaxNumberAsync",
+          "ISchemeRequest.GetSchemeHeaderByIdAsync",
+          "ISchemeRequest.GetInfluencerByIdAsync",
+          "ISchemeRequest.CreateSchemeRequestAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SchemeRequest_repo (Repository/SchemeRequest_repo.cs) via ISchemeRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Scheme request not found for editing.",
+            "when": "existingRequest == null"
+          },
+          {
+            "returns": 400,
+            "message": "No branch found for the current user.",
+            "when": "branch == null"
+          },
+          {
+            "returns": 400,
+            "message": "Selected scheme not found.",
+            "when": "selectedSchemeHeader == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scheme_request_create_fl_scheme_request",
+      "name": "Create FL Scheme Request",
+      "action_method": "CreateFLSchemeRequest",
+      "http_method": "POST",
+      "route": "api/SchemeRequest/FL-Scheme-Request-Creation",
+      "business_purpose": "Create FL scheme request",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateFLSchemeRequestDto (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Message",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "InfluencerId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "SchemeId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "bank_name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "ifsc_code",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "source_number",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Name_as_per_bank",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "PAN_number",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "crm/contacts:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/firms"
+      ],
+      "short_description": "Create FL scheme request",
+      "detailed_description": "Create FL scheme request. It validates the request, then calls ICommon.getUserByToken, ISchemeRequest.GetBranchByUserAsync, ISchemeRequest.GetMaxNumberAsync. Persists changes to: SchemeRequest: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; No branch found for the current user. [when branch == null]; Selected scheme not found. [when selectedSchemeHeader == null]; Bank name is required. [when requestDto.bank_name == null && influencer.bank_name == null]; IFSC code is required. [when requestDto.ifsc_code == null && influencer.ifsc_code == null]; Source number is required. [when requestDto.source_number == null && influencer.source_number == null]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create FL scheme request",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateFLSchemeRequestDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/SchemeRequest",
+          "GET api/SchemeRequest/getInfluencers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "scheme_request_create_fl_scheme_request",
+        "description": "Create FL scheme request",
+        "http_method": "POST",
+        "endpoint": "api/SchemeRequest/FL-Scheme-Request-Creation",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "Message": {
+            "type": "string",
+            "required": false,
+            "description": "Message (body)"
+          },
+          "InfluencerId": {
+            "type": "int",
+            "required": false,
+            "description": "Influencer Id (body)"
+          },
+          "SchemeId": {
+            "type": "int",
+            "required": false,
+            "description": "Scheme Id (body)"
+          },
+          "bank_name": {
+            "type": "string",
+            "required": false,
+            "description": "bank name (body)"
+          },
+          "ifsc_code": {
+            "type": "string",
+            "required": false,
+            "description": "ifsc code (body)"
+          },
+          "source_number": {
+            "type": "string",
+            "required": false,
+            "description": "source number (body)"
+          },
+          "Name_as_per_bank": {
+            "type": "string",
+            "required": false,
+            "description": "Name as per bank (body)"
+          },
+          "PAN_number": {
+            "type": "string",
+            "required": false,
+            "description": "PAN number (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/SchemeRequestController.cs",
+        "action_method": "CreateFLSchemeRequest",
+        "related_dto_files": [
+          "Controllers/SchemeRequestController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/SchemeRequest_repo.cs",
+          "Interfaces/ISchemeRequest.cs"
+        ]
+      },
+      "module": "Scheme Management",
+      "business_logic": {
+        "operation_summary": "Create FL scheme request — validates the request, calls ICommon.getUserByToken, ISchemeRequest.GetBranchByUserAsync, ISchemeRequest.GetMaxNumberAsync",
+        "preconditions": "Valid Bearer JWT; request body of type CreateFLSchemeRequestDto (inline); passes 6 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "SchemeRequest: INSERT; sets influencer.bank_name, influencer.ifsc_code, influencer.source_number, influencer.PAN_number, influencer.Name_as_per_bank",
+        "validations": "ModelState (DTO data-annotation) validation; Invalid data provided.; No branch found for the current user.; Selected scheme not found.; Bank name is required.; IFSC code is required.; (+1 more)",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISchemeRequest.GetBranchByUserAsync",
+          "ISchemeRequest.GetMaxNumberAsync",
+          "ISchemeRequest.GetSchemeHeaderByIdAsync",
+          "ISchemeRequest.GetInfluencerByIdAsync",
+          "ISchemeRequest.CreateSchemeRequestAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SchemeRequest_repo (Repository/SchemeRequest_repo.cs) via ISchemeRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "No branch found for the current user.",
+            "when": "branch == null"
+          },
+          {
+            "returns": 400,
+            "message": "Selected scheme not found.",
+            "when": "selectedSchemeHeader == null"
+          },
+          {
+            "returns": 400,
+            "message": "Bank name is required.",
+            "when": "requestDto.bank_name == null && influencer.bank_name == null"
+          },
+          {
+            "returns": 400,
+            "message": "IFSC code is required.",
+            "when": "requestDto.ifsc_code == null && influencer.ifsc_code == null"
+          },
+          {
+            "returns": 400,
+            "message": "Source number is required.",
+            "when": "requestDto.source_number == null && influencer.source_number == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scheme_request_delete_scheme_request",
+      "name": "Delete Scheme Request",
+      "action_method": "DeleteSchemeRequest",
+      "http_method": "DELETE",
+      "route": "api/SchemeRequest/{id}",
+      "business_purpose": "Delete scheme request",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "crm/scheme-request:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete scheme request",
+      "detailed_description": "Delete scheme request. It validates the request, then calls ICommon.getUserByToken, ISchemeRequest.GetSchemeRequestByIdAsync, ISchemeRequest.DeleteSchemeRequestAsync. Persists changes to: SchemeRequest: DELETE. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid scheme request ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Scheme request not found. [when existingSchemeRequest == null]",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete scheme request",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/SchemeRequest/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "scheme_request_delete_scheme_request",
+        "description": "Delete scheme request",
+        "http_method": "DELETE",
+        "endpoint": "api/SchemeRequest/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/SchemeRequestController.cs",
+        "action_method": "DeleteSchemeRequest",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/SchemeRequest_repo.cs",
+          "Interfaces/ISchemeRequest.cs"
+        ]
+      },
+      "module": "Scheme Management",
+      "business_logic": {
+        "operation_summary": "Delete scheme request — validates the request, calls ICommon.getUserByToken, ISchemeRequest.GetSchemeRequestByIdAsync, ISchemeRequest.DeleteSchemeRequestAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "SchemeRequest: DELETE",
+        "validations": "Valid scheme request ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISchemeRequest.GetSchemeRequestByIdAsync",
+          "ISchemeRequest.DeleteSchemeRequestAsync",
+          "ISchemeRequest.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SchemeRequest_repo (Repository/SchemeRequest_repo.cs) via ISchemeRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid scheme request ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Scheme request not found.",
+            "when": "existingSchemeRequest == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "scheme_request_branch_approval",
+      "name": "Branch Approval",
+      "action_method": "BranchApproval",
+      "http_method": "POST",
+      "route": "api/SchemeRequest/branch-approval",
+      "business_purpose": "Handle branch approval",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "BranchApprovalDto (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "IsApproved",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "crm/scheme-request:approve",
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Handle branch approval",
+      "detailed_description": "Handle branch approval. It validates the request, then calls ICommon.getUserByToken, ISchemeRequest.GetSchemeRequestByIdAsync, ISchemeRequest.SaveChangesAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; Valid scheme request ID is required. [when approvalDto.Id <= 0]",
+        "not_found": "404: Scheme request not found. [when request == null]",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]; Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle branch approval",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body BranchApprovalDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/SchemeRequest",
+          "GET api/SchemeRequest/getInfluencers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "scheme_request_branch_approval",
+        "description": "Handle branch approval",
+        "http_method": "POST",
+        "endpoint": "api/SchemeRequest/branch-approval",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "IsApproved": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Approved (body)"
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Approves the record and advances its workflow"
+      },
+      "source": {
+        "controller_file": "Controllers/SchemeRequestController.cs",
+        "action_method": "BranchApproval",
+        "related_dto_files": [
+          "Controllers/SchemeRequestController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/SchemeRequest_repo.cs",
+          "Interfaces/ISchemeRequest.cs"
+        ]
+      },
+      "module": "Scheme Management",
+      "business_logic": {
+        "operation_summary": "Handle branch approval — validates the request, calls ICommon.getUserByToken, ISchemeRequest.GetSchemeRequestByIdAsync, ISchemeRequest.SaveChangesAsync",
+        "preconditions": "Valid Bearer JWT; request body of type BranchApprovalDto (inline); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets request.is_branch_approved, request.is_branch_rejected, request.branch_operated_by, request.branch_operated_date, request.status, request.modified_by and saves changes",
+        "validations": "ModelState (DTO data-annotation) validation; Invalid data provided.; Valid scheme request ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISchemeRequest.GetSchemeRequestByIdAsync",
+          "ISchemeRequest.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SchemeRequest_repo (Repository/SchemeRequest_repo.cs) via ISchemeRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "Valid scheme request ID is required.",
+            "when": "approvalDto.Id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Scheme request not found.",
+            "when": "request == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scheme_request_branch_reject",
+      "name": "Branch Reject",
+      "action_method": "BranchReject",
+      "http_method": "POST",
+      "route": "api/SchemeRequest/branch-reject",
+      "business_purpose": "Handle branch reject",
+      "data_effect": "REJECTION",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "BranchRejectDto (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "IsRejected",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "REJECTION",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "crm/scheme-request:reject",
+      "permission_flags": [
+        "reject"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Handle branch reject",
+      "detailed_description": "Handle branch reject. It validates the request, then calls ICommon.getUserByToken, ISchemeRequest.GetSchemeRequestByIdAsync, ISchemeRequest.SaveChangesAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; Valid scheme request ID is required. [when rejectDto.Id <= 0]",
+        "not_found": "404: Scheme request not found. [when request == null]",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle branch reject",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body BranchRejectDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/SchemeRequest",
+          "GET api/SchemeRequest/getInfluencers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "scheme_request_branch_reject",
+        "description": "Handle branch reject",
+        "http_method": "POST",
+        "endpoint": "api/SchemeRequest/branch-reject",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "IsRejected": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Rejected (body)"
+          }
+        },
+        "operation_type": "REJECTION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Rejects the record"
+      },
+      "source": {
+        "controller_file": "Controllers/SchemeRequestController.cs",
+        "action_method": "BranchReject",
+        "related_dto_files": [
+          "Controllers/SchemeRequestController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/SchemeRequest_repo.cs",
+          "Interfaces/ISchemeRequest.cs"
+        ]
+      },
+      "module": "Scheme Management",
+      "business_logic": {
+        "operation_summary": "Handle branch reject — validates the request, calls ICommon.getUserByToken, ISchemeRequest.GetSchemeRequestByIdAsync, ISchemeRequest.SaveChangesAsync",
+        "preconditions": "Valid Bearer JWT; request body of type BranchRejectDto (inline); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets request.is_branch_rejected, request.is_branch_approved, request.branch_operated_by, request.branch_operated_date, request.status, request.modified_by and saves changes",
+        "validations": "ModelState (DTO data-annotation) validation; Invalid data provided.; Valid scheme request ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISchemeRequest.GetSchemeRequestByIdAsync",
+          "ISchemeRequest.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SchemeRequest_repo (Repository/SchemeRequest_repo.cs) via ISchemeRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "Valid scheme request ID is required.",
+            "when": "rejectDto.Id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Scheme request not found.",
+            "when": "request == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scheme_request_get_influencers",
+      "name": "Get Influencers",
+      "action_method": "GetInfluencers",
+      "http_method": "GET",
+      "route": "api/SchemeRequest/getInfluencers",
+      "business_purpose": "Retrieve influencers",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/scheme-request:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve influencers",
+      "detailed_description": "Retrieve influencers. It calls ICommon.getUserByToken, ISchemeRequest.GetAllContactsAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve influencers",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/SchemeRequest",
+          "GET api/SchemeRequest/{id}",
+          "GET api/SchemeRequest/getInfluencers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "scheme_request_get_influencers",
+        "description": "Retrieve influencers",
+        "http_method": "GET",
+        "endpoint": "api/SchemeRequest/getInfluencers",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SchemeRequestController.cs",
+        "action_method": "GetInfluencers",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/SchemeRequest_repo.cs",
+          "Interfaces/ISchemeRequest.cs"
+        ]
+      },
+      "module": "Scheme Management",
+      "business_logic": {
+        "operation_summary": "Retrieve influencers — calls ICommon.getUserByToken, ISchemeRequest.GetAllContactsAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISchemeRequest.GetAllContactsAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SchemeRequest_repo (Repository/SchemeRequest_repo.cs) via ISchemeRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,776 @@
+{
+  "controller": "ThicknessController",
+  "file": "Controllers/ThicknessController.cs",
+  "module": "Master Data - Product",
+  "base_route": "api/Thickness",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages thickness records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/product-settings/thickness",
+        "module_code": "settings",
+        "section": "product-settings",
+        "sub_section": "thickness",
+        "frontend_routes": [
+          "/settings/product-settings/thickness"
+        ],
+        "menu_route_confirmed": true,
+        "display_names": {
+          "module": "Settings",
+          "section": "Product Settings",
+          "sub_section": "Thickness"
+        }
+      }
+    ],
+    "also_called_from_menus": [
+      "settings/product-settings/products"
+    ],
+    "section_configuration_keys": [
+      "Thickness"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Settings",
+        "section": "Product Settings",
+        "sub_section": "Thickness"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "thickness_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/Thickness",
+      "business_purpose": "Retrieve all thickness records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/product-settings/thickness:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "settings/product-settings/products"
+      ],
+      "short_description": "Retrieve all thickness records",
+      "detailed_description": "Retrieve all thickness records. It calls ICommon.getUserByToken, IThickness.GetThicknessData, IThickness.GetThicknessActions. Data access uses stored procedure(s): GetThickness, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all thickness records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Thickness",
+          "GET api/Thickness/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "thickness_get_all",
+        "description": "Retrieve all thickness records",
+        "http_method": "GET",
+        "endpoint": "api/Thickness",
+        "parameters": {
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ThicknessController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ThicknessRepository.cs",
+          "Interfaces/IThickness.cs"
+        ]
+      },
+      "module": "Master Data - Product",
+      "business_logic": {
+        "operation_summary": "Retrieve all thickness records — calls ICommon.getUserByToken, IThickness.GetThicknessData, IThickness.GetThicknessActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IThickness.GetThicknessData",
+          "IThickness.GetThicknessActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ThicknessRepository (Repositories/ThicknessRepository.cs) via IThickness"
+        ],
+        "stored_procedures": [
+          "GetThickness",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "thickness_get_thickness_by_id",
+      "name": "Get Thickness By Id",
+      "action_method": "GetThicknessById",
+      "http_method": "GET",
+      "route": "api/Thickness/{id}",
+      "business_purpose": "Retrieve thickness by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/product-settings/thickness:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve thickness by ID",
+      "detailed_description": "Retrieve thickness by ID. It validates the request, then calls IThickness.GetThicknessById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid Thickness ID is required. [when id <= 0]",
+        "not_found": "404: Thickness not found. [when Thickness == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve thickness by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Thickness",
+          "GET api/Thickness/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "thickness_get_thickness_by_id",
+        "description": "Retrieve thickness by ID",
+        "http_method": "GET",
+        "endpoint": "api/Thickness/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ThicknessController.cs",
+        "action_method": "GetThicknessById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/ThicknessRepository.cs",
+          "Interfaces/IThickness.cs"
+        ]
+      },
+      "module": "Master Data - Product",
+      "business_logic": {
+        "operation_summary": "Retrieve thickness by ID — validates the request, calls IThickness.GetThicknessById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid Thickness ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IThickness.GetThicknessById"
+        ],
+        "calls_repositories": [
+          "ThicknessRepository (Repositories/ThicknessRepository.cs) via IThickness"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid Thickness ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Thickness not found.",
+            "when": "Thickness == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "thickness_create",
+      "name": "Create",
+      "action_method": "Create",
+      "http_method": "POST",
+      "route": "api/Thickness",
+      "business_purpose": "Create a new thickness record",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateThicknessRequest (inline)",
+        "properties": [
+          {
+            "name": "thickness_name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "thickness_description",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "thickness_in_mm",
+            "type": "float",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; a duplicate check exists so repeating usually fails with a conflict/validation message"
+      },
+      "required_permission": "settings/product-settings/thickness:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create a new thickness record",
+      "detailed_description": "Create a new thickness record. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IThickness.IsThicknessDuplicateAsync, IThickness.CreateThicknessAsync, then writes an audit log entry. Persists changes to: Thickness: INSERT, AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; Thickness Name is required. [when string.IsNullOrWhiteSpace(request.thickness_name)]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "Size with this name already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create a new thickness record",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateThicknessRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Thickness"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "thickness_create",
+        "description": "Create a new thickness record",
+        "http_method": "POST",
+        "endpoint": "api/Thickness",
+        "parameters": {
+          "thickness_name": {
+            "type": "string",
+            "required": false,
+            "description": "thickness name (body)"
+          },
+          "thickness_description": {
+            "type": "string",
+            "required": false,
+            "description": "thickness description (body)"
+          },
+          "thickness_in_mm": {
+            "type": "float",
+            "required": false,
+            "description": "thickness in mm (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/ThicknessController.cs",
+        "action_method": "Create",
+        "related_dto_files": [
+          "Controllers/ThicknessController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ThicknessRepository.cs",
+          "Interfaces/IThickness.cs"
+        ]
+      },
+      "module": "Master Data - Product",
+      "business_logic": {
+        "operation_summary": "Create a new thickness record — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, IThickness.IsThicknessDuplicateAsync, IThickness.CreateThicknessAsync, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; request body of type CreateThicknessRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Thickness: INSERT; AuditLog: INSERT",
+        "validations": "ModelState (DTO data-annotation) validation; Invalid data provided.; Thickness Name is required.",
+        "side_effects": "AuditLog CREATE (Settings > Product Settings > Thickness)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IThickness.IsThicknessDuplicateAsync",
+          "IThickness.CreateThicknessAsync",
+          "ICommon.ToJsonString",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ThicknessRepository (Repositories/ThicknessRepository.cs) via IThickness"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "Thickness Name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.thickness_name)"
+          },
+          {
+            "returns": 400,
+            "message": "Size with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "thickness_update",
+      "name": "Update",
+      "action_method": "Update",
+      "http_method": "PUT",
+      "route": "api/Thickness/{id}",
+      "business_purpose": "Update an existing thickness record",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateThicknessRequest (inline)",
+        "properties": [
+          {
+            "name": "thickness_name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "thickness_description",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "thickness_in_mm",
+            "type": "float",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values; each call writes another audit log entry"
+      },
+      "required_permission": "settings/product-settings/thickness:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update an existing thickness record",
+      "detailed_description": "Update an existing thickness record. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IThickness.IsThicknessDuplicateAsync, IThickness.GetThicknessById, then writes an audit log entry. Persists changes to: Thickness: UPDATE, AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid Thickness ID is required. [when id <= 0]; Thickness is required for update. [when string.IsNullOrWhiteSpace(request.thickness_name)]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "Thickness with this name already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update an existing thickness record",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "request body UpdateThicknessRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Thickness/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "thickness_update",
+        "description": "Update an existing thickness record",
+        "http_method": "PUT",
+        "endpoint": "api/Thickness/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "thickness_name": {
+            "type": "string",
+            "required": false,
+            "description": "thickness name (body)"
+          },
+          "thickness_description": {
+            "type": "string",
+            "required": false,
+            "description": "thickness description (body)"
+          },
+          "thickness_in_mm": {
+            "type": "float",
+            "required": false,
+            "description": "thickness in mm (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/ThicknessController.cs",
+        "action_method": "Update",
+        "related_dto_files": [
+          "Controllers/ThicknessController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ThicknessRepository.cs",
+          "Interfaces/IThickness.cs"
+        ]
+      },
+      "module": "Master Data - Product",
+      "business_logic": {
+        "operation_summary": "Update an existing thickness record — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, IThickness.IsThicknessDuplicateAsync, IThickness.GetThicknessById, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; request body of type UpdateThicknessRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Thickness: UPDATE; AuditLog: INSERT",
+        "validations": "Valid Thickness ID is required.; Thickness is required for update.",
+        "side_effects": "AuditLog UPDATE (Settings > Product Settings > Thickness)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IThickness.IsThicknessDuplicateAsync",
+          "IThickness.GetThicknessById",
+          "ICommon.ToJsonString",
+          "IThickness.UpdateThicknessAsync",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ThicknessRepository (Repositories/ThicknessRepository.cs) via IThickness"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Thickness ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Thickness is required for update.",
+            "when": "string.IsNullOrWhiteSpace(request.thickness_name)"
+          },
+          {
+            "returns": 400,
+            "message": "Thickness with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "thickness_delete",
+      "name": "Delete",
+      "action_method": "Delete",
+      "http_method": "DELETE",
+      "route": "api/Thickness/{id}",
+      "business_purpose": "Delete a thickness record",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "settings/product-settings/thickness:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete a thickness record",
+      "detailed_description": "Delete a thickness record. It validates the request, then calls ICommon.getUserByToken, IThickness.GetThicknessById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: Thickness: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid Thickness ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete a thickness record",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Thickness/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "thickness_delete",
+        "description": "Delete a thickness record",
+        "http_method": "DELETE",
+        "endpoint": "api/Thickness/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/ThicknessController.cs",
+        "action_method": "Delete",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ThicknessRepository.cs",
+          "Interfaces/IThickness.cs"
+        ]
+      },
+      "module": "Master Data - Product",
+      "business_logic": {
+        "operation_summary": "Delete a thickness record — validates the request, calls ICommon.getUserByToken, IThickness.GetThicknessById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Thickness: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "validations": "Valid Thickness ID is required.",
+        "side_effects": "AuditLog DELETE (Settings > Product Settings > Thickness)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IThickness.GetThicknessById",
+          "ICommon.ToJsonString",
+          "IThickness.DeleteThickness",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ThicknessRepository (Repositories/ThicknessRepository.cs) via IThickness"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Thickness ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    }
+  ]
+}

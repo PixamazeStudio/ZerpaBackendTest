@@ -1,0 +1,3257 @@
+{
+  "controller": "ComplaintsController",
+  "file": "Controllers/ComplaintsController.cs",
+  "module": "Complaints Management",
+  "base_route": "api/Complaints",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages complaints records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "cms/all-complaints",
+        "module_code": "cms",
+        "section": "all-complaints",
+        "sub_section": null,
+        "frontend_routes": [
+          "/cms/all-complaints",
+          "/cms/all-complaints/create-complaints",
+          "/cms/all-complaints/edit-complaints",
+          "/cms/all-complaints/edit-complaints/:id",
+          "/cms/all-complaints/view-complaints"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "cms/complaints-center",
+        "module_code": "cms",
+        "section": "complaints-center",
+        "sub_section": null,
+        "frontend_routes": [
+          "/cms/complaints-center",
+          "/cms/complaints-center/edit-complaints-center",
+          "/cms/complaints-center/edit-complaints-center/:id",
+          "/cms/complaints-center/view-complaints-center/:id"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "cms/factory-complaints",
+        "module_code": "cms",
+        "section": "factory-complaints",
+        "sub_section": null,
+        "frontend_routes": [
+          "/cms/factory-complaints/view-factory-complaints"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "also_called_from_menus": [
+      "cms/observation-report",
+      "rpt/factory-reports/production-and-dispatch-analysis",
+      "settings/incentive-settings/incentive-brand-rate"
+    ],
+    "section_configuration_keys": [
+      "Complaints"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Complaint Management System",
+        "section": "All Complaints",
+        "sub_section": "Complaints"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "complaints_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/Complaints",
+      "business_purpose": "Retrieve all complaints records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "\"last_30_days\""
+        },
+        {
+          "name": "statusRaw",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "regionIdRaw",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "branchIdRaw",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "areaIdRaw",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "cms/all-complaints:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "cms/complaints-center",
+        "cms/factory-complaints"
+      ],
+      "short_description": "Retrieve all complaints records",
+      "detailed_description": "Retrieve all complaints records. It calls ICommon.getUserByToken, IIndent.BuildMultiFilterContext, ICMSComplaints.GetComplaintsData. Data access uses stored procedure(s): GetComplaints. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all complaints records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Complaints",
+          "GET api/Complaints/dealers",
+          "GET api/Complaints/dealer/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaints_get_all",
+        "description": "Retrieve all complaints records",
+        "http_method": "GET",
+        "endpoint": "api/Complaints",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "date range (query)"
+          },
+          "statusRaw": {
+            "type": "string",
+            "required": false,
+            "description": "status Raw (query)"
+          },
+          "regionIdRaw": {
+            "type": "string",
+            "required": false,
+            "description": "region Id Raw (query)"
+          },
+          "branchIdRaw": {
+            "type": "string",
+            "required": false,
+            "description": "branch Id Raw (query)"
+          },
+          "areaIdRaw": {
+            "type": "string",
+            "required": false,
+            "description": "area Id Raw (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintsController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs",
+          "Repository/Complaints_repo.cs",
+          "Interfaces/ICMSComplaints.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all complaints records — calls ICommon.getUserByToken, IIndent.BuildMultiFilterContext, ICMSComplaints.GetComplaintsData",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndent.BuildMultiFilterContext",
+          "ICMSComplaints.GetComplaintsData",
+          "ICMSComplaints.GetAllBranches",
+          "ICMSComplaints.GetComplaintActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent",
+          "Complaints_repo (Repository/Complaints_repo.cs) via ICMSComplaints"
+        ],
+        "stored_procedures": [
+          "GetComplaints"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaints_complaints_branch_approval",
+      "name": "Complaints Branch Approval",
+      "action_method": "ComplaintsBranchApproval",
+      "http_method": "POST",
+      "route": "api/Complaints/branch-approval",
+      "business_purpose": "Handle complaints branch approval",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "BranchApprovalRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "secId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "erp_det_id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "IsApproved",
+            "type": "bool",
+            "required": false
+          },
+          {
+            "name": "reportName",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "round_report",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "cms/all-complaints:approve",
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Handle complaints branch approval",
+      "detailed_description": "Handle complaints branch approval. It calls ICommon.getUserByToken, ICMSComplaints.GetComplaintsHeaderById, ICMSComplaints.GetUserById. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Complaint not found [when complaint == null]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle complaints branch approval",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body BranchApprovalRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Complaints",
+          "GET api/Complaints/dealers",
+          "GET api/Complaints/grades"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaints_complaints_branch_approval",
+        "description": "Handle complaints branch approval",
+        "http_method": "POST",
+        "endpoint": "api/Complaints/branch-approval",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "secId": {
+            "type": "int",
+            "required": false,
+            "description": "sec Id (body)"
+          },
+          "erp_det_id": {
+            "type": "int",
+            "required": false,
+            "description": "erp det id (body)"
+          },
+          "IsApproved": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Approved (body)"
+          },
+          "reportName": {
+            "type": "string",
+            "required": false,
+            "description": "report Name (body)"
+          },
+          "round_report": {
+            "type": "string",
+            "required": false,
+            "description": "round report (body)"
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Approves the record and advances its workflow"
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintsController.cs",
+        "action_method": "ComplaintsBranchApproval",
+        "related_dto_files": [
+          "Controllers/SchemewiseOrdersController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Complaints_repo.cs",
+          "Interfaces/ICMSComplaints.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Handle complaints branch approval — calls ICommon.getUserByToken, ICMSComplaints.GetComplaintsHeaderById, ICMSComplaints.GetUserById",
+        "preconditions": "Valid Bearer JWT; request body of type BranchApprovalRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets complaint.is_branch_approved, complaint.branch_operated_by, complaint.branch_operated_date, complaint.status, complaint.modified_by, complaint.modified_date and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMSComplaints.GetComplaintsHeaderById",
+          "ICMSComplaints.GetUserById",
+          "ICMSComplaints.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Complaints_repo (Repository/Complaints_repo.cs) via ICMSComplaints"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Complaint not found",
+            "when": "complaint == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaints_complaints_branch_reject",
+      "name": "Complaints Branch Reject",
+      "action_method": "ComplaintsBranchReject",
+      "http_method": "POST",
+      "route": "api/Complaints/branch-reject",
+      "business_purpose": "Handle complaints branch reject",
+      "data_effect": "REJECTION",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "BranchRejectRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "secId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "erp_det_id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "IsRejected",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "REJECTION",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "cms/all-complaints:reject",
+      "permission_flags": [
+        "reject"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Handle complaints branch reject",
+      "detailed_description": "Handle complaints branch reject. It calls ICommon.getUserByToken, ICMSComplaints.GetComplaintsHeaderById, ICMSComplaints.GetUserById. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Complaint not found [when complaint == null]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle complaints branch reject",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body BranchRejectRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Complaints",
+          "GET api/Complaints/dealers",
+          "GET api/Complaints/grades"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaints_complaints_branch_reject",
+        "description": "Handle complaints branch reject",
+        "http_method": "POST",
+        "endpoint": "api/Complaints/branch-reject",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "secId": {
+            "type": "int",
+            "required": false,
+            "description": "sec Id (body)"
+          },
+          "erp_det_id": {
+            "type": "int",
+            "required": false,
+            "description": "erp det id (body)"
+          },
+          "IsRejected": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Rejected (body)"
+          }
+        },
+        "operation_type": "REJECTION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Rejects the record"
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintsController.cs",
+        "action_method": "ComplaintsBranchReject",
+        "related_dto_files": [
+          "Controllers/SchemewiseOrdersController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Complaints_repo.cs",
+          "Interfaces/ICMSComplaints.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Handle complaints branch reject — calls ICommon.getUserByToken, ICMSComplaints.GetComplaintsHeaderById, ICMSComplaints.GetUserById",
+        "preconditions": "Valid Bearer JWT; request body of type BranchRejectRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets complaint.is_branch_rejected, complaint.branch_operated_by, complaint.branch_operated_date, complaint.status, complaint.modified_by, complaint.modified_date and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMSComplaints.GetComplaintsHeaderById",
+          "ICMSComplaints.GetUserById",
+          "ICMSComplaints.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Complaints_repo (Repository/Complaints_repo.cs) via ICMSComplaints"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Complaint not found",
+            "when": "complaint == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaints_get_dealers",
+      "name": "Get Dealers",
+      "action_method": "GetDealers",
+      "http_method": "GET",
+      "route": "api/Complaints/dealers",
+      "business_purpose": "Retrieve dealers",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "search_text",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "cms/all-complaints:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "cms/complaints-center",
+        "cms/factory-complaints"
+      ],
+      "short_description": "Retrieve dealers",
+      "detailed_description": "Retrieve dealers. It calls ICommon.getUserByToken, ICMSComplaints.GetDealerData, ICMSComplaints.GetComplaintActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve dealers",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "search_text (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/Complaints",
+          "GET api/Complaints/dealers",
+          "GET api/Complaints/dealer/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaints_get_dealers",
+        "description": "Retrieve dealers",
+        "http_method": "GET",
+        "endpoint": "api/Complaints/dealers",
+        "parameters": {
+          "search_text": {
+            "type": "string",
+            "required": true,
+            "description": "search text (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintsController.cs",
+        "action_method": "GetDealers",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Complaints_repo.cs",
+          "Interfaces/ICMSComplaints.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Retrieve dealers — calls ICommon.getUserByToken, ICMSComplaints.GetDealerData, ICMSComplaints.GetComplaintActions",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): search_text",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMSComplaints.GetDealerData",
+          "ICMSComplaints.GetComplaintActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Complaints_repo (Repository/Complaints_repo.cs) via ICMSComplaints"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaints_get_dealer_by_id",
+      "name": "Get Dealer By ID",
+      "action_method": "GetDealerByID",
+      "http_method": "GET",
+      "route": "api/Complaints/dealer/{dealerId}",
+      "business_purpose": "Retrieve dealer by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "dealerId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "indentDealerDto[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "cms/all-complaints",
+        "cms/complaints-center",
+        "cms/factory-complaints"
+      ],
+      "short_description": "Retrieve dealer by ID",
+      "detailed_description": "Retrieve dealer by ID. It calls ICommon.getUserByToken, ICMSComplaints.GetDealerById, ICMSComplaints.GetDiscountScenariosByDealerId. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve dealer by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "dealerId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Complaints",
+          "GET api/Complaints/dealers",
+          "GET api/Complaints/dealer/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaints_get_dealer_by_id",
+        "description": "Retrieve dealer by ID",
+        "http_method": "GET",
+        "endpoint": "api/Complaints/dealer/{dealerId}",
+        "parameters": {
+          "dealerId": {
+            "type": "int",
+            "required": true,
+            "description": "dealer Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintsController.cs",
+        "action_method": "GetDealerByID",
+        "related_dto_files": [
+          "DTO/ReadDTO/indentDealerDto.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Complaints_repo.cs",
+          "Interfaces/ICMSComplaints.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Retrieve dealer by ID — calls ICommon.getUserByToken, ICMSComplaints.GetDealerById, ICMSComplaints.GetDiscountScenariosByDealerId",
+        "preconditions": "Valid Bearer JWT; route parameter(s) dealerId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMSComplaints.GetDealerById",
+          "ICMSComplaints.GetDiscountScenariosByDealerId"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Complaints_repo (Repository/Complaints_repo.cs) via ICMSComplaints"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaints_get_grades",
+      "name": "Get Grades",
+      "action_method": "GetGrades",
+      "http_method": "GET",
+      "route": "api/Complaints/grades",
+      "business_purpose": "Retrieve grades",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "productname",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "cms/all-complaints:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "cms/complaints-center",
+        "settings/incentive-settings/incentive-brand-rate",
+        "cms/factory-complaints"
+      ],
+      "short_description": "Retrieve grades",
+      "detailed_description": "Retrieve grades. It calls ICMSComplaints.GetGrades, ICMSComplaints.GetComplaintActions. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No grades found [when grades == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve grades",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "productname (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/Complaints",
+          "GET api/Complaints/dealers",
+          "GET api/Complaints/dealer/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaints_get_grades",
+        "description": "Retrieve grades",
+        "http_method": "GET",
+        "endpoint": "api/Complaints/grades",
+        "parameters": {
+          "productname": {
+            "type": "string",
+            "required": true,
+            "description": "productname (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintsController.cs",
+        "action_method": "GetGrades",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Complaints_repo.cs",
+          "Interfaces/ICMSComplaints.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Retrieve grades — calls ICMSComplaints.GetGrades, ICMSComplaints.GetComplaintActions",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): productname; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICMSComplaints.GetGrades",
+          "ICMSComplaints.GetComplaintActions"
+        ],
+        "calls_repositories": [
+          "Complaints_repo (Repository/Complaints_repo.cs) via ICMSComplaints"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 404,
+            "message": "No grades found",
+            "when": "grades == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaints_get_products",
+      "name": "Get Products",
+      "action_method": "GetProducts",
+      "http_method": "GET",
+      "route": "api/Complaints/products",
+      "business_purpose": "Retrieve products",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401
+        ],
+        "dto_name": "string[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "cms/all-complaints:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "cms/complaints-center",
+        "cms/factory-complaints"
+      ],
+      "short_description": "Retrieve products",
+      "detailed_description": "Retrieve products. It calls ICommon.getUserByToken, ICMSComplaints.GetCategoryMappingByUser, ICMSComplaints.getAllProducts. Possible responses: 200, 401.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve products",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Complaints",
+          "GET api/Complaints/dealers",
+          "GET api/Complaints/dealer/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaints_get_products",
+        "description": "Retrieve products",
+        "http_method": "GET",
+        "endpoint": "api/Complaints/products",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintsController.cs",
+        "action_method": "GetProducts",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Complaints_repo.cs",
+          "Interfaces/ICMSComplaints.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Retrieve products — calls ICommon.getUserByToken, ICMSComplaints.GetCategoryMappingByUser, ICMSComplaints.getAllProducts",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMSComplaints.GetCategoryMappingByUser",
+          "ICMSComplaints.getAllProducts"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Complaints_repo (Repository/Complaints_repo.cs) via ICMSComplaints"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaints_get_thickness",
+      "name": "Get Thickness",
+      "action_method": "GetThickness",
+      "http_method": "GET",
+      "route": "api/Complaints/thickness",
+      "business_purpose": "Retrieve thickness",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "productname",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "grade",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "cms/all-complaints:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "cms/complaints-center",
+        "cms/factory-complaints"
+      ],
+      "short_description": "Retrieve thickness",
+      "detailed_description": "Retrieve thickness. It calls ICMSComplaints.GetThickenss, ICMSComplaints.GetComplaintActions. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No thickness found [when thickenss == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve thickness",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "productname (query)",
+          "grade (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/Complaints",
+          "GET api/Complaints/dealers",
+          "GET api/Complaints/dealer/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaints_get_thickness",
+        "description": "Retrieve thickness",
+        "http_method": "GET",
+        "endpoint": "api/Complaints/thickness",
+        "parameters": {
+          "productname": {
+            "type": "string",
+            "required": true,
+            "description": "productname (query)"
+          },
+          "grade": {
+            "type": "string",
+            "required": true,
+            "description": "grade (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintsController.cs",
+        "action_method": "GetThickness",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Complaints_repo.cs",
+          "Interfaces/ICMSComplaints.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Retrieve thickness — calls ICMSComplaints.GetThickenss, ICMSComplaints.GetComplaintActions",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): productname, grade; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICMSComplaints.GetThickenss",
+          "ICMSComplaints.GetComplaintActions"
+        ],
+        "calls_repositories": [
+          "Complaints_repo (Repository/Complaints_repo.cs) via ICMSComplaints"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 404,
+            "message": "No thickness found",
+            "when": "thickenss == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaints_get_sizes",
+      "name": "Get Sizes",
+      "action_method": "GetSizes",
+      "http_method": "GET",
+      "route": "api/Complaints/sizes",
+      "business_purpose": "Retrieve sizes",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "productname",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "grade",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "thickness",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "cms/all-complaints:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "cms/complaints-center",
+        "cms/factory-complaints"
+      ],
+      "short_description": "Retrieve sizes",
+      "detailed_description": "Retrieve sizes. It calls ICMSComplaints.GetSizes, ICMSComplaints.GetComplaintActions. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No sizes found [when sizes == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve sizes",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "productname (query)",
+          "grade (query)",
+          "thickness (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/Complaints",
+          "GET api/Complaints/dealers",
+          "GET api/Complaints/dealer/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaints_get_sizes",
+        "description": "Retrieve sizes",
+        "http_method": "GET",
+        "endpoint": "api/Complaints/sizes",
+        "parameters": {
+          "productname": {
+            "type": "string",
+            "required": true,
+            "description": "productname (query)"
+          },
+          "grade": {
+            "type": "string",
+            "required": true,
+            "description": "grade (query)"
+          },
+          "thickness": {
+            "type": "string",
+            "required": true,
+            "description": "thickness (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintsController.cs",
+        "action_method": "GetSizes",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Complaints_repo.cs",
+          "Interfaces/ICMSComplaints.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Retrieve sizes — calls ICMSComplaints.GetSizes, ICMSComplaints.GetComplaintActions",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): productname, grade, thickness; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICMSComplaints.GetSizes",
+          "ICMSComplaints.GetComplaintActions"
+        ],
+        "calls_repositories": [
+          "Complaints_repo (Repository/Complaints_repo.cs) via ICMSComplaints"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 404,
+            "message": "No sizes found",
+            "when": "sizes == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaints_get_branches",
+      "name": "Get Branches",
+      "action_method": "GetBranches",
+      "http_method": "GET",
+      "route": "api/Complaints/getbranches",
+      "business_purpose": "Retrieve branches",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "cms/all-complaints:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "cms/complaints-center",
+        "cms/factory-complaints"
+      ],
+      "short_description": "Retrieve branches",
+      "detailed_description": "Retrieve branches. It calls ICommon.getUserByToken, ICMSComplaints.GetBranches. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve branches",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Complaints",
+          "GET api/Complaints/dealers",
+          "GET api/Complaints/dealer/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaints_get_branches",
+        "description": "Retrieve branches",
+        "http_method": "GET",
+        "endpoint": "api/Complaints/getbranches",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintsController.cs",
+        "action_method": "GetBranches",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Complaints_repo.cs",
+          "Interfaces/ICMSComplaints.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Retrieve branches — calls ICommon.getUserByToken, ICMSComplaints.GetBranches",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMSComplaints.GetBranches"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Complaints_repo (Repository/Complaints_repo.cs) via ICMSComplaints"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaints_get_nature_of_complaint",
+      "name": "Get Nature Of Complaint",
+      "action_method": "GetNatureOfComplaint",
+      "http_method": "GET",
+      "route": "api/Complaints/getNatureOfComplaint",
+      "business_purpose": "Retrieve nature of complaint",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "cms/all-complaints:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "cms/complaints-center",
+        "cms/factory-complaints",
+        "cms/observation-report"
+      ],
+      "short_description": "Retrieve nature of complaint",
+      "detailed_description": "Retrieve nature of complaint. It calls ICommon.getUserByToken, ICMSComplaints.GetNatureOfComplaint. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve nature of complaint",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Complaints",
+          "GET api/Complaints/dealers",
+          "GET api/Complaints/dealer/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaints_get_nature_of_complaint",
+        "description": "Retrieve nature of complaint",
+        "http_method": "GET",
+        "endpoint": "api/Complaints/getNatureOfComplaint",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintsController.cs",
+        "action_method": "GetNatureOfComplaint",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Complaints_repo.cs",
+          "Interfaces/ICMSComplaints.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Retrieve nature of complaint — calls ICommon.getUserByToken, ICMSComplaints.GetNatureOfComplaint",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMSComplaints.GetNatureOfComplaint"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Complaints_repo (Repository/Complaints_repo.cs) via ICMSComplaints"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaints_get_complaint_category",
+      "name": "Get Complaint Category",
+      "action_method": "GetComplaintCategory",
+      "http_method": "GET",
+      "route": "api/Complaints/getComplaintCategory",
+      "business_purpose": "Retrieve complaint category",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "cms/all-complaints:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "cms/complaints-center",
+        "rpt/factory-reports/production-and-dispatch-analysis",
+        "cms/factory-complaints"
+      ],
+      "short_description": "Retrieve complaint category",
+      "detailed_description": "Retrieve complaint category. It calls ICommon.getUserByToken, ICMSComplaints.GetComplaintCategory. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve complaint category",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Complaints",
+          "GET api/Complaints/dealers",
+          "GET api/Complaints/dealer/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaints_get_complaint_category",
+        "description": "Retrieve complaint category",
+        "http_method": "GET",
+        "endpoint": "api/Complaints/getComplaintCategory",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintsController.cs",
+        "action_method": "GetComplaintCategory",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Complaints_repo.cs",
+          "Interfaces/ICMSComplaints.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Retrieve complaint category — calls ICommon.getUserByToken, ICMSComplaints.GetComplaintCategory",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMSComplaints.GetComplaintCategory"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Complaints_repo (Repository/Complaints_repo.cs) via ICMSComplaints"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaints_get_complaint_attended_by_users",
+      "name": "Get Complaint Attended By Users",
+      "action_method": "GetComplaintAttendedByUsers",
+      "http_method": "GET",
+      "route": "api/Complaints/complaintattendedby",
+      "business_purpose": "Retrieve complaint attended by users",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "cms/all-complaints:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "cms/complaints-center",
+        "cms/factory-complaints"
+      ],
+      "short_description": "Retrieve complaint attended by users",
+      "detailed_description": "Retrieve complaint attended by users. It calls ICommon.getUserByToken, ICMSComplaints.GetAllUsersByCurrentUserAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve complaint attended by users",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Complaints",
+          "GET api/Complaints/dealers",
+          "GET api/Complaints/dealer/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaints_get_complaint_attended_by_users",
+        "description": "Retrieve complaint attended by users",
+        "http_method": "GET",
+        "endpoint": "api/Complaints/complaintattendedby",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintsController.cs",
+        "action_method": "GetComplaintAttendedByUsers",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Complaints_repo.cs",
+          "Interfaces/ICMSComplaints.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Retrieve complaint attended by users — calls ICommon.getUserByToken, ICMSComplaints.GetAllUsersByCurrentUserAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMSComplaints.GetAllUsersByCurrentUserAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Complaints_repo (Repository/Complaints_repo.cs) via ICMSComplaints"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaints_get_complaint_by_id",
+      "name": "Get Complaint By Id",
+      "action_method": "GetComplaintById",
+      "http_method": "GET",
+      "route": "api/Complaints/{id}",
+      "business_purpose": "Retrieve complaint by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "cms/all-complaints:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "cms/complaints-center",
+        "settings/incentive-settings/incentive-brand-rate",
+        "rpt/factory-reports/production-and-dispatch-analysis",
+        "cms/factory-complaints",
+        "cms/observation-report"
+      ],
+      "short_description": "Retrieve complaint by ID",
+      "detailed_description": "Retrieve complaint by ID. It validates the request, then calls ICMSComplaints.GetComplaintActions, ICMSComplaints.GetComplaintsHeaderById, ICMSComplaints.GetComplaintDetailsComplaintsHeader. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid complaint ID is required. [when id <= 0]",
+        "not_found": "404: Complaint header not found. [when complaintHeader == null]; Complaint details not found. [when complaintDetails == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve complaint by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Complaints",
+          "GET api/Complaints/dealers",
+          "GET api/Complaints/dealer/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaints_get_complaint_by_id",
+        "description": "Retrieve complaint by ID",
+        "http_method": "GET",
+        "endpoint": "api/Complaints/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintsController.cs",
+        "action_method": "GetComplaintById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Complaints_repo.cs",
+          "Interfaces/ICMSComplaints.cs",
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Retrieve complaint by ID — validates the request, calls ICMSComplaints.GetComplaintActions, ICMSComplaints.GetComplaintsHeaderById, ICMSComplaints.GetComplaintDetailsComplaintsHeader",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid complaint ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICMSComplaints.GetComplaintActions",
+          "ICMSComplaints.GetComplaintsHeaderById",
+          "ICMSComplaints.GetComplaintDetailsComplaintsHeader",
+          "ICMSComplaints.GetFactoryVisitsByComplaintId",
+          "ICMSComplaints.GetObservationReportsByComplaintId",
+          "ICMSComplaints.GetCMSCreditNotesByComplaintId",
+          "ICommon.GetComplaintFilesById",
+          "ICMSComplaints.GetComplaintCategoryByName",
+          "ICMSComplaints.GetComplaintFilesByComplaintId"
+        ],
+        "calls_repositories": [
+          "Complaints_repo (Repository/Complaints_repo.cs) via ICMSComplaints",
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid complaint ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Complaint header not found.",
+            "when": "complaintHeader == null"
+          },
+          {
+            "returns": 404,
+            "message": "Complaint details not found.",
+            "when": "complaintDetails == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaints_get_complaints_header_by_id",
+      "name": "Get Complaints Header By Id",
+      "action_method": "GetComplaintsHeaderById",
+      "http_method": "GET",
+      "route": "api/Complaints/Update/{id}",
+      "business_purpose": "Retrieve complaints header by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "cms/all-complaints",
+        "cms/complaints-center",
+        "cms/factory-complaints"
+      ],
+      "short_description": "Retrieve complaints header by ID",
+      "detailed_description": "Retrieve complaints header by ID. It validates the request, then calls ICMSComplaints.GetComplaintsHeaderById, ICMSComplaints.GetComplaintDetailsComplaintsHeader, ICMSComplaints.GetComplaintCategoryByName. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required. [when id <= 0]",
+        "not_found": "404: Complaint header not found. [when complaintHeader == null]; Complaint details not found. [when complaintDetails == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve complaints header by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Complaints",
+          "GET api/Complaints/dealers",
+          "GET api/Complaints/dealer/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaints_get_complaints_header_by_id",
+        "description": "Retrieve complaints header by ID",
+        "http_method": "GET",
+        "endpoint": "api/Complaints/Update/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintsController.cs",
+        "action_method": "GetComplaintsHeaderById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Complaints_repo.cs",
+          "Interfaces/ICMSComplaints.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Retrieve complaints header by ID — validates the request, calls ICMSComplaints.GetComplaintsHeaderById, ICMSComplaints.GetComplaintDetailsComplaintsHeader, ICMSComplaints.GetComplaintCategoryByName",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICMSComplaints.GetComplaintsHeaderById",
+          "ICMSComplaints.GetComplaintDetailsComplaintsHeader",
+          "ICMSComplaints.GetComplaintCategoryByName"
+        ],
+        "calls_repositories": [
+          "Complaints_repo (Repository/Complaints_repo.cs) via ICMSComplaints"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Complaint header not found.",
+            "when": "complaintHeader == null"
+          },
+          {
+            "returns": 404,
+            "message": "Complaint details not found.",
+            "when": "complaintDetails == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaints_create_complaint",
+      "name": "Create Complaint",
+      "action_method": "CreateComplaint",
+      "http_method": "POST",
+      "route": "api/Complaints/create-complaint",
+      "business_purpose": "Create complaint",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "ComplaintCreateRequest (inline)",
+        "properties": [
+          {
+            "name": "id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "branch_id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "dealer_id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "location",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "inv_no",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "inv_date",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "customer_name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "contractor",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "carpenter_contractor_architect",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "attended_by",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "remarks",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "other_amount",
+            "type": "float",
+            "required": false
+          },
+          {
+            "name": "complaint_category_id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "complaint_details",
+            "type": "List<ComplaintDetailData>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "cms/all-complaints:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "cms/complaints-center"
+      ],
+      "short_description": "Create complaint",
+      "detailed_description": "Create complaint. It validates the request, then calls ICommon.getUserByToken, ICMSComplaints.GetComplaintsHeaderById, ICMSComplaints.GetDealerById. Persists changes to: ComplaintsHeader: INSERT. Possible responses: 200, 400, 401, 404.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data received [when request == null]; Dealer not found [when dealerbyId == null]; Branch not found [when branchById == null]; message built at runtime",
+        "not_found": "404: Complaint not found [when existingComplaint == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create complaint",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body ComplaintCreateRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Complaints",
+          "GET api/Complaints/dealers",
+          "GET api/Complaints/grades"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaints_create_complaint",
+        "description": "Create complaint",
+        "http_method": "POST",
+        "endpoint": "api/Complaints/create-complaint",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": false,
+            "description": "id (body)"
+          },
+          "branch_id": {
+            "type": "int",
+            "required": false,
+            "description": "branch id (body)"
+          },
+          "dealer_id": {
+            "type": "int",
+            "required": false,
+            "description": "dealer id (body)"
+          },
+          "location": {
+            "type": "string",
+            "required": false,
+            "description": "location (body)"
+          },
+          "inv_no": {
+            "type": "string",
+            "required": false,
+            "description": "inv no (body)"
+          },
+          "inv_date": {
+            "type": "datetime",
+            "required": false,
+            "description": "inv date (body)"
+          },
+          "customer_name": {
+            "type": "string",
+            "required": false,
+            "description": "customer name (body)"
+          },
+          "contractor": {
+            "type": "string",
+            "required": false,
+            "description": "contractor (body)"
+          },
+          "carpenter_contractor_architect": {
+            "type": "string",
+            "required": false,
+            "description": "carpenter contractor architect (body)"
+          },
+          "attended_by": {
+            "type": "string",
+            "required": false,
+            "description": "attended by (body)"
+          },
+          "remarks": {
+            "type": "string",
+            "required": false,
+            "description": "remarks (body)"
+          },
+          "other_amount": {
+            "type": "float",
+            "required": false,
+            "description": "other amount (body)"
+          },
+          "complaint_category_id": {
+            "type": "int",
+            "required": false,
+            "description": "complaint category id (body)"
+          },
+          "complaint_details": {
+            "type": "List<ComplaintDetailData>",
+            "required": false,
+            "description": "complaint details (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintsController.cs",
+        "action_method": "CreateComplaint",
+        "related_dto_files": [
+          "Controllers/ComplaintsController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Complaints_repo.cs",
+          "Interfaces/ICMSComplaints.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Create complaint — validates the request, calls ICommon.getUserByToken, ICMSComplaints.GetComplaintsHeaderById, ICMSComplaints.GetDealerById",
+        "preconditions": "Valid Bearer JWT; request body of type ComplaintCreateRequest (inline); passes 5 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "ComplaintsHeader: INSERT",
+        "validations": "Invalid data received; Dealer not found; Branch not found",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMSComplaints.GetComplaintsHeaderById",
+          "ICMSComplaints.GetDealerById",
+          "ICMSComplaints.GetBranches",
+          "ICMSComplaints.GetMaxNumber",
+          "ICMSComplaints.GetComplaintCategoryById",
+          "ICMSComplaints.GetComplaintActions",
+          "ICMSComplaints.CreateComplaintsHeader"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Complaints_repo (Repository/Complaints_repo.cs) via ICMSComplaints"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid data received",
+            "when": "request == null"
+          },
+          {
+            "returns": 404,
+            "message": "Complaint not found",
+            "when": "existingComplaint == null"
+          },
+          {
+            "returns": 400,
+            "message": "Dealer not found",
+            "when": "dealerbyId == null"
+          },
+          {
+            "returns": 400,
+            "message": "Branch not found",
+            "when": "branchById == null"
+          },
+          {
+            "returns": 400,
+            "message": "message built at runtime",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaints_update_complaint",
+      "name": "Update Complaint",
+      "action_method": "UpdateComplaint",
+      "http_method": "PUT",
+      "route": "api/Complaints/{complaintId}",
+      "business_purpose": "Update complaint",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "complaintId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateComplaintRequest (inline)",
+        "properties": [
+          {
+            "name": "userid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "branch_id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "dealer_id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "location",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "inv_no",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "inv_date",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "customer_name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "contractor",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "attended_by",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "carpenter_contractor_architect",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "remarks",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "other_amount",
+            "type": "float",
+            "required": false
+          },
+          {
+            "name": "cms_code",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "complaint_category_id",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "complaint_details",
+            "type": "List<ComplaintDetailUpdateData>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "cms/all-complaints:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "cms/complaints-center",
+        "cms/factory-complaints"
+      ],
+      "short_description": "Update complaint",
+      "detailed_description": "Update complaint. It validates the request, then calls ICommon.getUserByToken, ICMSComplaints.GetUserById, ICMSComplaints.UpdateComplaintAsync. Persists changes to: ComplaintsDetails: DELETE, ComplaintsDetails: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid complaint ID is required. [when complaintId <= 0]; At least one field (customer_name or location) must be provided for update. [when string.IsNullOrWhiteSpace(request.customer_name) && request.location == null]; message returned by the called service/repository (result.Message) [when !result.Success]; message returned by the called service/repository (detailsResult.Message) [when !detailsResult.Success]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update complaint",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "complaintId (route)",
+          "request body UpdateComplaintRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Complaints/dealer/{dealerId}",
+          "GET api/Complaints/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaints_update_complaint",
+        "description": "Update complaint",
+        "http_method": "PUT",
+        "endpoint": "api/Complaints/{complaintId}",
+        "parameters": {
+          "complaintId": {
+            "type": "int",
+            "required": true,
+            "description": "complaint Id (route)"
+          },
+          "userid": {
+            "type": "int",
+            "required": false,
+            "description": "userid (body)"
+          },
+          "id": {
+            "type": "int",
+            "required": false,
+            "description": "id (body)"
+          },
+          "branch_id": {
+            "type": "int",
+            "required": false,
+            "description": "branch id (body)"
+          },
+          "dealer_id": {
+            "type": "int",
+            "required": false,
+            "description": "dealer id (body)"
+          },
+          "location": {
+            "type": "string",
+            "required": false,
+            "description": "location (body)"
+          },
+          "inv_no": {
+            "type": "string",
+            "required": false,
+            "description": "inv no (body)"
+          },
+          "inv_date": {
+            "type": "datetime",
+            "required": false,
+            "description": "inv date (body)"
+          },
+          "customer_name": {
+            "type": "string",
+            "required": false,
+            "description": "customer name (body)"
+          },
+          "contractor": {
+            "type": "string",
+            "required": false,
+            "description": "contractor (body)"
+          },
+          "attended_by": {
+            "type": "string",
+            "required": false,
+            "description": "attended by (body)"
+          },
+          "carpenter_contractor_architect": {
+            "type": "string",
+            "required": false,
+            "description": "carpenter contractor architect (body)"
+          },
+          "remarks": {
+            "type": "string",
+            "required": false,
+            "description": "remarks (body)"
+          },
+          "other_amount": {
+            "type": "float",
+            "required": false,
+            "description": "other amount (body)"
+          },
+          "cms_code": {
+            "type": "string",
+            "required": false,
+            "description": "cms code (body)"
+          },
+          "complaint_category_id": {
+            "type": "string",
+            "required": false,
+            "description": "complaint category id (body)"
+          },
+          "complaint_details": {
+            "type": "List<ComplaintDetailUpdateData>",
+            "required": false,
+            "description": "complaint details (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintsController.cs",
+        "action_method": "UpdateComplaint",
+        "related_dto_files": [
+          "Controllers/ComplaintsController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Complaints_repo.cs",
+          "Interfaces/ICMSComplaints.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Update complaint — validates the request, calls ICommon.getUserByToken, ICMSComplaints.GetUserById, ICMSComplaints.UpdateComplaintAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) complaintId; request body of type UpdateComplaintRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "ComplaintsDetails: DELETE; ComplaintsDetails: INSERT",
+        "validations": "Valid complaint ID is required.; At least one field (customer_name or location) must be provided for update.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMSComplaints.GetUserById",
+          "ICMSComplaints.UpdateComplaintAsync",
+          "ICMSComplaints.UpdateComplaintDetailsAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Complaints_repo (Repository/Complaints_repo.cs) via ICMSComplaints"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid complaint ID is required.",
+            "when": "complaintId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field (customer_name or location) must be provided for update.",
+            "when": "string.IsNullOrWhiteSpace(request.customer_name) && request.location == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": "!result.Success"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (detailsResult.Message)",
+            "when": "!detailsResult.Success"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaints_delete_complaint",
+      "name": "Delete Complaint",
+      "action_method": "DeleteComplaint",
+      "http_method": "DELETE",
+      "route": "api/Complaints/{complaintId}",
+      "business_purpose": "Delete complaint",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "complaintId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "cms/all-complaints:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "cms/complaints-center",
+        "cms/factory-complaints"
+      ],
+      "short_description": "Delete complaint",
+      "detailed_description": "Delete complaint. It validates the request, then calls ICommon.getUserByToken, ICMSComplaints.GetComplaintById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: ComplaintsHeader: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid complaint ID is required. [when complaintId <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Complaint not found. [when existingComplaints == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete complaint",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "complaintId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Complaints/dealer/{dealerId}",
+          "GET api/Complaints/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaints_delete_complaint",
+        "description": "Delete complaint",
+        "http_method": "DELETE",
+        "endpoint": "api/Complaints/{complaintId}",
+        "parameters": {
+          "complaintId": {
+            "type": "int",
+            "required": true,
+            "description": "complaint Id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintsController.cs",
+        "action_method": "DeleteComplaint",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Complaints_repo.cs",
+          "Interfaces/ICMSComplaints.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Delete complaint — validates the request, calls ICommon.getUserByToken, ICMSComplaints.GetComplaintById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) complaintId must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "ComplaintsHeader: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "validations": "Valid complaint ID is required.",
+        "side_effects": "AuditLog DELETE (Complaint Management System > All Complaints > Complaints)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMSComplaints.GetComplaintById",
+          "ICommon.ToJsonString",
+          "ICMSComplaints.DeleteComplaint",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Complaints_repo (Repository/Complaints_repo.cs) via ICMSComplaints"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid complaint ID is required.",
+            "when": "complaintId <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Complaint not found.",
+            "when": "existingComplaints == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaints_image_upload",
+      "name": "Image Upload",
+      "action_method": "ImageUpload",
+      "http_method": "POST",
+      "route": "api/Complaints/upload-image",
+      "business_purpose": "Handle image upload",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": null,
+        "content_type": "multipart/form-data",
+        "properties": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "images",
+            "type": "List<IFormFile>",
+            "required": true
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "cms/all-complaints",
+        "cms/complaints-center",
+        "cms/factory-complaints"
+      ],
+      "short_description": "Handle image upload",
+      "detailed_description": "Handle image upload. It validates the request, then calls ICommon.getUserByToken, ICMSComplaints.GetComplaintsHeaderById, ICMSComplaints.CreateComplaintFilesRange, then processes uploaded files. Persists changes to: ComplaintsFile: INSERT. Possible responses: 200, 400, 401.",
+      "error_handling": {
+        "validation_errors": "400: No files uploaded. [when images == null || images.Count == 0]; Upload failed: {ex.Message}",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle image upload",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Complaints",
+          "GET api/Complaints/dealers",
+          "GET api/Complaints/grades"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaints_image_upload",
+        "description": "Handle image upload",
+        "http_method": "POST",
+        "endpoint": "api/Complaints/upload-image",
+        "parameters": {
+          "id": {
+            "type": "string",
+            "required": true,
+            "description": "id (body)"
+          },
+          "images": {
+            "type": "List<IFormFile>",
+            "required": true,
+            "description": "images (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintsController.cs",
+        "action_method": "ImageUpload",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Complaints_repo.cs",
+          "Interfaces/ICMSComplaints.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Handle image upload — validates the request, calls ICommon.getUserByToken, ICMSComplaints.GetComplaintsHeaderById, ICMSComplaints.CreateComplaintFilesRange, processes uploaded files",
+        "preconditions": "Valid Bearer JWT; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "ComplaintsFile: INSERT",
+        "validations": "No files uploaded.; Upload failed: {ex.Message}",
+        "side_effects": "Handles file upload/storage",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMSComplaints.GetComplaintsHeaderById",
+          "ICMSComplaints.CreateComplaintFilesRange",
+          "ICMSComplaints.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Complaints_repo (Repository/Complaints_repo.cs) via ICMSComplaints"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "No files uploaded.",
+            "when": "images == null || images.Count == 0"
+          },
+          {
+            "returns": 400,
+            "message": "Upload failed: {ex.Message}",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaints_video_upload",
+      "name": "Video Upload",
+      "action_method": "VideoUpload",
+      "http_method": "POST",
+      "route": "api/Complaints/upload-video",
+      "business_purpose": "Handle video upload",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": null,
+        "content_type": "multipart/form-data",
+        "properties": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "videos",
+            "type": "List<IFormFile>",
+            "required": true
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "cms/all-complaints",
+        "cms/complaints-center",
+        "cms/factory-complaints"
+      ],
+      "short_description": "Handle video upload",
+      "detailed_description": "Handle video upload. It validates the request, then calls ICommon.getUserByToken, ICMSComplaints.GetComplaintsHeaderById, ICMSComplaints.CreateComplaintFilesRange, then processes uploaded files. Persists changes to: ComplaintsFile: INSERT. Possible responses: 200, 400, 401.",
+      "error_handling": {
+        "validation_errors": "400: No files uploaded. [when videos == null || videos.Count == 0]; Upload failed: {ex.Message}",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle video upload",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Complaints",
+          "GET api/Complaints/dealers",
+          "GET api/Complaints/grades"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaints_video_upload",
+        "description": "Handle video upload",
+        "http_method": "POST",
+        "endpoint": "api/Complaints/upload-video",
+        "parameters": {
+          "id": {
+            "type": "string",
+            "required": true,
+            "description": "id (body)"
+          },
+          "videos": {
+            "type": "List<IFormFile>",
+            "required": true,
+            "description": "videos (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintsController.cs",
+        "action_method": "VideoUpload",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Complaints_repo.cs",
+          "Interfaces/ICMSComplaints.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Handle video upload — validates the request, calls ICommon.getUserByToken, ICMSComplaints.GetComplaintsHeaderById, ICMSComplaints.CreateComplaintFilesRange, processes uploaded files",
+        "preconditions": "Valid Bearer JWT; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "ComplaintsFile: INSERT",
+        "validations": "No files uploaded.; Upload failed: {ex.Message}",
+        "side_effects": "Handles file upload/storage",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMSComplaints.GetComplaintsHeaderById",
+          "ICMSComplaints.CreateComplaintFilesRange",
+          "ICMSComplaints.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Complaints_repo (Repository/Complaints_repo.cs) via ICMSComplaints"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "No files uploaded.",
+            "when": "videos == null || videos.Count == 0"
+          },
+          {
+            "returns": 400,
+            "message": "Upload failed: {ex.Message}",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaints_pdf_upload",
+      "name": "Pdf Upload",
+      "action_method": "PdfUpload",
+      "http_method": "POST",
+      "route": "api/Complaints/upload-pdf",
+      "business_purpose": "Handle pdf upload",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": null,
+        "content_type": "multipart/form-data",
+        "properties": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "pdfs",
+            "type": "List<IFormFile>",
+            "required": true
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "cms/all-complaints",
+        "cms/complaints-center",
+        "cms/factory-complaints"
+      ],
+      "short_description": "Handle pdf upload",
+      "detailed_description": "Handle pdf upload. It validates the request, then calls ICommon.getUserByToken, ICMSComplaints.GetComplaintsHeaderById, ICMSComplaints.CreateComplaintFilesRange, then processes uploaded files. Persists changes to: ComplaintsFile: INSERT. Possible responses: 200, 400, 401.",
+      "error_handling": {
+        "validation_errors": "400: No files uploaded. [when pdfs == null || pdfs.Count == 0]; Upload failed: {ex.Message}",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle pdf upload",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Complaints",
+          "GET api/Complaints/dealers",
+          "GET api/Complaints/grades"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaints_pdf_upload",
+        "description": "Handle pdf upload",
+        "http_method": "POST",
+        "endpoint": "api/Complaints/upload-pdf",
+        "parameters": {
+          "id": {
+            "type": "string",
+            "required": true,
+            "description": "id (body)"
+          },
+          "pdfs": {
+            "type": "List<IFormFile>",
+            "required": true,
+            "description": "pdfs (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintsController.cs",
+        "action_method": "PdfUpload",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Complaints_repo.cs",
+          "Interfaces/ICMSComplaints.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Handle pdf upload — validates the request, calls ICommon.getUserByToken, ICMSComplaints.GetComplaintsHeaderById, ICMSComplaints.CreateComplaintFilesRange, processes uploaded files",
+        "preconditions": "Valid Bearer JWT; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "ComplaintsFile: INSERT",
+        "validations": "No files uploaded.; Upload failed: {ex.Message}",
+        "side_effects": "Handles file upload/storage",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMSComplaints.GetComplaintsHeaderById",
+          "ICMSComplaints.CreateComplaintFilesRange",
+          "ICMSComplaints.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Complaints_repo (Repository/Complaints_repo.cs) via ICMSComplaints"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "No files uploaded.",
+            "when": "pdfs == null || pdfs.Count == 0"
+          },
+          {
+            "returns": 400,
+            "message": "Upload failed: {ex.Message}",
+            "when": null
+          }
+        ]
+      }
+    }
+  ]
+}

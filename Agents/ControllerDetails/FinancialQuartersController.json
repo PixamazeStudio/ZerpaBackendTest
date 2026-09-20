@@ -1,0 +1,694 @@
+{
+  "controller": "FinancialQuartersController",
+  "file": "Controllers/FinancialQuartersController.cs",
+  "base_route": "api/FinancialQuarters",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/accounts-settings/financial-quarters",
+        "module_code": "settings",
+        "section": "accounts-settings",
+        "sub_section": "financial-quarters",
+        "frontend_routes": [
+          "/settings/accounts-settings/financial-quarters",
+          "/settings/accounts-settings/financial-quarters/create-financial-quarters",
+          "/settings/accounts-settings/financial-quarters/edit-financial-quarters/:id"
+        ],
+        "menu_route_confirmed": true,
+        "display_names": {
+          "module": "Settings",
+          "section": "Accounts Settings",
+          "sub_section": "Financial Quarters"
+        }
+      }
+    ],
+    "section_configuration_keys": [
+      "FinancialQuarters"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Settings",
+        "section": "Accounts Settings",
+        "sub_section": "Financial Quarters"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "fq_001",
+      "name": "GetAll",
+      "http_method": "GET",
+      "route": "api/FinancialQuarters",
+      "business_purpose": "Retrieve paginated list of financial quarters with optional search text filtering.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": 10
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": 1
+        }
+      ],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "FinancialQuartersListResponse"
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "Retrieves financial quarters with pagination and optional text search.",
+        "preconditions": "Valid token. User exists.",
+        "validations": "Token validation.",
+        "side_effects": "Fetches actions and pagination info.",
+        "calls_services": [
+          "IFinancialQuarters",
+          "ICommon"
+        ],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [
+          "GetFinancialQuarters",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "notes": "Read-only operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FinancialQuartersController.cs",
+        "action_method": "GetAll"
+      },
+      "required_permission": "settings/accounts-settings/financial-quarters:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve paginated list of financial quarters with optional search text filtering.",
+      "detailed_description": "Retrieve paginated list of financial quarters with optional search text filtering. It calls ICommon.getUserByToken, IFinancialQuarters.GetFinancialQuartersData, IFinancialQuarters.GetFinancialQuartersActions. Data access uses stored procedure(s): GetFinancialQuarters, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve paginated list of financial quarters with optional search text filtering.",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/FinancialQuarters",
+          "GET api/FinancialQuarters/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "financial_quarters_get_all",
+        "description": "Retrieve paginated list of financial quarters with optional search text filtering.",
+        "http_method": "GET",
+        "endpoint": "api/FinancialQuarters",
+        "parameters": {
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "fq_002",
+      "name": "GetFinancialQuarterById",
+      "http_method": "GET",
+      "route": "api/FinancialQuarters/{id}",
+      "business_purpose": "Retrieve single financial quarter details by ID.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          404,
+          500
+        ],
+        "dto_name": "FinancialQuarterDetailsResponse"
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "Retrieves financial quarter with associated financial year details.",
+        "preconditions": "ID > 0. Quarter must exist.",
+        "validations": "ID > 0.",
+        "side_effects": "Maps to DTO.",
+        "calls_services": [
+          "IFinancialQuarters"
+        ],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid Financial Quarter ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Financial Quarter not found.",
+            "when": "FinancialQuarter == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "notes": "Read-only operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FinancialQuartersController.cs",
+        "action_method": "GetFinancialQuarterById"
+      },
+      "required_permission": "settings/accounts-settings/financial-quarters:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve single financial quarter details by ID.",
+      "detailed_description": "Retrieve single financial quarter details by ID. It validates the request, then calls IFinancialQuarters.GetFinancialQuarterById. Possible responses: 200, 400, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid Financial Quarter ID is required. [when id <= 0]",
+        "not_found": "404: Financial Quarter not found. [when FinancialQuarter == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve single financial quarter details by ID.",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/FinancialQuarters",
+          "GET api/FinancialQuarters/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "financial_quarters_get_financial_quarter_by_id",
+        "description": "Retrieve single financial quarter details by ID.",
+        "http_method": "GET",
+        "endpoint": "api/FinancialQuarters/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "fq_003",
+      "name": "CreateFinancialQuarter",
+      "http_method": "POST",
+      "route": "api/FinancialQuarters",
+      "business_purpose": "Create a new financial quarter with name, financial year ID, and date range.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateFinancialQuarterRequest",
+        "properties": [
+          "quarter_name",
+          "financial_year_id",
+          "from_date",
+          "to_date"
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ],
+        "dto_name": "FinancialQuarterCreateResponse"
+      },
+      "data_effect": "CREATE",
+      "business_logic": {
+        "operation_summary": "Creates financial quarter. Validates quarter name non-empty and unique. Fetches financial year by ID.",
+        "preconditions": "Valid token. User exists. Quarter name non-empty and unique. Financial year exists.",
+        "validations": "Token validation. ModelState valid. Quarter name non-empty. No duplicate quarter name.",
+        "side_effects": "Quarter created. Audit log created.",
+        "calls_services": [
+          "IFinancialQuarters",
+          "ICommon"
+        ],
+        "calls_repositories": [
+          "FinancialQuarters",
+          "FinancialYears"
+        ],
+        "state_changes": "FinancialQuarters: INSERT; AuditLog: INSERT",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "Financial quarter name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.quarter_name)"
+          },
+          {
+            "returns": 400,
+            "message": "Financial quarter with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "HIGH",
+        "notes": "Duplicate check prevents re-creation. Second call fails."
+      },
+      "source": {
+        "controller_file": "Controllers/FinancialQuartersController.cs",
+        "action_method": "CreateFinancialQuarter"
+      },
+      "required_permission": "settings/accounts-settings/financial-quarters:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create a new financial quarter with name, financial year ID, and date range.",
+      "detailed_description": "Create a new financial quarter with name, financial year ID, and date range. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IFinancialQuarters.GetFinancialYearById, IFinancialQuarters.IsFinancialQuartersDuplicateAsync, then writes an audit log entry. Persists changes to: FinancialQuarters: INSERT, AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; Financial quarter name is required. [when string.IsNullOrWhiteSpace(request.quarter_name)]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "Financial quarter with this name already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create a new financial quarter with name, financial year ID, and date range.",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateFinancialQuarterRequest"
+        ],
+        "follow_up_apis": [
+          "GET api/FinancialQuarters"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "financial_quarters_create_financial_quarter",
+        "description": "Create a new financial quarter with name, financial year ID, and date range.",
+        "http_method": "POST",
+        "endpoint": "api/FinancialQuarters",
+        "parameters": {
+          "quarter_name": {
+            "type": "string",
+            "required": false,
+            "description": "quarter name (body)"
+          },
+          "financial_year_id": {
+            "type": "string",
+            "required": false,
+            "description": "financial year id (body)"
+          },
+          "from_date": {
+            "type": "string",
+            "required": false,
+            "description": "from date (body)"
+          },
+          "to_date": {
+            "type": "string",
+            "required": false,
+            "description": "to date (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "fq_004",
+      "name": "UpdateFinancialQuarter",
+      "http_method": "PUT",
+      "route": "api/FinancialQuarters/{financialQuarterId}",
+      "business_purpose": "Update existing financial quarter details.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "financialQuarterId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateFinancialQuarterRequest",
+        "properties": [
+          "quarter_name",
+          "financial_year_id",
+          "from_date",
+          "to_date"
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ],
+        "dto_name": "FinancialQuarterUpdateResponse"
+      },
+      "data_effect": "UPDATE",
+      "business_logic": {
+        "operation_summary": "Updates financial quarter. Checks for duplicate quarter name excluding current ID.",
+        "preconditions": "Valid token. User exists. ID > 0. Quarter exists. No duplicate (excluding current ID).",
+        "validations": "Token validation. ID > 0. Quarter exists. No duplicate quarter name (excluding current).",
+        "side_effects": "Quarter updated. Audit log created with old/new values.",
+        "calls_services": [
+          "IFinancialQuarters",
+          "ICommon"
+        ],
+        "calls_repositories": [
+          "FinancialQuarters"
+        ],
+        "state_changes": "FinancialQuarters: UPDATE; AuditLog: INSERT",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Financial Quarter ID is required.",
+            "when": "financialQuarterId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Financial quarter with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Duplicate check per ID reduces risk."
+      },
+      "source": {
+        "controller_file": "Controllers/FinancialQuartersController.cs",
+        "action_method": "UpdateFinancialQuarter"
+      },
+      "required_permission": "settings/accounts-settings/financial-quarters:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update existing financial quarter details.",
+      "detailed_description": "Update existing financial quarter details. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IFinancialQuarters.IsFinancialQuartersDuplicateAsync, IFinancialQuarters.GetFinancialQuarterById, then writes an audit log entry. Persists changes to: FinancialQuarters: UPDATE, AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid Financial Quarter ID is required. [when financialQuarterId <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "Financial quarter with this name already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update existing financial quarter details.",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "financialQuarterId (route)",
+          "request body UpdateFinancialQuarterRequest"
+        ],
+        "follow_up_apis": [
+          "GET api/FinancialQuarters/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "financial_quarters_update_financial_quarter",
+        "description": "Update existing financial quarter details.",
+        "http_method": "PUT",
+        "endpoint": "api/FinancialQuarters/{financialQuarterId}",
+        "parameters": {
+          "financialQuarterId": {
+            "type": "int",
+            "required": true,
+            "description": "financial Quarter Id (route)"
+          },
+          "quarter_name": {
+            "type": "string",
+            "required": false,
+            "description": "quarter name (body)"
+          },
+          "financial_year_id": {
+            "type": "string",
+            "required": false,
+            "description": "financial year id (body)"
+          },
+          "from_date": {
+            "type": "string",
+            "required": false,
+            "description": "from date (body)"
+          },
+          "to_date": {
+            "type": "string",
+            "required": false,
+            "description": "to date (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "fq_005",
+      "name": "Delete",
+      "http_method": "DELETE",
+      "route": "api/FinancialQuarters/{id}",
+      "business_purpose": "Delete financial quarter record.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ],
+        "dto_name": "FinancialQuarterDeleteResponse"
+      },
+      "data_effect": "DELETE",
+      "business_logic": {
+        "operation_summary": "Soft deletes financial quarter. Creates audit log.",
+        "preconditions": "Valid token. User exists. ID > 0. Quarter must exist.",
+        "validations": "Token validation. ID > 0. Quarter exists.",
+        "side_effects": "Quarter marked deleted. Audit log created.",
+        "calls_services": [
+          "IFinancialQuarters",
+          "ICommon"
+        ],
+        "calls_repositories": [
+          "FinancialQuarters"
+        ],
+        "state_changes": "FinancialQuarters: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid financial Quarter ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Financial quarter not found.",
+            "when": "existingfinancialQuarter == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "HIGH",
+        "notes": "Repeated DELETE fails once deleted."
+      },
+      "source": {
+        "controller_file": "Controllers/FinancialQuartersController.cs",
+        "action_method": "Delete"
+      },
+      "required_permission": "settings/accounts-settings/financial-quarters:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete financial quarter record.",
+      "detailed_description": "Delete financial quarter record. It validates the request, then calls ICommon.getUserByToken, IFinancialQuarters.GetFinancialQuarterById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: FinancialQuarters: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid financial Quarter ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Financial quarter not found. [when existingfinancialQuarter == null]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete financial quarter record.",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/FinancialQuarters/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "financial_quarters_delete",
+        "description": "Delete financial quarter record.",
+        "http_method": "DELETE",
+        "endpoint": "api/FinancialQuarters/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "module": "General"
+    }
+  ]
+}

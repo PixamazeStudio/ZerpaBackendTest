@@ -1,0 +1,499 @@
+{
+  "controller": "FactorySectionController",
+  "file": "Controllers/FactorySectionController.cs",
+  "base_route": "api/FactorySection",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/factory-settings/factory-section",
+        "module_code": "settings",
+        "section": "factory-settings",
+        "sub_section": "factory-section",
+        "frontend_routes": [
+          "/settings/factory-settings/factory-section"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "FactorySection"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "fs_001",
+      "name": "GetAllFactorySections",
+      "http_method": "GET",
+      "route": "api/FactorySection",
+      "business_purpose": "Retrieve paginated list of factory sections with optional date range and search filtering.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "DateTime?",
+          "required": false
+        },
+        {
+          "name": "todate",
+          "type": "DateTime?",
+          "required": false
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": 10
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": 0
+        }
+      ],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "FactorySectionListResponse"
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "Retrieves factory section records with filtering and pagination.",
+        "preconditions": "Valid token. User exists.",
+        "validations": "Token validation.",
+        "side_effects": "Fetches actions and pagination info.",
+        "calls_services": [
+          "IFactorySection",
+          "ICommon"
+        ],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [
+          "sp_GetFactorySectionData"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "notes": "Read-only operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FactorySectionController.cs",
+        "action_method": "GetAllFactorySections"
+      },
+      "required_permission": "settings/factory-settings/factory-section:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve paginated list of factory sections with optional date range and search filtering.",
+      "detailed_description": "Retrieve paginated list of factory sections with optional date range and search filtering. It calls ICommon.getUserByToken, IFactorySection.GetFactorySectionData, IFactorySection.GetFactorySectionActions. Data access uses stored procedure(s): sp_GetFactorySectionData. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve paginated list of factory sections with optional date range and search filtering.",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/FactorySection"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "factory_section_get_all_factory_sections",
+        "description": "Retrieve paginated list of factory sections with optional date range and search filtering.",
+        "http_method": "GET",
+        "endpoint": "api/FactorySection",
+        "parameters": {
+          "fromdate": {
+            "type": "DateTime?",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "DateTime?",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "fs_002",
+      "name": "CreateFactorySection",
+      "http_method": "POST",
+      "route": "api/FactorySection",
+      "business_purpose": "Create a new factory section record.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "FactorySection",
+        "properties": [
+          "parking_section_name",
+          "section"
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "FactorySectionCreateResponse"
+      },
+      "data_effect": "CREATE",
+      "business_logic": {
+        "operation_summary": "Creates factory section record. Requires user authentication.",
+        "preconditions": "Valid token. User exists.",
+        "validations": "Token validation.",
+        "side_effects": "New section created.",
+        "calls_services": [
+          "IFactorySection",
+          "ICommon"
+        ],
+        "calls_repositories": [],
+        "state_changes": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "UNKNOWN - NO DUPLICATE CHECK FOUND IN SOURCE"
+      },
+      "source": {
+        "controller_file": "Controllers/FactorySectionController.cs",
+        "action_method": "CreateFactorySection"
+      },
+      "required_permission": "settings/factory-settings/factory-section:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create a new factory section record.",
+      "detailed_description": "Create a new factory section record. It calls ICommon.getUserByToken, IFactorySection.CreateFactorySectionAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create a new factory section record.",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body FactorySection"
+        ],
+        "follow_up_apis": [
+          "GET api/FactorySection"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "factory_section_create_factory_section",
+        "description": "Create a new factory section record.",
+        "http_method": "POST",
+        "endpoint": "api/FactorySection",
+        "parameters": {
+          "parking_section_name": {
+            "type": "string",
+            "required": false,
+            "description": "parking section name (body)"
+          },
+          "section": {
+            "type": "string",
+            "required": false,
+            "description": "section (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "fs_003",
+      "name": "UpdateFactorySection",
+      "http_method": "PUT",
+      "route": "api/FactorySection/{id}",
+      "business_purpose": "Update existing factory section record.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "FactorySection",
+        "properties": [
+          "parking_section_name",
+          "section"
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "FactorySectionUpdateResponse"
+      },
+      "data_effect": "UPDATE",
+      "business_logic": {
+        "operation_summary": "Updates factory section name and section field.",
+        "preconditions": "Valid token. User exists.",
+        "validations": "Token validation.",
+        "side_effects": "Section updated.",
+        "calls_services": [
+          "IFactorySection",
+          "ICommon"
+        ],
+        "calls_repositories": [],
+        "state_changes": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "UNKNOWN - NO DUPLICATE CHECK FOUND IN SOURCE"
+      },
+      "source": {
+        "controller_file": "Controllers/FactorySectionController.cs",
+        "action_method": "UpdateFactorySection"
+      },
+      "required_permission": "settings/factory-settings/factory-section:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update existing factory section record.",
+      "detailed_description": "Update existing factory section record. It calls ICommon.getUserByToken, IFactorySection.UpdateFactorySectionAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update existing factory section record.",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "request body FactorySection"
+        ],
+        "follow_up_apis": []
+      },
+      "llm_tool_definition": {
+        "name": "factory_section_update_factory_section",
+        "description": "Update existing factory section record.",
+        "http_method": "PUT",
+        "endpoint": "api/FactorySection/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "parking_section_name": {
+            "type": "string",
+            "required": false,
+            "description": "parking section name (body)"
+          },
+          "section": {
+            "type": "string",
+            "required": false,
+            "description": "section (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "fs_004",
+      "name": "DeleteFactorySection",
+      "http_method": "DELETE",
+      "route": "api/FactorySection/{id}",
+      "business_purpose": "Delete factory section record.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "FactorySectionDeleteResponse"
+      },
+      "data_effect": "DELETE",
+      "business_logic": {
+        "operation_summary": "Soft deletes factory section by user ID and section ID.",
+        "preconditions": "Valid token. User exists.",
+        "validations": "Token validation.",
+        "side_effects": "Section marked deleted.",
+        "calls_services": [
+          "IFactorySection",
+          "ICommon"
+        ],
+        "calls_repositories": [],
+        "state_changes": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "HIGH",
+        "notes": "Repeated DELETE fails once deleted"
+      },
+      "source": {
+        "controller_file": "Controllers/FactorySectionController.cs",
+        "action_method": "DeleteFactorySection"
+      },
+      "required_permission": "settings/factory-settings/factory-section:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete factory section record.",
+      "detailed_description": "Delete factory section record. It calls ICommon.getUserByToken, IFactorySection.DeleteFactorySection. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete factory section record.",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": []
+      },
+      "llm_tool_definition": {
+        "name": "factory_section_delete_factory_section",
+        "description": "Delete factory section record.",
+        "http_method": "DELETE",
+        "endpoint": "api/FactorySection/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "module": "General"
+    }
+  ]
+}

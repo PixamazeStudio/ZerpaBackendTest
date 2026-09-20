@@ -1,0 +1,1499 @@
+{
+  "controller": "IncentiveBMTargetController",
+  "file": "Controllers/IncentiveBMTargetController.cs",
+  "module": "Incentive Management",
+  "base_route": "api/IncentiveBMTarget",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages incentive BM target records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "planner/incentive-bm-target",
+        "module_code": "planner",
+        "section": "incentive-bm-target",
+        "sub_section": null,
+        "frontend_routes": [
+          "/planner/incentive-bm-target",
+          "/planner/incentive-bm-target/create-incentive-bm-target",
+          "/planner/incentive-bm-target/edit-incentive-bm-target/:bmUserId"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "IncentiveBMTarget"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "incentive_bm_target_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/IncentiveBMTarget",
+      "business_purpose": "Retrieve all incentive BM target records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        },
+        {
+          "name": "financialYearId",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/incentive-bm-target:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all incentive BM target records",
+      "detailed_description": "Retrieve all incentive BM target records. It calls ICommon.getUserByToken, IIncentiveBMTarget.GetIncentiveBMTargetData, IIncentiveBMTarget.GetActionsAsync. Data access uses stored procedure(s): GetIncentiveBMTarget, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all incentive BM target records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveBMTarget",
+          "GET api/IncentiveBMTarget/financial-years",
+          "GET api/IncentiveBMTarget/bm-users"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_bm_target_get_all",
+        "description": "Retrieve all incentive BM target records",
+        "http_method": "GET",
+        "endpoint": "api/IncentiveBMTarget",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          },
+          "financialYearId": {
+            "type": "int",
+            "required": false,
+            "description": "financial Year Id (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveBMTargetController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/IncentiveBMTarget_repo.cs",
+          "Interfaces/IIncentiveBMTarget.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all incentive BM target records — calls ICommon.getUserByToken, IIncentiveBMTarget.GetIncentiveBMTargetData, IIncentiveBMTarget.GetActionsAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIncentiveBMTarget.GetIncentiveBMTargetData",
+          "IIncentiveBMTarget.GetActionsAsync",
+          "IIncentiveBMTarget.GetAllFinancialYearsAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IncentiveBMTarget_repo (Repository/IncentiveBMTarget_repo.cs) via IIncentiveBMTarget"
+        ],
+        "stored_procedures": [
+          "GetIncentiveBMTarget",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "incentive_bm_target_get_financial_years",
+      "name": "Get Financial Years",
+      "action_method": "GetFinancialYears",
+      "http_method": "GET",
+      "route": "api/IncentiveBMTarget/financial-years",
+      "business_purpose": "Retrieve financial years",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/incentive-bm-target:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve financial years",
+      "detailed_description": "Retrieve financial years. It calls IIncentiveBMTarget.GetAllFinancialYearsAsync, IIncentiveBMTarget.GetCurrentFinancialYearAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve financial years",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveBMTarget",
+          "GET api/IncentiveBMTarget/financial-years",
+          "GET api/IncentiveBMTarget/bm-users"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_bm_target_get_financial_years",
+        "description": "Retrieve financial years",
+        "http_method": "GET",
+        "endpoint": "api/IncentiveBMTarget/financial-years",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveBMTargetController.cs",
+        "action_method": "GetFinancialYears",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/IncentiveBMTarget_repo.cs",
+          "Interfaces/IIncentiveBMTarget.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Retrieve financial years — calls IIncentiveBMTarget.GetAllFinancialYearsAsync, IIncentiveBMTarget.GetCurrentFinancialYearAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IIncentiveBMTarget.GetAllFinancialYearsAsync",
+          "IIncentiveBMTarget.GetCurrentFinancialYearAsync"
+        ],
+        "calls_repositories": [
+          "IncentiveBMTarget_repo (Repository/IncentiveBMTarget_repo.cs) via IIncentiveBMTarget"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "incentive_bm_target_get_bm_users",
+      "name": "Get BM Users",
+      "action_method": "GetBMUsers",
+      "http_method": "GET",
+      "route": "api/IncentiveBMTarget/bm-users",
+      "business_purpose": "Retrieve BM users",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/incentive-bm-target:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve BM users",
+      "detailed_description": "Retrieve BM users. It calls IIncentiveBMTarget.GetBMUsersAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve BM users",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveBMTarget",
+          "GET api/IncentiveBMTarget/financial-years",
+          "GET api/IncentiveBMTarget/bm-users"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_bm_target_get_bm_users",
+        "description": "Retrieve BM users",
+        "http_method": "GET",
+        "endpoint": "api/IncentiveBMTarget/bm-users",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveBMTargetController.cs",
+        "action_method": "GetBMUsers",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/IncentiveBMTarget_repo.cs",
+          "Interfaces/IIncentiveBMTarget.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Retrieve BM users — calls IIncentiveBMTarget.GetBMUsersAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IIncentiveBMTarget.GetBMUsersAsync"
+        ],
+        "calls_repositories": [
+          "IncentiveBMTarget_repo (Repository/IncentiveBMTarget_repo.cs) via IIncentiveBMTarget"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "incentive_bm_target_get_products",
+      "name": "Get Products",
+      "action_method": "GetProducts",
+      "http_method": "GET",
+      "route": "api/IncentiveBMTarget/products",
+      "business_purpose": "Retrieve products",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/incentive-bm-target:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve products",
+      "detailed_description": "Retrieve products. It calls IIncentiveBMTarget.GetProductOptionsAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve products",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveBMTarget",
+          "GET api/IncentiveBMTarget/financial-years",
+          "GET api/IncentiveBMTarget/bm-users"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_bm_target_get_products",
+        "description": "Retrieve products",
+        "http_method": "GET",
+        "endpoint": "api/IncentiveBMTarget/products",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveBMTargetController.cs",
+        "action_method": "GetProducts",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/IncentiveBMTarget_repo.cs",
+          "Interfaces/IIncentiveBMTarget.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Retrieve products — calls IIncentiveBMTarget.GetProductOptionsAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IIncentiveBMTarget.GetProductOptionsAsync"
+        ],
+        "calls_repositories": [
+          "IncentiveBMTarget_repo (Repository/IncentiveBMTarget_repo.cs) via IIncentiveBMTarget"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "incentive_bm_target_load",
+      "name": "Load",
+      "action_method": "Load",
+      "http_method": "GET",
+      "route": "api/IncentiveBMTarget/load/{bmUserId}",
+      "business_purpose": "Load incentive BM target data",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "bmUserId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [
+        {
+          "name": "yearId",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/incentive-bm-target:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Load incentive BM target data",
+      "detailed_description": "Load incentive BM target data. It validates the request, then calls IIncentiveBMTarget.GetFinancialYearByIdAsync, IIncentiveBMTarget.GetCurrentFinancialYearAsync, IIncentiveBMTarget.GetBMUsersAsync. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid BM user id is required. [when bmUserId <= 0]; Valid financial year is required. [when financialYear == null]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to load incentive BM target data",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "bmUserId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveBMTarget",
+          "GET api/IncentiveBMTarget/financial-years",
+          "GET api/IncentiveBMTarget/bm-users"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_bm_target_load",
+        "description": "Load incentive BM target data",
+        "http_method": "GET",
+        "endpoint": "api/IncentiveBMTarget/load/{bmUserId}",
+        "parameters": {
+          "bmUserId": {
+            "type": "int",
+            "required": true,
+            "description": "bm User Id (route)"
+          },
+          "yearId": {
+            "type": "int",
+            "required": false,
+            "description": "year Id (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveBMTargetController.cs",
+        "action_method": "Load",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/IncentiveBMTarget_repo.cs",
+          "Interfaces/IIncentiveBMTarget.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Load incentive BM target data — validates the request, calls IIncentiveBMTarget.GetFinancialYearByIdAsync, IIncentiveBMTarget.GetCurrentFinancialYearAsync, IIncentiveBMTarget.GetBMUsersAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) bmUserId; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid BM user id is required.; Valid financial year is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IIncentiveBMTarget.GetFinancialYearByIdAsync",
+          "IIncentiveBMTarget.GetCurrentFinancialYearAsync",
+          "IIncentiveBMTarget.GetBMUsersAsync",
+          "IIncentiveBMTarget.GetProductOptionsAsync",
+          "IIncentiveBMTarget.GetExistingTargetsByBMAsync"
+        ],
+        "calls_repositories": [
+          "IncentiveBMTarget_repo (Repository/IncentiveBMTarget_repo.cs) via IIncentiveBMTarget"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid BM user id is required.",
+            "when": "bmUserId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Valid financial year is required.",
+            "when": "financialYear == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "incentive_bm_target_save_bulk",
+      "name": "Save Bulk",
+      "action_method": "SaveBulk",
+      "http_method": "POST",
+      "route": "api/IncentiveBMTarget/save-bulk",
+      "business_purpose": "Save bulk",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "SaveBulkIncentiveBMTargetRequest (inline)",
+        "properties": [
+          {
+            "name": "bm_userid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "YearId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "year_id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "targets",
+            "type": "List<BulkTargetItem>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "planner/incentive-bm-target:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Save bulk",
+      "detailed_description": "Save bulk. It validates the request, then calls IIncentiveBMTarget.SaveBulkAsync. Persists changes to: IncentiveBMTarget: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: A BM user is required. [when request.bm_userid <= 0]; A financial year is required. [when yearId <= 0]; At least one target point entry is required. [when request.targets == null || request.targets.Count == 0]; Enter at least one quarterly target. [when targetsDict.Count == 0]; message built at runtime [when !result.Success]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to save bulk",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body SaveBulkIncentiveBMTargetRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveBMTarget",
+          "GET api/IncentiveBMTarget/financial-years",
+          "GET api/IncentiveBMTarget/bm-users"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_bm_target_save_bulk",
+        "description": "Save bulk",
+        "http_method": "POST",
+        "endpoint": "api/IncentiveBMTarget/save-bulk",
+        "parameters": {
+          "bm_userid": {
+            "type": "int",
+            "required": false,
+            "description": "bm userid (body)"
+          },
+          "YearId": {
+            "type": "int",
+            "required": false,
+            "description": "Year Id (body)"
+          },
+          "year_id": {
+            "type": "int",
+            "required": false,
+            "description": "year id (body)"
+          },
+          "targets": {
+            "type": "List<BulkTargetItem>",
+            "required": false,
+            "description": "targets (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveBMTargetController.cs",
+        "action_method": "SaveBulk",
+        "related_dto_files": [
+          "Controllers/IncentiveBMTargetController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/IncentiveBMTarget_repo.cs",
+          "Interfaces/IIncentiveBMTarget.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Save bulk — validates the request, calls IIncentiveBMTarget.SaveBulkAsync",
+        "preconditions": "Valid Bearer JWT; request body of type SaveBulkIncentiveBMTargetRequest (inline); passes 5 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "IncentiveBMTarget: INSERT",
+        "validations": "A BM user is required.; A financial year is required.; At least one target point entry is required.; Enter at least one quarterly target.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IIncentiveBMTarget.SaveBulkAsync"
+        ],
+        "calls_repositories": [
+          "IncentiveBMTarget_repo (Repository/IncentiveBMTarget_repo.cs) via IIncentiveBMTarget"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "A BM user is required.",
+            "when": "request.bm_userid <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "A financial year is required.",
+            "when": "yearId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one target point entry is required.",
+            "when": "request.targets == null || request.targets.Count == 0"
+          },
+          {
+            "returns": 400,
+            "message": "Enter at least one quarterly target.",
+            "when": "targetsDict.Count == 0"
+          },
+          {
+            "returns": 400,
+            "message": "message built at runtime",
+            "when": "!result.Success"
+          }
+        ]
+      }
+    },
+    {
+      "id": "incentive_bm_target_get_by_id",
+      "name": "Get By Id",
+      "action_method": "GetById",
+      "http_method": "GET",
+      "route": "api/IncentiveBMTarget/{id}",
+      "business_purpose": "Retrieve a incentive BM target record by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/incentive-bm-target:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve a incentive BM target record by ID",
+      "detailed_description": "Retrieve a incentive BM target record by ID. It validates the request, then calls IIncentiveBMTarget.GetByIdAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid id is required. [when id <= 0]",
+        "not_found": "404: Incentive BM target not found. [when entity == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve a incentive BM target record by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveBMTarget",
+          "GET api/IncentiveBMTarget/financial-years",
+          "GET api/IncentiveBMTarget/bm-users"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_bm_target_get_by_id",
+        "description": "Retrieve a incentive BM target record by ID",
+        "http_method": "GET",
+        "endpoint": "api/IncentiveBMTarget/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveBMTargetController.cs",
+        "action_method": "GetById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/IncentiveBMTarget_repo.cs",
+          "Interfaces/IIncentiveBMTarget.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Retrieve a incentive BM target record by ID — validates the request, calls IIncentiveBMTarget.GetByIdAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid id is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IIncentiveBMTarget.GetByIdAsync"
+        ],
+        "calls_repositories": [
+          "IncentiveBMTarget_repo (Repository/IncentiveBMTarget_repo.cs) via IIncentiveBMTarget"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid id is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Incentive BM target not found.",
+            "when": "entity == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "incentive_bm_target_create",
+      "name": "Create",
+      "action_method": "Create",
+      "http_method": "POST",
+      "route": "api/IncentiveBMTarget",
+      "business_purpose": "Create a new incentive BM target record",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateIncentiveBMTargetRequest (inline)",
+        "properties": [
+          {
+            "name": "bm_userid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "productid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "YearId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "year_id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "target1",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "target2",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "target3",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "target4",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "target_points",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "planner/incentive-bm-target:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create a new incentive BM target record",
+      "detailed_description": "Create a new incentive BM target record. It validates the request, then calls IIncentiveBMTarget.GetCurrentFinancialYearAsync, IIncentiveBMTarget.CreateAsync. Persists changes to: IncentiveBMTarget: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: A BM user is required. [when request.bm_userid <= 0]; A product is required. [when request.productid <= 0]; A financial year is required. [when yearId <= 0]; message built at runtime [when !result.Success]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create a new incentive BM target record",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateIncentiveBMTargetRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveBMTarget",
+          "GET api/IncentiveBMTarget/financial-years",
+          "GET api/IncentiveBMTarget/bm-users"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_bm_target_create",
+        "description": "Create a new incentive BM target record",
+        "http_method": "POST",
+        "endpoint": "api/IncentiveBMTarget",
+        "parameters": {
+          "bm_userid": {
+            "type": "int",
+            "required": false,
+            "description": "bm userid (body)"
+          },
+          "productid": {
+            "type": "int",
+            "required": false,
+            "description": "productid (body)"
+          },
+          "YearId": {
+            "type": "int",
+            "required": false,
+            "description": "Year Id (body)"
+          },
+          "year_id": {
+            "type": "int",
+            "required": false,
+            "description": "year id (body)"
+          },
+          "target1": {
+            "type": "int",
+            "required": false,
+            "description": "target1 (body)"
+          },
+          "target2": {
+            "type": "int",
+            "required": false,
+            "description": "target2 (body)"
+          },
+          "target3": {
+            "type": "int",
+            "required": false,
+            "description": "target3 (body)"
+          },
+          "target4": {
+            "type": "int",
+            "required": false,
+            "description": "target4 (body)"
+          },
+          "target_points": {
+            "type": "int",
+            "required": false,
+            "description": "target points (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveBMTargetController.cs",
+        "action_method": "Create",
+        "related_dto_files": [
+          "Controllers/IncentiveBMTargetController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/IncentiveBMTarget_repo.cs",
+          "Interfaces/IIncentiveBMTarget.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Create a new incentive BM target record — validates the request, calls IIncentiveBMTarget.GetCurrentFinancialYearAsync, IIncentiveBMTarget.CreateAsync",
+        "preconditions": "Valid Bearer JWT; request body of type CreateIncentiveBMTargetRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "IncentiveBMTarget: INSERT",
+        "validations": "A BM user is required.; A product is required.; A financial year is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IIncentiveBMTarget.GetCurrentFinancialYearAsync",
+          "IIncentiveBMTarget.CreateAsync"
+        ],
+        "calls_repositories": [
+          "IncentiveBMTarget_repo (Repository/IncentiveBMTarget_repo.cs) via IIncentiveBMTarget"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "A BM user is required.",
+            "when": "request.bm_userid <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "A product is required.",
+            "when": "request.productid <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "A financial year is required.",
+            "when": "yearId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "message built at runtime",
+            "when": "!result.Success"
+          }
+        ]
+      }
+    },
+    {
+      "id": "incentive_bm_target_update",
+      "name": "Update",
+      "action_method": "Update",
+      "http_method": "PUT",
+      "route": "api/IncentiveBMTarget/{id}",
+      "business_purpose": "Update an existing incentive BM target record",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateIncentiveBMTargetRequest (inline)",
+        "properties": [
+          {
+            "name": "bm_userid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "productid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "YearId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "year_id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "target1",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "target2",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "target3",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "target4",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "target_points",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "planner/incentive-bm-target:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update an existing incentive BM target record",
+      "detailed_description": "Update an existing incentive BM target record. It validates the request, then calls IIncentiveBMTarget.UpdateAsync. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid id is required. [when id <= 0]; message built at runtime [when !result.Success]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update an existing incentive BM target record",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "request body UpdateIncentiveBMTargetRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveBMTarget/load/{bmUserId}",
+          "GET api/IncentiveBMTarget/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_bm_target_update",
+        "description": "Update an existing incentive BM target record",
+        "http_method": "PUT",
+        "endpoint": "api/IncentiveBMTarget/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "bm_userid": {
+            "type": "int",
+            "required": false,
+            "description": "bm userid (body)"
+          },
+          "productid": {
+            "type": "int",
+            "required": false,
+            "description": "productid (body)"
+          },
+          "YearId": {
+            "type": "int",
+            "required": false,
+            "description": "Year Id (body)"
+          },
+          "year_id": {
+            "type": "int",
+            "required": false,
+            "description": "year id (body)"
+          },
+          "target1": {
+            "type": "int",
+            "required": false,
+            "description": "target1 (body)"
+          },
+          "target2": {
+            "type": "int",
+            "required": false,
+            "description": "target2 (body)"
+          },
+          "target3": {
+            "type": "int",
+            "required": false,
+            "description": "target3 (body)"
+          },
+          "target4": {
+            "type": "int",
+            "required": false,
+            "description": "target4 (body)"
+          },
+          "target_points": {
+            "type": "int",
+            "required": false,
+            "description": "target points (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveBMTargetController.cs",
+        "action_method": "Update",
+        "related_dto_files": [
+          "Controllers/IncentiveBMTargetController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/IncentiveBMTarget_repo.cs",
+          "Interfaces/IIncentiveBMTarget.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Update an existing incentive BM target record — validates the request, calls IIncentiveBMTarget.UpdateAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; request body of type UpdateIncentiveBMTargetRequest (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "validations": "Valid id is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IIncentiveBMTarget.UpdateAsync"
+        ],
+        "calls_repositories": [
+          "IncentiveBMTarget_repo (Repository/IncentiveBMTarget_repo.cs) via IIncentiveBMTarget"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid id is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "message built at runtime",
+            "when": "!result.Success"
+          }
+        ]
+      }
+    },
+    {
+      "id": "incentive_bm_target_delete",
+      "name": "Delete",
+      "action_method": "Delete",
+      "http_method": "DELETE",
+      "route": "api/IncentiveBMTarget/{id}",
+      "business_purpose": "Delete a incentive BM target record",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "planner/incentive-bm-target:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete a incentive BM target record",
+      "detailed_description": "Delete a incentive BM target record. It validates the request, then calls IIncentiveBMTarget.DeleteAllForBMAsync. Persists changes to: soft delete (is_deleted flag). Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid id is required. [when id <= 0]; message built at runtime [when !result.Success]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete a incentive BM target record",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveBMTarget/load/{bmUserId}",
+          "GET api/IncentiveBMTarget/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_bm_target_delete",
+        "description": "Delete a incentive BM target record",
+        "http_method": "DELETE",
+        "endpoint": "api/IncentiveBMTarget/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveBMTargetController.cs",
+        "action_method": "Delete",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/IncentiveBMTarget_repo.cs",
+          "Interfaces/IIncentiveBMTarget.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Delete a incentive BM target record — validates the request, calls IIncentiveBMTarget.DeleteAllForBMAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "soft delete (is_deleted flag)",
+        "validations": "Valid id is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IIncentiveBMTarget.DeleteAllForBMAsync"
+        ],
+        "calls_repositories": [
+          "IncentiveBMTarget_repo (Repository/IncentiveBMTarget_repo.cs) via IIncentiveBMTarget"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid id is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "message built at runtime",
+            "when": "!result.Success"
+          }
+        ]
+      }
+    }
+  ]
+}

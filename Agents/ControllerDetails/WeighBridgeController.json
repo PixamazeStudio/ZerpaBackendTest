@@ -1,0 +1,998 @@
+{
+  "controller": "WeighBridgeController",
+  "file": "Controllers/WeighBridgeController.cs",
+  "module": "Stock and Logistics Management",
+  "base_route": "api/WeighBridge",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages weigh bridge records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "not referenced by frontend",
+    "menu_keys": [],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "weigh_bridge_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/WeighBridge",
+      "business_purpose": "Retrieve all weigh bridge records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve all weigh bridge records",
+      "detailed_description": "Retrieve all weigh bridge records. It calls ICommon.getUserByToken, IWeighBridge.GetWeighbridgeData, IWeighBridge.GetWeighbridgeActions. Data access uses stored procedure(s): GetWeighbridge, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all weigh bridge records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/WeighBridge",
+          "GET api/WeighBridge/{id}",
+          "GET api/WeighBridge/trucks"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "weigh_bridge_get_all",
+        "description": "Retrieve all weigh bridge records",
+        "http_method": "GET",
+        "endpoint": "api/WeighBridge",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/WeighBridgeController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/WeighBridge_repo.cs",
+          "Interfaces/IWeighBridge.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all weigh bridge records — calls ICommon.getUserByToken, IWeighBridge.GetWeighbridgeData, IWeighBridge.GetWeighbridgeActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IWeighBridge.GetWeighbridgeData",
+          "IWeighBridge.GetWeighbridgeActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WeighBridge_repo (Repositories/WeighBridge_repo.cs) via IWeighBridge"
+        ],
+        "stored_procedures": [
+          "GetWeighbridge",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "weigh_bridge_get_weighbridge_by_id",
+      "name": "Get Weighbridge By Id",
+      "action_method": "GetWeighbridgeById",
+      "http_method": "GET",
+      "route": "api/WeighBridge/{id}",
+      "business_purpose": "Retrieve weighbridge by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve weighbridge by ID",
+      "detailed_description": "Retrieve weighbridge by ID. It validates the request, then calls ICommon.getUserByToken, IWeighBridge.GetWeighbridgeById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid Weighbridge ID is required [when id <= 0]",
+        "not_found": "404: Weighbridge record not found [when weighbridge == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve weighbridge by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/WeighBridge",
+          "GET api/WeighBridge/{id}",
+          "GET api/WeighBridge/trucks"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "weigh_bridge_get_weighbridge_by_id",
+        "description": "Retrieve weighbridge by ID",
+        "http_method": "GET",
+        "endpoint": "api/WeighBridge/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/WeighBridgeController.cs",
+        "action_method": "GetWeighbridgeById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/WeighBridge_repo.cs",
+          "Interfaces/IWeighBridge.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Retrieve weighbridge by ID — validates the request, calls ICommon.getUserByToken, IWeighBridge.GetWeighbridgeById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid Weighbridge ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IWeighBridge.GetWeighbridgeById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WeighBridge_repo (Repositories/WeighBridge_repo.cs) via IWeighBridge"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Weighbridge ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Weighbridge record not found",
+            "when": "weighbridge == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "weigh_bridge_delete_weighbridge",
+      "name": "Delete Weighbridge",
+      "action_method": "DeleteWeighbridge",
+      "http_method": "DELETE",
+      "route": "api/WeighBridge/{id}",
+      "business_purpose": "Delete weighbridge",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Delete weighbridge",
+      "detailed_description": "Delete weighbridge. It validates the request, then calls ICommon.getUserByToken, IWeighBridge.DeleteWeighbridge. Persists changes to: soft delete (is_deleted flag). Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid Weighbridge ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete weighbridge",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/WeighBridge/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "weigh_bridge_delete_weighbridge",
+        "description": "Delete weighbridge",
+        "http_method": "DELETE",
+        "endpoint": "api/WeighBridge/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/WeighBridgeController.cs",
+        "action_method": "DeleteWeighbridge",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/WeighBridge_repo.cs",
+          "Interfaces/IWeighBridge.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Delete weighbridge — validates the request, calls ICommon.getUserByToken, IWeighBridge.DeleteWeighbridge",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "soft delete (is_deleted flag)",
+        "validations": "Valid Weighbridge ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IWeighBridge.DeleteWeighbridge"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WeighBridge_repo (Repositories/WeighBridge_repo.cs) via IWeighBridge"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid Weighbridge ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "weigh_bridge_create_weigh_bridge",
+      "name": "Create Weigh Bridge",
+      "action_method": "CreateWeighBridge",
+      "http_method": "POST",
+      "route": "api/WeighBridge/create",
+      "business_purpose": "Create weigh bridge",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateWeighBridgeDto (inline)",
+        "properties": [
+          {
+            "name": "TruckId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "InitialLoadWeight",
+            "type": "float",
+            "required": false
+          },
+          {
+            "name": "InitialTareWeight",
+            "type": "float",
+            "required": false
+          },
+          {
+            "name": "InitialNetWeight",
+            "type": "float",
+            "required": false
+          },
+          {
+            "name": "FinalLoadWeight",
+            "type": "float",
+            "required": false
+          },
+          {
+            "name": "FinalTareWeight",
+            "type": "float",
+            "required": false
+          },
+          {
+            "name": "FinalNetWeight",
+            "type": "float",
+            "required": false
+          },
+          {
+            "name": "Date",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "Amount",
+            "type": "float",
+            "required": false
+          },
+          {
+            "name": "Remarks",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Create weigh bridge",
+      "detailed_description": "Create weigh bridge. It validates the request, then calls ICommon.getUserByToken, IWeighBridge.GetTruckById, IWeighBridge.CreateWeighbridgeAsync. Persists changes to: weighBridge: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid TruckId is required. [when request.TruckId <= 0]; Truck not found. [when truck == null]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create weigh bridge",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateWeighBridgeDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/WeighBridge",
+          "GET api/WeighBridge/trucks"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "weigh_bridge_create_weigh_bridge",
+        "description": "Create weigh bridge",
+        "http_method": "POST",
+        "endpoint": "api/WeighBridge/create",
+        "parameters": {
+          "TruckId": {
+            "type": "int",
+            "required": false,
+            "description": "Truck Id (body)"
+          },
+          "InitialLoadWeight": {
+            "type": "float",
+            "required": false,
+            "description": "Initial Load Weight (body)"
+          },
+          "InitialTareWeight": {
+            "type": "float",
+            "required": false,
+            "description": "Initial Tare Weight (body)"
+          },
+          "InitialNetWeight": {
+            "type": "float",
+            "required": false,
+            "description": "Initial Net Weight (body)"
+          },
+          "FinalLoadWeight": {
+            "type": "float",
+            "required": false,
+            "description": "Final Load Weight (body)"
+          },
+          "FinalTareWeight": {
+            "type": "float",
+            "required": false,
+            "description": "Final Tare Weight (body)"
+          },
+          "FinalNetWeight": {
+            "type": "float",
+            "required": false,
+            "description": "Final Net Weight (body)"
+          },
+          "Date": {
+            "type": "datetime",
+            "required": false,
+            "description": "Date (body)"
+          },
+          "Amount": {
+            "type": "float",
+            "required": false,
+            "description": "Amount (body)"
+          },
+          "Remarks": {
+            "type": "string",
+            "required": false,
+            "description": "Remarks (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/WeighBridgeController.cs",
+        "action_method": "CreateWeighBridge",
+        "related_dto_files": [
+          "Controllers/WeighBridgeController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/WeighBridge_repo.cs",
+          "Interfaces/IWeighBridge.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Create weigh bridge — validates the request, calls ICommon.getUserByToken, IWeighBridge.GetTruckById, IWeighBridge.CreateWeighbridgeAsync",
+        "preconditions": "Valid Bearer JWT; request body of type CreateWeighBridgeDto (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "weighBridge: INSERT",
+        "validations": "Valid TruckId is required.; Truck not found.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IWeighBridge.GetTruckById",
+          "IWeighBridge.CreateWeighbridgeAsync",
+          "IWeighBridge.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WeighBridge_repo (Repositories/WeighBridge_repo.cs) via IWeighBridge"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid TruckId is required.",
+            "when": "request.TruckId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Truck not found.",
+            "when": "truck == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "weigh_bridge_get_trucks",
+      "name": "Get Trucks",
+      "action_method": "GetTrucks",
+      "http_method": "GET",
+      "route": "api/WeighBridge/trucks",
+      "business_purpose": "Retrieve trucks",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve trucks",
+      "detailed_description": "Retrieve trucks. It calls ICommon.getUserByToken, IWeighBridge.GetAllTrucksAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve trucks",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/WeighBridge",
+          "GET api/WeighBridge/{id}",
+          "GET api/WeighBridge/trucks"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "weigh_bridge_get_trucks",
+        "description": "Retrieve trucks",
+        "http_method": "GET",
+        "endpoint": "api/WeighBridge/trucks",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/WeighBridgeController.cs",
+        "action_method": "GetTrucks",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/WeighBridge_repo.cs",
+          "Interfaces/IWeighBridge.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Retrieve trucks — calls ICommon.getUserByToken, IWeighBridge.GetAllTrucksAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IWeighBridge.GetAllTrucksAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WeighBridge_repo (Repositories/WeighBridge_repo.cs) via IWeighBridge"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "weigh_bridge_update_weigh_bridge",
+      "name": "Update Weigh Bridge",
+      "action_method": "UpdateWeighBridge",
+      "http_method": "PUT",
+      "route": "api/WeighBridge/{id}",
+      "business_purpose": "Update weigh bridge",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateWeighBridgeDto (inline)",
+        "properties": [
+          {
+            "name": "TruckId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "InitialLoadWeight",
+            "type": "float",
+            "required": false
+          },
+          {
+            "name": "InitialTareWeight",
+            "type": "float",
+            "required": false
+          },
+          {
+            "name": "InitialNetWeight",
+            "type": "float",
+            "required": false
+          },
+          {
+            "name": "FinalLoadWeight",
+            "type": "float",
+            "required": false
+          },
+          {
+            "name": "FinalTareWeight",
+            "type": "float",
+            "required": false
+          },
+          {
+            "name": "FinalNetWeight",
+            "type": "float",
+            "required": false
+          },
+          {
+            "name": "Date",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "Amount",
+            "type": "float",
+            "required": false
+          },
+          {
+            "name": "Remarks",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Update weigh bridge",
+      "detailed_description": "Update weigh bridge. It validates the request, then calls ICommon.getUserByToken, IWeighBridge.UpdateWeighbridgeAsync. Persists changes to: weighBridge: UPDATE. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required. [when id <= 0]; At least one field must be provided for update. [when request.InitialLoadWeight == null && request.InitialTareWeight == null && request.InitialN]; message returned by the called service/repository (result.Message) [when !result.Success]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update weigh bridge",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "request body UpdateWeighBridgeDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/WeighBridge/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "weigh_bridge_update_weigh_bridge",
+        "description": "Update weigh bridge",
+        "http_method": "PUT",
+        "endpoint": "api/WeighBridge/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "TruckId": {
+            "type": "int",
+            "required": false,
+            "description": "Truck Id (body)"
+          },
+          "InitialLoadWeight": {
+            "type": "float",
+            "required": false,
+            "description": "Initial Load Weight (body)"
+          },
+          "InitialTareWeight": {
+            "type": "float",
+            "required": false,
+            "description": "Initial Tare Weight (body)"
+          },
+          "InitialNetWeight": {
+            "type": "float",
+            "required": false,
+            "description": "Initial Net Weight (body)"
+          },
+          "FinalLoadWeight": {
+            "type": "float",
+            "required": false,
+            "description": "Final Load Weight (body)"
+          },
+          "FinalTareWeight": {
+            "type": "float",
+            "required": false,
+            "description": "Final Tare Weight (body)"
+          },
+          "FinalNetWeight": {
+            "type": "float",
+            "required": false,
+            "description": "Final Net Weight (body)"
+          },
+          "Date": {
+            "type": "datetime",
+            "required": false,
+            "description": "Date (body)"
+          },
+          "Amount": {
+            "type": "float",
+            "required": false,
+            "description": "Amount (body)"
+          },
+          "Remarks": {
+            "type": "string",
+            "required": false,
+            "description": "Remarks (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/WeighBridgeController.cs",
+        "action_method": "UpdateWeighBridge",
+        "related_dto_files": [
+          "Controllers/WeighBridgeController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/WeighBridge_repo.cs",
+          "Interfaces/IWeighBridge.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Update weigh bridge — validates the request, calls ICommon.getUserByToken, IWeighBridge.UpdateWeighbridgeAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; request body of type UpdateWeighBridgeDto (inline); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "weighBridge: UPDATE",
+        "validations": "Valid ID is required.; At least one field must be provided for update.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IWeighBridge.UpdateWeighbridgeAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WeighBridge_repo (Repositories/WeighBridge_repo.cs) via IWeighBridge"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field must be provided for update.",
+            "when": "request.InitialLoadWeight == null && request.InitialTareWeight == null && request.InitialNetWeight == null && request.FinalLoadWeight == null && request.FinalTareWeight == null && request.FinalNetWeight == null && request.Amount == null && request.Remarks == null && request.Date == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": "!result.Success"
+          }
+        ]
+      }
+    }
+  ]
+}

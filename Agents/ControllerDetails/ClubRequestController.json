@@ -1,0 +1,1089 @@
+{
+  "controller": "ClubRequestController",
+  "file": "Controllers/ClubRequestController.cs",
+  "module": "Clubbing Management",
+  "base_route": "api/ClubRequest",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages club request operations including listing all club requests, approving/rejecting clubs, cancelling club approvals, and retrieving details for individual club requests.",
+  "notes": "Class has [Authorize] attribute - all endpoints require authentication. Inline DTOs: ClubApprovalRequest, ClubRejectRequest, CancelClubRequest.",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "ims/factory/club-requests",
+        "module_code": "ims",
+        "section": "factory",
+        "sub_section": "club-requests",
+        "frontend_routes": [
+          "/ims/factory/club-requests"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "ims/factory/club--requests",
+        "module_code": "ims",
+        "section": "factory",
+        "sub_section": "club--requests",
+        "frontend_routes": [
+          "/ims/factory/club--requests",
+          "/ims/factory/club--requests/view-club-requests/:id"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "ims/factory/approved-clubs",
+        "module_code": "ims",
+        "section": "factory",
+        "sub_section": "approved-clubs",
+        "frontend_routes": [
+          "/ims/factory/approved-clubs/view-approved-clubs/:id"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "ims/factory/cancelled-clubs",
+        "module_code": "ims",
+        "section": "factory",
+        "sub_section": "cancelled-clubs",
+        "frontend_routes": [
+          "/ims/factory/cancelled-clubs/view-cancelled-clubs/:id"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "ClubRequest"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "club_request_get_all",
+      "name": "Get All Club Requests",
+      "action_method": "GetAllClubRequest",
+      "http_method": "GET",
+      "route": "api/ClubRequest",
+      "module": "Clubbing Management",
+      "business_purpose": "Retrieve paginated list of all club requests with optional filters by date range and search text",
+      "short_description": "Fetches all club requests with dashboard cards showing total clubs and indents, supporting date range and text search filtering.",
+      "detailed_description": "Extracts JWT token from Authorization header, validates user, applies date range logic (last_30_days default), calculates pagination offset, calls _clubRequest.GetClubRequestData to fetch records, counts total clubs and total indents, and returns dashboard response with cards, filters, actions, data, and pagination.",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ],
+        "roles_or_policy": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_claims": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_headers": [
+          "Authorization: Bearer <token>"
+        ],
+        "notes": "Token extracted from request header; user validated via _common.getUserByToken(token)"
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "DateTime",
+          "required": false,
+          "default": "null",
+          "description": "Start date for filtering",
+          "example": "2025-01-01"
+        },
+        {
+          "name": "todate",
+          "type": "DateTime",
+          "required": false,
+          "default": "null",
+          "description": "End date for filtering",
+          "example": "2025-01-31"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null",
+          "description": "Search text for filtering",
+          "example": "search term"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10",
+          "description": "Records per page",
+          "example": "20"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1",
+          "description": "Page number",
+          "example": "2"
+        },
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "last_30_days",
+          "description": "Preset date range (last_30_days, last_60_days, last_180_days, this_month, last_month, custom)",
+          "example": "this_month"
+        }
+      ],
+      "request_body": null,
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "IActionResult (Ok wrapping anonymous object)",
+        "properties": [
+          {
+            "name": "success",
+            "type": "bool",
+            "nullable": false,
+            "description": "Operation success status"
+          },
+          {
+            "name": "message",
+            "type": "string",
+            "nullable": false,
+            "description": "Response message"
+          },
+          {
+            "name": "cards",
+            "type": "array",
+            "nullable": false,
+            "description": "Dashboard cards with total_clubs and total_indents counts"
+          },
+          {
+            "name": "filters",
+            "type": "array",
+            "nullable": false,
+            "description": "Available filter options"
+          },
+          {
+            "name": "data",
+            "type": "array",
+            "nullable": false,
+            "description": "Club request records"
+          },
+          {
+            "name": "actions",
+            "type": "object",
+            "nullable": true,
+            "description": "User action permissions"
+          },
+          {
+            "name": "pagination",
+            "type": "object",
+            "nullable": false,
+            "description": "Pagination info"
+          }
+        ],
+        "success_example": {
+          "success": true,
+          "message": "Dashboard cards fetched successfully",
+          "cards": [
+            {
+              "key": "total_clubs",
+              "label": "Total Clubs",
+              "count": 5
+            }
+          ]
+        },
+        "error_example": {
+          "success": false,
+          "message": "Invalid token or user not found"
+        },
+        "notes": "Dynamically calculated date ranges based on date_range parameter. Total clubs and indents are calculated from result set."
+      },
+      "business_logic": {
+        "operation_summary": "Lists all club requests with optional filtering and pagination",
+        "preconditions": "Valid JWT token required; user must exist in database",
+        "state_changes": "No state changes; read-only operation",
+        "validations": "page_no < 1 defaults to 1; date range validation based on date_range parameter",
+        "side_effects": "Fetches user record via token; retrieves section actions from database",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IClubRequest.GetClubRequestData",
+          "IClubRequest.GetClubRequestActions"
+        ],
+        "calls_repositories": [
+          "IClubRequest"
+        ],
+        "stored_procedures": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "INFERRED FROM CODE: Reads user context from JWT token to filter data",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      },
+      "ai_agent_guidance": {
+        "use_when": "User needs to view list of all club requests with filtering and pagination",
+        "do_not_use_when": "Creating, updating, or approving individual club requests - use specific endpoints for those",
+        "preconditions_needed": [
+          "Valid JWT bearer token"
+        ],
+        "follow_up_apis": [
+          "get_club_by_id",
+          "club_approval",
+          "club_reject"
+        ]
+      },
+      "error_handling": {
+        "validation_errors": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "not_found": "Returns Unauthorized if user not found from token",
+        "unauthorized": "Returns Unauthorized(new { success = false, message = \"Invalid token or user not found\" })",
+        "business_rule_errors": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "exceptions": "Catches all exceptions and returns StatusCode(500, ex.Message)"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Pure read operation with no side effects except logging"
+      },
+      "llm_tool_definition": {
+        "name": "get_all_club_requests",
+        "description": "Retrieve list of club requests with optional filtering by date and search text",
+        "http_method": "GET",
+        "endpoint": "api/ClubRequest",
+        "parameters": {
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "Date range filter"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "Search text"
+          },
+          "page_no": {
+            "type": "integer",
+            "required": false,
+            "description": "Page number"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": "Read-only operation"
+      },
+      "source": {
+        "controller_file": "Controllers/ClubRequestController.cs",
+        "action_method": "GetAllClubRequest",
+        "related_dto_files": [
+          "DTO/ReadDTO/ClubbingHeader",
+          "Controllers/ClubRequestController.cs (inline FilterLabelDto, OptionDto)"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Interfaces/IClubRequest.cs"
+        ]
+      },
+      "required_permission": "ims/factory/club-requests:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "ims/factory/club--requests"
+      ]
+    },
+    {
+      "id": "club_approval",
+      "name": "Approve Club",
+      "action_method": "ClubApproval",
+      "http_method": "POST",
+      "route": "api/ClubRequest/Approval",
+      "module": "Clubbing Management",
+      "business_purpose": "Toggle approval status of a club request (approve or revoke approval)",
+      "short_description": "Approves or revokes approval of a club by updating is_approved flag and recording approval metadata",
+      "detailed_description": "Extracts and validates JWT token, gets current user, retrieves club by ID, sets is_approved based on request, updates approved_by user and approved_date timestamp, updates audit fields (modified_by/modified_date), saves changes, returns success response with club ID and approval status.",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ],
+        "roles_or_policy": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_claims": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_headers": [
+          "Authorization: Bearer <token>"
+        ],
+        "notes": "Token extracted and validated; user tracked/attached to context"
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "ClubApprovalRequest",
+        "source_file": "Controllers/ClubRequestController.cs (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": true,
+            "nullable": false,
+            "validation": "none found",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "Club ID to approve",
+            "example": 123
+          },
+          {
+            "name": "IsApproved",
+            "type": "bool",
+            "required": true,
+            "nullable": false,
+            "validation": "none found",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "Approval flag (true=approve, false=revoke)",
+            "example": true
+          }
+        ],
+        "example_json": {
+          "Id": 123,
+          "IsApproved": true
+        }
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ],
+        "dto_name": "IActionResult (Ok wrapping anonymous object)",
+        "properties": [
+          {
+            "name": "Success",
+            "type": "bool",
+            "nullable": false,
+            "description": "Operation success"
+          },
+          {
+            "name": "Message",
+            "type": "string",
+            "nullable": false,
+            "description": "Result message"
+          },
+          {
+            "name": "Id",
+            "type": "int",
+            "nullable": false,
+            "description": "Club ID"
+          },
+          {
+            "name": "IsApproved",
+            "type": "bool",
+            "nullable": false,
+            "description": "Final approval status"
+          }
+        ],
+        "success_example": {
+          "Success": true,
+          "Message": "Club approved successfully",
+          "Id": 123,
+          "IsApproved": true
+        },
+        "error_example": {
+          "Success": false,
+          "Message": "Club not found"
+        },
+        "notes": "Updates both approval flag and audit trail"
+      },
+      "business_logic": {
+        "operation_summary": "Toggle club approval status with audit trail",
+        "preconditions": "Club with given ID must exist; user must be authenticated",
+        "state_changes": "Updates club.is_approved, club.approved_by, club.approved_date, club.modified_by, club.modified_date in database",
+        "validations": "Club must exist; user must be valid",
+        "side_effects": "Records audit trail via modified_by/modified_date fields",
+        "calls_services": [
+          "IClubRequest.GetClubById",
+          "IClubRequest.GetUserById",
+          "IClubRequest.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "IClubRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "INFERRED FROM CODE: User ID from JWT token used for approval audit trail",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Planner not found",
+            "when": "club == null"
+          }
+        ]
+      },
+      "ai_agent_guidance": {
+        "use_when": "Need to approve or revoke approval of a club request",
+        "do_not_use_when": "Rejecting a club (use club_reject endpoint) or deleting a club",
+        "preconditions_needed": [
+          "Valid club ID",
+          "JWT bearer token",
+          "Club must exist in system"
+        ],
+        "follow_up_apis": [
+          "get_club_by_id",
+          "club_reject"
+        ]
+      },
+      "error_handling": {
+        "validation_errors": "Returns Unauthorized if user not found or null",
+        "not_found": "Returns NotFound(new { Success = false, Message = \"Planner not found\" }) if club not found",
+        "unauthorized": "Returns Unauthorized(new { Success = false, Message = \"Unauthorized\" })",
+        "business_rule_errors": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "exceptions": "Catches all exceptions and returns StatusCode(500, new { Success = false, Message = ex.Message })"
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Setting same approval status multiple times updates timestamp but achieves same state"
+      },
+      "llm_tool_definition": {
+        "name": "approve_club",
+        "description": "Approve or revoke approval of a club request",
+        "http_method": "POST",
+        "endpoint": "api/ClubRequest/Approval",
+        "parameters": {
+          "Id": {
+            "type": "integer",
+            "required": true,
+            "description": "Club ID"
+          },
+          "IsApproved": {
+            "type": "boolean",
+            "required": true,
+            "description": "Approval flag"
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Approval creates permanent audit trail and affects downstream processes"
+      },
+      "source": {
+        "controller_file": "Controllers/ClubRequestController.cs",
+        "action_method": "ClubApproval",
+        "related_dto_files": [
+          "Controllers/ClubRequestController.cs (inline ClubApprovalRequest)"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Interfaces/IClubRequest.cs"
+        ]
+      },
+      "required_permission": "ims/factory/club--requests:approve",
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "ims/factory/approved-clubs"
+      ]
+    },
+    {
+      "id": "club_reject",
+      "name": "Reject Club",
+      "action_method": "ClubReject",
+      "http_method": "POST",
+      "route": "api/ClubRequest/Reject",
+      "module": "Clubbing Management",
+      "business_purpose": "Toggle rejection status of a club request (reject or revoke rejection)",
+      "short_description": "Rejects or revokes rejection of a club by updating is_rejected flag and recording rejection metadata",
+      "detailed_description": "Similar to ClubApproval: extracts token, validates user, retrieves club, sets is_rejected based on request, updates rejected_by user and rejected_date timestamp, records audit fields, saves changes.",
+      "data_effect": "REJECTION",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ],
+        "roles_or_policy": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_claims": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_headers": [
+          "Authorization: Bearer <token>"
+        ],
+        "notes": "Same token handling as ClubApproval"
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "ClubRejectRequest",
+        "source_file": "Controllers/ClubRequestController.cs (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": true,
+            "nullable": false,
+            "validation": "none found",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "Club ID to reject",
+            "example": 123
+          },
+          {
+            "name": "IsRejected",
+            "type": "bool",
+            "required": true,
+            "nullable": false,
+            "validation": "none found",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "Rejection flag (true=reject, false=revoke)",
+            "example": true
+          }
+        ],
+        "example_json": {
+          "Id": 123,
+          "IsRejected": true
+        }
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ],
+        "dto_name": "IActionResult (Ok wrapping anonymous object)",
+        "properties": [
+          {
+            "name": "Success",
+            "type": "bool",
+            "nullable": false,
+            "description": "Operation success"
+          },
+          {
+            "name": "Message",
+            "type": "string",
+            "nullable": false,
+            "description": "Result message"
+          },
+          {
+            "name": "Id",
+            "type": "int",
+            "nullable": false,
+            "description": "Club ID"
+          },
+          {
+            "name": "IsRejected",
+            "type": "bool",
+            "nullable": false,
+            "description": "Final rejection status"
+          }
+        ],
+        "success_example": {
+          "Success": true,
+          "Message": "Club rejected successfully",
+          "Id": 123,
+          "IsRejected": true
+        },
+        "error_example": {
+          "Success": false,
+          "Message": "Club not found"
+        },
+        "notes": "Parallel to ClubApproval but for rejection workflow"
+      },
+      "business_logic": {
+        "operation_summary": "Toggle club rejection status with audit trail",
+        "preconditions": "Club with given ID must exist; user must be authenticated",
+        "state_changes": "Updates club.is_rejected, club.rejected_by, club.rejected_date, club.modified_by, club.modified_date",
+        "validations": "Club must exist; user must be valid",
+        "side_effects": "Records audit trail",
+        "calls_services": [
+          "IClubRequest.GetClubById",
+          "IClubRequest.GetUserById",
+          "IClubRequest.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "IClubRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "INFERRED FROM CODE: User ID from JWT token",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Planner not found",
+            "when": "club == null"
+          }
+        ]
+      },
+      "ai_agent_guidance": {
+        "use_when": "Need to reject or revoke rejection of a club request",
+        "do_not_use_when": "Approving a club (use club_approval endpoint)",
+        "preconditions_needed": [
+          "Valid club ID",
+          "JWT bearer token"
+        ],
+        "follow_up_apis": [
+          "get_club_by_id",
+          "club_approval"
+        ]
+      },
+      "error_handling": {
+        "validation_errors": "Returns Unauthorized if user not found",
+        "not_found": "Returns NotFound if club not found",
+        "unauthorized": "Returns Unauthorized(new { Success = false, Message = \"Unauthorized\" })",
+        "business_rule_errors": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "exceptions": "Catches all exceptions, returns StatusCode(500, ...)"
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "REJECTION",
+        "notes": "Multiple calls with same status update timestamp but achieve same state"
+      },
+      "llm_tool_definition": {
+        "name": "reject_club",
+        "description": "Reject or revoke rejection of a club request",
+        "http_method": "POST",
+        "endpoint": "api/ClubRequest/Reject",
+        "parameters": {
+          "Id": {
+            "type": "integer",
+            "required": true,
+            "description": "Club ID"
+          },
+          "IsRejected": {
+            "type": "boolean",
+            "required": true,
+            "description": "Rejection flag"
+          }
+        },
+        "operation_type": "REJECTION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Rejection creates permanent audit trail"
+      },
+      "source": {
+        "controller_file": "Controllers/ClubRequestController.cs",
+        "action_method": "ClubReject",
+        "related_dto_files": [
+          "Controllers/ClubRequestController.cs (inline ClubRejectRequest)"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Interfaces/IClubRequest.cs"
+        ]
+      },
+      "required_permission": "ims/factory/club--requests:reject",
+      "permission_flags": [
+        "reject"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "ims/factory/cancelled-clubs"
+      ]
+    },
+    {
+      "id": "get_club_by_id",
+      "name": "Get Club Details",
+      "action_method": "GetClubById",
+      "http_method": "GET",
+      "route": "api/ClubRequest/{id}",
+      "module": "Clubbing Management",
+      "business_purpose": "Retrieve detailed information for a specific club including nested clubbing details",
+      "short_description": "Fetches club header with nested clubbing details, mapped to DTO, returned with actions",
+      "detailed_description": "Validates club ID > 0, extracts token, validates user, retrieves club and clubbing details, manually attaches details to club object, maps to ClubbingHeaderReadDTO via AutoMapper, returns detailed response with nested clubbing items containing indent and dealer information.",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ],
+        "roles_or_policy": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_claims": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_headers": [
+          "Authorization: Bearer <token>"
+        ],
+        "notes": "Token validation required"
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true,
+          "description": "Club ID",
+          "example": "123"
+        }
+      ],
+      "query_parameters": [],
+      "request_body": null,
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ],
+        "dto_name": "IActionResult (Ok wrapping anonymous object with ClubbingHeaderReadDTO)",
+        "properties": [
+          {
+            "name": "success",
+            "type": "bool",
+            "nullable": false,
+            "description": "Operation success"
+          },
+          {
+            "name": "message",
+            "type": "string",
+            "nullable": false,
+            "description": "Response message"
+          },
+          {
+            "name": "data",
+            "type": "object",
+            "nullable": false,
+            "description": "Club details object"
+          },
+          {
+            "name": "actions",
+            "type": "object",
+            "nullable": true,
+            "description": "Available actions"
+          }
+        ],
+        "success_example": {
+          "success": true,
+          "message": "Club Details fetched successfully",
+          "data": {
+            "clubbing_code": "TRJ-F-CLUB-1",
+            "is_approved": true
+          }
+        },
+        "error_example": {
+          "success": false,
+          "message": "Club not found"
+        },
+        "notes": "Returns nested clubbingDetails array within data object"
+      },
+      "business_logic": {
+        "operation_summary": "Retrieve full club details with nested indents",
+        "preconditions": "Club with given ID must exist; user must be authenticated; ID must be > 0",
+        "state_changes": "No state changes",
+        "validations": "ID validation (id <= 0 returns BadRequest); club existence check",
+        "side_effects": "Fetches related clubbing details from database",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IClubRequest.GetClubById",
+          "IClubRequest.GetClubbingDetailsById",
+          "IClubRequest.GetClubRequestActions",
+          "AutoMapper.IMapper.Map"
+        ],
+        "calls_repositories": [
+          "IClubRequest"
+        ],
+        "stored_procedures": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "INFERRED FROM CODE: User context validated for permissions",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid club ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Club not found",
+            "when": "Club == null"
+          }
+        ]
+      },
+      "ai_agent_guidance": {
+        "use_when": "Need detailed information about a specific club including its clubbing items",
+        "do_not_use_when": "Listing all clubs (use get_all_club_requests) or modifying a club",
+        "preconditions_needed": [
+          "Valid club ID",
+          "JWT bearer token"
+        ],
+        "follow_up_apis": [
+          "club_approval",
+          "club_reject",
+          "cancel_club"
+        ]
+      },
+      "error_handling": {
+        "validation_errors": "BadRequest if ID <= 0",
+        "not_found": "Returns NotFound(new { success = false, message = \"Club not found\" }) if club not found",
+        "unauthorized": "Returns Unauthorized if user not valid",
+        "business_rule_errors": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "exceptions": "Returns StatusCode(500, ...) with message and inner exception details"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Pure read operation with no side effects"
+      },
+      "llm_tool_definition": {
+        "name": "get_club_details",
+        "description": "Retrieve detailed information for a specific club",
+        "http_method": "GET",
+        "endpoint": "api/ClubRequest/{id}",
+        "parameters": {
+          "id": {
+            "type": "integer",
+            "required": true,
+            "description": "Club ID"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": "Read-only operation"
+      },
+      "source": {
+        "controller_file": "Controllers/ClubRequestController.cs",
+        "action_method": "GetClubById",
+        "related_dto_files": [
+          "DTO/ReadDTO/ClubbingHeaderReadDTO"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Interfaces/IClubRequest.cs"
+        ]
+      },
+      "required_permission": "ims/factory/club-requests:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "ims/factory/club--requests"
+      ]
+    },
+    {
+      "id": "cancel_club",
+      "name": "Cancel Club",
+      "action_method": "CancelClub",
+      "http_method": "POST",
+      "route": "api/ClubRequest/cancel-club",
+      "module": "Clubbing Management",
+      "business_purpose": "Revoke previously approved club status and cascade changes to linked indents",
+      "short_description": "Cancels an approved club that has not yet been dispatched, revokes approval, and updates all linked indents to remove club approval",
+      "detailed_description": "Validates user, retrieves club, checks if club is approved AND not dispatched, if so: revokes is_approved, updates linked indents to set is_club_approved=false, records audit trail, saves changes.",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ],
+        "roles_or_policy": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_claims": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_headers": [
+          "Authorization: Bearer <token>"
+        ],
+        "notes": "User validated and tracked in context"
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CancelClubRequest",
+        "source_file": "Controllers/ClubRequestController.cs (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": true,
+            "nullable": false,
+            "validation": "none found",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "Club ID to cancel",
+            "example": 123
+          }
+        ],
+        "example_json": {
+          "Id": 123
+        }
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ],
+        "dto_name": "IActionResult (Ok wrapping anonymous object)",
+        "properties": [
+          {
+            "name": "Success",
+            "type": "bool",
+            "nullable": false,
+            "description": "Operation success"
+          },
+          {
+            "name": "Message",
+            "type": "string",
+            "nullable": false,
+            "description": "Result message"
+          },
+          {
+            "name": "Id",
+            "type": "int",
+            "nullable": false,
+            "description": "Club ID"
+          },
+          {
+            "name": "IsApproved",
+            "type": "bool",
+            "nullable": false,
+            "description": "Final approval status"
+          }
+        ],
+        "success_example": {
+          "Success": true,
+          "Message": "Cancel club successfully",
+          "Id": 123,
+          "IsApproved": false
+        },
+        "error_example": {
+          "Success": false
+        },
+        "notes": "Always returns success (per comment in code 'same behavior as MVC redirect')"
+      },
+      "business_logic": {
+        "operation_summary": "Cancel approved club and cascade to linked indents",
+        "preconditions": "Club must exist; must be approved; must NOT be dispatched",
+        "state_changes": "Updates club.is_approved=false, club.clubbingDetails[*].indent.is_club_approved=false, audit fields (modified_by/modified_date)",
+        "validations": "Checks club.is_approved==true && club.is_dispatched==false before cancelling",
+        "side_effects": "Cascades approval revocation to all linked indents",
+        "calls_services": [
+          "IClubRequest.GetClubById",
+          "IClubRequest.GetUserById",
+          "IClubRequest.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "IClubRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "INFERRED FROM CODE: User ID from token for audit trail",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "message built at runtime",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "message built at runtime",
+            "when": "club == null"
+          }
+        ]
+      },
+      "ai_agent_guidance": {
+        "use_when": "Need to revoke approval of an approved club that has not been dispatched yet",
+        "do_not_use_when": "Club is not approved or has been dispatched; use other endpoints for rejection",
+        "preconditions_needed": [
+          "Club must be approved",
+          "Club must not be dispatched",
+          "JWT bearer token"
+        ],
+        "follow_up_apis": [
+          "get_club_by_id",
+          "get_all_club_requests"
+        ]
+      },
+      "error_handling": {
+        "validation_errors": "Returns Unauthorized if user not found or null",
+        "not_found": "Returns NotFound if club not found",
+        "unauthorized": "Returns Unauthorized",
+        "business_rule_errors": "No explicit error if club not approved or already dispatched - code silently succeeds",
+        "exceptions": "Catches all exceptions, returns StatusCode(500, ...)"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "UPDATE",
+        "notes": "Idempotent - calling when club already not approved has no effect"
+      },
+      "llm_tool_definition": {
+        "name": "cancel_club",
+        "description": "Cancel an approved club and revoke approval on linked indents",
+        "http_method": "POST",
+        "endpoint": "api/ClubRequest/cancel-club",
+        "parameters": {
+          "Id": {
+            "type": "integer",
+            "required": true,
+            "description": "Club ID"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Cascades changes to multiple indents"
+      },
+      "source": {
+        "controller_file": "Controllers/ClubRequestController.cs",
+        "action_method": "CancelClub",
+        "related_dto_files": [
+          "Controllers/ClubRequestController.cs (inline CancelClubRequest)"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Interfaces/IClubRequest.cs"
+        ]
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "ims/factory/club-requests",
+        "ims/factory/club--requests",
+        "ims/factory/approved-clubs",
+        "ims/factory/cancelled-clubs"
+      ]
+    }
+  ]
+}

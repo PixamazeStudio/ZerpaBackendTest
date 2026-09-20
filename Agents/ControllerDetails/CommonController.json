@@ -1,0 +1,2394 @@
+{
+  "controller": "CommonController",
+  "file": "Controllers/CommonController.cs",
+  "module": "Common and Utilities",
+  "base_route": "api/Common",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles common: get user role info, get section configuration by section name, download complaint file, download complaint file, search users, get areas and 13 more",
+  "menu_permission": {
+    "status": "lookup-only",
+    "menu_keys": [],
+    "also_called_from_menus": [
+      "cms/all-complaints",
+      "cms/branch-requests",
+      "cms/complaints-center",
+      "cms/credit-notes",
+      "cms/factory-complaints",
+      "crm/projects",
+      "crm/scheme-payment-request",
+      "crm/scheme-payment-request-for-corporate-approval",
+      "crm/scheme-payment-request-for-verification",
+      "crm/scheme-wise-orders",
+      "crm/scheme-wise-orders-for-corporate-approval-",
+      "crm/scheme-wise-orders-for-verification"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "common_get_user_role_info",
+      "name": "Get User Role Info",
+      "action_method": "GetUserRoleInfo",
+      "http_method": "GET",
+      "route": "api/Common/user-role-info",
+      "business_purpose": "Retrieve user role info",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404
+        ],
+        "dto_name": "ZerpaAiTrojanApis.DTOs.Response.AuthenticationResponseDto"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Retrieve user role info",
+      "detailed_description": "Retrieve user role info. It calls ICommon.getUserByToken, IUsers.GetUserById, IUserRoles.GetUserRoleById. Possible responses: 200, 401, 404.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: User not found [when user == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]; Error: {ex.Message}",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve user role info",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Common/user-role-info",
+          "GET api/Common/section-configuration/{sectionName}",
+          "GET api/Common/download/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "common_get_user_role_info",
+        "description": "Retrieve user role info",
+        "http_method": "GET",
+        "endpoint": "api/Common/user-role-info",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CommonController.cs",
+        "action_method": "GetUserRoleInfo",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Users_repo.cs",
+          "Interfaces/IUsers.cs",
+          "Repositories/UserRoles_repo.cs",
+          "Interfaces/IUserRoles.cs"
+        ]
+      },
+      "module": "Common and Utilities",
+      "business_logic": {
+        "operation_summary": "Retrieve user role info — calls ICommon.getUserByToken, IUsers.GetUserById, IUserRoles.GetUserRoleById",
+        "preconditions": "Valid Bearer JWT; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IUsers.GetUserById",
+          "IUserRoles.GetUserRoleById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Users_repo (Repositories/Users_repo.cs) via IUsers",
+          "UserRoles_repo (Repositories/UserRoles_repo.cs) via IUserRoles"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "User not found",
+            "when": "user == null"
+          },
+          {
+            "returns": 401,
+            "message": "Error: {ex.Message}",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "common_get_section_configuration_by_section_name",
+      "name": "Get Section Configuration By Section Name",
+      "action_method": "GetSectionConfigurationBySectionName",
+      "http_method": "GET",
+      "route": "api/Common/section-configuration/{sectionName}",
+      "business_purpose": "Retrieve section configuration by section name",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "sectionName",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ],
+        "dto_name": "SectionsConfiguration[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Retrieve section configuration by section name",
+      "detailed_description": "Retrieve section configuration by section name. It validates the request, then calls ICommon.GetSectionConfigurationBySectionName. Data access uses stored procedure(s): GetSectionConfBySection. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Section name is required. [when string.IsNullOrWhiteSpace(sectionName)]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve section configuration by section name",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "sectionName (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Common/user-role-info",
+          "GET api/Common/section-configuration/{sectionName}",
+          "GET api/Common/download/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "common_get_section_configuration_by_section_name",
+        "description": "Retrieve section configuration by section name",
+        "http_method": "GET",
+        "endpoint": "api/Common/section-configuration/{sectionName}",
+        "parameters": {
+          "sectionName": {
+            "type": "string",
+            "required": true,
+            "description": "section Name (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CommonController.cs",
+        "action_method": "GetSectionConfigurationBySectionName",
+        "related_dto_files": [
+          "Models/SectionsConfiguration.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Common and Utilities",
+      "business_logic": {
+        "operation_summary": "Retrieve section configuration by section name — validates the request, calls ICommon.GetSectionConfigurationBySectionName",
+        "preconditions": "Valid Bearer JWT; route parameter(s) sectionName; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Section name is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.GetSectionConfigurationBySectionName"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [
+          "GetSectionConfBySection"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Section name is required.",
+            "when": "string.IsNullOrWhiteSpace(sectionName)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "common_download_complaint_file_get",
+      "name": "Download Complaint File",
+      "action_method": "DownloadComplaintFile",
+      "http_method": "GET",
+      "route": "api/Common/download/{id}",
+      "business_purpose": "Download complaint file",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Download complaint file",
+      "detailed_description": "Download complaint file. It validates the request, then calls ICommon.getUserByToken, ICommon.GetComplaintFileById, ICommon.GetDriveFileIdByPath, then processes uploaded files. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid file ID is required [when id <= 0]",
+        "not_found": "404: file not found [when complaintfile == null]; File not found [when complaintfile == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to download complaint file",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Common/user-role-info",
+          "GET api/Common/section-configuration/{sectionName}",
+          "GET api/Common/download/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "common_download_complaint_file",
+        "description": "Download complaint file",
+        "http_method": "GET",
+        "endpoint": "api/Common/download/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CommonController.cs",
+        "action_method": "DownloadComplaintFile",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Common and Utilities",
+      "business_logic": {
+        "operation_summary": "Download complaint file — validates the request, calls ICommon.getUserByToken, ICommon.GetComplaintFileById, ICommon.GetDriveFileIdByPath, processes uploaded files",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid file ID is required",
+        "side_effects": "Handles file upload/storage",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.GetComplaintFileById",
+          "ICommon.GetDriveFileIdByPath",
+          "ICommon.GetFileStreamAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid file ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "file not found",
+            "when": "complaintfile == null"
+          },
+          {
+            "returns": 404,
+            "message": "File not found",
+            "when": "complaintfile == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "common_download_complaint_file_get_2",
+      "name": "Download Complaint File",
+      "action_method": "DownloadComplaintFile",
+      "http_method": "GET",
+      "route": "api/Common/downloadFile/{fileId}",
+      "business_purpose": "Download complaint file",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "fileId",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Download complaint file",
+      "detailed_description": "Download complaint file. It calls ICommon.getUserByToken, ICommon.GetFileStreamAsync, then processes uploaded files. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to download complaint file",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "fileId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Common/user-role-info",
+          "GET api/Common/section-configuration/{sectionName}",
+          "GET api/Common/download/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "common_download_complaint_file",
+        "description": "Download complaint file",
+        "http_method": "GET",
+        "endpoint": "api/Common/downloadFile/{fileId}",
+        "parameters": {
+          "fileId": {
+            "type": "string",
+            "required": true,
+            "description": "file Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CommonController.cs",
+        "action_method": "DownloadComplaintFile",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Common and Utilities",
+      "business_logic": {
+        "operation_summary": "Download complaint file — calls ICommon.getUserByToken, ICommon.GetFileStreamAsync, processes uploaded files",
+        "preconditions": "Valid Bearer JWT; route parameter(s) fileId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "Handles file upload/storage",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.GetFileStreamAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "common_search_users",
+      "name": "Search Users",
+      "action_method": "SearchUsers",
+      "http_method": "GET",
+      "route": "api/Common/SearchUsers",
+      "business_purpose": "Search users",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "query",
+          "type": "string",
+          "required": false
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Search users",
+      "detailed_description": "Search users. It calls ICommon.getUserByToken, ICommon.SearchUsersAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to search users",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Common/user-role-info",
+          "GET api/Common/section-configuration/{sectionName}",
+          "GET api/Common/download/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "common_search_users",
+        "description": "Search users",
+        "http_method": "GET",
+        "endpoint": "api/Common/SearchUsers",
+        "parameters": {
+          "query": {
+            "type": "string",
+            "required": false,
+            "description": "query (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CommonController.cs",
+        "action_method": "SearchUsers",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Common and Utilities",
+      "business_logic": {
+        "operation_summary": "Search users — calls ICommon.getUserByToken, ICommon.SearchUsersAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.SearchUsersAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "common_get_areas",
+      "name": "Get Areas",
+      "action_method": "GetAreas",
+      "http_method": "GET",
+      "route": "api/Common/areas/{region_id}",
+      "business_purpose": "Retrieve areas",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "region_id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Retrieve areas",
+      "detailed_description": "Retrieve areas. It calls ICommon.getUserByToken, ICommon.GetAllArea. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No Area found [when areas == null || !areas.Any()]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve areas",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "region_id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Common/user-role-info",
+          "GET api/Common/section-configuration/{sectionName}",
+          "GET api/Common/download/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "common_get_areas",
+        "description": "Retrieve areas",
+        "http_method": "GET",
+        "endpoint": "api/Common/areas/{region_id}",
+        "parameters": {
+          "region_id": {
+            "type": "int",
+            "required": true,
+            "description": "region id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CommonController.cs",
+        "action_method": "GetAreas",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Common and Utilities",
+      "business_logic": {
+        "operation_summary": "Retrieve areas — calls ICommon.getUserByToken, ICommon.GetAllArea",
+        "preconditions": "Valid Bearer JWT; route parameter(s) region_id must reference existing record(s); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.GetAllArea"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "No Area found",
+            "when": "areas == null || !areas.Any()"
+          }
+        ]
+      }
+    },
+    {
+      "id": "common_get_users_by_current_user",
+      "name": "Get Users By Current User",
+      "action_method": "GetUsersByCurrentUser",
+      "http_method": "GET",
+      "route": "api/Common/UsersByCurrentUser",
+      "business_purpose": "Retrieve users by current user",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "search_text",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Retrieve users by current user",
+      "detailed_description": "Retrieve users by current user. It calls ICommon.getUserByToken, ICommon.GetAllUsersByCurrentUser. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No users found [when users == null || !users.Any()]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve users by current user",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "search_text (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/Common/user-role-info",
+          "GET api/Common/section-configuration/{sectionName}",
+          "GET api/Common/download/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "common_get_users_by_current_user",
+        "description": "Retrieve users by current user",
+        "http_method": "GET",
+        "endpoint": "api/Common/UsersByCurrentUser",
+        "parameters": {
+          "search_text": {
+            "type": "string",
+            "required": true,
+            "description": "search text (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CommonController.cs",
+        "action_method": "GetUsersByCurrentUser",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Common and Utilities",
+      "business_logic": {
+        "operation_summary": "Retrieve users by current user — calls ICommon.getUserByToken, ICommon.GetAllUsersByCurrentUser",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): search_text; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.GetAllUsersByCurrentUser"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "No users found",
+            "when": "users == null || !users.Any()"
+          }
+        ]
+      }
+    },
+    {
+      "id": "common_get_all_users_by_current_user",
+      "name": "Get All Users By Current User",
+      "action_method": "GetAllUsersByCurrentUser",
+      "http_method": "GET",
+      "route": "api/Common/AllUsersByCurrentUser",
+      "business_purpose": "Retrieve all users by current user",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "search_text",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Retrieve all users by current user",
+      "detailed_description": "Retrieve all users by current user. It calls ICommon.getUserByToken, ICommon.GetAllUsersByCurrentUser. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No users found [when users == null || !users.Any()]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all users by current user",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "search_text (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/Common/user-role-info",
+          "GET api/Common/section-configuration/{sectionName}",
+          "GET api/Common/download/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "common_get_all_users_by_current_user",
+        "description": "Retrieve all users by current user",
+        "http_method": "GET",
+        "endpoint": "api/Common/AllUsersByCurrentUser",
+        "parameters": {
+          "search_text": {
+            "type": "string",
+            "required": true,
+            "description": "search text (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CommonController.cs",
+        "action_method": "GetAllUsersByCurrentUser",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Common and Utilities",
+      "business_logic": {
+        "operation_summary": "Retrieve all users by current user — calls ICommon.getUserByToken, ICommon.GetAllUsersByCurrentUser",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): search_text; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.GetAllUsersByCurrentUser"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "No users found",
+            "when": "users == null || !users.Any()"
+          }
+        ]
+      }
+    },
+    {
+      "id": "common_get_channel_users_by_current_user",
+      "name": "Get Channel Users By Current User",
+      "action_method": "GetChannelUsersByCurrentUser",
+      "http_method": "GET",
+      "route": "api/Common/ChannelUsersByCurrentUser",
+      "business_purpose": "Retrieve channel users by current user",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "search_text",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Retrieve channel users by current user",
+      "detailed_description": "Retrieve channel users by current user. It calls ICommon.getUserByToken, ICommon.GetAllUsersByCurrentUser. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No users found [when users == null || !users.Any()]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve channel users by current user",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "search_text (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/Common/user-role-info",
+          "GET api/Common/section-configuration/{sectionName}",
+          "GET api/Common/download/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "common_get_channel_users_by_current_user",
+        "description": "Retrieve channel users by current user",
+        "http_method": "GET",
+        "endpoint": "api/Common/ChannelUsersByCurrentUser",
+        "parameters": {
+          "search_text": {
+            "type": "string",
+            "required": true,
+            "description": "search text (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CommonController.cs",
+        "action_method": "GetChannelUsersByCurrentUser",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Common and Utilities",
+      "business_logic": {
+        "operation_summary": "Retrieve channel users by current user — calls ICommon.getUserByToken, ICommon.GetAllUsersByCurrentUser",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): search_text; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.GetAllUsersByCurrentUser"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "No users found",
+            "when": "users == null || !users.Any()"
+          }
+        ]
+      }
+    },
+    {
+      "id": "common_get_channel_users",
+      "name": "Get Channel Users",
+      "action_method": "GetChannelUsers",
+      "http_method": "GET",
+      "route": "api/Common/ChannelUsers",
+      "business_purpose": "Retrieve channel users",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "lms/leads:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "lms/assigned-leads"
+      ],
+      "short_description": "Retrieve channel users",
+      "detailed_description": "Retrieve channel users. It calls ICommon.getUserByToken, ICommon.GetAllChannelUsers. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No users found [when users == null || !users.Any()]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve channel users",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Common/user-role-info",
+          "GET api/Common/section-configuration/{sectionName}",
+          "GET api/Common/download/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "common_get_channel_users",
+        "description": "Retrieve channel users",
+        "http_method": "GET",
+        "endpoint": "api/Common/ChannelUsers",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CommonController.cs",
+        "action_method": "GetChannelUsers",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Common and Utilities",
+      "business_logic": {
+        "operation_summary": "Retrieve channel users — calls ICommon.getUserByToken, ICommon.GetAllChannelUsers",
+        "preconditions": "Valid Bearer JWT; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.GetAllChannelUsers"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "No users found",
+            "when": "users == null || !users.Any()"
+          }
+        ]
+      }
+    },
+    {
+      "id": "common_get_ib_users",
+      "name": "Get IB Users",
+      "action_method": "GetIBUsers",
+      "http_method": "GET",
+      "route": "api/Common/IBUsers",
+      "business_purpose": "Retrieve IB users",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Retrieve IB users",
+      "detailed_description": "Retrieve IB users. It calls ICommon.getUserByToken, ICommon.GetAllIBUsers. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No users found [when users == null || !users.Any()]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve IB users",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Common/user-role-info",
+          "GET api/Common/section-configuration/{sectionName}",
+          "GET api/Common/download/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "common_get_ib_users",
+        "description": "Retrieve IB users",
+        "http_method": "GET",
+        "endpoint": "api/Common/IBUsers",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CommonController.cs",
+        "action_method": "GetIBUsers",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Common and Utilities",
+      "business_logic": {
+        "operation_summary": "Retrieve IB users — calls ICommon.getUserByToken, ICommon.GetAllIBUsers",
+        "preconditions": "Valid Bearer JWT; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.GetAllIBUsers"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "No users found",
+            "when": "users == null || !users.Any()"
+          }
+        ]
+      }
+    },
+    {
+      "id": "common_get_ib_users_by_current_user",
+      "name": "Get IB Users By Current User",
+      "action_method": "GetIBUsersByCurrentUser",
+      "http_method": "GET",
+      "route": "api/Common/IBUsersByCurrentUser",
+      "business_purpose": "Retrieve IB users by current user",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "search_text",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Retrieve IB users by current user",
+      "detailed_description": "Retrieve IB users by current user. It calls ICommon.getUserByToken, ICommon.GetAllUsersByCurrentUser. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No users found [when users == null || !users.Any()]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve IB users by current user",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "search_text (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/Common/user-role-info",
+          "GET api/Common/section-configuration/{sectionName}",
+          "GET api/Common/download/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "common_get_ib_users_by_current_user",
+        "description": "Retrieve IB users by current user",
+        "http_method": "GET",
+        "endpoint": "api/Common/IBUsersByCurrentUser",
+        "parameters": {
+          "search_text": {
+            "type": "string",
+            "required": true,
+            "description": "search text (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CommonController.cs",
+        "action_method": "GetIBUsersByCurrentUser",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Common and Utilities",
+      "business_logic": {
+        "operation_summary": "Retrieve IB users by current user — calls ICommon.getUserByToken, ICommon.GetAllUsersByCurrentUser",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): search_text; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.GetAllUsersByCurrentUser"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "No users found",
+            "when": "users == null || !users.Any()"
+          }
+        ]
+      }
+    },
+    {
+      "id": "common_get_dealers_by_current_user",
+      "name": "Get Dealers By Current User",
+      "action_method": "GetDealersByCurrentUser",
+      "http_method": "GET",
+      "route": "api/Common/DealersByCurrentUser",
+      "business_purpose": "Retrieve dealers by current user",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "search_text",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Retrieve dealers by current user",
+      "detailed_description": "Retrieve dealers by current user. It calls ICommon.getUserByToken, ICommon.GetDealerByName. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No dealers found [when dealers == null || !dealers.Any()]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve dealers by current user",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "search_text (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/Common/user-role-info",
+          "GET api/Common/section-configuration/{sectionName}",
+          "GET api/Common/download/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "common_get_dealers_by_current_user",
+        "description": "Retrieve dealers by current user",
+        "http_method": "GET",
+        "endpoint": "api/Common/DealersByCurrentUser",
+        "parameters": {
+          "search_text": {
+            "type": "string",
+            "required": true,
+            "description": "search text (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CommonController.cs",
+        "action_method": "GetDealersByCurrentUser",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Common and Utilities",
+      "business_logic": {
+        "operation_summary": "Retrieve dealers by current user — calls ICommon.getUserByToken, ICommon.GetDealerByName",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): search_text; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.GetDealerByName"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "No dealers found",
+            "when": "dealers == null || !dealers.Any()"
+          }
+        ]
+      }
+    },
+    {
+      "id": "common_get_sub_areas",
+      "name": "Get Sub Areas",
+      "action_method": "GetSubAreas",
+      "http_method": "GET",
+      "route": "api/Common/subareas/{region_id}/{area_id}",
+      "business_purpose": "Retrieve sub areas",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "region_id",
+          "type": "int",
+          "required": true
+        },
+        {
+          "name": "area_id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Retrieve sub areas",
+      "detailed_description": "Retrieve sub areas. It calls ICommon.getUserByToken, ICommon.GetAllSubArea. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No sub area found [when sub_areas == null || !sub_areas.Any()]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve sub areas",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "region_id (route)",
+          "area_id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Common/user-role-info",
+          "GET api/Common/section-configuration/{sectionName}",
+          "GET api/Common/download/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "common_get_sub_areas",
+        "description": "Retrieve sub areas",
+        "http_method": "GET",
+        "endpoint": "api/Common/subareas/{region_id}/{area_id}",
+        "parameters": {
+          "region_id": {
+            "type": "int",
+            "required": true,
+            "description": "region id (route)"
+          },
+          "area_id": {
+            "type": "int",
+            "required": true,
+            "description": "area id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CommonController.cs",
+        "action_method": "GetSubAreas",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Common and Utilities",
+      "business_logic": {
+        "operation_summary": "Retrieve sub areas — calls ICommon.getUserByToken, ICommon.GetAllSubArea",
+        "preconditions": "Valid Bearer JWT; route parameter(s) region_id, area_id must reference existing record(s); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.GetAllSubArea"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "No sub area found",
+            "when": "sub_areas == null || !sub_areas.Any()"
+          }
+        ]
+      }
+    },
+    {
+      "id": "common_file_delete",
+      "name": "File Delete",
+      "action_method": "FileDelete",
+      "http_method": "DELETE",
+      "route": "api/Common/file-delete",
+      "business_purpose": "Handle file delete",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "Id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "crm/projects:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/secondary-order",
+        "cms/credit-notes",
+        "crm/scheme-payment-request-for-verification",
+        "crm/scheme-payment-request-for-corporate-approval",
+        "cms/all-complaints",
+        "cms/branch-requests",
+        "cms/complaints-center",
+        "cms/factory-complaints",
+        "crm/scheme-wise-orders-for-verification",
+        "crm/scheme-payment-request",
+        "crm/scheme-wise-orders",
+        "crm/scheme-wise-orders-for-corporate-approval-",
+        "lms/ib-leads"
+      ],
+      "short_description": "Handle file delete",
+      "detailed_description": "Handle file delete. It validates the request, then calls ICommon.getUserByToken, ICommon.GetAccountTransferFile, ICommon.DeleteFile. Persists changes to: soft delete (is_deleted flag). Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: File not found. [when complaintFile == null]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle file delete",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "Id (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/Common/user-role-info",
+          "GET api/Common/SearchUsers",
+          "GET api/Common/UsersByCurrentUser"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "common_file_delete",
+        "description": "Handle file delete",
+        "http_method": "DELETE",
+        "endpoint": "api/Common/file-delete",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": true,
+            "description": "Id (query)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/CommonController.cs",
+        "action_method": "FileDelete",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Common and Utilities",
+      "business_logic": {
+        "operation_summary": "Handle file delete — validates the request, calls ICommon.getUserByToken, ICommon.GetAccountTransferFile, ICommon.DeleteFile",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): Id; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "soft delete (is_deleted flag)",
+        "validations": "File not found.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.GetAccountTransferFile",
+          "ICommon.DeleteFile",
+          "ICommon.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "File not found.",
+            "when": "complaintFile == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "common_create_remark",
+      "name": "Create Remark",
+      "action_method": "CreateRemark",
+      "http_method": "POST",
+      "route": "api/Common/create-remark",
+      "business_purpose": "Create remark",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateRemarkRequest (inline)",
+        "properties": [
+          {
+            "name": "related_Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "related_section",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Remark",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Mentions",
+            "type": "List<int>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Create remark",
+      "detailed_description": "Create remark. It validates the request, then calls ICommon.getUserByToken, ICommon.CreateRemarks, ICommon.GetUserById. Persists changes to: ERP_ChatEngine: INSERT, ChatEngineMentions: INSERT, Notifications: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Remark or Indent ID is missing. [when request.related_Id <= 0 || string.IsNullOrWhiteSpace(request.Remark)]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create remark",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateRemarkRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Common/user-role-info",
+          "GET api/Common/SearchUsers",
+          "GET api/Common/UsersByCurrentUser"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "common_create_remark",
+        "description": "Create remark",
+        "http_method": "POST",
+        "endpoint": "api/Common/create-remark",
+        "parameters": {
+          "related_Id": {
+            "type": "int",
+            "required": false,
+            "description": "related Id (body)"
+          },
+          "related_section": {
+            "type": "string",
+            "required": false,
+            "description": "related section (body)"
+          },
+          "Remark": {
+            "type": "string",
+            "required": false,
+            "description": "Remark (body)"
+          },
+          "Mentions": {
+            "type": "List<int>",
+            "required": false,
+            "description": "Mentions (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/CommonController.cs",
+        "action_method": "CreateRemark",
+        "related_dto_files": [
+          "Controllers/CommonController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Common and Utilities",
+      "business_logic": {
+        "operation_summary": "Create remark — validates the request, calls ICommon.getUserByToken, ICommon.CreateRemarks, ICommon.GetUserById",
+        "preconditions": "Valid Bearer JWT; request body of type CreateRemarkRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "ERP_ChatEngine: INSERT; ChatEngineMentions: INSERT; Notifications: INSERT",
+        "validations": "Remark or Indent ID is missing.",
+        "side_effects": "Sends notification(s) (CreateNotification, Notification, Notifications)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.CreateRemarks",
+          "ICommon.GetUserById",
+          "ICommon.CreateChatEngineMentionsRange",
+          "ICommon.SaveChangesAsync",
+          "ICommon.CreateNotification"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": true,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Remark or Indent ID is missing.",
+            "when": "request.related_Id <= 0 || string.IsNullOrWhiteSpace(request.Remark)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "common_update_remark",
+      "name": "Update Remark",
+      "action_method": "UpdateRemark",
+      "http_method": "PUT",
+      "route": "api/Common/update-remark",
+      "business_purpose": "Update remark",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateRemarkRequest (inline)",
+        "properties": [
+          {
+            "name": "RemarkId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "related_Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "related_section",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Remark",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Mentions",
+            "type": "List<int>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          403,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Update remark",
+      "detailed_description": "Update remark. It validates the request, then calls ICommon.getUserByToken, ICommon.GetRemarkById, ICommon.UpdateRemark. Persists changes to: ERP_ChatEngine: UPDATE, ChatEngineMentions: DELETE, ChatEngineMentions: INSERT, Notifications: INSERT. Possible responses: 200, 400, 401, 403, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Remark ID, related ID, section, or remark text is missing. [when request.RemarkId <= 0 || request.related_Id <= 0 || string.IsNullOrWhiteSpace(request.rela]; Remark does not belong to the specified record. [when existingRemark.related_id != request.related_Id || existingRemark.related_section != reque]",
+        "not_found": "404: Remark not found. [when existingRemark == null]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]; You are not allowed to update this remark. [when existingRemark.user?.Id != current_user.Id]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update remark",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body UpdateRemarkRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Common/user-role-info",
+          "GET api/Common/SearchUsers",
+          "GET api/Common/UsersByCurrentUser"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "common_update_remark",
+        "description": "Update remark",
+        "http_method": "PUT",
+        "endpoint": "api/Common/update-remark",
+        "parameters": {
+          "RemarkId": {
+            "type": "int",
+            "required": false,
+            "description": "Remark Id (body)"
+          },
+          "related_Id": {
+            "type": "int",
+            "required": false,
+            "description": "related Id (body)"
+          },
+          "related_section": {
+            "type": "string",
+            "required": false,
+            "description": "related section (body)"
+          },
+          "Remark": {
+            "type": "string",
+            "required": false,
+            "description": "Remark (body)"
+          },
+          "Mentions": {
+            "type": "List<int>",
+            "required": false,
+            "description": "Mentions (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/CommonController.cs",
+        "action_method": "UpdateRemark",
+        "related_dto_files": [
+          "Controllers/CommonController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Common and Utilities",
+      "business_logic": {
+        "operation_summary": "Update remark — validates the request, calls ICommon.getUserByToken, ICommon.GetRemarkById, ICommon.UpdateRemark",
+        "preconditions": "Valid Bearer JWT; request body of type UpdateRemarkRequest (inline); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "ERP_ChatEngine: UPDATE; ChatEngineMentions: DELETE; ChatEngineMentions: INSERT; Notifications: INSERT; sets existingRemark.remarks, existingRemark.remark_date and saves changes",
+        "validations": "Remark ID, related ID, section, or remark text is missing.; Remark does not belong to the specified record.",
+        "side_effects": "Sends notification(s) (CreateNotification, Notifications, db_notification)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.GetRemarkById",
+          "ICommon.UpdateRemark",
+          "ICommon.RemoveChatEngineMentionsByCommentId",
+          "ICommon.GetUserById",
+          "ICommon.CreateChatEngineMentionsRange",
+          "ICommon.CreateNotification",
+          "ICommon.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": true,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Remark ID, related ID, section, or remark text is missing.",
+            "when": "request.RemarkId <= 0 || request.related_Id <= 0 || string.IsNullOrWhiteSpace(request.related_section) || string.IsNullOrWhiteSpace(request.Remark)"
+          },
+          {
+            "returns": 404,
+            "message": "Remark not found.",
+            "when": "existingRemark == null"
+          },
+          {
+            "returns": 400,
+            "message": "Remark does not belong to the specified record.",
+            "when": "existingRemark.related_id != request.related_Id || existingRemark.related_section != request.related_section"
+          },
+          {
+            "returns": 403,
+            "message": "You are not allowed to update this remark.",
+            "when": "existingRemark.user?.Id != current_user.Id"
+          }
+        ]
+      }
+    },
+    {
+      "id": "common_get_all_remarks",
+      "name": "Get All Remarks",
+      "action_method": "GetAllRemarks",
+      "http_method": "GET",
+      "route": "api/Common/Remarks",
+      "business_purpose": "Retrieve all remarks",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "related_id",
+          "type": "int",
+          "required": true
+        },
+        {
+          "name": "related_section",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/monthly-branch-review:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all remarks",
+      "detailed_description": "Retrieve all remarks. It calls ICommon.GetAllRemarksWithMentions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all remarks",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "related_id (query)",
+          "related_section (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/Common/user-role-info",
+          "GET api/Common/section-configuration/{sectionName}",
+          "GET api/Common/download/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "common_get_all_remarks",
+        "description": "Retrieve all remarks",
+        "http_method": "GET",
+        "endpoint": "api/Common/Remarks",
+        "parameters": {
+          "related_id": {
+            "type": "int",
+            "required": true,
+            "description": "related id (query)"
+          },
+          "related_section": {
+            "type": "string",
+            "required": true,
+            "description": "related section (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CommonController.cs",
+        "action_method": "GetAllRemarks",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Common and Utilities",
+      "business_logic": {
+        "operation_summary": "Retrieve all remarks — calls ICommon.GetAllRemarksWithMentions",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): related_id, related_section",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.GetAllRemarksWithMentions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "common_get_user_branches",
+      "name": "Get User Branches",
+      "action_method": "GetUserBranches",
+      "http_method": "GET",
+      "route": "api/Common/UserBranches/{regionId}",
+      "business_purpose": "Retrieve user branches",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "regionId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "shared lookup endpoint; no dedicated menu",
+      "short_description": "Retrieve user branches",
+      "detailed_description": "Retrieve user branches. It calls ICommon.getUserByToken, ICommon.GetBranchesByRegionIdAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: System.Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve user branches",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "regionId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Common/user-role-info",
+          "GET api/Common/section-configuration/{sectionName}",
+          "GET api/Common/download/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "common_get_user_branches",
+        "description": "Retrieve user branches",
+        "http_method": "GET",
+        "endpoint": "api/Common/UserBranches/{regionId}",
+        "parameters": {
+          "regionId": {
+            "type": "int",
+            "required": true,
+            "description": "region Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CommonController.cs",
+        "action_method": "GetUserBranches",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Common and Utilities",
+      "business_logic": {
+        "operation_summary": "Retrieve user branches — calls ICommon.getUserByToken, ICommon.GetBranchesByRegionIdAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) regionId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.GetBranchesByRegionIdAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    }
+  ]
+}

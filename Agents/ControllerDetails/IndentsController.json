@@ -1,0 +1,2440 @@
+{
+  "controller": "IndentsController",
+  "file": "Controllers/IndentsController.cs",
+  "module": "Indent Management",
+  "base_route": "api/Indents",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages indents records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "ims/indents/all-indents",
+        "module_code": "ims",
+        "section": "indents",
+        "sub_section": "all-indents",
+        "frontend_routes": [
+          "/ims/indents/all-indents",
+          "/ims/indents/all-indents/create-indents",
+          "/ims/indents/all-indents/edit-indents/:id",
+          "/ims/indents/all-indents/view-indents/:indentId"
+        ],
+        "menu_route_confirmed": true,
+        "display_names": {
+          "module": "Indent Management System",
+          "section": "Indents",
+          "sub_section": "All Indents"
+        }
+      },
+      {
+        "path": "ims/indents",
+        "module_code": "ims",
+        "section": "indents",
+        "sub_section": null,
+        "frontend_routes": [
+          "/ims/indents/view/:indentId"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "ims/indents/cancelled--requests",
+        "module_code": "ims",
+        "section": "indents",
+        "sub_section": "cancelled--requests",
+        "frontend_routes": [
+          "/ims/indents/cancelled--requests/view-cancelled-requests-indents/:id",
+          "/ims/indents/cancelled--requests/view/:itemCode"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "ims/indents/factory-direct-dispatch",
+        "module_code": "ims",
+        "section": "indents",
+        "sub_section": "factory-direct-dispatch",
+        "frontend_routes": [
+          "/ims/indents/factory-direct-dispatch/view-factory-direct-dispatch/:indentCode"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "ims/indents/dispatched-indents",
+        "module_code": "ims",
+        "section": "indents",
+        "sub_section": "dispatched-indents",
+        "frontend_routes": [
+          "/ims/indents/dispatched-indents/view-dispatched-indents/:indentId"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "ims/indents/confirmed-indents",
+        "module_code": "ims",
+        "section": "indents",
+        "sub_section": "confirmed-indents",
+        "frontend_routes": [
+          "/ims/indents/confirmed-indents/edit/:id",
+          "/ims/indents/confirmed-indents/view-confirmed-indents/:indentId",
+          "/ims/indents/confirmed-indents/view/:indentCode"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "also_called_from_menus": [
+      "crm/projects",
+      "crm/secondary-order",
+      "ims/indents/factory-direct-dispatch",
+      "lms/ib-leads",
+      "rpt/factory-reports/production-and-dispatch-analysis"
+    ],
+    "section_configuration_keys": [
+      "Indents"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Indent Management System",
+        "section": "Indents",
+        "sub_section": "All Indents"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "indents_create_indent",
+      "name": "Create Indent",
+      "action_method": "CreateIndent",
+      "http_method": "POST",
+      "route": "api/Indents",
+      "business_purpose": "Create indent",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateIndentRequest (inline)",
+        "content_type": "multipart/form-data",
+        "properties": [
+          {
+            "name": "IndentData",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "File",
+            "type": "IFormFile",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ],
+        "dto_name": "IndentHeaderReadDTO"
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "ims/indents/all-indents:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "ims/indents/confirmed-indents"
+      ],
+      "short_description": "Create indent",
+      "detailed_description": "Create indent. It validates the request, then calls ICommon.getUserByToken, IIndent.GetDealerById, IDiscountScenarioHeaderRepository.GetDiscountScenarioHeaderByIdAsync, then processes uploaded files. Persists changes to: IndentHeader: INSERT, ComplaintsFile: INSERT, ERP_ChatEngine: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid dealer ID [when dealer == null]; Quantity and Weight must be greater than zero for all indent details. [when detail.Quantity <= 0 || detail.Weight <= 0]; Invalid product details for product: {detail.ProductName}, Grade: {detail.Grade}, Thickness: {detail.Thickness}, Size: {detail.Size} [when product == null]; No branch found for the selected area. [when branch == null]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create indent",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateIndentRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Indents",
+          "GET api/Indents/dealers",
+          "GET api/Indents/products"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "indents_create_indent",
+        "description": "Create indent",
+        "http_method": "POST",
+        "endpoint": "api/Indents",
+        "parameters": {
+          "IndentData": {
+            "type": "string",
+            "required": false,
+            "description": "Indent Data (body)"
+          },
+          "File": {
+            "type": "IFormFile",
+            "required": false,
+            "description": "File (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/IndentsController.cs",
+        "action_method": "CreateIndent",
+        "related_dto_files": [
+          "Controllers/IndentsController.cs",
+          "DTO/ReadDTO/IndentHeaderReadDTO.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs",
+          "Repositories/DiscountScenarioHeaderRepository.cs",
+          "Interfaces/IDiscountScenarioHeaderRepository.cs"
+        ]
+      },
+      "module": "Indent Management",
+      "business_logic": {
+        "operation_summary": "Create indent — validates the request, calls ICommon.getUserByToken, IIndent.GetDealerById, IDiscountScenarioHeaderRepository.GetDiscountScenarioHeaderByIdAsync, processes uploaded files",
+        "preconditions": "Valid Bearer JWT; request body of type CreateIndentRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "IndentHeader: INSERT; ComplaintsFile: INSERT; ERP_ChatEngine: INSERT",
+        "validations": "Invalid dealer ID; Quantity and Weight must be greater than zero for all indent details.; Invalid product details for product: {detail.ProductName}, Grade: {detail.Grade}, Thickness: {detail.Thickness}, Size: {detail.Size}; No branch found for the selected area.",
+        "side_effects": "Handles file upload/storage",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndent.GetDealerById",
+          "IDiscountScenarioHeaderRepository.GetDiscountScenarioHeaderByIdAsync",
+          "IIndent.getProductBydetailsasync",
+          "IIndent.GetBranchByAsyncArea",
+          "IIndent.GetMaxNumber",
+          "ICommon.GetUserRoleDetailed",
+          "IIndent.CreateIndent",
+          "IIndent.CreateIndentFile",
+          "IIndent.SaveChangesAsync",
+          "IIndent.CreateIndentRemarks"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent",
+          "DiscountScenarioHeaderRepository (Repositories/DiscountScenarioHeaderRepository.cs) via IDiscountScenarioHeaderRepository"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid dealer ID",
+            "when": "dealer == null"
+          },
+          {
+            "returns": 400,
+            "message": "Quantity and Weight must be greater than zero for all indent details.",
+            "when": "detail.Quantity <= 0 || detail.Weight <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid product details for product: {detail.ProductName}, Grade: {detail.Grade}, Thickness: {detail.Thickness}, Size: {detail.Size}",
+            "when": "product == null"
+          },
+          {
+            "returns": 400,
+            "message": "No branch found for the selected area.",
+            "when": "branch == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "indents_get_all_indents",
+      "name": "Get All Indents",
+      "action_method": "GetAllIndents",
+      "http_method": "GET",
+      "route": "api/Indents",
+      "business_purpose": "Retrieve all indents",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "\"last_30_days\""
+        },
+        {
+          "name": "statusRaw",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "factoryIdRaw",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "regionIdRaw",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "branchIdRaw",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "areaIdRaw",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "categoryIdRaw",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "dealerIdRaw",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "IMSDetails[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ims/indents/all-indents:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all indents",
+      "detailed_description": "Retrieve all indents. It calls ICommon.getUserByToken, IIndent.BuildMultiFilterContext, IIndent.GetIndentDataWithPagination. Data access uses stored procedure(s): GetIndent, GetIndent_All. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all indents",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Indents",
+          "GET api/Indents/dealers",
+          "GET api/Indents/dealer/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "indents_get_all_indents",
+        "description": "Retrieve all indents",
+        "http_method": "GET",
+        "endpoint": "api/Indents",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "date range (query)"
+          },
+          "statusRaw": {
+            "type": "string",
+            "required": false,
+            "description": "status Raw (query)"
+          },
+          "factoryIdRaw": {
+            "type": "string",
+            "required": false,
+            "description": "factory Id Raw (query)"
+          },
+          "regionIdRaw": {
+            "type": "string",
+            "required": false,
+            "description": "region Id Raw (query)"
+          },
+          "branchIdRaw": {
+            "type": "string",
+            "required": false,
+            "description": "branch Id Raw (query)"
+          },
+          "areaIdRaw": {
+            "type": "string",
+            "required": false,
+            "description": "area Id Raw (query)"
+          },
+          "categoryIdRaw": {
+            "type": "string",
+            "required": false,
+            "description": "category Id Raw (query)"
+          },
+          "dealerIdRaw": {
+            "type": "string",
+            "required": false,
+            "description": "dealer Id Raw (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IndentsController.cs",
+        "action_method": "GetAllIndents",
+        "related_dto_files": [
+          "Models/IMSDetails.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs"
+        ]
+      },
+      "module": "Indent Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all indents — calls ICommon.getUserByToken, IIndent.BuildMultiFilterContext, IIndent.GetIndentDataWithPagination",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndent.BuildMultiFilterContext",
+          "IIndent.GetIndentDataWithPagination",
+          "IIndent.GetIndentData_All",
+          "IIndent.GetAllBranches",
+          "IIndent.GetIndentActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent"
+        ],
+        "stored_procedures": [
+          "GetIndent",
+          "GetIndent_All"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "indents_get_dealers",
+      "name": "Get Dealers",
+      "action_method": "GetDealers",
+      "http_method": "GET",
+      "route": "api/Indents/dealers",
+      "business_purpose": "Retrieve dealers",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "search_text",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "indentDealerDto[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ims/indents/all-indents:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve dealers",
+      "detailed_description": "Retrieve dealers. It calls ICommon.getUserByToken, IIndent.GetDealerData. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve dealers",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "search_text (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/Indents",
+          "GET api/Indents/dealers",
+          "GET api/Indents/dealer/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "indents_get_dealers",
+        "description": "Retrieve dealers",
+        "http_method": "GET",
+        "endpoint": "api/Indents/dealers",
+        "parameters": {
+          "search_text": {
+            "type": "string",
+            "required": true,
+            "description": "search text (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IndentsController.cs",
+        "action_method": "GetDealers",
+        "related_dto_files": [
+          "DTO/ReadDTO/indentDealerDto.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs"
+        ]
+      },
+      "module": "Indent Management",
+      "business_logic": {
+        "operation_summary": "Retrieve dealers — calls ICommon.getUserByToken, IIndent.GetDealerData",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): search_text",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndent.GetDealerData"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "indents_get_dealer_by_id",
+      "name": "Get Dealer By ID",
+      "action_method": "GetDealerByID",
+      "http_method": "GET",
+      "route": "api/Indents/dealer/{dealerId}",
+      "business_purpose": "Retrieve dealer by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "dealerId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "indentDealerDto[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "ims/indents/all-indents",
+        "ims/indents",
+        "ims/indents/cancelled--requests",
+        "ims/indents/factory-direct-dispatch",
+        "ims/indents/dispatched-indents",
+        "ims/indents/confirmed-indents"
+      ],
+      "short_description": "Retrieve dealer by ID",
+      "detailed_description": "Retrieve dealer by ID. It calls ICommon.getUserByToken, IIndent.GetDealerById, IIndent.GetDiscountScenariosByDealerId. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve dealer by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "dealerId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Indents",
+          "GET api/Indents/dealers",
+          "GET api/Indents/dealer/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "indents_get_dealer_by_id",
+        "description": "Retrieve dealer by ID",
+        "http_method": "GET",
+        "endpoint": "api/Indents/dealer/{dealerId}",
+        "parameters": {
+          "dealerId": {
+            "type": "int",
+            "required": true,
+            "description": "dealer Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IndentsController.cs",
+        "action_method": "GetDealerByID",
+        "related_dto_files": [
+          "DTO/ReadDTO/indentDealerDto.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs"
+        ]
+      },
+      "module": "Indent Management",
+      "business_logic": {
+        "operation_summary": "Retrieve dealer by ID — calls ICommon.getUserByToken, IIndent.GetDealerById, IIndent.GetDiscountScenariosByDealerId",
+        "preconditions": "Valid Bearer JWT; route parameter(s) dealerId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndent.GetDealerById",
+          "IIndent.GetDiscountScenariosByDealerId"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "indents_get_products",
+      "name": "Get Products",
+      "action_method": "GetProducts",
+      "http_method": "GET",
+      "route": "api/Indents/products",
+      "business_purpose": "Retrieve products",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401
+        ],
+        "dto_name": "string[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ims/indents/all-indents:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/projects",
+        "crm/secondary-order",
+        "rpt/factory-reports/production-and-dispatch-analysis",
+        "lms/ib-leads"
+      ],
+      "short_description": "Retrieve products",
+      "detailed_description": "Retrieve products. It calls ICommon.getUserByToken, IIndent.GetCategoryMappingByUser, IIndent.getAllProducts. Possible responses: 200, 401.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve products",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Indents",
+          "GET api/Indents/dealers",
+          "GET api/Indents/dealer/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "indents_get_products",
+        "description": "Retrieve products",
+        "http_method": "GET",
+        "endpoint": "api/Indents/products",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IndentsController.cs",
+        "action_method": "GetProducts",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs"
+        ]
+      },
+      "module": "Indent Management",
+      "business_logic": {
+        "operation_summary": "Retrieve products — calls ICommon.getUserByToken, IIndent.GetCategoryMappingByUser, IIndent.getAllProducts",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndent.GetCategoryMappingByUser",
+          "IIndent.getAllProducts"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "indents_get_grades",
+      "name": "Get Grades",
+      "action_method": "GetGrades",
+      "http_method": "GET",
+      "route": "api/Indents/grades",
+      "business_purpose": "Retrieve grades",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "productname",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404
+        ],
+        "dto_name": "string[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ims/indents/all-indents:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/secondary-order"
+      ],
+      "short_description": "Retrieve grades",
+      "detailed_description": "Retrieve grades. It calls IIndent.GetGrades. Possible responses: 200, 401, 404.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No grades found [when grades == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve grades",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "productname (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/Indents",
+          "GET api/Indents/dealers",
+          "GET api/Indents/dealer/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "indents_get_grades",
+        "description": "Retrieve grades",
+        "http_method": "GET",
+        "endpoint": "api/Indents/grades",
+        "parameters": {
+          "productname": {
+            "type": "string",
+            "required": true,
+            "description": "productname (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IndentsController.cs",
+        "action_method": "GetGrades",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs"
+        ]
+      },
+      "module": "Indent Management",
+      "business_logic": {
+        "operation_summary": "Retrieve grades — calls IIndent.GetGrades",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): productname; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IIndent.GetGrades"
+        ],
+        "calls_repositories": [
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 404,
+            "message": "No grades found",
+            "when": "grades == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "indents_get_thickness",
+      "name": "Get Thickness",
+      "action_method": "GetThickness",
+      "http_method": "GET",
+      "route": "api/Indents/thickness",
+      "business_purpose": "Retrieve thickness",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "productname",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "grade",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404
+        ],
+        "dto_name": "string[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ims/indents/all-indents:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/secondary-order"
+      ],
+      "short_description": "Retrieve thickness",
+      "detailed_description": "Retrieve thickness. It calls IIndent.GetThickenss. Possible responses: 200, 401, 404.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No thickenss found [when thickenss == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve thickness",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "productname (query)",
+          "grade (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/Indents",
+          "GET api/Indents/dealers",
+          "GET api/Indents/dealer/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "indents_get_thickness",
+        "description": "Retrieve thickness",
+        "http_method": "GET",
+        "endpoint": "api/Indents/thickness",
+        "parameters": {
+          "productname": {
+            "type": "string",
+            "required": true,
+            "description": "productname (query)"
+          },
+          "grade": {
+            "type": "string",
+            "required": true,
+            "description": "grade (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IndentsController.cs",
+        "action_method": "GetThickness",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs"
+        ]
+      },
+      "module": "Indent Management",
+      "business_logic": {
+        "operation_summary": "Retrieve thickness — calls IIndent.GetThickenss",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): productname, grade; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IIndent.GetThickenss"
+        ],
+        "calls_repositories": [
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 404,
+            "message": "No thickenss found",
+            "when": "thickenss == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "indents_get_sizes",
+      "name": "Get Sizes",
+      "action_method": "GetSizes",
+      "http_method": "GET",
+      "route": "api/Indents/sizes",
+      "business_purpose": "Retrieve sizes",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "productname",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "grade",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "thickness",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404
+        ],
+        "dto_name": "string[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ims/indents/all-indents:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/secondary-order"
+      ],
+      "short_description": "Retrieve sizes",
+      "detailed_description": "Retrieve sizes. It calls IIndent.GetSizes. Possible responses: 200, 401, 404.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No sizes found [when sizes == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve sizes",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "productname (query)",
+          "grade (query)",
+          "thickness (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/Indents",
+          "GET api/Indents/dealers",
+          "GET api/Indents/dealer/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "indents_get_sizes",
+        "description": "Retrieve sizes",
+        "http_method": "GET",
+        "endpoint": "api/Indents/sizes",
+        "parameters": {
+          "productname": {
+            "type": "string",
+            "required": true,
+            "description": "productname (query)"
+          },
+          "grade": {
+            "type": "string",
+            "required": true,
+            "description": "grade (query)"
+          },
+          "thickness": {
+            "type": "string",
+            "required": true,
+            "description": "thickness (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IndentsController.cs",
+        "action_method": "GetSizes",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs"
+        ]
+      },
+      "module": "Indent Management",
+      "business_logic": {
+        "operation_summary": "Retrieve sizes — calls IIndent.GetSizes",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): productname, grade, thickness; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IIndent.GetSizes"
+        ],
+        "calls_repositories": [
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 404,
+            "message": "No sizes found",
+            "when": "sizes == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "indents_get_discount_scenario_header_by_id",
+      "name": "Get Discount Scenario Header By Id",
+      "action_method": "GetDiscountScenarioHeaderById",
+      "http_method": "GET",
+      "route": "api/Indents/scenario/{id}",
+      "business_purpose": "Retrieve discount scenario header by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ],
+        "dto_name": "DiscountScenarioHeaderReadDTO"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "ims/indents/all-indents",
+        "ims/indents",
+        "ims/indents/cancelled--requests",
+        "ims/indents/factory-direct-dispatch",
+        "ims/indents/dispatched-indents",
+        "ims/indents/confirmed-indents"
+      ],
+      "short_description": "Retrieve discount scenario header by ID",
+      "detailed_description": "Retrieve discount scenario header by ID. It calls IDiscountScenarioHeaderRepository.GetDiscountScenarioHeaderByIdAsync. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Discount scenario not found [when discountScenario == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve discount scenario header by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Indents",
+          "GET api/Indents/dealers",
+          "GET api/Indents/dealer/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "indents_get_discount_scenario_header_by_id",
+        "description": "Retrieve discount scenario header by ID",
+        "http_method": "GET",
+        "endpoint": "api/Indents/scenario/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IndentsController.cs",
+        "action_method": "GetDiscountScenarioHeaderById",
+        "related_dto_files": [
+          "DTO/ReadDTO/DiscountScenarioHeaderReadDTO.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/DiscountScenarioHeaderRepository.cs",
+          "Interfaces/IDiscountScenarioHeaderRepository.cs"
+        ]
+      },
+      "module": "Indent Management",
+      "business_logic": {
+        "operation_summary": "Retrieve discount scenario header by ID — calls IDiscountScenarioHeaderRepository.GetDiscountScenarioHeaderByIdAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IDiscountScenarioHeaderRepository.GetDiscountScenarioHeaderByIdAsync"
+        ],
+        "calls_repositories": [
+          "DiscountScenarioHeaderRepository (Repositories/DiscountScenarioHeaderRepository.cs) via IDiscountScenarioHeaderRepository"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 404,
+            "message": "Discount scenario not found",
+            "when": "discountScenario == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "indents_indent_branch_approval",
+      "name": "Indent Branch Approval",
+      "action_method": "IndentBranchApproval",
+      "http_method": "POST",
+      "route": "api/Indents/branch-approval",
+      "business_purpose": "Handle indent branch approval",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "IndentBranchApprovalRequest",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": true
+          },
+          {
+            "name": "IsApproved",
+            "type": "bool",
+            "required": true
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "ims/indents/cancelled--requests:approve",
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "ims/indents/confirmed-indents",
+        "ims/indents",
+        "ims/indents/all-indents",
+        "ims/indents/factory-direct-dispatch",
+        "ims/indents/dispatched-indents"
+      ],
+      "short_description": "Handle indent branch approval",
+      "detailed_description": "Handle indent branch approval. It calls ICommon.getUserByToken, IIndentHeaderRepository.GetIndentHeaderByIdAsync, IIndentHeaderRepository.UpdateIndentHeaderAsync. Persists changes to: IndentHeader: UPDATE. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Indent not found. [when indent == null]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle indent branch approval",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body IndentBranchApprovalRequest"
+        ],
+        "follow_up_apis": [
+          "GET api/Indents",
+          "GET api/Indents/dealers",
+          "GET api/Indents/products"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "indents_indent_branch_approval",
+        "description": "Handle indent branch approval",
+        "http_method": "POST",
+        "endpoint": "api/Indents/branch-approval",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": true,
+            "description": "Id (body)"
+          },
+          "IsApproved": {
+            "type": "bool",
+            "required": true,
+            "description": "Is Approved (body)"
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Approves the record and advances its workflow"
+      },
+      "source": {
+        "controller_file": "Controllers/IndentsController.cs",
+        "action_method": "IndentBranchApproval",
+        "related_dto_files": [
+          "DTO/RequestDTO/IndentBranchApprovalRequest.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/IndentHeaderRepository.cs",
+          "Interfaces/IIndentHeaderRepository.cs"
+        ]
+      },
+      "module": "Indent Management",
+      "business_logic": {
+        "operation_summary": "Handle indent branch approval — calls ICommon.getUserByToken, IIndentHeaderRepository.GetIndentHeaderByIdAsync, IIndentHeaderRepository.UpdateIndentHeaderAsync",
+        "preconditions": "Valid Bearer JWT; request body of type IndentBranchApprovalRequest; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "IndentHeader: UPDATE; sets indent.is_branch_approved, indent.branch_approved_by, indent.branch_approved_date, indent.indent_status, indent.modified_by, indent.modified_date",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndentHeaderRepository.GetIndentHeaderByIdAsync",
+          "IIndentHeaderRepository.UpdateIndentHeaderAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IndentHeaderRepository (Repository/IndentHeaderRepository.cs) via IIndentHeaderRepository"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Indent not found.",
+            "when": "indent == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "indents_indent_branch_reject",
+      "name": "Indent Branch Reject",
+      "action_method": "IndentBranchReject",
+      "http_method": "POST",
+      "route": "api/Indents/branch-reject",
+      "business_purpose": "Handle indent branch reject",
+      "data_effect": "REJECTION",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "IndentBranchRejectRequest",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": true
+          },
+          {
+            "name": "IsRejected",
+            "type": "bool",
+            "required": true
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "REJECTION",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "ims/indents/cancelled--requests:reject",
+      "permission_flags": [
+        "reject"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "ims/indents/confirmed-indents",
+        "ims/indents",
+        "ims/indents/all-indents",
+        "ims/indents/factory-direct-dispatch",
+        "ims/indents/dispatched-indents"
+      ],
+      "short_description": "Handle indent branch reject",
+      "detailed_description": "Handle indent branch reject. It calls ICommon.getUserByToken, IIndentHeaderRepository.GetIndentHeaderByIdAsync, IIndentHeaderRepository.UpdateIndentHeaderAsync. Persists changes to: IndentHeader: UPDATE. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Indent not found. [when indent == null]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle indent branch reject",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body IndentBranchRejectRequest"
+        ],
+        "follow_up_apis": [
+          "GET api/Indents",
+          "GET api/Indents/dealers",
+          "GET api/Indents/products"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "indents_indent_branch_reject",
+        "description": "Handle indent branch reject",
+        "http_method": "POST",
+        "endpoint": "api/Indents/branch-reject",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": true,
+            "description": "Id (body)"
+          },
+          "IsRejected": {
+            "type": "bool",
+            "required": true,
+            "description": "Is Rejected (body)"
+          }
+        },
+        "operation_type": "REJECTION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Rejects the record"
+      },
+      "source": {
+        "controller_file": "Controllers/IndentsController.cs",
+        "action_method": "IndentBranchReject",
+        "related_dto_files": [
+          "DTO/RequestDTO/IndentBranchRejectRequest.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/IndentHeaderRepository.cs",
+          "Interfaces/IIndentHeaderRepository.cs"
+        ]
+      },
+      "module": "Indent Management",
+      "business_logic": {
+        "operation_summary": "Handle indent branch reject — calls ICommon.getUserByToken, IIndentHeaderRepository.GetIndentHeaderByIdAsync, IIndentHeaderRepository.UpdateIndentHeaderAsync",
+        "preconditions": "Valid Bearer JWT; request body of type IndentBranchRejectRequest; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "IndentHeader: UPDATE; sets indent.is_branch_rejected, indent.branch_rejected_by, indent.branch_rejected_date, indent.indent_status, indent.modified_by, indent.modified_date",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndentHeaderRepository.GetIndentHeaderByIdAsync",
+          "IIndentHeaderRepository.UpdateIndentHeaderAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IndentHeaderRepository (Repository/IndentHeaderRepository.cs) via IIndentHeaderRepository"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Indent not found.",
+            "when": "indent == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "indents_get_indent_by_id",
+      "name": "Get Indent By Id",
+      "action_method": "GetIndentById",
+      "http_method": "GET",
+      "route": "api/Indents/{id}",
+      "business_purpose": "Retrieve indent by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ims/indents/all-indents:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/projects",
+        "crm/secondary-order",
+        "rpt/factory-reports/production-and-dispatch-analysis",
+        "ims/indents/factory-direct-dispatch",
+        "ims/indents/confirmed-indents",
+        "lms/ib-leads"
+      ],
+      "short_description": "Retrieve indent by ID",
+      "detailed_description": "Retrieve indent by ID. It validates the request, then calls ICommon.getUserByToken, IIndent.GetIndentActions, IIndent.GetIndentHeaderByIdAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid indent ID is required. [when id <= 0]",
+        "not_found": "404: Indent not found. [when indent == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve indent by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Indents",
+          "GET api/Indents/dealers",
+          "GET api/Indents/dealer/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "indents_get_indent_by_id",
+        "description": "Retrieve indent by ID",
+        "http_method": "GET",
+        "endpoint": "api/Indents/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IndentsController.cs",
+        "action_method": "GetIndentById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs"
+        ]
+      },
+      "module": "Indent Management",
+      "business_logic": {
+        "operation_summary": "Retrieve indent by ID — validates the request, calls ICommon.getUserByToken, IIndent.GetIndentActions, IIndent.GetIndentHeaderByIdAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid indent ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndent.GetIndentActions",
+          "IIndent.GetIndentHeaderByIdAsync",
+          "ICommon.GetComplaintFilesById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid indent ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Indent not found.",
+            "when": "indent == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "indents_delete_indent",
+      "name": "Delete Indent",
+      "action_method": "DeleteIndent",
+      "http_method": "DELETE",
+      "route": "api/Indents/{id}",
+      "business_purpose": "Delete indent",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "ims/indents/all-indents:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete indent",
+      "detailed_description": "Delete indent. It validates the request, then calls ICommon.getUserByToken, IIndent.GetIndentHeaderByIdAsync, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: IndentHeader: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid indent ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Indent not found. [when existingIndent == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete indent",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Indents/dealer/{dealerId}",
+          "GET api/Indents/scenario/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "indents_delete_indent",
+        "description": "Delete indent",
+        "http_method": "DELETE",
+        "endpoint": "api/Indents/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/IndentsController.cs",
+        "action_method": "DeleteIndent",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs"
+        ]
+      },
+      "module": "Indent Management",
+      "business_logic": {
+        "operation_summary": "Delete indent — validates the request, calls ICommon.getUserByToken, IIndent.GetIndentHeaderByIdAsync, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "IndentHeader: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "validations": "Valid indent ID is required.",
+        "side_effects": "AuditLog DELETE (Indent Management System > Indents > All Indents)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndent.GetIndentHeaderByIdAsync",
+          "ICommon.ToJsonString",
+          "IIndent.DeleteIndent",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid indent ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Indent not found.",
+            "when": "existingIndent == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "indents_get_product_by_inputs",
+      "name": "Get Product By Inputs",
+      "action_method": "GetProductByInputs",
+      "http_method": "GET",
+      "route": "api/Indents/GetProductByInputs",
+      "business_purpose": "Retrieve product by inputs",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "productName",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "grade",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "thickness",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ims/indents/all-indents:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/secondary-order",
+        "ims/indents/factory-direct-dispatch",
+        "ims/indents/confirmed-indents"
+      ],
+      "short_description": "Retrieve product by inputs",
+      "detailed_description": "Retrieve product by inputs. It calls IIndent.getProductBydetailsasync. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Product not found [when product == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve product by inputs",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "productName (query)",
+          "grade (query)",
+          "thickness (query)",
+          "size (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/Indents",
+          "GET api/Indents/dealers",
+          "GET api/Indents/dealer/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "indents_get_product_by_inputs",
+        "description": "Retrieve product by inputs",
+        "http_method": "GET",
+        "endpoint": "api/Indents/GetProductByInputs",
+        "parameters": {
+          "productName": {
+            "type": "string",
+            "required": true,
+            "description": "product Name (query)"
+          },
+          "grade": {
+            "type": "string",
+            "required": true,
+            "description": "grade (query)"
+          },
+          "thickness": {
+            "type": "string",
+            "required": true,
+            "description": "thickness (query)"
+          },
+          "size": {
+            "type": "string",
+            "required": true,
+            "description": "size (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IndentsController.cs",
+        "action_method": "GetProductByInputs",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs"
+        ]
+      },
+      "module": "Indent Management",
+      "business_logic": {
+        "operation_summary": "Retrieve product by inputs — calls IIndent.getProductBydetailsasync",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): productName, grade, thickness, size; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IIndent.getProductBydetailsasync"
+        ],
+        "calls_repositories": [
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 404,
+            "message": "Product not found",
+            "when": "product == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "indents_file_upload",
+      "name": "File Upload",
+      "action_method": "FileUpload",
+      "http_method": "POST",
+      "route": "api/Indents/upload-file",
+      "business_purpose": "Handle file upload",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": null,
+        "content_type": "multipart/form-data",
+        "properties": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "file",
+            "type": "IFormFile",
+            "required": true
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "ims/indents/all-indents",
+        "ims/indents",
+        "ims/indents/cancelled--requests",
+        "ims/indents/factory-direct-dispatch",
+        "ims/indents/dispatched-indents",
+        "ims/indents/confirmed-indents"
+      ],
+      "short_description": "Handle file upload",
+      "detailed_description": "Handle file upload. It validates the request, then calls ICommon.getUserByToken, IIndent.GetIndentHeaderByIdAsync, IIndent.CreateIndentFile, then processes uploaded files. Persists changes to: ComplaintsFile: INSERT. Possible responses: 200, 400, 401.",
+      "error_handling": {
+        "validation_errors": "400: No files uploaded. [when file == null]; Upload failed: {ex.Message}",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle file upload",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Indents",
+          "GET api/Indents/dealers",
+          "GET api/Indents/products"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "indents_file_upload",
+        "description": "Handle file upload",
+        "http_method": "POST",
+        "endpoint": "api/Indents/upload-file",
+        "parameters": {
+          "id": {
+            "type": "string",
+            "required": true,
+            "description": "id (body)"
+          },
+          "file": {
+            "type": "IFormFile",
+            "required": true,
+            "description": "file (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/IndentsController.cs",
+        "action_method": "FileUpload",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs"
+        ]
+      },
+      "module": "Indent Management",
+      "business_logic": {
+        "operation_summary": "Handle file upload — validates the request, calls ICommon.getUserByToken, IIndent.GetIndentHeaderByIdAsync, IIndent.CreateIndentFile, processes uploaded files",
+        "preconditions": "Valid Bearer JWT; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "ComplaintsFile: INSERT",
+        "validations": "No files uploaded.; Upload failed: {ex.Message}",
+        "side_effects": "Handles file upload/storage",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndent.GetIndentHeaderByIdAsync",
+          "IIndent.CreateIndentFile",
+          "IIndent.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "No files uploaded.",
+            "when": "file == null"
+          },
+          {
+            "returns": 400,
+            "message": "Upload failed: {ex.Message}",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "indents_update_indent",
+      "name": "Update Indent",
+      "action_method": "UpdateIndent",
+      "http_method": "PUT",
+      "route": "api/Indents/{indentId}",
+      "business_purpose": "Update indent",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "indentId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateIndentWithFile (inline)",
+        "content_type": "multipart/form-data",
+        "properties": [
+          {
+            "name": "IndentData",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "File",
+            "type": "IFormFile",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "ims/indents/all-indents:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "ims/indents/confirmed-indents"
+      ],
+      "short_description": "Update indent",
+      "detailed_description": "Update indent. It validates the request, then calls ICommon.getUserByToken, IIndent.UpdateIndentHeaderAsync, IIndent.UpdateIndentDetailsAsync, then processes uploaded files. Persists changes to: IndentHeader: UPDATE, IndentDetails: DELETE, IndentDetails: INSERT, ComplaintsFile: INSERT. Possible responses: 200, 400, 401.",
+      "error_handling": {
+        "validation_errors": "400: Valid Indent ID is required. [when indentId <= 0]; At least one field must be provided for update.; message returned by the called service/repository (headerResult.Message) [when !headerResult.Success]; message returned by the called service/repository (detailsResult.Message) [when !detailsResult.Success]; Failed [when !result]; Error while updating indent:",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update indent",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "indentId (route)",
+          "request body UpdateIndentWithFile (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Indents/dealer/{dealerId}",
+          "GET api/Indents/scenario/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "indents_update_indent",
+        "description": "Update indent",
+        "http_method": "PUT",
+        "endpoint": "api/Indents/{indentId}",
+        "parameters": {
+          "indentId": {
+            "type": "int",
+            "required": true,
+            "description": "indent Id (route)"
+          },
+          "IndentData": {
+            "type": "string",
+            "required": false,
+            "description": "Indent Data (body)"
+          },
+          "File": {
+            "type": "IFormFile",
+            "required": false,
+            "description": "File (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/IndentsController.cs",
+        "action_method": "UpdateIndent",
+        "related_dto_files": [
+          "Controllers/IndentsController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs"
+        ]
+      },
+      "module": "Indent Management",
+      "business_logic": {
+        "operation_summary": "Update indent — validates the request, calls ICommon.getUserByToken, IIndent.UpdateIndentHeaderAsync, IIndent.UpdateIndentDetailsAsync, processes uploaded files",
+        "preconditions": "Valid Bearer JWT; route parameter(s) indentId; request body of type UpdateIndentWithFile (inline); passes 6 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "IndentHeader: UPDATE; IndentDetails: DELETE; IndentDetails: INSERT; ComplaintsFile: INSERT",
+        "validations": "Valid Indent ID is required.; At least one field must be provided for update.; Failed; Error while updating indent:",
+        "side_effects": "Handles file upload/storage",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndent.UpdateIndentHeaderAsync",
+          "IIndent.UpdateIndentDetailsAsync",
+          "IIndent.CreateIndentFile"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Indent ID is required.",
+            "when": "indentId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field must be provided for update.",
+            "when": null
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (headerResult.Message)",
+            "when": "!headerResult.Success"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (detailsResult.Message)",
+            "when": "!detailsResult.Success"
+          },
+          {
+            "returns": 400,
+            "message": "Failed",
+            "when": "!result"
+          },
+          {
+            "returns": 400,
+            "message": "Error while updating indent:",
+            "when": null
+          }
+        ]
+      }
+    }
+  ]
+}

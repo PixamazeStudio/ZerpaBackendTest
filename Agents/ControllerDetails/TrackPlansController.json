@@ -1,0 +1,816 @@
+{
+  "controller": "TrackPlansController",
+  "file": "Controllers/TrackPlansController.cs",
+  "module": "Planning and Visit Management",
+  "base_route": "api/TrackPlans",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles track plans: get PJP, get IP, get weekly, get all regions, get all branches, get all areas",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "rpt/crm-reports/track-plans",
+        "module_code": "rpt",
+        "section": "crm-reports",
+        "sub_section": "track-plans",
+        "frontend_routes": [
+          "/rpt/crm-reports/track-plans"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "track_plans_get_pjp",
+      "name": "Get PJP",
+      "action_method": "GetPJP",
+      "http_method": "GET",
+      "route": "api/TrackPlans/pjp",
+      "business_purpose": "Retrieve PJP",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "sRegion",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "area",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": false
+        },
+        {
+          "name": "month",
+          "type": "string",
+          "required": false
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/crm-reports/track-plans:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve PJP",
+      "detailed_description": "Retrieve PJP. It calls ICommon.getUserByToken, ITrackPlans.GetCurrentMonth, ITrackPlans.GetAllPJPTracker. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when string.IsNullOrEmpty(token)]; (no message) [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve PJP",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/TrackPlans/pjp",
+          "GET api/TrackPlans/ip",
+          "GET api/TrackPlans/weekly"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "track_plans_get_pjp",
+        "description": "Retrieve PJP",
+        "http_method": "GET",
+        "endpoint": "api/TrackPlans/pjp",
+        "parameters": {
+          "sRegion": {
+            "type": "string",
+            "required": false,
+            "description": "s Region (query)"
+          },
+          "area": {
+            "type": "string",
+            "required": false,
+            "description": "area (query)"
+          },
+          "branchId": {
+            "type": "int",
+            "required": false,
+            "description": "branch Id (query)"
+          },
+          "month": {
+            "type": "string",
+            "required": false,
+            "description": "month (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/TrackPlansController.cs",
+        "action_method": "GetPJP",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/TrackPlans_repo.cs",
+          "Interfaces/ITrackPlans.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve PJP — calls ICommon.getUserByToken, ITrackPlans.GetCurrentMonth, ITrackPlans.GetAllPJPTracker",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ITrackPlans.GetCurrentMonth",
+          "ITrackPlans.GetAllPJPTracker"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "TrackPlans_repo (Repositories/TrackPlans_repo.cs) via ITrackPlans"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "string.IsNullOrEmpty(token)"
+          },
+          {
+            "returns": 401,
+            "message": null,
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "track_plans_get_ip",
+      "name": "Get IP",
+      "action_method": "GetIP",
+      "http_method": "GET",
+      "route": "api/TrackPlans/ip",
+      "business_purpose": "Retrieve IP",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "sRegion",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "area",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": false
+        },
+        {
+          "name": "month",
+          "type": "string",
+          "required": false
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/crm-reports/track-plans:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve IP",
+      "detailed_description": "Retrieve IP. It calls ICommon.getUserByToken, ITrackPlans.GetCurrentMonth, ITrackPlans.GetAllIPTracker. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when string.IsNullOrEmpty(token)]; (no message) [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve IP",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/TrackPlans/pjp",
+          "GET api/TrackPlans/ip",
+          "GET api/TrackPlans/weekly"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "track_plans_get_ip",
+        "description": "Retrieve IP",
+        "http_method": "GET",
+        "endpoint": "api/TrackPlans/ip",
+        "parameters": {
+          "sRegion": {
+            "type": "string",
+            "required": false,
+            "description": "s Region (query)"
+          },
+          "area": {
+            "type": "string",
+            "required": false,
+            "description": "area (query)"
+          },
+          "branchId": {
+            "type": "int",
+            "required": false,
+            "description": "branch Id (query)"
+          },
+          "month": {
+            "type": "string",
+            "required": false,
+            "description": "month (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/TrackPlansController.cs",
+        "action_method": "GetIP",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/TrackPlans_repo.cs",
+          "Interfaces/ITrackPlans.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve IP — calls ICommon.getUserByToken, ITrackPlans.GetCurrentMonth, ITrackPlans.GetAllIPTracker",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ITrackPlans.GetCurrentMonth",
+          "ITrackPlans.GetAllIPTracker"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "TrackPlans_repo (Repositories/TrackPlans_repo.cs) via ITrackPlans"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "string.IsNullOrEmpty(token)"
+          },
+          {
+            "returns": 401,
+            "message": null,
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "track_plans_get_weekly",
+      "name": "Get Weekly",
+      "action_method": "GetWeekly",
+      "http_method": "GET",
+      "route": "api/TrackPlans/weekly",
+      "business_purpose": "Retrieve weekly",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "sRegion",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "area",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": false
+        },
+        {
+          "name": "month",
+          "type": "string",
+          "required": false
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/crm-reports/track-plans:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve weekly",
+      "detailed_description": "Retrieve weekly. It calls ICommon.getUserByToken, ITrackPlans.GetCurrentMonth, ITrackPlans.GetAllWkPTracker. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when string.IsNullOrEmpty(token)]; (no message) [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve weekly",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/TrackPlans/pjp",
+          "GET api/TrackPlans/ip",
+          "GET api/TrackPlans/weekly"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "track_plans_get_weekly",
+        "description": "Retrieve weekly",
+        "http_method": "GET",
+        "endpoint": "api/TrackPlans/weekly",
+        "parameters": {
+          "sRegion": {
+            "type": "string",
+            "required": false,
+            "description": "s Region (query)"
+          },
+          "area": {
+            "type": "string",
+            "required": false,
+            "description": "area (query)"
+          },
+          "branchId": {
+            "type": "int",
+            "required": false,
+            "description": "branch Id (query)"
+          },
+          "month": {
+            "type": "string",
+            "required": false,
+            "description": "month (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/TrackPlansController.cs",
+        "action_method": "GetWeekly",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/TrackPlans_repo.cs",
+          "Interfaces/ITrackPlans.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve weekly — calls ICommon.getUserByToken, ITrackPlans.GetCurrentMonth, ITrackPlans.GetAllWkPTracker",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ITrackPlans.GetCurrentMonth",
+          "ITrackPlans.GetAllWkPTracker"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "TrackPlans_repo (Repositories/TrackPlans_repo.cs) via ITrackPlans"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "string.IsNullOrEmpty(token)"
+          },
+          {
+            "returns": 401,
+            "message": null,
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "track_plans_get_all_regions",
+      "name": "Get All Regions",
+      "action_method": "GetAllRegions",
+      "http_method": "GET",
+      "route": "api/TrackPlans/Regions",
+      "business_purpose": "Retrieve all regions",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/crm-reports/track-plans:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve all regions",
+      "detailed_description": "Retrieve all regions. It calls ICommon.getUserByToken, ITrackPlans.GetAllRegions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when string.IsNullOrEmpty(token)]; (no message) [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all regions",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/TrackPlans/pjp",
+          "GET api/TrackPlans/ip",
+          "GET api/TrackPlans/weekly"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "track_plans_get_all_regions",
+        "description": "Retrieve all regions",
+        "http_method": "GET",
+        "endpoint": "api/TrackPlans/Regions",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/TrackPlansController.cs",
+        "action_method": "GetAllRegions",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/TrackPlans_repo.cs",
+          "Interfaces/ITrackPlans.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all regions — calls ICommon.getUserByToken, ITrackPlans.GetAllRegions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ITrackPlans.GetAllRegions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "TrackPlans_repo (Repositories/TrackPlans_repo.cs) via ITrackPlans"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "string.IsNullOrEmpty(token)"
+          },
+          {
+            "returns": 401,
+            "message": null,
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "track_plans_get_all_branches",
+      "name": "Get All Branches",
+      "action_method": "GetAllBranches",
+      "http_method": "GET",
+      "route": "api/TrackPlans/Branches",
+      "business_purpose": "Retrieve all branches",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/crm-reports/track-plans:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve all branches",
+      "detailed_description": "Retrieve all branches. It calls ICommon.getUserByToken, ITrackPlans.GetAllBranches. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when string.IsNullOrEmpty(token)]; (no message) [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all branches",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/TrackPlans/pjp",
+          "GET api/TrackPlans/ip",
+          "GET api/TrackPlans/weekly"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "track_plans_get_all_branches",
+        "description": "Retrieve all branches",
+        "http_method": "GET",
+        "endpoint": "api/TrackPlans/Branches",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/TrackPlansController.cs",
+        "action_method": "GetAllBranches",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/TrackPlans_repo.cs",
+          "Interfaces/ITrackPlans.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all branches — calls ICommon.getUserByToken, ITrackPlans.GetAllBranches",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ITrackPlans.GetAllBranches"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "TrackPlans_repo (Repositories/TrackPlans_repo.cs) via ITrackPlans"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "string.IsNullOrEmpty(token)"
+          },
+          {
+            "returns": 401,
+            "message": null,
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "track_plans_get_all_areas",
+      "name": "Get All Areas",
+      "action_method": "GetAllAreas",
+      "http_method": "GET",
+      "route": "api/TrackPlans/Areas",
+      "business_purpose": "Retrieve all areas",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "regionId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/crm-reports/track-plans:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve all areas",
+      "detailed_description": "Retrieve all areas. It calls ICommon.getUserByToken, ITrackPlans.GetAllAreasByRegions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when string.IsNullOrEmpty(token)]; (no message) [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all areas",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "regionId (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/TrackPlans/pjp",
+          "GET api/TrackPlans/ip",
+          "GET api/TrackPlans/weekly"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "track_plans_get_all_areas",
+        "description": "Retrieve all areas",
+        "http_method": "GET",
+        "endpoint": "api/TrackPlans/Areas",
+        "parameters": {
+          "regionId": {
+            "type": "int",
+            "required": true,
+            "description": "region Id (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/TrackPlansController.cs",
+        "action_method": "GetAllAreas",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/TrackPlans_repo.cs",
+          "Interfaces/ITrackPlans.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all areas — calls ICommon.getUserByToken, ITrackPlans.GetAllAreasByRegions",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): regionId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ITrackPlans.GetAllAreasByRegions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "TrackPlans_repo (Repositories/TrackPlans_repo.cs) via ITrackPlans"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "string.IsNullOrEmpty(token)"
+          },
+          {
+            "returns": 401,
+            "message": null,
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    }
+  ]
+}

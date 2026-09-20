@@ -1,0 +1,204 @@
+{
+  "controller": "ApprovedClubController",
+  "file": "Controllers/ApprovedClubController.cs",
+  "module": "Clubbing Management",
+  "base_route": "api/ApprovedClub",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles approved club: get all approved clubs",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "ims/factory/approved-clubs",
+        "module_code": "ims",
+        "section": "factory",
+        "sub_section": "approved-clubs",
+        "frontend_routes": [
+          "/ims/factory/approved-clubs"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "ApprovedClubs"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "approved_club_get_all_approved_clubs",
+      "name": "Get All Approved Clubs",
+      "action_method": "GetAllApprovedClubs",
+      "http_method": "GET",
+      "route": "api/ApprovedClub",
+      "business_purpose": "Retrieve all approved clubs",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        },
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "\"last_30_days\""
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "ClubbingHeader[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ims/factory/approved-clubs:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all approved clubs",
+      "detailed_description": "Retrieve all approved clubs. It calls ICommon.getUserByToken, IApprovedClubs.GetApprovedClubData, IApprovedClubs.GetApprovedClubActions. Data access uses stored procedure(s): GetApprovedClubs. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all approved clubs",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/ApprovedClub"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "approved_club_get_all_approved_clubs",
+        "description": "Retrieve all approved clubs",
+        "http_method": "GET",
+        "endpoint": "api/ApprovedClub",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          },
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "date range (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ApprovedClubController.cs",
+        "action_method": "GetAllApprovedClubs",
+        "related_dto_files": [
+          "Models/ClubbingHeader.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ApprovedClubs_repo.cs",
+          "Interfaces/IApprovedClubs.cs"
+        ]
+      },
+      "module": "Clubbing Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all approved clubs — calls ICommon.getUserByToken, IApprovedClubs.GetApprovedClubData, IApprovedClubs.GetApprovedClubActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IApprovedClubs.GetApprovedClubData",
+          "IApprovedClubs.GetApprovedClubActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ApprovedClubs_repo (Repositories/ApprovedClubs_repo.cs) via IApprovedClubs"
+        ],
+        "stored_procedures": [
+          "GetApprovedClubs"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    }
+  ]
+}

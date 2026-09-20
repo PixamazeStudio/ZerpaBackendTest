@@ -1,0 +1,205 @@
+{
+  "controller": "HoldingCreditnoteRequisitionController",
+  "file": "Controllers/HoldingCreditnoteRequisitionController.cs",
+  "base_route": "api/HoldingCreditnoteRequisition",
+  "description": "Credit note requisition holding",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "acs/accounts/holding-creditnote-requisitions",
+        "module_code": "acs",
+        "section": "accounts",
+        "sub_section": "holding-creditnote-requisitions",
+        "frontend_routes": [
+          "/acs/accounts/holding-creditnote-requisitions"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "hol_001",
+      "name": "GetAllHoldingCreditNoteRequisitions",
+      "http_method": "GET",
+      "route": "api/HoldingCreditnoteRequisition",
+      "business_purpose": "GET operation for HoldingCreditnoteRequisitionController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [
+          "GetHoldingCreditNoteRequisition",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/HoldingCreditnoteRequisitionController.cs",
+        "action_method": "GetAllHoldingCreditNoteRequisitions"
+      },
+      "required_permission": "acs/accounts/holding-creditnote-requisitions:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "GET operation for HoldingCreditnoteRequisitionController",
+      "detailed_description": "GET operation for HoldingCreditnoteRequisitionController. It calls ICommon.getUserByToken, IHoldingCreditNoteRequisition.GetHoldingCreditNoteRequisitionData, IHoldingCreditNoteRequisition.GetHoldingCreditNoteRequisitionActions. Data access uses stored procedure(s): GetHoldingCreditNoteRequisition, GetSectionActions. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to GET operation for holdingcreditnoterequisitioncontroller",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/HoldingCreditnoteRequisition",
+          "GET api/HoldingCreditnoteRequisition/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "holding_creditnote_requisition_get_all_holding_credit_note_requisitions",
+        "description": "GET operation for HoldingCreditnoteRequisitionController",
+        "http_method": "GET",
+        "endpoint": "api/HoldingCreditnoteRequisition",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "hol_002",
+      "name": "GetHoldingCreditNoteRequisitionById",
+      "http_method": "GET",
+      "route": "api/HoldingCreditnoteRequisition/{id}",
+      "business_purpose": "GET operation for HoldingCreditnoteRequisitionController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid observation report ID is required.",
+            "when": "id <= 0"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/HoldingCreditnoteRequisitionController.cs",
+        "action_method": "GetHoldingCreditNoteRequisitionById"
+      },
+      "required_permission": "acs/accounts/holding-creditnote-requisitions:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "GET operation for HoldingCreditnoteRequisitionController",
+      "detailed_description": "GET operation for HoldingCreditnoteRequisitionController. It validates the request, then calls IHoldingCreditNoteRequisition.GetHoldingCreditnoteRequisitionById, ICMSCreditNotesHeader.GetComplaintDetailsComplaintsHeader. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid observation report ID is required. [when id <= 0]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to GET operation for holdingcreditnoterequisitioncontroller",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/HoldingCreditnoteRequisition",
+          "GET api/HoldingCreditnoteRequisition/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "holding_creditnote_requisition_get_holding_credit_note_requisition_by_id",
+        "description": "GET operation for HoldingCreditnoteRequisitionController",
+        "http_method": "GET",
+        "endpoint": "api/HoldingCreditnoteRequisition/{id}",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    }
+  ]
+}

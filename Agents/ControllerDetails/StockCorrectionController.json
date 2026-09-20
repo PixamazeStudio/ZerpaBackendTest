@@ -1,0 +1,884 @@
+{
+  "controller": "StockCorrectionController",
+  "file": "Controllers/StockCorrectionController.cs",
+  "module": "Stock and Logistics Management",
+  "base_route": "api/StockCorrection",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles stock correction: get all, get stock correction by id, create stock correction, delete stock correction, stock correction approval, stock correction reject",
+  "menu_permission": {
+    "status": "not referenced by frontend",
+    "menu_keys": [],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "stock_correction_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/StockCorrection",
+      "business_purpose": "Retrieve all stock correction records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve all stock correction records",
+      "detailed_description": "Retrieve all stock correction records. It calls ICommon.getUserByToken, IIndent.BuildFilterContext, IStockCorrection.GetStockCorrectiontData. Data access uses stored procedure(s): GetStockCorrection. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all stock correction records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/StockCorrection",
+          "GET api/StockCorrection/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "stock_correction_get_all",
+        "description": "Retrieve all stock correction records",
+        "http_method": "GET",
+        "endpoint": "api/StockCorrection",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "status": {
+            "type": "string",
+            "required": false,
+            "description": "status (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/StockCorrectionController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs",
+          "Repositories/StockCorrection_repo.cs",
+          "Interfaces/IStockCorrection.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all stock correction records — calls ICommon.getUserByToken, IIndent.BuildFilterContext, IStockCorrection.GetStockCorrectiontData",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndent.BuildFilterContext",
+          "IStockCorrection.GetStockCorrectiontData",
+          "IStockCorrection.GetStockCorrectionActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent",
+          "StockCorrection_repo (Repositories/StockCorrection_repo.cs) via IStockCorrection"
+        ],
+        "stored_procedures": [
+          "GetStockCorrection"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "stock_correction_get_stock_correction_by_id",
+      "name": "Get Stock Correction By Id",
+      "action_method": "GetStockCorrectionById",
+      "http_method": "GET",
+      "route": "api/StockCorrection/{id}",
+      "business_purpose": "Retrieve stock correction by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve stock correction by ID",
+      "detailed_description": "Retrieve stock correction by ID. It validates the request, then calls ICommon.getUserByToken, IStockCorrection.GetStockCorrectionById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid Stock Correction ID is required [when id <= 0]",
+        "not_found": "404: Stock Correction not found [when stock == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve stock correction by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/StockCorrection",
+          "GET api/StockCorrection/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "stock_correction_get_stock_correction_by_id",
+        "description": "Retrieve stock correction by ID",
+        "http_method": "GET",
+        "endpoint": "api/StockCorrection/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/StockCorrectionController.cs",
+        "action_method": "GetStockCorrectionById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/StockCorrection_repo.cs",
+          "Interfaces/IStockCorrection.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Retrieve stock correction by ID — validates the request, calls ICommon.getUserByToken, IStockCorrection.GetStockCorrectionById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid Stock Correction ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IStockCorrection.GetStockCorrectionById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "StockCorrection_repo (Repositories/StockCorrection_repo.cs) via IStockCorrection"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Stock Correction ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Stock Correction not found",
+            "when": "stock == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "stock_correction_create_stock_correction",
+      "name": "Create Stock Correction",
+      "action_method": "CreateStockCorrection",
+      "http_method": "POST",
+      "route": "api/StockCorrection/create",
+      "business_purpose": "Create stock correction",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateStockCorrectionDto (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "ProductionDate",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "Details",
+            "type": "List<StockCorrectionDetailDto>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Create stock correction",
+      "detailed_description": "Create stock correction. It validates the request, then calls ICommon.getUserByToken, IStockCorrection.GetProductByPrimitives, IStockCorrection.GetDefaultStockByProduct. Persists changes to: StockCorrectionHeader: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: At least one product detail is required. [when request.Details == null || !request.Details.Any()]; No valid product details found. [when !dets.Any()]",
+        "not_found": "404: Stock Correction not found. [when data == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create stock correction",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateStockCorrectionDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/StockCorrection"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "stock_correction_create_stock_correction",
+        "description": "Create stock correction",
+        "http_method": "POST",
+        "endpoint": "api/StockCorrection/create",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "ProductionDate": {
+            "type": "datetime",
+            "required": false,
+            "description": "Production Date (body)"
+          },
+          "Details": {
+            "type": "List<StockCorrectionDetailDto>",
+            "required": false,
+            "description": "Details (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/StockCorrectionController.cs",
+        "action_method": "CreateStockCorrection",
+        "related_dto_files": [
+          "Controllers/StockCorrectionController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/StockCorrection_repo.cs",
+          "Interfaces/IStockCorrection.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Create stock correction — validates the request, calls ICommon.getUserByToken, IStockCorrection.GetProductByPrimitives, IStockCorrection.GetDefaultStockByProduct",
+        "preconditions": "Valid Bearer JWT; request body of type CreateStockCorrectionDto (inline); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "StockCorrectionHeader: INSERT",
+        "validations": "At least one product detail is required.; No valid product details found.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IStockCorrection.GetProductByPrimitives",
+          "IStockCorrection.GetDefaultStockByProduct",
+          "IStockCorrection.GetStockCorrectionById",
+          "IStockCorrection.GetMaxNumber",
+          "IStockCorrection.CreateStockCorrectionHeader",
+          "IStockCorrection.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "StockCorrection_repo (Repositories/StockCorrection_repo.cs) via IStockCorrection"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "At least one product detail is required.",
+            "when": "request.Details == null || !request.Details.Any()"
+          },
+          {
+            "returns": 400,
+            "message": "No valid product details found.",
+            "when": "!dets.Any()"
+          },
+          {
+            "returns": 404,
+            "message": "Stock Correction not found.",
+            "when": "data == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "stock_correction_delete_stock_correction",
+      "name": "Delete Stock Correction",
+      "action_method": "DeleteStockCorrection",
+      "http_method": "DELETE",
+      "route": "api/StockCorrection/{id}",
+      "business_purpose": "Delete stock correction",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Delete stock correction",
+      "detailed_description": "Delete stock correction. It validates the request, then calls ICommon.getUserByToken, IStockCorrection.DeleteStockCorrection. Persists changes to: StockCorrectionHeader: UPDATE, soft delete (is_deleted flag). Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid Stock Request ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete stock correction",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/StockCorrection/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "stock_correction_delete_stock_correction",
+        "description": "Delete stock correction",
+        "http_method": "DELETE",
+        "endpoint": "api/StockCorrection/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/StockCorrectionController.cs",
+        "action_method": "DeleteStockCorrection",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/StockCorrection_repo.cs",
+          "Interfaces/IStockCorrection.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Delete stock correction — validates the request, calls ICommon.getUserByToken, IStockCorrection.DeleteStockCorrection",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "StockCorrectionHeader: UPDATE; soft delete (is_deleted flag)",
+        "validations": "Valid Stock Request ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IStockCorrection.DeleteStockCorrection"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "StockCorrection_repo (Repositories/StockCorrection_repo.cs) via IStockCorrection"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid Stock Request ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "stock_correction_stock_correction_approval",
+      "name": "Stock Correction Approval",
+      "action_method": "StockCorrectionApproval",
+      "http_method": "POST",
+      "route": "api/StockCorrection/approval",
+      "business_purpose": "Handle stock correction approval",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "StockCorrectionApprovalRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_approved",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Handle stock correction approval",
+      "detailed_description": "Handle stock correction approval. It calls ICommon.getUserByToken, IStockCorrection.GetStockCorrectionById, IStockCorrection.GetStockCorrectionDetailsAsync. Persists changes to: DefaultStock: INSERT. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Stock request not found [when stockRequest == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle stock correction approval",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body StockCorrectionApprovalRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/StockCorrection"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "stock_correction_stock_correction_approval",
+        "description": "Handle stock correction approval",
+        "http_method": "POST",
+        "endpoint": "api/StockCorrection/approval",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "is_approved": {
+            "type": "bool",
+            "required": false,
+            "description": "is approved (body)"
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Approves the record and advances its workflow"
+      },
+      "source": {
+        "controller_file": "Controllers/StockCorrectionController.cs",
+        "action_method": "StockCorrectionApproval",
+        "related_dto_files": [
+          "Controllers/StockCorrectionController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/StockCorrection_repo.cs",
+          "Interfaces/IStockCorrection.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Handle stock correction approval — calls ICommon.getUserByToken, IStockCorrection.GetStockCorrectionById, IStockCorrection.GetStockCorrectionDetailsAsync",
+        "preconditions": "Valid Bearer JWT; request body of type StockCorrectionApprovalRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "DefaultStock: INSERT; sets stockRequest.is_approved, stockRequest.operated_by, stockRequest.operated_date, stockRequest.status, stockRequest.modified_by, stockRequest.modified_date and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IStockCorrection.GetStockCorrectionById",
+          "IStockCorrection.GetStockCorrectionDetailsAsync",
+          "IStockCorrection.GetDefaultStockByProduct",
+          "IStockCorrection.CreateDefaultStockSingle",
+          "IStockCorrection.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "StockCorrection_repo (Repositories/StockCorrection_repo.cs) via IStockCorrection"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Stock request not found",
+            "when": "stockRequest == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "stock_correction_stock_correction_reject",
+      "name": "Stock Correction Reject",
+      "action_method": "StockCorrectionReject",
+      "http_method": "POST",
+      "route": "api/StockCorrection/reject",
+      "business_purpose": "Handle stock correction reject",
+      "data_effect": "REJECTION",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "StockCorrectionRejectRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_rejected",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "REJECTION",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "reject"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Handle stock correction reject",
+      "detailed_description": "Handle stock correction reject. It calls ICommon.getUserByToken, IStockCorrection.GetStockCorrectionById, IStockCorrection.SaveChangesAsync. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Stock request not found [when stockRequest == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle stock correction reject",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body StockCorrectionRejectRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/StockCorrection"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "stock_correction_stock_correction_reject",
+        "description": "Handle stock correction reject",
+        "http_method": "POST",
+        "endpoint": "api/StockCorrection/reject",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "is_rejected": {
+            "type": "bool",
+            "required": false,
+            "description": "is rejected (body)"
+          }
+        },
+        "operation_type": "REJECTION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Rejects the record"
+      },
+      "source": {
+        "controller_file": "Controllers/StockCorrectionController.cs",
+        "action_method": "StockCorrectionReject",
+        "related_dto_files": [
+          "Controllers/StockCorrectionController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/StockCorrection_repo.cs",
+          "Interfaces/IStockCorrection.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Handle stock correction reject — calls ICommon.getUserByToken, IStockCorrection.GetStockCorrectionById, IStockCorrection.SaveChangesAsync",
+        "preconditions": "Valid Bearer JWT; request body of type StockCorrectionRejectRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets stockRequest.is_rejected, stockRequest.is_approved, stockRequest.operated_by, stockRequest.operated_date, stockRequest.status, stockRequest.modified_by and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IStockCorrection.GetStockCorrectionById",
+          "IStockCorrection.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "StockCorrection_repo (Repositories/StockCorrection_repo.cs) via IStockCorrection"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Stock request not found",
+            "when": "stockRequest == null"
+          }
+        ]
+      }
+    }
+  ]
+}

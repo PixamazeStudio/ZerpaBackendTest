@@ -1,0 +1,1535 @@
+{
+  "controller": "ComplaintCenterController",
+  "file": "Controllers/ComplaintCenterController.cs",
+  "module": "Complaints Management",
+  "base_route": "api/ComplaintCenter",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles complaint center: get all, complaintscms approval, complaintscms reject, factory visit, factory remarks, complaint closure revoke and 4 more",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "cms/complaints-center",
+        "module_code": "cms",
+        "section": "complaints-center",
+        "sub_section": null,
+        "frontend_routes": [
+          "/cms/complaints-center"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "also_called_from_menus": [
+      "cms/complaints-center",
+      "cms/credit-notes"
+    ],
+    "section_configuration_keys": [
+      "Complaints"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "complaint_center_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/ComplaintCenter",
+      "business_purpose": "Retrieve all complaint center records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "\"last_30_days\""
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "regionId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "areaId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "cms/complaints-center:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all complaint center records",
+      "detailed_description": "Retrieve all complaint center records. It calls ICommon.getUserByToken, IIndent.BuildFilterContext, IComplaintCenter.GetComplaintCenterData. Data access uses stored procedure(s): GetComplaintCenter. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all complaint center records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/ComplaintCenter",
+          "GET api/ComplaintCenter/{id}",
+          "GET api/ComplaintCenter/complaint-details/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaint_center_get_all",
+        "description": "Retrieve all complaint center records",
+        "http_method": "GET",
+        "endpoint": "api/ComplaintCenter",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "date range (query)"
+          },
+          "status": {
+            "type": "string",
+            "required": false,
+            "description": "status (query)"
+          },
+          "regionId": {
+            "type": "int",
+            "required": false,
+            "description": "region Id (query)"
+          },
+          "branchId": {
+            "type": "int",
+            "required": false,
+            "description": "branch Id (query)"
+          },
+          "areaId": {
+            "type": "int",
+            "required": false,
+            "description": "area Id (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintCenterController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs",
+          "Repository/ComplaintCenter_repo.cs",
+          "Interfaces/IComplaintCenter.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all complaint center records — calls ICommon.getUserByToken, IIndent.BuildFilterContext, IComplaintCenter.GetComplaintCenterData",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndent.BuildFilterContext",
+          "IComplaintCenter.GetComplaintCenterData",
+          "IComplaintCenter.GetComplaintCenterActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent",
+          "ComplaintCenter_repo (Repository/ComplaintCenter_repo.cs) via IComplaintCenter"
+        ],
+        "stored_procedures": [
+          "GetComplaintCenter"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaint_center_complaintscms_approval",
+      "name": "Complaintscms Approval",
+      "action_method": "ComplaintscmsApproval",
+      "http_method": "POST",
+      "route": "api/ComplaintCenter/cms-approval",
+      "business_purpose": "Handle complaintscms approval",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CmsApprovalRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "IsApproved",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "cms/complaints-center:approve",
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Handle complaintscms approval",
+      "detailed_description": "Handle complaintscms approval. It calls ICommon.getUserByToken, IComplaintCenter.GetComplaintsHeaderById, IComplaintCenter.GetUserById. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Complaint not found [when complaint == null]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle complaintscms approval",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CmsApprovalRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/ComplaintCenter",
+          "GET api/ComplaintCenter/getComplaintStatus"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaint_center_complaintscms_approval",
+        "description": "Handle complaintscms approval",
+        "http_method": "POST",
+        "endpoint": "api/ComplaintCenter/cms-approval",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "IsApproved": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Approved (body)"
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Approves the record and advances its workflow"
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintCenterController.cs",
+        "action_method": "ComplaintscmsApproval",
+        "related_dto_files": [
+          "Controllers/ComplaintCenterController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/ComplaintCenter_repo.cs",
+          "Interfaces/IComplaintCenter.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Handle complaintscms approval — calls ICommon.getUserByToken, IComplaintCenter.GetComplaintsHeaderById, IComplaintCenter.GetUserById",
+        "preconditions": "Valid Bearer JWT; request body of type CmsApprovalRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets complaint.is_cms_approved, complaint.cms_operated_by, complaint.cms_operated_date, complaint.status, complaint.modified_by, complaint.modified_date and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IComplaintCenter.GetComplaintsHeaderById",
+          "IComplaintCenter.GetUserById",
+          "IComplaintCenter.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ComplaintCenter_repo (Repository/ComplaintCenter_repo.cs) via IComplaintCenter"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Complaint not found",
+            "when": "complaint == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaint_center_complaintscms_reject",
+      "name": "Complaintscms Reject",
+      "action_method": "ComplaintscmsReject",
+      "http_method": "POST",
+      "route": "api/ComplaintCenter/cms-reject",
+      "business_purpose": "Handle complaintscms reject",
+      "data_effect": "REJECTION",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CmsRejectRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "IsRejected",
+            "type": "bool",
+            "required": false
+          },
+          {
+            "name": "CmsRejectReason",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "REJECTION",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "cms/complaints-center:reject",
+      "permission_flags": [
+        "reject"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Handle complaintscms reject",
+      "detailed_description": "Handle complaintscms reject. It calls ICommon.getUserByToken, IComplaintCenter.GetComplaintsHeaderById, IComplaintCenter.GetUserById. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Complaint not found [when complaint == null]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle complaintscms reject",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CmsRejectRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/ComplaintCenter",
+          "GET api/ComplaintCenter/getComplaintStatus"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaint_center_complaintscms_reject",
+        "description": "Handle complaintscms reject",
+        "http_method": "POST",
+        "endpoint": "api/ComplaintCenter/cms-reject",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "IsRejected": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Rejected (body)"
+          },
+          "CmsRejectReason": {
+            "type": "string",
+            "required": false,
+            "description": "Cms Reject Reason (body)"
+          }
+        },
+        "operation_type": "REJECTION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Rejects the record"
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintCenterController.cs",
+        "action_method": "ComplaintscmsReject",
+        "related_dto_files": [
+          "Controllers/ComplaintCenterController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/ComplaintCenter_repo.cs",
+          "Interfaces/IComplaintCenter.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Handle complaintscms reject — calls ICommon.getUserByToken, IComplaintCenter.GetComplaintsHeaderById, IComplaintCenter.GetUserById",
+        "preconditions": "Valid Bearer JWT; request body of type CmsRejectRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets complaint.is_cms_rejected, complaint.cms_operated_by, complaint.cms_operated_date, complaint.status, complaint.reason, complaint.modified_by and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IComplaintCenter.GetComplaintsHeaderById",
+          "IComplaintCenter.GetUserById",
+          "IComplaintCenter.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ComplaintCenter_repo (Repository/ComplaintCenter_repo.cs) via IComplaintCenter"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Complaint not found",
+            "when": "complaint == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaint_center_factory_visit",
+      "name": "Factory Visit",
+      "action_method": "FactoryVisit",
+      "http_method": "POST",
+      "route": "api/ComplaintCenter/factory-visit",
+      "business_purpose": "Handle factory visit",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "FactoryVisitRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "IsFactoryVisit",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "cms/complaints-center:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Handle factory visit",
+      "detailed_description": "Handle factory visit. It calls ICommon.getUserByToken, IComplaintCenter.GetComplaintsHeaderById, IComplaintCenter.GetUserById. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Complaint not found [when complaint == null]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle factory visit",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body FactoryVisitRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/ComplaintCenter",
+          "GET api/ComplaintCenter/getComplaintStatus"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaint_center_factory_visit",
+        "description": "Handle factory visit",
+        "http_method": "POST",
+        "endpoint": "api/ComplaintCenter/factory-visit",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "IsFactoryVisit": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Factory Visit (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintCenterController.cs",
+        "action_method": "FactoryVisit",
+        "related_dto_files": [
+          "Controllers/ComplaintCenterController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/ComplaintCenter_repo.cs",
+          "Interfaces/IComplaintCenter.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Handle factory visit — calls ICommon.getUserByToken, IComplaintCenter.GetComplaintsHeaderById, IComplaintCenter.GetUserById",
+        "preconditions": "Valid Bearer JWT; request body of type FactoryVisitRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets complaint.is_sitevisit_required, complaint.status, complaint.modified_by, complaint.modified_date and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IComplaintCenter.GetComplaintsHeaderById",
+          "IComplaintCenter.GetUserById",
+          "IComplaintCenter.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ComplaintCenter_repo (Repository/ComplaintCenter_repo.cs) via IComplaintCenter"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Complaint not found",
+            "when": "complaint == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaint_center_factory_remarks",
+      "name": "Factory Remarks",
+      "action_method": "FactoryRemarks",
+      "http_method": "POST",
+      "route": "api/ComplaintCenter/factory-remarks",
+      "business_purpose": "Handle factory remarks",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "FactoryRemarksRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "IsFactoryRemark",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "cms/complaints-center:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Handle factory remarks",
+      "detailed_description": "Handle factory remarks. It calls ICommon.getUserByToken, IComplaintCenter.GetComplaintsHeaderById, IComplaintCenter.GetUserById. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Complaint not found [when complaint == null]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle factory remarks",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body FactoryRemarksRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/ComplaintCenter",
+          "GET api/ComplaintCenter/getComplaintStatus"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaint_center_factory_remarks",
+        "description": "Handle factory remarks",
+        "http_method": "POST",
+        "endpoint": "api/ComplaintCenter/factory-remarks",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "IsFactoryRemark": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Factory Remark (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintCenterController.cs",
+        "action_method": "FactoryRemarks",
+        "related_dto_files": [
+          "Controllers/ComplaintCenterController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/ComplaintCenter_repo.cs",
+          "Interfaces/IComplaintCenter.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Handle factory remarks — calls ICommon.getUserByToken, IComplaintCenter.GetComplaintsHeaderById, IComplaintCenter.GetUserById",
+        "preconditions": "Valid Bearer JWT; request body of type FactoryRemarksRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets complaint.is_factory_remark_required, complaint.status, complaint.modified_by, complaint.modified_date and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IComplaintCenter.GetComplaintsHeaderById",
+          "IComplaintCenter.GetUserById",
+          "IComplaintCenter.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ComplaintCenter_repo (Repository/ComplaintCenter_repo.cs) via IComplaintCenter"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Complaint not found",
+            "when": "complaint == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaint_center_complaint_closure_revoke",
+      "name": "Complaint Closure Revoke",
+      "action_method": "ComplaintClosureRevoke",
+      "http_method": "POST",
+      "route": "api/ComplaintCenter/closure-revoke",
+      "business_purpose": "Handle complaint closure revoke",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "ComplaintClosureRevokeRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "IsClosed",
+            "type": "bool",
+            "required": false
+          },
+          {
+            "name": "status",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "cms/complaints-center:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Handle complaint closure revoke",
+      "detailed_description": "Handle complaint closure revoke. It calls ICommon.getUserByToken, IComplaintCenter.GetComplaintsHeaderById, IComplaintCenter.GetUserById. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Complaint not found [when complaint == null]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle complaint closure revoke",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body ComplaintClosureRevokeRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/ComplaintCenter",
+          "GET api/ComplaintCenter/getComplaintStatus"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaint_center_complaint_closure_revoke",
+        "description": "Handle complaint closure revoke",
+        "http_method": "POST",
+        "endpoint": "api/ComplaintCenter/closure-revoke",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "IsClosed": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Closed (body)"
+          },
+          "status": {
+            "type": "string",
+            "required": false,
+            "description": "status (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintCenterController.cs",
+        "action_method": "ComplaintClosureRevoke",
+        "related_dto_files": [
+          "Controllers/ComplaintCenterController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/ComplaintCenter_repo.cs",
+          "Interfaces/IComplaintCenter.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Handle complaint closure revoke — calls ICommon.getUserByToken, IComplaintCenter.GetComplaintsHeaderById, IComplaintCenter.GetUserById",
+        "preconditions": "Valid Bearer JWT; request body of type ComplaintClosureRevokeRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets complaint.is_cms_closed, complaint.status, complaint.cms_operated_by, complaint.cms_operated_date, complaint.modified_by, complaint.modified_date and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IComplaintCenter.GetComplaintsHeaderById",
+          "IComplaintCenter.GetUserById",
+          "IComplaintCenter.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ComplaintCenter_repo (Repository/ComplaintCenter_repo.cs) via IComplaintCenter"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Complaint not found",
+            "when": "complaint == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaint_center_create_scheduler",
+      "name": "Create Scheduler",
+      "action_method": "CreateScheduler",
+      "http_method": "POST",
+      "route": "api/ComplaintCenter/create-scheduler",
+      "business_purpose": "Create scheduler",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateSchedulerRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "CmsId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "ForUserId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "ScheduledDate",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "Remarks",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "cms/complaints-center:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create scheduler",
+      "detailed_description": "Create scheduler. It validates the request, then calls ICommon.getUserByToken, IComplaintCenter.GetUserById, IComplaintCenter.GetComplaintsHeaderById. Persists changes to: Scheduler: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Current user not found [when scheduledBy == null]; Scheduled for user not found [when scheduledFor == null]; Complaint header not found [when cmsHeader == null]",
+        "not_found": "404: Scheduler not found [when existingScheduler == null]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create scheduler",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateSchedulerRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/ComplaintCenter",
+          "GET api/ComplaintCenter/getComplaintStatus"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaint_center_create_scheduler",
+        "description": "Create scheduler",
+        "http_method": "POST",
+        "endpoint": "api/ComplaintCenter/create-scheduler",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "CmsId": {
+            "type": "int",
+            "required": false,
+            "description": "Cms Id (body)"
+          },
+          "ForUserId": {
+            "type": "int",
+            "required": false,
+            "description": "For User Id (body)"
+          },
+          "ScheduledDate": {
+            "type": "datetime",
+            "required": false,
+            "description": "Scheduled Date (body)"
+          },
+          "Remarks": {
+            "type": "string",
+            "required": false,
+            "description": "Remarks (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintCenterController.cs",
+        "action_method": "CreateScheduler",
+        "related_dto_files": [
+          "Controllers/ComplaintCenterController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/ComplaintCenter_repo.cs",
+          "Interfaces/IComplaintCenter.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Create scheduler — validates the request, calls ICommon.getUserByToken, IComplaintCenter.GetUserById, IComplaintCenter.GetComplaintsHeaderById",
+        "preconditions": "Valid Bearer JWT; request body of type CreateSchedulerRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Scheduler: INSERT; sets cmsHeader.status and saves changes",
+        "validations": "Current user not found; Scheduled for user not found; Complaint header not found",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IComplaintCenter.GetUserById",
+          "IComplaintCenter.GetComplaintsHeaderById",
+          "IComplaintCenter.GetSchedulerById",
+          "IComplaintCenter.CreateScheduler",
+          "IComplaintCenter.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ComplaintCenter_repo (Repository/ComplaintCenter_repo.cs) via IComplaintCenter"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Current user not found",
+            "when": "scheduledBy == null"
+          },
+          {
+            "returns": 400,
+            "message": "Scheduled for user not found",
+            "when": "scheduledFor == null"
+          },
+          {
+            "returns": 400,
+            "message": "Complaint header not found",
+            "when": "cmsHeader == null"
+          },
+          {
+            "returns": 404,
+            "message": "Scheduler not found",
+            "when": "existingScheduler == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaint_center_get_complaint_center_by_id",
+      "name": "Get Complaint Center By Id",
+      "action_method": "GetComplaintCenterById",
+      "http_method": "GET",
+      "route": "api/ComplaintCenter/{id}",
+      "business_purpose": "Retrieve complaint center by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "cms/complaints-center:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "cms/credit-notes"
+      ],
+      "short_description": "Retrieve complaint center by ID",
+      "detailed_description": "Retrieve complaint center by ID. It validates the request, then calls ICommon.getUserByToken, IComplaintCenter.GetComplaintCenterActions, IComplaintCenter.GetComplaintsHeaderById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid complaint ID is required. [when id <= 0]",
+        "not_found": "404: Complaint header not found. [when complaintHeader == null]; Complaint details not found. [when complaintDetails == null]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve complaint center by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/ComplaintCenter",
+          "GET api/ComplaintCenter/{id}",
+          "GET api/ComplaintCenter/complaint-details/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaint_center_get_complaint_center_by_id",
+        "description": "Retrieve complaint center by ID",
+        "http_method": "GET",
+        "endpoint": "api/ComplaintCenter/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintCenterController.cs",
+        "action_method": "GetComplaintCenterById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/ComplaintCenter_repo.cs",
+          "Interfaces/IComplaintCenter.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Retrieve complaint center by ID — validates the request, calls ICommon.getUserByToken, IComplaintCenter.GetComplaintCenterActions, IComplaintCenter.GetComplaintsHeaderById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid complaint ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IComplaintCenter.GetComplaintCenterActions",
+          "IComplaintCenter.GetComplaintsHeaderById",
+          "IComplaintCenter.GetComplaintDetailsComplaintsHeader",
+          "IComplaintCenter.GetFactoryVisitsByComplaintId",
+          "IComplaintCenter.GetObservationReportsByComplaintId",
+          "IComplaintCenter.GetCMSCreditNotesByComplaintId",
+          "ICommon.GetComplaintFilesById",
+          "IComplaintCenter.GetComplaintFilesByComplaintId"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ComplaintCenter_repo (Repository/ComplaintCenter_repo.cs) via IComplaintCenter"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid complaint ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Complaint header not found.",
+            "when": "complaintHeader == null"
+          },
+          {
+            "returns": 404,
+            "message": "Complaint details not found.",
+            "when": "complaintDetails == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaint_center_get_complaint_header_by_id",
+      "name": "Get Complaint Header By Id",
+      "action_method": "GetComplaintHeaderById",
+      "http_method": "GET",
+      "route": "api/ComplaintCenter/complaint-details/{id}",
+      "business_purpose": "Retrieve complaint header by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "cms/complaints-center:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve complaint header by ID",
+      "detailed_description": "Retrieve complaint header by ID. It validates the request, then calls ICommon.getUserByToken, IComplaintCenter.GetComplaintsHeaderById, IComplaintCenter.GetComplaintDetailsComplaintsHeader. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid complaint ID is required. [when id <= 0]",
+        "not_found": "404: Complaint header not found. [when complaintHeader == null]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve complaint header by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/ComplaintCenter",
+          "GET api/ComplaintCenter/{id}",
+          "GET api/ComplaintCenter/complaint-details/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaint_center_get_complaint_header_by_id",
+        "description": "Retrieve complaint header by ID",
+        "http_method": "GET",
+        "endpoint": "api/ComplaintCenter/complaint-details/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintCenterController.cs",
+        "action_method": "GetComplaintHeaderById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/ComplaintCenter_repo.cs",
+          "Interfaces/IComplaintCenter.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Retrieve complaint header by ID — validates the request, calls ICommon.getUserByToken, IComplaintCenter.GetComplaintsHeaderById, IComplaintCenter.GetComplaintDetailsComplaintsHeader",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid complaint ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IComplaintCenter.GetComplaintsHeaderById",
+          "IComplaintCenter.GetComplaintDetailsComplaintsHeader"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ComplaintCenter_repo (Repository/ComplaintCenter_repo.cs) via IComplaintCenter"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid complaint ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Complaint header not found.",
+            "when": "complaintHeader == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaint_center_get_complaint_status",
+      "name": "Get Complaint Status",
+      "action_method": "GetComplaintStatus",
+      "http_method": "GET",
+      "route": "api/ComplaintCenter/getComplaintStatus",
+      "business_purpose": "Retrieve complaint status",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "cms/complaints-center:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "cms/credit-notes"
+      ],
+      "short_description": "Retrieve complaint status",
+      "detailed_description": "Retrieve complaint status. It calls ICommon.getUserByToken, IComplaintCenter.GetComplaintStatus. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve complaint status",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/ComplaintCenter",
+          "GET api/ComplaintCenter/{id}",
+          "GET api/ComplaintCenter/complaint-details/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaint_center_get_complaint_status",
+        "description": "Retrieve complaint status",
+        "http_method": "GET",
+        "endpoint": "api/ComplaintCenter/getComplaintStatus",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintCenterController.cs",
+        "action_method": "GetComplaintStatus",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/ComplaintCenter_repo.cs",
+          "Interfaces/IComplaintCenter.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Retrieve complaint status — calls ICommon.getUserByToken, IComplaintCenter.GetComplaintStatus",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IComplaintCenter.GetComplaintStatus"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ComplaintCenter_repo (Repository/ComplaintCenter_repo.cs) via IComplaintCenter"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,1032 @@
+{
+  "controller": "LotSpaceController",
+  "file": "Controllers/LotSpaceController.cs",
+  "module": "Stock and Logistics Management",
+  "base_route": "api/LotSpace",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages lot space records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/factory-settings/lot-space",
+        "module_code": "settings",
+        "section": "factory-settings",
+        "sub_section": "lot-space",
+        "frontend_routes": [
+          "/settings/factory-settings/lot-space",
+          "/settings/factory-settings/lot-space/create-lotspace",
+          "/settings/factory-settings/lot-space/edit-lotspace/:id"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "LotSpace"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "lot_space_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/LotSpace",
+      "business_purpose": "Retrieve all lot space records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/factory-settings/lot-space:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all lot space records",
+      "detailed_description": "Retrieve all lot space records. It calls ICommon.getUserByToken, ILotSpace.GetLotSpaceData, ILotSpace.GetLotSpaceActions. Data access uses stored procedure(s): GetLotSpace. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all lot space records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/LotSpace",
+          "GET api/LotSpace/{id}",
+          "GET api/LotSpace/department"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "lot_space_get_all",
+        "description": "Retrieve all lot space records",
+        "http_method": "GET",
+        "endpoint": "api/LotSpace",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/LotSpaceController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/LotSpace_repo.cs",
+          "Interfaces/ILotSpace.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all lot space records — calls ICommon.getUserByToken, ILotSpace.GetLotSpaceData, ILotSpace.GetLotSpaceActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ILotSpace.GetLotSpaceData",
+          "ILotSpace.GetLotSpaceActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "LotSpace_repo (Repositories/LotSpace_repo.cs) via ILotSpace"
+        ],
+        "stored_procedures": [
+          "GetLotSpace"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lot_space_get_lot_space_by_id",
+      "name": "Get Lot Space By Id",
+      "action_method": "GetLotSpaceById",
+      "http_method": "GET",
+      "route": "api/LotSpace/{id}",
+      "business_purpose": "Retrieve lot space by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/factory-settings/lot-space:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve lot space by ID",
+      "detailed_description": "Retrieve lot space by ID. It validates the request, then calls ICommon.getUserByToken, ILotSpace.GetLotSpaceById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid scheduler ID is required [when id <= 0]",
+        "not_found": "404: Lotspace not found [when lotspace == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve lot space by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/LotSpace",
+          "GET api/LotSpace/{id}",
+          "GET api/LotSpace/department"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "lot_space_get_lot_space_by_id",
+        "description": "Retrieve lot space by ID",
+        "http_method": "GET",
+        "endpoint": "api/LotSpace/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/LotSpaceController.cs",
+        "action_method": "GetLotSpaceById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/LotSpace_repo.cs",
+          "Interfaces/ILotSpace.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Retrieve lot space by ID — validates the request, calls ICommon.getUserByToken, ILotSpace.GetLotSpaceById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid scheduler ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ILotSpace.GetLotSpaceById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "LotSpace_repo (Repositories/LotSpace_repo.cs) via ILotSpace"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid scheduler ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Lotspace not found",
+            "when": "lotspace == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lot_space_create_lot_space",
+      "name": "Create Lot Space",
+      "action_method": "CreateLotSpace",
+      "http_method": "POST",
+      "route": "api/LotSpace",
+      "business_purpose": "Create lot space",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateLotSpaceDto (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "ParkingSpaceId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "DepartmentId",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          409,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; a duplicate check exists so repeating usually fails with a conflict/validation message"
+      },
+      "required_permission": "settings/factory-settings/lot-space:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create lot space",
+      "detailed_description": "Create lot space. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, ILotSpace.GetLotSpaceById, ILotSpace.GetDepartmentById. Persists changes to: LotSpace: INSERT. Possible responses: 200, 400, 401, 404, 409, 500.",
+      "error_handling": {
+        "validation_errors": "400: Lot space name is required. [when string.IsNullOrWhiteSpace(request.Name)]; Valid parking space ID is required. [when request.ParkingSpaceId <= 0]; Valid department ID is required. [when request.DepartmentId <= 0]",
+        "not_found": "404: Lot space not found. [when lotSpace == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "Duplicate lot space found. [when duplicateCheck && request.Id == 0]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create lot space",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateLotSpaceDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/LotSpace",
+          "GET api/LotSpace/department"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "lot_space_create_lot_space",
+        "description": "Create lot space",
+        "http_method": "POST",
+        "endpoint": "api/LotSpace",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "Name": {
+            "type": "string",
+            "required": false,
+            "description": "Name (body)"
+          },
+          "ParkingSpaceId": {
+            "type": "int",
+            "required": false,
+            "description": "Parking Space Id (body)"
+          },
+          "DepartmentId": {
+            "type": "int",
+            "required": false,
+            "description": "Department Id (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/LotSpaceController.cs",
+        "action_method": "CreateLotSpace",
+        "related_dto_files": [
+          "Controllers/LotSpaceController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/LotSpace_repo.cs",
+          "Interfaces/ILotSpace.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Create lot space — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, ILotSpace.GetLotSpaceById, ILotSpace.GetDepartmentById",
+        "preconditions": "Valid Bearer JWT; request body of type CreateLotSpaceDto (inline); passes 5 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "LotSpace: INSERT",
+        "validations": "Lot space name is required.; Valid parking space ID is required.; Valid department ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ILotSpace.GetLotSpaceById",
+          "ILotSpace.GetDepartmentById",
+          "ILotSpace.GetParkingSpaceById",
+          "ILotSpace.Duplicate_check",
+          "ILotSpace.CreateLotSpaceAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "LotSpace_repo (Repositories/LotSpace_repo.cs) via ILotSpace"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Lot space name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.Name)"
+          },
+          {
+            "returns": 400,
+            "message": "Valid parking space ID is required.",
+            "when": "request.ParkingSpaceId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Valid department ID is required.",
+            "when": "request.DepartmentId <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Lot space not found.",
+            "when": "lotSpace == null"
+          },
+          {
+            "returns": 409,
+            "message": "Duplicate lot space found.",
+            "when": "duplicateCheck && request.Id == 0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lot_space_delete_lot_space",
+      "name": "Delete Lot Space",
+      "action_method": "DeleteLotSpace",
+      "http_method": "DELETE",
+      "route": "api/LotSpace/{id}",
+      "business_purpose": "Delete lot space",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "settings/factory-settings/lot-space:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete lot space",
+      "detailed_description": "Delete lot space. It validates the request, then calls ICommon.getUserByToken, ILotSpace.DeleteLotSpace. Persists changes to: LotSpace: UPDATE, soft delete (is_deleted flag). Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid LotSpace ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete lot space",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/LotSpace/{id}",
+          "GET api/LotSpace/parking-space/{departmentId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "lot_space_delete_lot_space",
+        "description": "Delete lot space",
+        "http_method": "DELETE",
+        "endpoint": "api/LotSpace/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/LotSpaceController.cs",
+        "action_method": "DeleteLotSpace",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/LotSpace_repo.cs",
+          "Interfaces/ILotSpace.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Delete lot space — validates the request, calls ICommon.getUserByToken, ILotSpace.DeleteLotSpace",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "LotSpace: UPDATE; soft delete (is_deleted flag)",
+        "validations": "Valid LotSpace ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ILotSpace.DeleteLotSpace"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "LotSpace_repo (Repositories/LotSpace_repo.cs) via ILotSpace"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid LotSpace ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "lot_space_get_departments",
+      "name": "Get Departments",
+      "action_method": "GetDepartments",
+      "http_method": "GET",
+      "route": "api/LotSpace/department",
+      "business_purpose": "Retrieve departments",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/factory-settings/lot-space:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve departments",
+      "detailed_description": "Retrieve departments. It calls ICommon.getUserByToken, ILotSpace.GetDepartments. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve departments",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/LotSpace",
+          "GET api/LotSpace/{id}",
+          "GET api/LotSpace/department"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "lot_space_get_departments",
+        "description": "Retrieve departments",
+        "http_method": "GET",
+        "endpoint": "api/LotSpace/department",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/LotSpaceController.cs",
+        "action_method": "GetDepartments",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/LotSpace_repo.cs",
+          "Interfaces/ILotSpace.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Retrieve departments — calls ICommon.getUserByToken, ILotSpace.GetDepartments",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ILotSpace.GetDepartments"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "LotSpace_repo (Repositories/LotSpace_repo.cs) via ILotSpace"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lot_space_get_parking_spaces_by_department",
+      "name": "Get Parking Spaces By Department",
+      "action_method": "GetParkingSpacesByDepartment",
+      "http_method": "GET",
+      "route": "api/LotSpace/parking-space/{departmentId}",
+      "business_purpose": "Retrieve parking spaces by department",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "departmentId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/factory-settings/lot-space:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve parking spaces by department",
+      "detailed_description": "Retrieve parking spaces by department. It validates the request, then calls ICommon.getUserByToken, ILotSpace.GetParkingSpacesByDepartment. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid department id is required. [when departmentId <= 0]",
+        "not_found": "404: No parking spaces found for this department. [when parkingSpaces == null || parkingSpaces.Count == 0]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve parking spaces by department",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "departmentId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/LotSpace",
+          "GET api/LotSpace/{id}",
+          "GET api/LotSpace/department"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "lot_space_get_parking_spaces_by_department",
+        "description": "Retrieve parking spaces by department",
+        "http_method": "GET",
+        "endpoint": "api/LotSpace/parking-space/{departmentId}",
+        "parameters": {
+          "departmentId": {
+            "type": "int",
+            "required": true,
+            "description": "department Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/LotSpaceController.cs",
+        "action_method": "GetParkingSpacesByDepartment",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/LotSpace_repo.cs",
+          "Interfaces/ILotSpace.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Retrieve parking spaces by department — validates the request, calls ICommon.getUserByToken, ILotSpace.GetParkingSpacesByDepartment",
+        "preconditions": "Valid Bearer JWT; route parameter(s) departmentId must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid department id is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ILotSpace.GetParkingSpacesByDepartment"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "LotSpace_repo (Repositories/LotSpace_repo.cs) via ILotSpace"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid department id is required.",
+            "when": "departmentId <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "No parking spaces found for this department.",
+            "when": "parkingSpaces == null || parkingSpaces.Count == 0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lot_space_update_lot_space",
+      "name": "Update Lot Space",
+      "action_method": "UpdateLotSpace",
+      "http_method": "PUT",
+      "route": "api/LotSpace/{id}",
+      "business_purpose": "Update lot space",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateLotSpaceDto (inline)",
+        "properties": [
+          {
+            "name": "Name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "DepartmentId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "ParkingSpaceId",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "settings/factory-settings/lot-space:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update lot space",
+      "detailed_description": "Update lot space. It validates the request, then calls ICommon.getUserByToken, ILotSpace.UpdateLotSpaceAsync. Persists changes to: LotSpace: UPDATE. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid LotSpace ID is required. [when id <= 0]; At least one field must be provided for update. [when string.IsNullOrWhiteSpace(request.Name) && request.DepartmentId == null && request.Parking]; message returned by the called service/repository (result.Message) [when !result.Success]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update lot space",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "request body UpdateLotSpaceDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/LotSpace/{id}",
+          "GET api/LotSpace/parking-space/{departmentId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "lot_space_update_lot_space",
+        "description": "Update lot space",
+        "http_method": "PUT",
+        "endpoint": "api/LotSpace/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "Name": {
+            "type": "string",
+            "required": false,
+            "description": "Name (body)"
+          },
+          "DepartmentId": {
+            "type": "int",
+            "required": false,
+            "description": "Department Id (body)"
+          },
+          "ParkingSpaceId": {
+            "type": "int",
+            "required": false,
+            "description": "Parking Space Id (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/LotSpaceController.cs",
+        "action_method": "UpdateLotSpace",
+        "related_dto_files": [
+          "Controllers/LotSpaceController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/LotSpace_repo.cs",
+          "Interfaces/ILotSpace.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Update lot space — validates the request, calls ICommon.getUserByToken, ILotSpace.UpdateLotSpaceAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; request body of type UpdateLotSpaceDto (inline); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "LotSpace: UPDATE",
+        "validations": "Valid LotSpace ID is required.; At least one field must be provided for update.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ILotSpace.UpdateLotSpaceAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "LotSpace_repo (Repositories/LotSpace_repo.cs) via ILotSpace"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid LotSpace ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field must be provided for update.",
+            "when": "string.IsNullOrWhiteSpace(request.Name) && request.DepartmentId == null && request.ParkingSpaceId == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": "!result.Success"
+          }
+        ]
+      }
+    }
+  ]
+}

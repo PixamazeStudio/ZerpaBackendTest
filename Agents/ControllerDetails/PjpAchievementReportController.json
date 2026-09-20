@@ -1,0 +1,221 @@
+{
+  "controller": "PjpAchievementReportController",
+  "file": "Controllers/PjpAchievementReportController.cs",
+  "module": "Reporting",
+  "base_route": "api/PjpAchievementReport",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles pjp achievement report: get",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "rpt/crm-reports/pjp-achievement-report",
+        "module_code": "rpt",
+        "section": "crm-reports",
+        "sub_section": "pjp-achievement-report",
+        "frontend_routes": [
+          "/rpt/crm-reports/pjp-achievement-report"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "pjp_achievement_report_get",
+      "name": "Get",
+      "action_method": "Get",
+      "http_method": "GET",
+      "route": "api/PjpAchievementReport",
+      "business_purpose": "Retrieve pjp achievement report data",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "\"this_month\""
+        },
+        {
+          "name": "userId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputtext",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/crm-reports/pjp-achievement-report:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve pjp achievement report data",
+      "detailed_description": "Retrieve pjp achievement report data. It validates the request, then calls ICommon.getUserByToken, IPjpAchievementReport.GetAchievementReport, IPjpAchievementReport.GetTeamMembers. Data access uses stored procedure(s): GetSectionActions. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: From date and To date are required for custom range [when !fromdate.HasValue || !todate.HasValue]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when string.IsNullOrEmpty(token)]; (no message) [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve pjp achievement report data",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/PjpAchievementReport"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "pjp_achievement_report_get",
+        "description": "Retrieve pjp achievement report data",
+        "http_method": "GET",
+        "endpoint": "api/PjpAchievementReport",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "date range (query)"
+          },
+          "userId": {
+            "type": "int",
+            "required": false,
+            "description": "user Id (query)"
+          },
+          "inputtext": {
+            "type": "string",
+            "required": false,
+            "description": "inputtext (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/PjpAchievementReportController.cs",
+        "action_method": "Get",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/PjpAchievementReportRepo.cs",
+          "Interfaces/IPjpAchievementReport.cs"
+        ]
+      },
+      "module": "Reporting",
+      "business_logic": {
+        "operation_summary": "Retrieve pjp achievement report data — validates the request, calls ICommon.getUserByToken, IPjpAchievementReport.GetAchievementReport, IPjpAchievementReport.GetTeamMembers",
+        "preconditions": "Valid Bearer JWT; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "From date and To date are required for custom range",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IPjpAchievementReport.GetAchievementReport",
+          "IPjpAchievementReport.GetTeamMembers",
+          "IPjpAchievementReport.GetActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "PjpAchievementReportRepo (Repositories/PjpAchievementReportRepo.cs) via IPjpAchievementReport"
+        ],
+        "stored_procedures": [
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "string.IsNullOrEmpty(token)"
+          },
+          {
+            "returns": 401,
+            "message": null,
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "From date and To date are required for custom range",
+            "when": "!fromdate.HasValue || !todate.HasValue"
+          }
+        ]
+      }
+    }
+  ]
+}

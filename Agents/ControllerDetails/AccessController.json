@@ -1,0 +1,797 @@
+{
+  "controller": "AccessController",
+  "file": "Controllers/AccessController.cs",
+  "module": "Authentication",
+  "base_route": "api/Access",
+  "class_level_auth": "none found",
+  "purpose": "Handles user authentication, JWT token generation, refresh token management, and logout. Provides login endpoint for credential validation, refresh token endpoint for session extension, and logout endpoint for token revocation.",
+  "notes": "No [Authorize] at class level; authentication requirements vary per action",
+  "menu_permission": {
+    "status": "not referenced by frontend",
+    "menu_keys": [],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "access_authenticate",
+      "name": "Authenticate",
+      "action_method": "Authenticate",
+      "http_method": "POST",
+      "route": "api/Access/authenticate",
+      "module": "Authentication",
+      "business_purpose": "Validate user credentials and issue JWT access token with refresh token",
+      "short_description": "Login endpoint that authenticates user and returns JWT token for session",
+      "detailed_description": "Validates username and password against user records. Generates JWT token with user claims (ID, name, email, role_id). Issues rotating refresh token and records login history. Revokes all prior refresh tokens from other devices to enforce single-device login. Returns user profile including dashboard assignment based on role level.",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false,
+        "attributes": [
+          "[AllowAnonymous]"
+        ],
+        "roles_or_policy": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_claims": [],
+        "required_headers": [],
+        "notes": "Open endpoint for credential submission"
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "AuthenticateDto",
+        "source_file": "DTOs/Request/AuthenticateDto (external)",
+        "properties": [
+          {
+            "name": "Username",
+            "type": "string",
+            "required": true,
+            "nullable": false,
+            "validation": "ModelState validation",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "User login username",
+            "example": "john.doe"
+          },
+          {
+            "name": "Password",
+            "type": "string",
+            "required": true,
+            "nullable": false,
+            "validation": "ModelState validation",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "User password",
+            "example": "password123"
+          }
+        ],
+        "example_json": {
+          "Username": "john.doe",
+          "Password": "password123"
+        }
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ],
+        "dto_name": "anonymous object",
+        "properties": [
+          {
+            "name": "Token",
+            "type": "string",
+            "nullable": false,
+            "description": "JWT access token"
+          },
+          {
+            "name": "RefreshToken",
+            "type": "string",
+            "nullable": false,
+            "description": "Refresh token for obtaining new access tokens"
+          },
+          {
+            "name": "RefreshTokenExpiresAt",
+            "type": "DateTime",
+            "nullable": false,
+            "description": "Expiration time of refresh token"
+          },
+          {
+            "name": "User",
+            "type": "object",
+            "nullable": false,
+            "description": "User profile information"
+          },
+          {
+            "name": "ExpiresAt",
+            "type": "DateTime",
+            "nullable": false,
+            "description": "Access token expiration time"
+          }
+        ],
+        "success_example": {
+          "Token": "eyJ0eXAi...",
+          "RefreshToken": "xyz123...",
+          "User": {
+            "Id": 1,
+            "Username": "john.doe",
+            "FullName": "John Doe"
+          }
+        },
+        "error_example": {
+          "Message": "Invalid username or password"
+        },
+        "notes": "ExpiresAt calculated from JWT_EXPIRATION_MINUTES environment variable (default 60 minutes)"
+      },
+      "business_logic": {
+        "operation_summary": "User login with credential validation and multi-device session management",
+        "preconditions": "Valid user account with active status",
+        "state_changes": "Creates refresh token record, revokes prior tokens, records login history, updates Users.token field",
+        "validations": "ModelState validation for request, user existence check, role ID lookup",
+        "side_effects": "Sends login history to audit service, revokes old refresh tokens",
+        "calls_services": [
+          "IUsers.user_check",
+          "IUsers.GetRoleId",
+          "IUserRoles.GetUserRoleById",
+          "UserRoleTransformService",
+          "ICommon.GetCrmUserWiseHierarchy",
+          "IRefreshTokenService.RevokeAllForUserAsync",
+          "IRefreshTokenService.IssueAsync",
+          "IUserLoginHistoryService.RecordLoginAsync"
+        ],
+        "calls_repositories": [
+          "Users repository via IUsers interface"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No JWT required; reads IP from Request headers (X-Forwarded-For or RemoteIpAddress)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid request data",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "Failed to generate token",
+            "when": null
+          },
+          {
+            "returns": 401,
+            "message": "Invalid username or password",
+            "when": null
+          }
+        ]
+      },
+      "ai_agent_guidance": {
+        "use_when": "User needs to log in to the system and obtain session tokens",
+        "do_not_use_when": "User already has valid tokens; use refresh-token endpoint instead",
+        "preconditions_needed": [
+          "Valid username and password"
+        ],
+        "follow_up_apis": [
+          "api/Access/refresh-token for extending session"
+        ]
+      },
+      "error_handling": {
+        "validation_errors": "Invalid request data returns 400 with validation error details from ModelState",
+        "not_found": "User not found returns 401 Unauthorized with 'Invalid username or password' message",
+        "unauthorized": "Invalid credentials return 401 Unauthorized",
+        "business_rule_errors": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "exceptions": "Unhandled exceptions return 500 with error message from exception"
+      },
+      "idempotency": {
+        "risk_level": "HIGH",
+        "operation_type": "CREATE",
+        "notes": "Creates new refresh token on each call; multiple calls generate multiple tokens but only one device can hold the session at a time"
+      },
+      "llm_tool_definition": {
+        "name": "authenticate_user",
+        "description": "Authenticate user with username and password to get JWT access token",
+        "http_method": "POST",
+        "endpoint": "api/Access/authenticate",
+        "parameters": {
+          "Username": {
+            "type": "string",
+            "required": true,
+            "description": "User login username"
+          },
+          "Password": {
+            "type": "string",
+            "required": true,
+            "description": "User password"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AccessController.cs",
+        "action_method": "Authenticate",
+        "related_dto_files": [
+          "DTOs/Request/AuthenticateDto"
+        ],
+        "related_service_files": [
+          "Services/UserRoleTransformService"
+        ],
+        "related_repository_files": [
+          "Interfaces/IUsers",
+          "Interfaces/IUserRoles",
+          "Interfaces/IRefreshTokenService",
+          "Interfaces/IUserLoginHistoryService"
+        ]
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend"
+    },
+    {
+      "id": "access_refresh_token",
+      "name": "Refresh Token",
+      "action_method": "RefreshToken",
+      "http_method": "POST",
+      "route": "api/Access/refresh-token",
+      "module": "Authentication",
+      "business_purpose": "Exchange valid refresh token for new access token with rotating refresh token",
+      "short_description": "Get new access token using refresh token",
+      "detailed_description": "Validates and rotates refresh token. Fetches user associated with token. Generates new JWT access token. Returns new access and refresh tokens. Revokes token if user no longer exists.",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false,
+        "attributes": [
+          "[AllowAnonymous]"
+        ],
+        "roles_or_policy": [],
+        "required_claims": [],
+        "required_headers": [],
+        "notes": "Open endpoint for token refresh"
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "RefreshTokenDto",
+        "source_file": "DTOs/Request/RefreshTokenDto (external)",
+        "properties": [
+          {
+            "name": "RefreshToken",
+            "type": "string",
+            "required": true,
+            "nullable": false,
+            "validation": "ModelState validation",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "Valid refresh token from prior login",
+            "example": "xyz123abc"
+          }
+        ],
+        "example_json": {
+          "RefreshToken": "xyz123abc"
+        }
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ],
+        "dto_name": "RefreshTokenResponseDto",
+        "properties": [
+          {
+            "name": "Success",
+            "type": "boolean",
+            "nullable": false,
+            "description": "Operation success indicator"
+          },
+          {
+            "name": "Message",
+            "type": "string",
+            "nullable": false,
+            "description": "Success or error message"
+          },
+          {
+            "name": "Token",
+            "type": "string",
+            "nullable": true,
+            "description": "New JWT access token"
+          },
+          {
+            "name": "RefreshToken",
+            "type": "string",
+            "nullable": true,
+            "description": "New refresh token (rotated)"
+          },
+          {
+            "name": "ExpiresAt",
+            "type": "DateTime",
+            "nullable": true,
+            "description": "Access token expiration"
+          }
+        ],
+        "success_example": {
+          "Success": true,
+          "Message": "Token refreshed successfully",
+          "Token": "eyJ0eXAi...",
+          "RefreshToken": "new_token_xyz"
+        },
+        "error_example": {
+          "Success": false,
+          "Message": "Invalid refresh token"
+        },
+        "notes": "Refresh token rotation: old token invalidated, new token issued"
+      },
+      "business_logic": {
+        "operation_summary": "Refresh access token using rotating refresh token strategy",
+        "preconditions": "Valid, non-expired refresh token issued to user",
+        "state_changes": "Updates Users.token with new JWT, invalidates old refresh token, creates new refresh token record",
+        "validations": "ModelState check, refresh token validation via IRefreshTokenService",
+        "side_effects": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "calls_services": [
+          "IRefreshTokenService.ValidateAndRotateAsync",
+          "IUsers.GetUserById"
+        ],
+        "calls_repositories": [
+          "Users repository via IUsers"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No JWT claim parsing; refresh token contains user ID",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Refresh token is required",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid refresh token",
+            "when": "!result.Success"
+          },
+          {
+            "returns": 401,
+            "message": "User account is no longer valid",
+            "when": null
+          }
+        ]
+      },
+      "ai_agent_guidance": {
+        "use_when": "Current access token is about to expire or already expired",
+        "do_not_use_when": "You have a valid access token still in use",
+        "preconditions_needed": [
+          "Valid refresh token from login"
+        ],
+        "follow_up_apis": []
+      },
+      "error_handling": {
+        "validation_errors": "Missing refresh token returns 400",
+        "not_found": "Invalid token returns 401 Unauthorized; if user deleted, revokes all tokens and returns 401",
+        "unauthorized": "Expired or invalid refresh token returns 401",
+        "business_rule_errors": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "exceptions": "UNKNOWN — NOT DETERMINED FROM SOURCE"
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Token rotation means each call creates new refresh token; same token used multiple times will fail after first rotation"
+      },
+      "llm_tool_definition": {
+        "name": "refresh_access_token",
+        "description": "Get new access token using refresh token",
+        "http_method": "POST",
+        "endpoint": "api/Access/refresh-token",
+        "parameters": {
+          "RefreshToken": {
+            "type": "string",
+            "required": true,
+            "description": "Refresh token from login"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AccessController.cs",
+        "action_method": "RefreshToken",
+        "related_dto_files": [
+          "DTOs/Request/RefreshTokenDto",
+          "DTOs/Response/RefreshTokenResponseDto"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Interfaces/IRefreshTokenService",
+          "Interfaces/IUsers"
+        ]
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend"
+    },
+    {
+      "id": "access_revoke_token",
+      "name": "Revoke Token",
+      "action_method": "RevokeToken",
+      "http_method": "POST",
+      "route": "api/Access/revoke-token",
+      "module": "Authentication",
+      "business_purpose": "Revoke refresh token to prevent future token refresh (logout)",
+      "short_description": "Logout by revoking refresh token",
+      "detailed_description": "Revokes provided refresh token so it cannot be used again. Always returns success to prevent token validity probing attacks.",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": false,
+        "attributes": [
+          "[AllowAnonymous]"
+        ],
+        "roles_or_policy": [],
+        "required_claims": [],
+        "required_headers": [],
+        "notes": "Open for logout requests"
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "RefreshTokenDto",
+        "source_file": "DTOs/Request/RefreshTokenDto (external)",
+        "properties": [
+          {
+            "name": "RefreshToken",
+            "type": "string",
+            "required": false,
+            "nullable": true,
+            "validation": "none found",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "Refresh token to revoke",
+            "example": "xyz123abc"
+          }
+        ],
+        "example_json": {
+          "RefreshToken": "xyz123abc"
+        }
+      },
+      "response": {
+        "status_codes": [
+          200
+        ],
+        "dto_name": "anonymous object",
+        "properties": [
+          {
+            "name": "Success",
+            "type": "boolean",
+            "nullable": false,
+            "description": "Always true"
+          },
+          {
+            "name": "Message",
+            "type": "string",
+            "nullable": false,
+            "description": "Confirmation message"
+          }
+        ],
+        "success_example": {
+          "Success": true,
+          "Message": "Token revoked"
+        },
+        "error_example": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "notes": "Always returns 200 OK for security (token validity probing prevention)"
+      },
+      "business_logic": {
+        "operation_summary": "Revoke refresh token for logout",
+        "preconditions": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "state_changes": "Marks refresh token as revoked in database",
+        "validations": "Null/whitespace check on refresh token",
+        "side_effects": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "calls_services": [
+          "IRefreshTokenService.RevokeAsync"
+        ],
+        "calls_repositories": [],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No JWT claim parsing; IP and User-Agent extracted from request",
+        "validation_rules": []
+      },
+      "ai_agent_guidance": {
+        "use_when": "User logs out to invalidate their refresh token",
+        "do_not_use_when": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "preconditions_needed": [
+          "Refresh token from login"
+        ],
+        "follow_up_apis": []
+      },
+      "error_handling": {
+        "validation_errors": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "not_found": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "unauthorized": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "business_rule_errors": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "exceptions": "UNKNOWN — NOT DETERMINED FROM SOURCE"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "UPDATE",
+        "notes": "Idempotent: revoking already-revoked token is safe"
+      },
+      "llm_tool_definition": {
+        "name": "revoke_refresh_token",
+        "description": "Revoke refresh token on logout",
+        "http_method": "POST",
+        "endpoint": "api/Access/revoke-token",
+        "parameters": {
+          "RefreshToken": {
+            "type": "string",
+            "required": false,
+            "description": "Refresh token to revoke"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AccessController.cs",
+        "action_method": "RevokeToken",
+        "related_dto_files": [
+          "DTOs/Request/RefreshTokenDto"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Interfaces/IRefreshTokenService"
+        ]
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "not referenced by the frontend"
+    },
+    {
+      "id": "access_test",
+      "name": "Test",
+      "action_method": "Test",
+      "http_method": "GET",
+      "route": "api/Access/test",
+      "module": "Authentication",
+      "business_purpose": "Health check endpoint to verify API is reachable",
+      "short_description": "Test endpoint to confirm API availability",
+      "detailed_description": "Returns simple success response with server timestamp to verify API is running and responding.",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false,
+        "attributes": [
+          "[AllowAnonymous]"
+        ],
+        "roles_or_policy": [],
+        "required_claims": [],
+        "required_headers": [],
+        "notes": "Open health check endpoint"
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "none",
+        "source_file": "",
+        "properties": [],
+        "example_json": {}
+      },
+      "response": {
+        "status_codes": [
+          200
+        ],
+        "dto_name": "anonymous object",
+        "properties": [
+          {
+            "name": "success",
+            "type": "boolean",
+            "nullable": false,
+            "description": "Always true"
+          },
+          {
+            "name": "message",
+            "type": "string",
+            "nullable": false,
+            "description": "Status message"
+          },
+          {
+            "name": "time",
+            "type": "DateTime",
+            "nullable": false,
+            "description": "Current UTC time"
+          }
+        ],
+        "success_example": {
+          "success": true,
+          "message": "API is reachable",
+          "time": "2026-09-18T12:34:56Z"
+        },
+        "error_example": "N/A",
+        "notes": "Time returned is UTC"
+      },
+      "business_logic": {
+        "operation_summary": "Health check for API availability",
+        "preconditions": "None",
+        "state_changes": "None",
+        "validations": "None",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No user context needed",
+        "validation_rules": []
+      },
+      "ai_agent_guidance": {
+        "use_when": "Testing if API is responding",
+        "do_not_use_when": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "preconditions_needed": [],
+        "follow_up_apis": []
+      },
+      "error_handling": {
+        "validation_errors": "None",
+        "not_found": "None",
+        "unauthorized": "None",
+        "business_rule_errors": "None",
+        "exceptions": "None expected"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Completely idempotent read-only operation"
+      },
+      "llm_tool_definition": {
+        "name": "test_api_health",
+        "description": "Test if API is reachable",
+        "http_method": "GET",
+        "endpoint": "api/Access/test",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AccessController.cs",
+        "action_method": "Test",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": []
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend"
+    },
+    {
+      "id": "access_status",
+      "name": "Get Status",
+      "action_method": "GetStatus",
+      "http_method": "GET",
+      "route": "api/Access/status",
+      "module": "Authentication",
+      "business_purpose": "Return server status and time for diagnostics",
+      "short_description": "Get server status and current time",
+      "detailed_description": "Returns server status with current UTC time and timezone information for health check and diagnostics.",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false,
+        "attributes": [
+          "[AllowAnonymous]"
+        ],
+        "roles_or_policy": [],
+        "required_claims": [],
+        "required_headers": [],
+        "notes": "Open status endpoint"
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "none",
+        "source_file": "",
+        "properties": [],
+        "example_json": {}
+      },
+      "response": {
+        "status_codes": [
+          200
+        ],
+        "dto_name": "ApiResponseDto<object>",
+        "properties": [
+          {
+            "name": "Success",
+            "type": "boolean",
+            "nullable": false,
+            "description": "Always true"
+          },
+          {
+            "name": "Message",
+            "type": "string",
+            "nullable": false,
+            "description": "Status message"
+          },
+          {
+            "name": "Data",
+            "type": "object",
+            "nullable": false,
+            "description": "Status data containing Time and TimeZone"
+          },
+          {
+            "name": "StatusCode",
+            "type": "int",
+            "nullable": false,
+            "description": "HTTP status code 200"
+          }
+        ],
+        "success_example": {
+          "Success": true,
+          "Message": "Server is running successfully",
+          "Data": {
+            "Time": "2026-09-18T12:34:56Z",
+            "TimeZone": "UTC"
+          },
+          "StatusCode": 200
+        },
+        "error_example": "N/A",
+        "notes": "Wraps response in ApiResponseDto generic wrapper"
+      },
+      "business_logic": {
+        "operation_summary": "Status check with server diagnostics",
+        "preconditions": "None",
+        "state_changes": "None",
+        "validations": "None",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No user context needed",
+        "validation_rules": []
+      },
+      "ai_agent_guidance": {
+        "use_when": "Checking server status and time synchronization",
+        "do_not_use_when": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "preconditions_needed": [],
+        "follow_up_apis": []
+      },
+      "error_handling": {
+        "validation_errors": "None",
+        "not_found": "None",
+        "unauthorized": "None",
+        "business_rule_errors": "None",
+        "exceptions": "None expected"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Completely idempotent; only reads current time"
+      },
+      "llm_tool_definition": {
+        "name": "get_server_status",
+        "description": "Get server status and current time",
+        "http_method": "GET",
+        "endpoint": "api/Access/status",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AccessController.cs",
+        "action_method": "GetStatus",
+        "related_dto_files": [
+          "DTOs/Response/ApiResponseDto"
+        ],
+        "related_service_files": [],
+        "related_repository_files": []
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend"
+    }
+  ]
+}

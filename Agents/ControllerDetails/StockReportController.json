@@ -1,0 +1,424 @@
+{
+  "controller": "StockReportController",
+  "file": "Controllers/StockReportController.cs",
+  "module": "Reporting",
+  "base_route": "api/StockReport",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles stock report: get all, get thickness, get sizes",
+  "menu_permission": {
+    "status": "not referenced by frontend",
+    "menu_keys": [],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "stock_report_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/StockReport",
+      "business_purpose": "Retrieve all stock report records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "product",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "thickness",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "category_id",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve all stock report records",
+      "detailed_description": "Retrieve all stock report records. It calls ICommon.getUserByToken, IStockReport.GetCategoryById, IStockReport.GetAllStockReportsData. Data access uses stored procedure(s): GetAllStockReports, GetDealerWiseProductStockReport, GetProductWiseDealerStockReport, GetBrandWiseStockReport. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid user [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all stock report records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/StockReport",
+          "GET api/StockReport/thickness",
+          "GET api/StockReport/sizes"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "stock_report_get_all",
+        "description": "Retrieve all stock report records",
+        "http_method": "GET",
+        "endpoint": "api/StockReport",
+        "parameters": {
+          "product": {
+            "type": "string",
+            "required": false,
+            "description": "product (query)"
+          },
+          "size": {
+            "type": "string",
+            "required": false,
+            "description": "size (query)"
+          },
+          "thickness": {
+            "type": "string",
+            "required": false,
+            "description": "thickness (query)"
+          },
+          "category_id": {
+            "type": "int",
+            "required": false,
+            "description": "category id (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/StockReportController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/StockReport_repo.cs",
+          "Interfaces/IStockReport.cs"
+        ]
+      },
+      "module": "Reporting",
+      "business_logic": {
+        "operation_summary": "Retrieve all stock report records — calls ICommon.getUserByToken, IStockReport.GetCategoryById, IStockReport.GetAllStockReportsData",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IStockReport.GetCategoryById",
+          "IStockReport.GetAllStockReportsData",
+          "IStockReport.GetDealerWiseProductStockReportData",
+          "IStockReport.GetProductWiseDealerStockReportData",
+          "IStockReport.GetBrandWiseStockReportData",
+          "IStockReport.GetAllProduct",
+          "IStockReport.GetAllThickness",
+          "IStockReport.GetAllSize",
+          "IStockReport.GetAllCategories",
+          "IStockReport.GetProductWiseReportActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "StockReport_repo (Repositories/StockReport_repo.cs) via IStockReport"
+        ],
+        "stored_procedures": [
+          "GetAllStockReports",
+          "GetDealerWiseProductStockReport",
+          "GetProductWiseDealerStockReport",
+          "GetBrandWiseStockReport"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid user",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "stock_report_get_thickness",
+      "name": "Get Thickness",
+      "action_method": "GetThickness",
+      "http_method": "GET",
+      "route": "api/StockReport/thickness",
+      "business_purpose": "Retrieve thickness",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "productname",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve thickness",
+      "detailed_description": "Retrieve thickness. It calls IStockReport.GetThickenssByProduct. Possible responses: 200, 401, 404.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No thickness found [when result == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve thickness",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "productname (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/StockReport",
+          "GET api/StockReport/thickness",
+          "GET api/StockReport/sizes"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "stock_report_get_thickness",
+        "description": "Retrieve thickness",
+        "http_method": "GET",
+        "endpoint": "api/StockReport/thickness",
+        "parameters": {
+          "productname": {
+            "type": "string",
+            "required": true,
+            "description": "productname (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/StockReportController.cs",
+        "action_method": "GetThickness",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/StockReport_repo.cs",
+          "Interfaces/IStockReport.cs"
+        ]
+      },
+      "module": "Reporting",
+      "business_logic": {
+        "operation_summary": "Retrieve thickness — calls IStockReport.GetThickenssByProduct",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): productname; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IStockReport.GetThickenssByProduct"
+        ],
+        "calls_repositories": [
+          "StockReport_repo (Repositories/StockReport_repo.cs) via IStockReport"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 404,
+            "message": "No thickness found",
+            "when": "result == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "stock_report_get_sizes",
+      "name": "Get Sizes",
+      "action_method": "GetSizes",
+      "http_method": "GET",
+      "route": "api/StockReport/sizes",
+      "business_purpose": "Retrieve sizes",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "productname",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "thickness",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve sizes",
+      "detailed_description": "Retrieve sizes. It calls IStockReport.GetSizesByProduct. Possible responses: 200, 401, 404.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No sizes found [when result == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve sizes",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "productname (query)",
+          "thickness (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/StockReport",
+          "GET api/StockReport/thickness",
+          "GET api/StockReport/sizes"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "stock_report_get_sizes",
+        "description": "Retrieve sizes",
+        "http_method": "GET",
+        "endpoint": "api/StockReport/sizes",
+        "parameters": {
+          "productname": {
+            "type": "string",
+            "required": true,
+            "description": "productname (query)"
+          },
+          "thickness": {
+            "type": "string",
+            "required": true,
+            "description": "thickness (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/StockReportController.cs",
+        "action_method": "GetSizes",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/StockReport_repo.cs",
+          "Interfaces/IStockReport.cs"
+        ]
+      },
+      "module": "Reporting",
+      "business_logic": {
+        "operation_summary": "Retrieve sizes — calls IStockReport.GetSizesByProduct",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): productname, thickness; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IStockReport.GetSizesByProduct"
+        ],
+        "calls_repositories": [
+          "StockReport_repo (Repositories/StockReport_repo.cs) via IStockReport"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 404,
+            "message": "No sizes found",
+            "when": "result == null"
+          }
+        ]
+      }
+    }
+  ]
+}

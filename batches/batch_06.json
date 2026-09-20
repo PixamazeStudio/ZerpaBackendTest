@@ -1,0 +1,1213 @@
+[
+  {
+    "controller": "FactoryComplaintsController",
+    "file": "Controllers/FactoryComplaintsController.cs",
+    "base_route": "api/FactoryComplaints",
+    "endpoints": [
+      {
+        "id": "fc_001",
+        "name": "GetAll",
+        "http_method": "GET",
+        "route": "api/FactoryComplaints",
+        "business_purpose": "Retrieve paginated list of factory complaints with filtering by date range, status, region, branch, area.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [],
+        "query_parameters": [
+          {"name": "fromdate", "type": "DateTime?", "required": false},
+          {"name": "todate", "type": "DateTime?", "required": false},
+          {"name": "date_range", "type": "string", "required": false, "default": "last_30_days"},
+          {"name": "status", "type": "string", "required": false},
+          {"name": "regionId", "type": "int?", "required": false},
+          {"name": "branchId", "type": "int?", "required": false},
+          {"name": "areaId", "type": "int?", "required": false},
+          {"name": "inputText", "type": "string", "required": false},
+          {"name": "limit", "type": "int", "required": false, "default": 10},
+          {"name": "page_no", "type": "int", "required": false, "default": 1}
+        ],
+        "request_body": {},
+        "response": {"status_codes": [200, 401, 500], "example": "cards, filters, data, actions, pagination"},
+        "data_effect": "READ_ONLY",
+        "business_logic": {
+          "operation_summary": "Retrieves complaints data from DB filtered by date range, status, location. Returns paginated list with regional filters.",
+          "preconditions": "Valid JWT token. User must exist in system.",
+          "validations": "Token validation, page_no >= 1",
+          "side_effects": "Fetches region, branch, area options for UI filters",
+          "calls_services": ["IFactoryComplaints", "ICommon", "IIndent"],
+          "calls_repositories": ["Region", "Branch", "Area"]
+        },
+        "idempotency": {"risk_level": "LOW", "notes": "Read-only operation"},
+        "source": {"controller_file": "Controllers/FactoryComplaintsController.cs", "action_method": "GetAll"}
+      },
+      {
+        "id": "fc_002",
+        "name": "GetBranch",
+        "http_method": "GET",
+        "route": "api/FactoryComplaints/branches/byregion/{region_id}",
+        "business_purpose": "Fetch branches for a specific region.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [{"name": "region_id", "type": "int", "required": true}],
+        "query_parameters": [],
+        "request_body": {},
+        "response": {"status_codes": [200, 400, 401, 404, 500], "dto_name": "Branch list"},
+        "data_effect": "READ_ONLY",
+        "business_logic": {
+          "operation_summary": "Retrieves branches associated with a region ID from database.",
+          "preconditions": "Valid token. Valid region_id > 0.",
+          "validations": "Token validation, region_id must be > 0",
+          "side_effects": "None",
+          "calls_services": ["ICommon", "IFactoryComplaints"],
+          "calls_repositories": []
+        },
+        "idempotency": {"risk_level": "LOW", "notes": "Read-only operation"},
+        "source": {"controller_file": "Controllers/FactoryComplaintsController.cs", "action_method": "GetBranch"}
+      },
+      {
+        "id": "fc_003",
+        "name": "CreateObservationReport",
+        "http_method": "POST",
+        "route": "api/FactoryComplaints/observation-report",
+        "business_purpose": "Create or update an observation report with optional file uploads to Google Drive.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [],
+        "query_parameters": [],
+        "request_body": {"dto_name": "ObservationCreateDto", "properties": ["obs_data (JSON string)", "files (IFormFile array)"]},
+        "response": {"status_codes": [200, 400, 401, 404, 500], "dto_name": "ObservationReportResponse"},
+        "data_effect": "CREATE/UPDATE",
+        "business_logic": {
+          "operation_summary": "Creates new or updates existing observation report. Processes JSON data, manages Google Drive file uploads, updates complaint status.",
+          "preconditions": "Valid token. User exists. If updating, observation report must exist. If cmsid provided, complaints header must exist.",
+          "validations": "Token validation, valid JSON in obs_data, files validation",
+          "side_effects": "Files uploaded to Google Drive. Complaint status updated to 'QC Inspection report received/ uploaded'. Audit log created.",
+          "calls_services": ["IFactoryComplaints", "ICommon", "GoogleDriveService"],
+          "calls_repositories": ["Users", "ObservationReport", "ComplaintsHeader", "ComplaintsFile"]
+        },
+        "idempotency": {"risk_level": "HIGH", "notes": "File uploads to Google Drive are not idempotent. Multiple calls create multiple files."},
+        "source": {"controller_file": "Controllers/FactoryComplaintsController.cs", "action_method": "CreateObservationReport"}
+      },
+      {
+        "id": "fc_004",
+        "name": "GetFactoryComplaintById",
+        "http_method": "GET",
+        "route": "api/FactoryComplaints/{id}",
+        "business_purpose": "Retrieve complete complaint details including header, details, factory visits, observations, credit notes, and files.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [{"name": "id", "type": "int", "required": true}],
+        "query_parameters": [],
+        "request_body": {},
+        "response": {"status_codes": [200, 400, 401, 404, 500], "dto_name": "ComplaintDetailsResponse"},
+        "data_effect": "READ_ONLY",
+        "business_logic": {
+          "operation_summary": "Retrieves complaint header, related details, factory visits, observation reports, credit notes, and associated files (images, documents, videos).",
+          "preconditions": "Valid complaint ID > 0. Complaint header must exist.",
+          "validations": "complaint ID > 0",
+          "side_effects": "Fetches related files from DB. Maps to DTOs.",
+          "calls_services": ["IFactoryComplaints", "ICommon"],
+          "calls_repositories": ["ComplaintsHeader", "ComplaintsDetails", "FactoryVisit", "ObservationReport", "CMSCreditNote", "ComplaintsFile"]
+        },
+        "idempotency": {"risk_level": "LOW", "notes": "Read-only operation"},
+        "source": {"controller_file": "Controllers/FactoryComplaintsController.cs", "action_method": "GetFactoryComplaintById"}
+      }
+    ]
+  },
+  {
+    "controller": "FactoryController",
+    "file": "Controllers/FactoryController.cs",
+    "base_route": "api/Factory",
+    "endpoints": [
+      {
+        "id": "f_001",
+        "name": "GetAllFactories",
+        "http_method": "GET",
+        "route": "api/Factory",
+        "business_purpose": "Retrieve paginated list of factories with optional filtering by date and search text.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [],
+        "query_parameters": [
+          {"name": "fromdate", "type": "DateTime?", "required": false},
+          {"name": "todate", "type": "DateTime?", "required": false},
+          {"name": "inputText", "type": "string", "required": false},
+          {"name": "limit", "type": "int", "required": false, "default": 10},
+          {"name": "page_no", "type": "int", "required": false, "default": 0}
+        ],
+        "request_body": {},
+        "response": {"status_codes": [200, 500], "dto_name": "FactoryListResponse"},
+        "data_effect": "READ_ONLY",
+        "business_logic": {
+          "operation_summary": "Retrieves paginated factory list with optional date range and text search filters.",
+          "preconditions": "Valid JWT token.",
+          "validations": "Token extraction and validation.",
+          "side_effects": "Fetches pagination info and actions.",
+          "calls_services": ["IFactory", "ICommon"],
+          "calls_repositories": []
+        },
+        "idempotency": {"risk_level": "LOW", "notes": "Read-only operation"},
+        "source": {"controller_file": "Controllers/FactoryController.cs", "action_method": "GetAllFactories"}
+      },
+      {
+        "id": "f_002",
+        "name": "GetFactoryById",
+        "http_method": "GET",
+        "route": "api/Factory/{id}",
+        "business_purpose": "Retrieve single factory details by ID.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [{"name": "id", "type": "int", "required": true}],
+        "query_parameters": [],
+        "request_body": {},
+        "response": {"status_codes": [200, 400, 404, 500], "dto_name": "FactoryDetailsResponse"},
+        "data_effect": "READ_ONLY",
+        "business_logic": {
+          "operation_summary": "Retrieves factory record by ID from database.",
+          "preconditions": "Factory ID > 0. Factory must exist.",
+          "validations": "Factory ID must be > 0.",
+          "side_effects": "None",
+          "calls_services": ["IFactory"],
+          "calls_repositories": []
+        },
+        "idempotency": {"risk_level": "LOW", "notes": "Read-only operation"},
+        "source": {"controller_file": "Controllers/FactoryController.cs", "action_method": "GetFactoryById"}
+      },
+      {
+        "id": "f_003",
+        "name": "CreateFactory",
+        "http_method": "POST",
+        "route": "api/Factory",
+        "business_purpose": "Create a new factory record with name, description, address, and phone number.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [],
+        "query_parameters": [],
+        "request_body": {"dto_name": "CreateFactoryRequest", "properties": ["factoryName", "Description", "factory_address", "factory_phoneNumber"]},
+        "response": {"status_codes": [200, 400, 401, 500], "dto_name": "FactoryCreateResponse"},
+        "data_effect": "CREATE",
+        "business_logic": {
+          "operation_summary": "Creates new factory record. Validates factory name uniqueness. Creates audit log.",
+          "preconditions": "Valid token. User exists. Factory name required and must be unique.",
+          "validations": "ModelState valid. Factory name non-empty and unique.",
+          "side_effects": "Audit log created. User tracked in context.",
+          "calls_services": ["IFactory", "ICommon"],
+          "calls_repositories": ["Factories"]
+        },
+        "idempotency": {"risk_level": "HIGH", "notes": "Name uniqueness check means repeated calls fail. Recommend idempotency key on client."},
+        "source": {"controller_file": "Controllers/FactoryController.cs", "action_method": "CreateFactory"}
+      },
+      {
+        "id": "f_004",
+        "name": "UpdateFactory",
+        "http_method": "PUT",
+        "route": "api/Factory/{factoryId}",
+        "business_purpose": "Update existing factory details (name, description, address, phone).",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [{"name": "factoryId", "type": "int", "required": true}],
+        "query_parameters": [],
+        "request_body": {"dto_name": "UpdateFactoryRequest", "properties": ["factoryName", "Description", "factory_address", "factory_phoneNumber"]},
+        "response": {"status_codes": [200, 400, 401, 404, 500], "dto_name": "FactoryUpdateResponse"},
+        "data_effect": "UPDATE",
+        "business_logic": {
+          "operation_summary": "Updates existing factory record. Validates name uniqueness (excluding current ID). Creates audit log with old/new values.",
+          "preconditions": "Valid token. User exists. Factory ID > 0. Factory must exist. At least one field must be provided.",
+          "validations": "Factory ID > 0. Factory exists. Factory name unique (excluding current). At least one field provided.",
+          "side_effects": "Audit log created with old and new values.",
+          "calls_services": ["IFactory", "ICommon"],
+          "calls_repositories": ["Factories"]
+        },
+        "idempotency": {"risk_level": "MEDIUM", "notes": "Name uniqueness check per ID reduces risk. Audit log tracks changes."},
+        "source": {"controller_file": "Controllers/FactoryController.cs", "action_method": "UpdateFactory"}
+      },
+      {
+        "id": "f_005",
+        "name": "DeleteFactory",
+        "http_method": "DELETE",
+        "route": "api/Factory/{factoryId}",
+        "business_purpose": "Delete (soft delete) a factory record.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [{"name": "factoryId", "type": "int", "required": true}],
+        "query_parameters": [],
+        "request_body": {},
+        "response": {"status_codes": [200, 400, 401, 404, 500], "dto_name": "FactoryDeleteResponse"},
+        "data_effect": "DELETE",
+        "business_logic": {
+          "operation_summary": "Soft deletes factory record by setting is_deleted flag. Creates audit log.",
+          "preconditions": "Valid token. User exists. Factory ID > 0. Factory must exist.",
+          "validations": "Factory ID > 0. Factory exists.",
+          "side_effects": "Audit log created. Factory marked as deleted.",
+          "calls_services": ["IFactory", "ICommon"],
+          "calls_repositories": ["Factories"]
+        },
+        "idempotency": {"risk_level": "HIGH", "notes": "Repeated DELETE calls fail once deleted. Audit log needed for idempotency detection."},
+        "source": {"controller_file": "Controllers/FactoryController.cs", "action_method": "DeleteFactory"}
+      }
+    ]
+  },
+  {
+    "controller": "FactoryDirectDispatchController",
+    "file": "Controllers/FactoryDirectDispatchController.cs",
+    "base_route": "api/FactoryDirectDispatch",
+    "endpoints": [
+      {
+        "id": "fdd_001",
+        "name": "GetAll",
+        "http_method": "GET",
+        "route": "api/FactoryDirectDispatch",
+        "business_purpose": "Retrieve paginated list of factory direct dispatch records (indent orders).",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [],
+        "query_parameters": [
+          {"name": "inputText", "type": "string", "required": false},
+          {"name": "limit", "type": "int", "required": false, "default": 10},
+          {"name": "page_no", "type": "int", "required": false, "default": 1}
+        ],
+        "request_body": {},
+        "response": {"status_codes": [200, 401, 500], "dto_name": "FactoryDirectDispatchListResponse"},
+        "data_effect": "READ_ONLY",
+        "business_logic": {
+          "operation_summary": "Fetches direct dispatch records filtered by search text with pagination.",
+          "preconditions": "Valid token. User must exist.",
+          "validations": "Token validation. page_no >= 1.",
+          "side_effects": "None",
+          "calls_services": ["IFactoryDirectDispatch", "ICommon"],
+          "calls_repositories": []
+        },
+        "idempotency": {"risk_level": "LOW", "notes": "Read-only operation"},
+        "source": {"controller_file": "Controllers/FactoryDirectDispatchController.cs", "action_method": "GetAll"}
+      },
+      {
+        "id": "fdd_002",
+        "name": "GetFactoryDirectDispatchById",
+        "http_method": "GET",
+        "route": "api/FactoryDirectDispatch/{id}",
+        "business_purpose": "Retrieve detailed direct dispatch record (indent) by ID with product and item details.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [{"name": "id", "type": "int", "required": true}],
+        "query_parameters": [],
+        "request_body": {},
+        "response": {"status_codes": [200, 400, 401, 500], "dto_name": "IndentDetailResponse"},
+        "data_effect": "READ_ONLY",
+        "business_logic": {
+          "operation_summary": "Retrieves indent header with product-wise and item-wise details.",
+          "preconditions": "Valid token. User exists. Indent ID > 0. Indent must exist.",
+          "validations": "Token validation. Indent ID > 0.",
+          "side_effects": "Maps indent to DTO. Fetches actions.",
+          "calls_services": ["IIndent", "ICommon"],
+          "calls_repositories": ["IndentHeader", "IndentDetails"]
+        },
+        "idempotency": {"risk_level": "LOW", "notes": "Read-only operation"},
+        "source": {"controller_file": "Controllers/FactoryDirectDispatchController.cs", "action_method": "GetFactoryDirectDispatchById"}
+      },
+      {
+        "id": "fdd_003",
+        "name": "CreateIndent",
+        "http_method": "POST",
+        "route": "api/FactoryDirectDispatch",
+        "business_purpose": "Create direct dispatch indent with products, auto-approve, auto-dispatch, update stock.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [],
+        "query_parameters": [],
+        "request_body": {"dto_name": "IndentPostDto", "properties": ["DealerId", "IndentDetails", "DispatchInstructions", "DispatchAddress", "ShippingAddress", "ShippingInstruction", "FactoryOrder", "PriorityOrder", "InvoiceNo", "InvoiceDate", "factoryid"]},
+        "response": {"status_codes": [200, 400, 401, 500], "dto_name": "IndentCreateResponse"},
+        "data_effect": "CREATE/INVENTORY_OPERATION",
+        "business_logic": {
+          "operation_summary": "Creates indent, auto-approves by branch and credit, marks dispatched, updates product stock for each line item.",
+          "preconditions": "Valid token. User exists. Dealer exists. Products exist with valid grade/thickness/size. Branch exists for dealer area.",
+          "validations": "Token validation. Dealer valid. Product details valid. Quantity/Weight > 0.",
+          "side_effects": "Inventory stock updated. Indent marked dispatched. Multiple DB writes.",
+          "calls_services": ["IIndent", "ICommon", "IDispatch"],
+          "calls_repositories": ["IndentHeader", "IndentDetails", "Dealer", "Area", "Branch", "Products"]
+        },
+        "idempotency": {"risk_level": "HIGH", "notes": "Stock updates non-idempotent. Multiple calls decrement stock multiple times."},
+        "source": {"controller_file": "Controllers/FactoryDirectDispatchController.cs", "action_method": "CreateIndent"}
+      },
+      {
+        "id": "fdd_004",
+        "name": "DeleteIndent",
+        "http_method": "DELETE",
+        "route": "api/FactoryDirectDispatch/{id}",
+        "business_purpose": "Delete (soft delete) direct dispatch indent record.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [{"name": "id", "type": "int", "required": true}],
+        "query_parameters": [],
+        "request_body": {},
+        "response": {"status_codes": [200, 400, 401, 404, 500], "dto_name": "IndentDeleteResponse"},
+        "data_effect": "DELETE",
+        "business_logic": {
+          "operation_summary": "Soft deletes indent record. Creates audit log.",
+          "preconditions": "Valid token. User exists. Indent ID > 0. Indent must exist.",
+          "validations": "Indent ID > 0. Indent exists.",
+          "side_effects": "Audit log created.",
+          "calls_services": ["IFactoryDirectDispatch", "IIndent", "ICommon"],
+          "calls_repositories": ["IndentHeader"]
+        },
+        "idempotency": {"risk_level": "HIGH", "notes": "Repeated DELETE fails once deleted."},
+        "source": {"controller_file": "Controllers/FactoryDirectDispatchController.cs", "action_method": "DeleteIndent"}
+      }
+    ]
+  },
+  {
+    "controller": "FactoryOpsDetailsController",
+    "file": "Controllers/FactoryOpsDetailsController.cs",
+    "base_route": "api/FactoryOpsDetails",
+    "endpoints": [
+      {
+        "id": "fod_001",
+        "name": "GetAll",
+        "http_method": "GET",
+        "route": "api/FactoryOpsDetails",
+        "business_purpose": "Retrieve paginated list of factory operations details with optional filtering.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [],
+        "query_parameters": [
+          {"name": "fromdate", "type": "DateTime?", "required": false},
+          {"name": "todate", "type": "DateTime?", "required": false},
+          {"name": "inputText", "type": "string", "required": false},
+          {"name": "limit", "type": "int", "required": false, "default": 100},
+          {"name": "offset", "type": "int", "required": false, "default": 0}
+        ],
+        "request_body": {},
+        "response": {"status_codes": [200, 500], "dto_name": "FactoryOpsDetailsList"},
+        "data_effect": "READ_ONLY",
+        "business_logic": {
+          "operation_summary": "Retrieves factory ops details with date range and text filtering.",
+          "preconditions": "UNKNOWN - NOT DETERMINED FROM SOURCE",
+          "validations": "UNKNOWN - NOT DETERMINED FROM SOURCE",
+          "side_effects": "None",
+          "calls_services": ["IFactoryOpsDetailsRepository"],
+          "calls_repositories": []
+        },
+        "idempotency": {"risk_level": "LOW", "notes": "Read-only operation"},
+        "source": {"controller_file": "Controllers/FactoryOpsDetailsController.cs", "action_method": "GetAll"}
+      },
+      {
+        "id": "fod_002",
+        "name": "Create",
+        "http_method": "POST",
+        "route": "api/FactoryOpsDetails",
+        "business_purpose": "Create factory operations detail record with production metrics (temperature, pressure, load/unload times, quality details).",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [],
+        "query_parameters": [],
+        "request_body": {"dto_name": "CreateFactoryOpsDetailsRequest", "properties": ["temperature", "pressure", "load", "unload", "total_time", "products", "product", "grade", "size", "thickness", "hp_production", "dd_saw_cutting", "variance", "no_of_pieces", "ply", "FA", "NA", "GL", "quality_remarks", "output_lot", "input_lot"]},
+        "response": {"status_codes": [200, 400, 500], "dto_name": "FactoryOpsDetailsCreateResponse"},
+        "data_effect": "CREATE",
+        "business_logic": {
+          "operation_summary": "Creates factory ops detail record. Checks for duplicates on product + grade + size + thickness + load.",
+          "preconditions": "ModelState valid. No duplicate exists for product+grade+size+thickness+load.",
+          "validations": "ModelState validation. Duplicate check.",
+          "side_effects": "New record persisted to DB.",
+          "calls_services": ["IFactoryOpsDetailsRepository"],
+          "calls_repositories": []
+        },
+        "idempotency": {"risk_level": "HIGH", "notes": "Duplicate check prevents re-creation. Multiple calls fail on second attempt."},
+        "source": {"controller_file": "Controllers/FactoryOpsDetailsController.cs", "action_method": "Create"}
+      },
+      {
+        "id": "fod_003",
+        "name": "Update",
+        "http_method": "PUT",
+        "route": "api/FactoryOpsDetails/{id}",
+        "business_purpose": "Update factory operations detail record.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [{"name": "id", "type": "int", "required": true}],
+        "query_parameters": [],
+        "request_body": {"dto_name": "UpdateFactoryOpsDetailsRequest", "properties": ["temperature", "pressure", "load", "unload", "total_time", "products", "product", "grade", "size", "thickness", "hp_production", "dd_saw_cutting", "variance", "no_of_pieces", "ply", "FA", "NA", "GL", "quality_remarks", "output_lot", "input_lot"]},
+        "response": {"status_codes": [200, 400, 500], "dto_name": "FactoryOpsDetailsUpdateResponse"},
+        "data_effect": "UPDATE",
+        "business_logic": {
+          "operation_summary": "Updates factory ops detail record. Checks for duplicate excluding current ID.",
+          "preconditions": "ID > 0. No duplicate exists for product+grade+size+thickness+load (excluding current ID).",
+          "validations": "ID > 0. Duplicate check (excluding current ID).",
+          "side_effects": "Record updated in DB.",
+          "calls_services": ["IFactoryOpsDetailsRepository"],
+          "calls_repositories": []
+        },
+        "idempotency": {"risk_level": "MEDIUM", "notes": "Duplicate check per ID reduces risk."},
+        "source": {"controller_file": "Controllers/FactoryOpsDetailsController.cs", "action_method": "Update"}
+      }
+    ]
+  },
+  {
+    "controller": "FactoryProductionController",
+    "file": "Controllers/FactoryProductionController.cs",
+    "base_route": "api/FactoryProduction",
+    "endpoints": [
+      {
+        "id": "fp_001",
+        "name": "GetAll",
+        "http_method": "GET",
+        "route": "api/FactoryProduction",
+        "business_purpose": "Retrieve factory production data with summary cards (total indents, dealers, areas) and pagination.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [],
+        "query_parameters": [
+          {"name": "fromdate", "type": "DateTime?", "required": false},
+          {"name": "todate", "type": "DateTime?", "required": false},
+          {"name": "inputText", "type": "string", "required": false},
+          {"name": "limit", "type": "int", "required": false, "default": 10},
+          {"name": "page_no", "type": "int", "required": false, "default": 1}
+        ],
+        "request_body": {},
+        "response": {"status_codes": [200, 401, 500], "dto_name": "FactoryProductionResponse"},
+        "data_effect": "READ_ONLY",
+        "business_logic": {
+          "operation_summary": "Retrieves production data with summary metrics (total indents, distinct dealers, distinct areas). Returns paginated results with cards.",
+          "preconditions": "Valid token. User exists.",
+          "validations": "Token validation. page_no >= 1.",
+          "side_effects": "Fetches actions and pagination info.",
+          "calls_services": ["IFactoryProduction", "ICommon"],
+          "calls_repositories": []
+        },
+        "idempotency": {"risk_level": "LOW", "notes": "Read-only operation"},
+        "source": {"controller_file": "Controllers/FactoryProductionController.cs", "action_method": "GetAll"}
+      },
+      {
+        "id": "fp_002",
+        "name": "PrintAction",
+        "http_method": "POST",
+        "route": "api/FactoryProduction",
+        "business_purpose": "Retrieve indent records for printing with consent/consolidated form flags.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [],
+        "query_parameters": [],
+        "request_body": {"dto_name": "printedDto", "properties": ["Ids (List<int>)", "Consent (bool)", "Consolidated (bool)"]},
+        "response": {"status_codes": [200, 404, 500], "dto_name": "PrintActionResponse"},
+        "data_effect": "READ_ONLY",
+        "business_logic": {
+          "operation_summary": "Retrieves indents by IDs with product details and approval info for printing.",
+          "preconditions": "Indent IDs provided. Indents must exist.",
+          "validations": "Indent IDs must exist.",
+          "side_effects": "None",
+          "calls_services": ["IFactoryProduction"],
+          "calls_repositories": []
+        },
+        "idempotency": {"risk_level": "LOW", "notes": "Read-only operation"},
+        "source": {"controller_file": "Controllers/FactoryProductionController.cs", "action_method": "PrintAction"}
+      }
+    ]
+  },
+  {
+    "controller": "FactorySectionController",
+    "file": "Controllers/FactorySectionController.cs",
+    "base_route": "api/FactorySection",
+    "endpoints": [
+      {
+        "id": "fs_001",
+        "name": "GetAllFactorySections",
+        "http_method": "GET",
+        "route": "api/FactorySection",
+        "business_purpose": "Retrieve paginated list of factory sections with optional date range and search filtering.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [],
+        "query_parameters": [
+          {"name": "fromdate", "type": "DateTime?", "required": false},
+          {"name": "todate", "type": "DateTime?", "required": false},
+          {"name": "inputText", "type": "string", "required": false},
+          {"name": "limit", "type": "int", "required": false, "default": 10},
+          {"name": "page_no", "type": "int", "required": false, "default": 0}
+        ],
+        "request_body": {},
+        "response": {"status_codes": [200, 401, 500], "dto_name": "FactorySectionListResponse"},
+        "data_effect": "READ_ONLY",
+        "business_logic": {
+          "operation_summary": "Retrieves factory section records with filtering and pagination.",
+          "preconditions": "Valid token. User exists.",
+          "validations": "Token validation.",
+          "side_effects": "Fetches actions and pagination info.",
+          "calls_services": ["IFactorySection", "ICommon"],
+          "calls_repositories": []
+        },
+        "idempotency": {"risk_level": "LOW", "notes": "Read-only operation"},
+        "source": {"controller_file": "Controllers/FactorySectionController.cs", "action_method": "GetAllFactorySections"}
+      },
+      {
+        "id": "fs_002",
+        "name": "CreateFactorySection",
+        "http_method": "POST",
+        "route": "api/FactorySection",
+        "business_purpose": "Create a new factory section record.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [],
+        "query_parameters": [],
+        "request_body": {"dto_name": "FactorySection", "properties": ["parking_section_name", "section"]},
+        "response": {"status_codes": [200, 401, 500], "dto_name": "FactorySectionCreateResponse"},
+        "data_effect": "CREATE",
+        "business_logic": {
+          "operation_summary": "Creates factory section record. Requires user authentication.",
+          "preconditions": "Valid token. User exists.",
+          "validations": "Token validation.",
+          "side_effects": "New section created.",
+          "calls_services": ["IFactorySection", "ICommon"],
+          "calls_repositories": []
+        },
+        "idempotency": {"risk_level": "MEDIUM", "notes": "UNKNOWN - NO DUPLICATE CHECK FOUND IN SOURCE"},
+        "source": {"controller_file": "Controllers/FactorySectionController.cs", "action_method": "CreateFactorySection"}
+      },
+      {
+        "id": "fs_003",
+        "name": "UpdateFactorySection",
+        "http_method": "PUT",
+        "route": "api/FactorySection/{id}",
+        "business_purpose": "Update existing factory section record.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [{"name": "id", "type": "int", "required": true}],
+        "query_parameters": [],
+        "request_body": {"dto_name": "FactorySection", "properties": ["parking_section_name", "section"]},
+        "response": {"status_codes": [200, 401, 500], "dto_name": "FactorySectionUpdateResponse"},
+        "data_effect": "UPDATE",
+        "business_logic": {
+          "operation_summary": "Updates factory section name and section field.",
+          "preconditions": "Valid token. User exists.",
+          "validations": "Token validation.",
+          "side_effects": "Section updated.",
+          "calls_services": ["IFactorySection", "ICommon"],
+          "calls_repositories": []
+        },
+        "idempotency": {"risk_level": "MEDIUM", "notes": "UNKNOWN - NO DUPLICATE CHECK FOUND IN SOURCE"},
+        "source": {"controller_file": "Controllers/FactorySectionController.cs", "action_method": "UpdateFactorySection"}
+      },
+      {
+        "id": "fs_004",
+        "name": "DeleteFactorySection",
+        "http_method": "DELETE",
+        "route": "api/FactorySection/{id}",
+        "business_purpose": "Delete factory section record.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [{"name": "id", "type": "int", "required": true}],
+        "query_parameters": [],
+        "request_body": {},
+        "response": {"status_codes": [200, 401, 500], "dto_name": "FactorySectionDeleteResponse"},
+        "data_effect": "DELETE",
+        "business_logic": {
+          "operation_summary": "Soft deletes factory section by user ID and section ID.",
+          "preconditions": "Valid token. User exists.",
+          "validations": "Token validation.",
+          "side_effects": "Section marked deleted.",
+          "calls_services": ["IFactorySection", "ICommon"],
+          "calls_repositories": []
+        },
+        "idempotency": {"risk_level": "HIGH", "notes": "Repeated DELETE fails once deleted"},
+        "source": {"controller_file": "Controllers/FactorySectionController.cs", "action_method": "DeleteFactorySection"}
+      }
+    ]
+  },
+  {
+    "controller": "FactoryTradeValueConfigurationController",
+    "file": "Controllers/FactoryTradeValueConfigurationController.cs",
+    "base_route": "api/FactoryTradeValueConfiguration",
+    "endpoints": [
+      {
+        "id": "ftvc_001",
+        "name": "SaveAllFactoryTradeConfigurations",
+        "http_method": "POST",
+        "route": "api/FactoryTradeValueConfiguration",
+        "business_purpose": "Create or update multiple factory trade value configurations (brand/percentage pairs).",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [],
+        "query_parameters": [],
+        "request_body": {"dto_name": "List<FactoryTradeValueConfigurationDto>", "properties": ["BrandName", "PercentageValue"]},
+        "response": {"status_codes": [200, 400, 401, 500], "dto_name": "FactoryTradeValueConfigResponse"},
+        "data_effect": "CREATE/UPDATE",
+        "business_logic": {
+          "operation_summary": "Creates or updates trade value configurations. For each brand: if exists, update percentage and modified_date; else create new.",
+          "preconditions": "Valid token. User exists. Non-empty configurations list.",
+          "validations": "Token validation. Non-empty configurations list.",
+          "side_effects": "Configurations persisted. Modified_date updated.",
+          "calls_services": ["IFactoryTradeValueConfiguration", "ICommon"],
+          "calls_repositories": []
+        },
+        "idempotency": {"risk_level": "MEDIUM", "notes": "Idempotent for updates. Multiple calls update same records."},
+        "source": {"controller_file": "Controllers/FactoryTradeValueConfigurationController.cs", "action_method": "SaveAllFactoryTradeConfigurations"}
+      },
+      {
+        "id": "ftvc_002",
+        "name": "GetProducts",
+        "http_method": "GET",
+        "route": "api/FactoryTradeValueConfiguration/products",
+        "business_purpose": "Retrieve list of products for trade value configuration with existing brands and unassigned products.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [],
+        "query_parameters": [],
+        "request_body": {},
+        "response": {"status_codes": [200, 401, 500], "dto_name": "ProductListResponse"},
+        "data_effect": "READ_ONLY",
+        "business_logic": {
+          "operation_summary": "Retrieves all configured brands with their percentage values, plus unconfigured products with 0 value.",
+          "preconditions": "Valid token. User exists.",
+          "validations": "Token validation.",
+          "side_effects": "None",
+          "calls_services": ["IFactoryTradeValueConfiguration", "ICommon"],
+          "calls_repositories": []
+        },
+        "idempotency": {"risk_level": "LOW", "notes": "Read-only operation"},
+        "source": {"controller_file": "Controllers/FactoryTradeValueConfigurationController.cs", "action_method": "GetProducts"}
+      }
+    ]
+  },
+  {
+    "controller": "FactoryTradingMarginReportApiController",
+    "file": "Controllers/FactoryTradingMarginApiController.cs",
+    "base_route": "api/FactoryTradingMarginReportApi",
+    "endpoints": [
+      {
+        "id": "ftmr_001",
+        "name": "GetAll",
+        "http_method": "GET",
+        "route": "api/FactoryTradingMarginReportApi",
+        "business_purpose": "Retrieve factory trading margin report with filters for region, branch, dealer, product, factory and date range. Returns summary cards and paginated data.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [],
+        "query_parameters": [
+          {"name": "region", "type": "int?", "required": false},
+          {"name": "branch", "type": "int?", "required": false},
+          {"name": "dealer", "type": "string", "required": false},
+          {"name": "product", "type": "string", "required": false},
+          {"name": "factory", "type": "string", "required": false},
+          {"name": "inputtext", "type": "string", "required": false},
+          {"name": "fromdate", "type": "DateTime?", "required": false},
+          {"name": "todate", "type": "DateTime?", "required": false},
+          {"name": "date_range", "type": "string", "required": false, "default": "this_month"},
+          {"name": "limit", "type": "int", "required": false, "default": 10},
+          {"name": "page", "type": "int", "required": false, "default": 1}
+        ],
+        "request_body": {},
+        "response": {"status_codes": [200, 401, 500], "dto_name": "TradingMarginReportResponse"},
+        "data_effect": "READ_ONLY",
+        "business_logic": {
+          "operation_summary": "Retrieves trading margin report with dynamic date ranges (this_month, last_month, last_60_days, last_180_days). Returns cards (total orders, discounts, factory amount, margin) and paginated data with filter options.",
+          "preconditions": "Valid token. User exists.",
+          "validations": "Token validation from Authorization header.",
+          "side_effects": "Fetches filter options (regions, branches, dealers, products, factories).",
+          "calls_services": ["IFactoryTradingMarginReportApi", "ICommon"],
+          "calls_repositories": []
+        },
+        "idempotency": {"risk_level": "LOW", "notes": "Read-only operation"},
+        "source": {"controller_file": "Controllers/FactoryTradingMarginApiController.cs", "action_method": "GetAll"}
+      }
+    ]
+  },
+  {
+    "controller": "FactoryUnitsController",
+    "file": "Controllers/FactoryUnitsController.cs",
+    "base_route": "api/FactoryUnits",
+    "endpoints": [
+      {
+        "id": "fu_001",
+        "name": "GetAll",
+        "http_method": "GET",
+        "route": "api/FactoryUnits",
+        "business_purpose": "Retrieve paginated list of factory units with optional filtering.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [],
+        "query_parameters": [
+          {"name": "fromdate", "type": "DateTime?", "required": false},
+          {"name": "todate", "type": "DateTime?", "required": false},
+          {"name": "inputText", "type": "string", "required": false},
+          {"name": "limit", "type": "int", "required": false, "default": 10},
+          {"name": "page_no", "type": "int", "required": false, "default": 0}
+        ],
+        "request_body": {},
+        "response": {"status_codes": [200, 401, 500], "dto_name": "FactoryUnitsListResponse"},
+        "data_effect": "READ_ONLY",
+        "business_logic": {
+          "operation_summary": "Retrieves factory units with date range and text search filtering, with pagination and actions.",
+          "preconditions": "Valid token. User exists.",
+          "validations": "Token validation.",
+          "side_effects": "Fetches actions and pagination info.",
+          "calls_services": ["IFactoryUnitsRepository", "ICommon"],
+          "calls_repositories": []
+        },
+        "idempotency": {"risk_level": "LOW", "notes": "Read-only operation"},
+        "source": {"controller_file": "Controllers/FactoryUnitsController.cs", "action_method": "GetAll"}
+      },
+      {
+        "id": "fu_002",
+        "name": "GetFactoryUnitById",
+        "http_method": "GET",
+        "route": "api/FactoryUnits/{id}",
+        "business_purpose": "Retrieve single factory unit details by ID.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [{"name": "id", "type": "int", "required": true}],
+        "query_parameters": [],
+        "request_body": {},
+        "response": {"status_codes": [200, 401, 404, 500], "dto_name": "FactoryUnitDetailsResponse"},
+        "data_effect": "READ_ONLY",
+        "business_logic": {
+          "operation_summary": "Retrieves factory unit record with created_by user info and created_date.",
+          "preconditions": "Valid token. User exists. Unit ID > 0. Unit must exist.",
+          "validations": "Token validation. Unit ID > 0.",
+          "side_effects": "Maps to DTO.",
+          "calls_services": ["IFactoryUnitsRepository", "ICommon"],
+          "calls_repositories": []
+        },
+        "idempotency": {"risk_level": "LOW", "notes": "Read-only operation"},
+        "source": {"controller_file": "Controllers/FactoryUnitsController.cs", "action_method": "GetFactoryUnitById"}
+      },
+      {
+        "id": "fu_003",
+        "name": "CreateFactoryUnit",
+        "http_method": "POST",
+        "route": "api/FactoryUnits/create",
+        "business_purpose": "Create a new factory unit with name.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [],
+        "query_parameters": [],
+        "request_body": {"dto_name": "CreateFactoryUnitDto", "properties": ["Units"]},
+        "response": {"status_codes": [200, 400, 401, 500], "dto_name": "FactoryUnitCreateResponse"},
+        "data_effect": "CREATE",
+        "business_logic": {
+          "operation_summary": "Creates factory unit. Validates unit name non-empty. Checks for duplicate unit names.",
+          "preconditions": "Valid token. User exists. Unit name non-empty and unique.",
+          "validations": "Token validation. Unit name non-empty. No duplicate exists.",
+          "side_effects": "New unit created with created_by and created_date.",
+          "calls_services": ["IFactoryUnitsRepository", "ICommon"],
+          "calls_repositories": ["FactoryUnits"]
+        },
+        "idempotency": {"risk_level": "HIGH", "notes": "Duplicate check prevents re-creation. Second call fails."},
+        "source": {"controller_file": "Controllers/FactoryUnitsController.cs", "action_method": "CreateFactoryUnit"}
+      },
+      {
+        "id": "fu_004",
+        "name": "UpdateFactoryUnit",
+        "http_method": "PUT",
+        "route": "api/FactoryUnits/{id}",
+        "business_purpose": "Update existing factory unit name.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [{"name": "id", "type": "int", "required": true}],
+        "query_parameters": [],
+        "request_body": {"dto_name": "UpdateFactoryUnitDto", "properties": ["Units"]},
+        "response": {"status_codes": [200, 400, 401, 404, 500], "dto_name": "FactoryUnitUpdateResponse"},
+        "data_effect": "UPDATE",
+        "business_logic": {
+          "operation_summary": "Updates factory unit name. Checks for duplicate excluding current ID.",
+          "preconditions": "Valid token. User exists. ID > 0. Unit exists. Unit name non-empty. No duplicate (excluding current ID).",
+          "validations": "Token validation. ID > 0. Unit exists. Unit name provided. Duplicate check (excluding current ID).",
+          "side_effects": "Unit updated with modified_by and modified_date.",
+          "calls_services": ["IFactoryUnitsRepository", "ICommon"],
+          "calls_repositories": ["FactoryUnits"]
+        },
+        "idempotency": {"risk_level": "MEDIUM", "notes": "Duplicate check per ID reduces risk."},
+        "source": {"controller_file": "Controllers/FactoryUnitsController.cs", "action_method": "UpdateFactoryUnit"}
+      },
+      {
+        "id": "fu_005",
+        "name": "DeleteFactoryUnit",
+        "http_method": "DELETE",
+        "route": "api/FactoryUnits/{id}",
+        "business_purpose": "Delete factory unit record.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [{"name": "id", "type": "int", "required": true}],
+        "query_parameters": [],
+        "request_body": {},
+        "response": {"status_codes": [200, 400, 401, 404, 500], "dto_name": "FactoryUnitDeleteResponse"},
+        "data_effect": "DELETE",
+        "business_logic": {
+          "operation_summary": "Soft deletes factory unit. Creates audit log.",
+          "preconditions": "Valid token. User exists. ID > 0. Unit must exist.",
+          "validations": "Token validation. ID > 0. Unit exists.",
+          "side_effects": "Audit log created. Unit marked deleted.",
+          "calls_services": ["IFactoryUnitsRepository", "ICommon"],
+          "calls_repositories": ["FactoryUnits"]
+        },
+        "idempotency": {"risk_level": "HIGH", "notes": "Repeated DELETE fails once deleted."},
+        "source": {"controller_file": "Controllers/FactoryUnitsController.cs", "action_method": "DeleteFactoryUnit"}
+      }
+    ]
+  },
+  {
+    "controller": "FactorymappingController",
+    "file": "Controllers/FactorymappingController.cs",
+    "base_route": "api/Factorymapping",
+    "endpoints": [
+      {
+        "id": "fm_001",
+        "name": "GetAllFactoryMappings",
+        "http_method": "GET",
+        "route": "api/Factorymapping",
+        "business_purpose": "Retrieve paginated list of factory-to-user mappings.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [],
+        "query_parameters": [
+          {"name": "inputText", "type": "string", "required": false},
+          {"name": "limit", "type": "int", "required": false, "default": 10},
+          {"name": "page_no", "type": "int", "required": false, "default": 0}
+        ],
+        "request_body": {},
+        "response": {"status_codes": [200, 500], "dto_name": "FactoryMappingListResponse"},
+        "data_effect": "READ_ONLY",
+        "business_logic": {
+          "operation_summary": "Retrieves factory mappings with pagination and optional text filtering.",
+          "preconditions": "UNKNOWN - NO EXPLICIT PRECONDITIONS IN SOURCE",
+          "validations": "UNKNOWN - NO EXPLICIT VALIDATIONS IN SOURCE",
+          "side_effects": "Fetches actions and pagination info.",
+          "calls_services": ["IFactoryMapping", "ICommon"],
+          "calls_repositories": []
+        },
+        "idempotency": {"risk_level": "LOW", "notes": "Read-only operation"},
+        "source": {"controller_file": "Controllers/FactorymappingController.cs", "action_method": "GetAllFactoryMappings"}
+      },
+      {
+        "id": "fm_002",
+        "name": "CreateFactoryMapping",
+        "http_method": "POST",
+        "route": "api/Factorymapping",
+        "business_purpose": "Create factory mappings for a user. Replaces existing mappings for the user with new factory IDs.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [],
+        "query_parameters": [],
+        "request_body": {"dto_name": "CreateFactoryMappingRequest", "properties": ["selecteduserId", "factoryid (List<int>)"]},
+        "response": {"status_codes": [200, 400, 401, 500], "dto_name": "FactoryMappingCreateResponse"},
+        "data_effect": "CREATE/DELETE",
+        "business_logic": {
+          "operation_summary": "Creates new factory mappings for user. First deletes all existing mappings for the user, then creates new ones for each factory ID.",
+          "preconditions": "Valid token. User (creator) exists. Selected user exists. At least one factory ID provided. Factories must exist.",
+          "validations": "Token validation. selecteduserId > 0. User exists. At least one factory ID. Factories exist.",
+          "side_effects": "Existing mappings deleted. New mappings created. Audit log created for each successful mapping.",
+          "calls_services": ["IFactoryMapping", "ICommon"],
+          "calls_repositories": ["FactoryMapping", "Users", "Factories"]
+        },
+        "idempotency": {"risk_level": "HIGH", "notes": "Deletes and recreates mappings. Multiple calls delete intermediate mappings."},
+        "source": {"controller_file": "Controllers/FactorymappingController.cs", "action_method": "CreateFactoryMapping"}
+      },
+      {
+        "id": "fm_003",
+        "name": "UpdateFactoryMapping",
+        "http_method": "PUT",
+        "route": "api/Factorymapping/{mappingId}",
+        "business_purpose": "Update factory mappings by mapping ID.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [{"name": "mappingId", "type": "int", "required": true}],
+        "query_parameters": [],
+        "request_body": {"dto_name": "UpdateFactoryMappingRequest", "properties": ["selecteduserId", "factoryid (List<int>)"]},
+        "response": {"status_codes": [200, 400, 401, 404, 500], "dto_name": "FactoryMappingUpdateResponse"},
+        "data_effect": "UPDATE",
+        "business_logic": {
+          "operation_summary": "Updates factory mapping record. Validates mapping exists. Updates for each factory in request.",
+          "preconditions": "Valid token. User (creator) exists. mappingId > 0. Mapping exists. At least one factory ID provided.",
+          "validations": "Token validation. mappingId > 0. Mapping exists. At least one factory ID.",
+          "side_effects": "Mapping updated per factory. Audit log created for successful updates.",
+          "calls_services": ["IFactoryMapping", "ICommon"],
+          "calls_repositories": ["FactoryMapping", "Factories"]
+        },
+        "idempotency": {"risk_level": "MEDIUM", "notes": "Updates per factory. Audit log tracks changes."},
+        "source": {"controller_file": "Controllers/FactorymappingController.cs", "action_method": "UpdateFactoryMapping"}
+      },
+      {
+        "id": "fm_004",
+        "name": "DeleteFactoryMapping",
+        "http_method": "DELETE",
+        "route": "api/Factorymapping/{mappingId}",
+        "business_purpose": "Delete a factory mapping record.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [{"name": "mappingId", "type": "int", "required": true}],
+        "query_parameters": [{"name": "factoryId", "type": "int", "required": false}],
+        "request_body": {},
+        "response": {"status_codes": [200, 400, 401, 404, 500], "dto_name": "FactoryMappingDeleteResponse"},
+        "data_effect": "DELETE",
+        "business_logic": {
+          "operation_summary": "Soft deletes factory mapping record. Creates audit log.",
+          "preconditions": "Valid token. User (creator) exists. mappingId > 0. Mapping must exist.",
+          "validations": "Token validation. mappingId > 0. Mapping exists.",
+          "side_effects": "Mapping deleted. Audit log created.",
+          "calls_services": ["IFactoryMapping", "ICommon"],
+          "calls_repositories": ["FactoryMapping"]
+        },
+        "idempotency": {"risk_level": "HIGH", "notes": "Repeated DELETE fails once deleted."},
+        "source": {"controller_file": "Controllers/FactorymappingController.cs", "action_method": "DeleteFactoryMapping"}
+      },
+      {
+        "id": "fm_005",
+        "name": "GetFactoriesByUser",
+        "http_method": "GET",
+        "route": "api/Factorymapping/getFactoriesByUser/{userId}",
+        "business_purpose": "Retrieve list of factories assigned to a specific user.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [{"name": "userId", "type": "int", "required": true}],
+        "query_parameters": [],
+        "request_body": {},
+        "response": {"status_codes": [200, 401, 500], "dto_name": "FactoriesForUserResponse"},
+        "data_effect": "READ_ONLY",
+        "business_logic": {
+          "operation_summary": "Retrieves factories mapped to a user with ID and name.",
+          "preconditions": "Valid token. User exists.",
+          "validations": "Token validation.",
+          "side_effects": "None",
+          "calls_services": ["IFactoryMapping", "ICommon"],
+          "calls_repositories": []
+        },
+        "idempotency": {"risk_level": "LOW", "notes": "Read-only operation"},
+        "source": {"controller_file": "Controllers/FactorymappingController.cs", "action_method": "GetFactoriesByUser"}
+      }
+    ]
+  },
+  {
+    "controller": "FinancialQuartersController",
+    "file": "Controllers/FinancialQuartersController.cs",
+    "base_route": "api/FinancialQuarters",
+    "endpoints": [
+      {
+        "id": "fq_001",
+        "name": "GetAll",
+        "http_method": "GET",
+        "route": "api/FinancialQuarters",
+        "business_purpose": "Retrieve paginated list of financial quarters with optional search text filtering.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [],
+        "query_parameters": [
+          {"name": "inputText", "type": "string", "required": false},
+          {"name": "limit", "type": "int", "required": false, "default": 10},
+          {"name": "page_no", "type": "int", "required": false, "default": 1}
+        ],
+        "request_body": {},
+        "response": {"status_codes": [200, 401, 500], "dto_name": "FinancialQuartersListResponse"},
+        "data_effect": "READ_ONLY",
+        "business_logic": {
+          "operation_summary": "Retrieves financial quarters with pagination and optional text search.",
+          "preconditions": "Valid token. User exists.",
+          "validations": "Token validation.",
+          "side_effects": "Fetches actions and pagination info.",
+          "calls_services": ["IFinancialQuarters", "ICommon"],
+          "calls_repositories": []
+        },
+        "idempotency": {"risk_level": "LOW", "notes": "Read-only operation"},
+        "source": {"controller_file": "Controllers/FinancialQuartersController.cs", "action_method": "GetAll"}
+      },
+      {
+        "id": "fq_002",
+        "name": "GetFinancialQuarterById",
+        "http_method": "GET",
+        "route": "api/FinancialQuarters/{id}",
+        "business_purpose": "Retrieve single financial quarter details by ID.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [{"name": "id", "type": "int", "required": true}],
+        "query_parameters": [],
+        "request_body": {},
+        "response": {"status_codes": [200, 400, 404, 500], "dto_name": "FinancialQuarterDetailsResponse"},
+        "data_effect": "READ_ONLY",
+        "business_logic": {
+          "operation_summary": "Retrieves financial quarter with associated financial year details.",
+          "preconditions": "ID > 0. Quarter must exist.",
+          "validations": "ID > 0.",
+          "side_effects": "Maps to DTO.",
+          "calls_services": ["IFinancialQuarters"],
+          "calls_repositories": []
+        },
+        "idempotency": {"risk_level": "LOW", "notes": "Read-only operation"},
+        "source": {"controller_file": "Controllers/FinancialQuartersController.cs", "action_method": "GetFinancialQuarterById"}
+      },
+      {
+        "id": "fq_003",
+        "name": "CreateFinancialQuarter",
+        "http_method": "POST",
+        "route": "api/FinancialQuarters",
+        "business_purpose": "Create a new financial quarter with name, financial year ID, and date range.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [],
+        "query_parameters": [],
+        "request_body": {"dto_name": "CreateFinancialQuarterRequest", "properties": ["quarter_name", "financial_year_id", "from_date", "to_date"]},
+        "response": {"status_codes": [200, 400, 401, 500], "dto_name": "FinancialQuarterCreateResponse"},
+        "data_effect": "CREATE",
+        "business_logic": {
+          "operation_summary": "Creates financial quarter. Validates quarter name non-empty and unique. Fetches financial year by ID.",
+          "preconditions": "Valid token. User exists. Quarter name non-empty and unique. Financial year exists.",
+          "validations": "Token validation. ModelState valid. Quarter name non-empty. No duplicate quarter name.",
+          "side_effects": "Quarter created. Audit log created.",
+          "calls_services": ["IFinancialQuarters", "ICommon"],
+          "calls_repositories": ["FinancialQuarters", "FinancialYears"]
+        },
+        "idempotency": {"risk_level": "HIGH", "notes": "Duplicate check prevents re-creation. Second call fails."},
+        "source": {"controller_file": "Controllers/FinancialQuartersController.cs", "action_method": "CreateFinancialQuarter"}
+      },
+      {
+        "id": "fq_004",
+        "name": "UpdateFinancialQuarter",
+        "http_method": "PUT",
+        "route": "api/FinancialQuarters/{financialQuarterId}",
+        "business_purpose": "Update existing financial quarter details.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [{"name": "financialQuarterId", "type": "int", "required": true}],
+        "query_parameters": [],
+        "request_body": {"dto_name": "UpdateFinancialQuarterRequest", "properties": ["quarter_name", "financial_year_id", "from_date", "to_date"]},
+        "response": {"status_codes": [200, 400, 401, 404, 500], "dto_name": "FinancialQuarterUpdateResponse"},
+        "data_effect": "UPDATE",
+        "business_logic": {
+          "operation_summary": "Updates financial quarter. Checks for duplicate quarter name excluding current ID.",
+          "preconditions": "Valid token. User exists. ID > 0. Quarter exists. No duplicate (excluding current ID).",
+          "validations": "Token validation. ID > 0. Quarter exists. No duplicate quarter name (excluding current).",
+          "side_effects": "Quarter updated. Audit log created with old/new values.",
+          "calls_services": ["IFinancialQuarters", "ICommon"],
+          "calls_repositories": ["FinancialQuarters"]
+        },
+        "idempotency": {"risk_level": "MEDIUM", "notes": "Duplicate check per ID reduces risk."},
+        "source": {"controller_file": "Controllers/FinancialQuartersController.cs", "action_method": "UpdateFinancialQuarter"}
+      },
+      {
+        "id": "fq_005",
+        "name": "Delete",
+        "http_method": "DELETE",
+        "route": "api/FinancialQuarters/{id}",
+        "business_purpose": "Delete financial quarter record.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [{"name": "id", "type": "int", "required": true}],
+        "query_parameters": [],
+        "request_body": {},
+        "response": {"status_codes": [200, 400, 401, 404, 500], "dto_name": "FinancialQuarterDeleteResponse"},
+        "data_effect": "DELETE",
+        "business_logic": {
+          "operation_summary": "Soft deletes financial quarter. Creates audit log.",
+          "preconditions": "Valid token. User exists. ID > 0. Quarter must exist.",
+          "validations": "Token validation. ID > 0. Quarter exists.",
+          "side_effects": "Quarter marked deleted. Audit log created.",
+          "calls_services": ["IFinancialQuarters", "ICommon"],
+          "calls_repositories": ["FinancialQuarters"]
+        },
+        "idempotency": {"risk_level": "HIGH", "notes": "Repeated DELETE fails once deleted."},
+        "source": {"controller_file": "Controllers/FinancialQuartersController.cs", "action_method": "Delete"}
+      }
+    ]
+  },
+  {
+    "controller": "FinancialYearsController",
+    "file": "Controllers/FinancialYearsController.cs",
+    "base_route": "api/FinancialYears",
+    "endpoints": [
+      {
+        "id": "fy_001",
+        "name": "GetAll",
+        "http_method": "GET",
+        "route": "api/FinancialYears",
+        "business_purpose": "Retrieve paginated list of financial years with optional search text filtering.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [],
+        "query_parameters": [
+          {"name": "inputText", "type": "string", "required": false},
+          {"name": "limit", "type": "int", "required": false, "default": 10},
+          {"name": "page_no", "type": "int", "required": false, "default": 1}
+        ],
+        "request_body": {},
+        "response": {"status_codes": [200, 401, 500], "dto_name": "FinancialYearsListResponse"},
+        "data_effect": "READ_ONLY",
+        "business_logic": {
+          "operation_summary": "Retrieves financial years with pagination and optional text search.",
+          "preconditions": "Valid token. User exists.",
+          "validations": "Token validation.",
+          "side_effects": "Fetches actions and pagination info.",
+          "calls_services": ["IFinancialYears", "ICommon"],
+          "calls_repositories": []
+        },
+        "idempotency": {"risk_level": "LOW", "notes": "Read-only operation"},
+        "source": {"controller_file": "Controllers/FinancialYearsController.cs", "action_method": "GetAll"}
+      },
+      {
+        "id": "fy_002",
+        "name": "GetCurrentFinancialYear",
+        "http_method": "GET",
+        "route": "api/FinancialYears/current",
+        "business_purpose": "Retrieve current financial year configuration.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [],
+        "query_parameters": [],
+        "request_body": {},
+        "response": {"status_codes": [200, 401, 500], "dto_name": "CurrentFinancialYearResponse"},
+        "data_effect": "READ_ONLY",
+        "business_logic": {
+          "operation_summary": "Retrieves the current financial year. Returns null if none configured.",
+          "preconditions": "Valid token. User exists.",
+          "validations": "Token validation.",
+          "side_effects": "None",
+          "calls_services": ["IFinancialYears", "ICommon"],
+          "calls_repositories": []
+        },
+        "idempotency": {"risk_level": "LOW", "notes": "Read-only operation"},
+        "source": {"controller_file": "Controllers/FinancialYearsController.cs", "action_method": "GetCurrentFinancialYear"}
+      },
+      {
+        "id": "fy_003",
+        "name": "GetFinancialYearById",
+        "http_method": "GET",
+        "route": "api/FinancialYears/{id}",
+        "business_purpose": "Retrieve single financial year details by ID.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [{"name": "id", "type": "int", "required": true}],
+        "query_parameters": [],
+        "request_body": {},
+        "response": {"status_codes": [200, 400, 404, 500], "dto_name": "FinancialYearDetailsResponse"},
+        "data_effect": "READ_ONLY",
+        "business_logic": {
+          "operation_summary": "Retrieves financial year record by ID.",
+          "preconditions": "ID > 0. Year must exist.",
+          "validations": "ID > 0.",
+          "side_effects": "Maps to DTO.",
+          "calls_services": ["IFinancialYears"],
+          "calls_repositories": []
+        },
+        "idempotency": {"risk_level": "LOW", "notes": "Read-only operation"},
+        "source": {"controller_file": "Controllers/FinancialYearsController.cs", "action_method": "GetFinancialYearById"}
+      },
+      {
+        "id": "fy_004",
+        "name": "CreateFinancialYear",
+        "http_method": "POST",
+        "route": "api/FinancialYears",
+        "business_purpose": "Create a new financial year with name and date range.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [],
+        "query_parameters": [],
+        "request_body": {"dto_name": "CreateFinancialYearRequest", "properties": ["financial_year_name", "from_date", "to_date"]},
+        "response": {"status_codes": [200, 400, 401, 500], "dto_name": "FinancialYearCreateResponse"},
+        "data_effect": "CREATE",
+        "business_logic": {
+          "operation_summary": "Creates financial year. Validates name non-empty and unique.",
+          "preconditions": "Valid token. User exists. Year name non-empty and unique.",
+          "validations": "Token validation. ModelState valid. Year name non-empty. No duplicate year name.",
+          "side_effects": "Year created. Audit log created.",
+          "calls_services": ["IFinancialYears", "ICommon"],
+          "calls_repositories": ["FinancialYears"]
+        },
+        "idempotency": {"risk_level": "HIGH", "notes": "Duplicate check prevents re-creation. Second call fails."},
+        "source": {"controller_file": "Controllers/FinancialYearsController.cs", "action_method": "CreateFinancialYear"}
+      },
+      {
+        "id": "fy_005",
+        "name": "UpdateFinancialYear",
+        "http_method": "PUT",
+        "route": "api/FinancialYears/{financialYearId}",
+        "business_purpose": "Update existing financial year details.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [{"name": "financialYearId", "type": "int", "required": true}],
+        "query_parameters": [],
+        "request_body": {"dto_name": "UpdateFinancialYearRequest", "properties": ["financial_year_name", "from_date", "to_date"]},
+        "response": {"status_codes": [200, 400, 401, 404, 500], "dto_name": "FinancialYearUpdateResponse"},
+        "data_effect": "UPDATE",
+        "business_logic": {
+          "operation_summary": "Updates financial year. Checks for duplicate year name excluding current ID.",
+          "preconditions": "Valid token. User exists. ID > 0. Year exists. No duplicate (excluding current ID).",
+          "validations": "Token validation. ID > 0. Year exists. No duplicate year name (excluding current).",
+          "side_effects": "Year updated. Audit log created with old/new values.",
+          "calls_services": ["IFinancialYears", "ICommon"],
+          "calls_repositories": ["FinancialYears"]
+        },
+        "idempotency": {"risk_level": "MEDIUM", "notes": "Duplicate check per ID reduces risk."},
+        "source": {"controller_file": "Controllers/FinancialYearsController.cs", "action_method": "UpdateFinancialYear"}
+      },
+      {
+        "id": "fy_006",
+        "name": "Delete",
+        "http_method": "DELETE",
+        "route": "api/FinancialYears/{id}",
+        "business_purpose": "Delete financial year record.",
+        "authentication": {"required": true, "attributes": ["[Authorize]"]},
+        "route_parameters": [{"name": "id", "type": "int", "required": true}],
+        "query_parameters": [],
+        "request_body": {},
+        "response": {"status_codes": [200, 400, 401, 404, 500], "dto_name": "FinancialYearDeleteResponse"},
+        "data_effect": "DELETE",
+        "business_logic": {
+          "operation_summary": "Soft deletes financial year. Creates audit log.",
+          "preconditions": "Valid token. User exists. ID > 0. Year must exist.",
+          "validations": "Token validation. ID > 0. Year exists.",
+          "side_effects": "Year marked deleted. Audit log created.",
+          "calls_services": ["IFinancialYears", "ICommon"],
+          "calls_repositories": ["FinancialYears"]
+        },
+        "idempotency": {"risk_level": "HIGH", "notes": "Repeated DELETE fails once deleted."},
+        "source": {"controller_file": "Controllers/FinancialYearsController.cs", "action_method": "Delete"}
+      }
+    ]
+  }
+]

@@ -1,0 +1,972 @@
+{
+  "controller": "BranchController",
+  "file": "Controllers/BranchController.cs",
+  "module": "Branch Management",
+  "base_route": "api/Branch",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages branch records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/location-settings/branch",
+        "module_code": "settings",
+        "section": "location-settings",
+        "sub_section": "branch",
+        "frontend_routes": [
+          "/settings/location-settings/branch",
+          "/settings/location-settings/branch/create-branch",
+          "/settings/location-settings/branch/edit-branch/:id"
+        ],
+        "menu_route_confirmed": true,
+        "display_names": {
+          "module": "Settings",
+          "section": "Location Settings",
+          "sub_section": "Branch"
+        }
+      },
+      {
+        "path": "planner/monthly-branch-review",
+        "module_code": "planner",
+        "section": "monthly-branch-review",
+        "sub_section": null,
+        "frontend_routes": [
+          "/planner/monthly-branch-review/create-branch-review",
+          "/planner/monthly-branch-review/edit-branch-review/:id",
+          "/planner/monthly-branch-review/view-branch-review/:id"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "also_called_from_menus": [
+      "settings/crm-settings/influencer-scheme"
+    ],
+    "section_configuration_keys": [
+      "branch"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Settings",
+        "section": "Location Settings",
+        "sub_section": "Branch"
+      },
+      {
+        "module": "Settings",
+        "section": "Location Settings",
+        "sub_section": "Region"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "branch_get_all_branches",
+      "name": "Get All Branches",
+      "action_method": "GetAllBranches",
+      "http_method": "GET",
+      "route": "api/Branch",
+      "business_purpose": "Retrieve all branches",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "Branch[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/monthly-branch-review:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "settings/crm-settings/influencer-scheme",
+        "settings/location-settings/branch"
+      ],
+      "short_description": "Retrieve all branches",
+      "detailed_description": "Retrieve all branches. It calls IBranch.GetBranchData, IBranch.GetBranchActions, ICommon.GetPagination. Data access uses stored procedure(s): GetBranch, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all branches",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Branch",
+          "GET api/Branch/{id}",
+          "GET api/Branch/areas/{branchId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_get_all_branches",
+        "description": "Retrieve all branches",
+        "http_method": "GET",
+        "endpoint": "api/Branch",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/BranchController.cs",
+        "action_method": "GetAllBranches",
+        "related_dto_files": [
+          "Models/Branch.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/Branch_repo.cs",
+          "Interfaces/IBranch.cs",
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all branches — calls IBranch.GetBranchData, IBranch.GetBranchActions, ICommon.GetPagination",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IBranch.GetBranchData",
+          "IBranch.GetBranchActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Branch_repo (Repositories/Branch_repo.cs) via IBranch",
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [
+          "GetBranch",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "branch_get_branch_by_id",
+      "name": "Get Branch By Id",
+      "action_method": "GetBranchById",
+      "http_method": "GET",
+      "route": "api/Branch/{id}",
+      "business_purpose": "Retrieve branch by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/location-settings/branch:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve branch by ID",
+      "detailed_description": "Retrieve branch by ID. It validates the request, then calls ICommon.getUserByToken, IBranch.GetBranchById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid branch ID is required. [when id <= 0]",
+        "not_found": "404: Branch not found. [when branch == null || branch.is_deleted]",
+        "unauthorized": "401/403: Invalid token or user not found [when user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve branch by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Branch",
+          "GET api/Branch/{id}",
+          "GET api/Branch/areas/{branchId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_get_branch_by_id",
+        "description": "Retrieve branch by ID",
+        "http_method": "GET",
+        "endpoint": "api/Branch/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/BranchController.cs",
+        "action_method": "GetBranchById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Branch_repo.cs",
+          "Interfaces/IBranch.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Retrieve branch by ID — validates the request, calls ICommon.getUserByToken, IBranch.GetBranchById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid branch ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBranch.GetBranchById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Branch_repo (Repositories/Branch_repo.cs) via IBranch"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid branch ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Branch not found.",
+            "when": "branch == null || branch.is_deleted"
+          }
+        ]
+      }
+    },
+    {
+      "id": "branch_create_branch",
+      "name": "Create Branch",
+      "action_method": "CreateBranch",
+      "http_method": "POST",
+      "route": "api/Branch",
+      "business_purpose": "Create branch",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateBranchRequest (inline)",
+        "properties": [
+          {
+            "name": "branchname",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "branch_code",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "areaIds",
+            "type": "List<int>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; a duplicate check exists so repeating usually fails with a conflict/validation message"
+      },
+      "required_permission": "settings/location-settings/branch:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create branch",
+      "detailed_description": "Create branch. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IBranch.GetAreaById, IBranch.IsBranchNameDuplicateAsync, then writes an audit log entry. Persists changes to: Branch: INSERT, AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; Branch name is required. [when string.IsNullOrWhiteSpace(request.branchname)]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "Branch with this name already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create branch",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateBranchRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Branch"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_create_branch",
+        "description": "Create branch",
+        "http_method": "POST",
+        "endpoint": "api/Branch",
+        "parameters": {
+          "branchname": {
+            "type": "string",
+            "required": false,
+            "description": "branchname (body)"
+          },
+          "branch_code": {
+            "type": "string",
+            "required": false,
+            "description": "branch code (body)"
+          },
+          "description": {
+            "type": "string",
+            "required": false,
+            "description": "description (body)"
+          },
+          "areaIds": {
+            "type": "List<int>",
+            "required": false,
+            "description": "area Ids (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/BranchController.cs",
+        "action_method": "CreateBranch",
+        "related_dto_files": [
+          "Controllers/BranchController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Branch_repo.cs",
+          "Interfaces/IBranch.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Create branch — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, IBranch.GetAreaById, IBranch.IsBranchNameDuplicateAsync, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; request body of type CreateBranchRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Branch: INSERT; AuditLog: INSERT",
+        "validations": "ModelState (DTO data-annotation) validation; Invalid data provided.; Branch name is required.",
+        "side_effects": "AuditLog CREATE (Settings > Location Settings > Branch)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBranch.GetAreaById",
+          "IBranch.IsBranchNameDuplicateAsync",
+          "IBranch.CreateBranchAsync",
+          "ICommon.ToJsonString",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Branch_repo (Repositories/Branch_repo.cs) via IBranch"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "Branch name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.branchname)"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Branch with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "branch_update_branch",
+      "name": "Update Branch",
+      "action_method": "UpdateBranch",
+      "http_method": "PUT",
+      "route": "api/Branch/{branchId}",
+      "business_purpose": "Update branch",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateBranchRequest (inline)",
+        "properties": [
+          {
+            "name": "branchId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "branchname",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "branch_code",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "areaIds",
+            "type": "List<int>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values; each call writes another audit log entry"
+      },
+      "required_permission": "settings/location-settings/branch:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update branch",
+      "detailed_description": "Update branch. It validates the request, then calls ICommon.getUserByToken, IBranch.GetBranchById, IBranch.DeleteBranchAreaAsync, then writes an audit log entry. Persists changes to: BranchAreas: DELETE, Branch: UPDATE, AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: message returned by the called service/repository (result.Message)",
+        "not_found": "404: Branch not found. [when existingBranch == null]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update branch",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "branchId (route)",
+          "request body UpdateBranchRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Branch/{id}",
+          "GET api/Branch/areas/{branchId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_update_branch",
+        "description": "Update branch",
+        "http_method": "PUT",
+        "endpoint": "api/Branch/{branchId}",
+        "parameters": {
+          "branchId": {
+            "type": "int",
+            "required": false,
+            "description": "branch Id (body)"
+          },
+          "branchname": {
+            "type": "string",
+            "required": false,
+            "description": "branchname (body)"
+          },
+          "branch_code": {
+            "type": "string",
+            "required": false,
+            "description": "branch code (body)"
+          },
+          "description": {
+            "type": "string",
+            "required": false,
+            "description": "description (body)"
+          },
+          "areaIds": {
+            "type": "List<int>",
+            "required": false,
+            "description": "area Ids (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/BranchController.cs",
+        "action_method": "UpdateBranch",
+        "related_dto_files": [
+          "Controllers/BranchController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Branch_repo.cs",
+          "Interfaces/IBranch.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Update branch — validates the request, calls ICommon.getUserByToken, IBranch.GetBranchById, IBranch.DeleteBranchAreaAsync, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) branchId must reference existing record(s); request body of type UpdateBranchRequest (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "BranchAreas: DELETE; Branch: UPDATE; AuditLog: INSERT; sets branch.branchAreas, branch.branch_name, branch.branch_code, branch.branch_description, branch.modified_by, branch.modified_date",
+        "validations": "None found in controller code",
+        "side_effects": "AuditLog UPDATE (Settings > Location Settings > Branch); AuditLog UPDATE (Settings > Location Settings > Region)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBranch.GetBranchById",
+          "IBranch.DeleteBranchAreaAsync",
+          "IBranch.GetAreaById",
+          "ICommon.ToJsonString",
+          "IBranch.UpdateBranchAsync",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Branch_repo (Repositories/Branch_repo.cs) via IBranch"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Branch not found.",
+            "when": "existingBranch == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "branch_delete_branch",
+      "name": "Delete Branch",
+      "action_method": "DeleteBranch",
+      "http_method": "DELETE",
+      "route": "api/Branch/{branchId}",
+      "business_purpose": "Delete branch",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "settings/location-settings/branch:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete branch",
+      "detailed_description": "Delete branch. It validates the request, then calls ICommon.getUserByToken, IBranch.GetBranchById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: Branch: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid branch ID is required. [when branchId <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Branch not found. [when existingBranch == null]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete branch",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "branchId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Branch/{id}",
+          "GET api/Branch/areas/{branchId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_delete_branch",
+        "description": "Delete branch",
+        "http_method": "DELETE",
+        "endpoint": "api/Branch/{branchId}",
+        "parameters": {
+          "branchId": {
+            "type": "int",
+            "required": true,
+            "description": "branch Id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/BranchController.cs",
+        "action_method": "DeleteBranch",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Branch_repo.cs",
+          "Interfaces/IBranch.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Delete branch — validates the request, calls ICommon.getUserByToken, IBranch.GetBranchById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) branchId must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Branch: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "validations": "Valid branch ID is required.",
+        "side_effects": "AuditLog DELETE (Settings > Location Settings > Branch)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBranch.GetBranchById",
+          "ICommon.ToJsonString",
+          "IBranch.DeleteBranch",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Branch_repo (Repositories/Branch_repo.cs) via IBranch"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid branch ID is required.",
+            "when": "branchId <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Branch not found.",
+            "when": "existingBranch == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "branch_get_areas",
+      "name": "Get Areas",
+      "action_method": "GetAreas",
+      "http_method": "GET",
+      "route": "api/Branch/areas/{branchId}",
+      "business_purpose": "Retrieve areas",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "settings/location-settings/branch",
+        "planner/monthly-branch-review"
+      ],
+      "short_description": "Retrieve areas",
+      "detailed_description": "Retrieve areas. It calls ICommon.getUserByToken, IBranch.GetAreas, IBranch.GetBranchById. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve areas",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "branchId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Branch",
+          "GET api/Branch/{id}",
+          "GET api/Branch/areas/{branchId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_get_areas",
+        "description": "Retrieve areas",
+        "http_method": "GET",
+        "endpoint": "api/Branch/areas/{branchId}",
+        "parameters": {
+          "branchId": {
+            "type": "int",
+            "required": true,
+            "description": "branch Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/BranchController.cs",
+        "action_method": "GetAreas",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Branch_repo.cs",
+          "Interfaces/IBranch.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Retrieve areas — calls ICommon.getUserByToken, IBranch.GetAreas, IBranch.GetBranchById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) branchId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBranch.GetAreas",
+          "IBranch.GetBranchById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Branch_repo (Repositories/Branch_repo.cs) via IBranch"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    }
+  ]
+}

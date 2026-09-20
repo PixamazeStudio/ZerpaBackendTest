@@ -1,0 +1,802 @@
+{
+  "controller": "FinancialYearsController",
+  "file": "Controllers/FinancialYearsController.cs",
+  "base_route": "api/FinancialYears",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/accounts-settings/financial-years",
+        "module_code": "settings",
+        "section": "accounts-settings",
+        "sub_section": "financial-years",
+        "frontend_routes": [
+          "/settings/accounts-settings/financial-years",
+          "/settings/accounts-settings/financial-years/create-financial-years",
+          "/settings/accounts-settings/financial-years/edit-financial-years/:id"
+        ],
+        "menu_route_confirmed": true,
+        "display_names": {
+          "module": "Settings",
+          "section": "Accounts Settings",
+          "sub_section": "Financial Years"
+        }
+      },
+      {
+        "path": "planner/mpds",
+        "module_code": "planner",
+        "section": "mpds",
+        "sub_section": null,
+        "frontend_routes": [
+          "/planner/mpds/create-mpds",
+          "/planner/mpds/create-mpdss",
+          "/planner/mpds/edit-mpds/:id"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "also_called_from_menus": [
+      "planner/incentive-bm-target",
+      "settings/accounts-settings/financial-quarters"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Settings",
+        "section": "Accounts Settings",
+        "sub_section": "Financial Years"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "fy_001",
+      "name": "GetAll",
+      "http_method": "GET",
+      "route": "api/FinancialYears",
+      "business_purpose": "Retrieve paginated list of financial years with optional search text filtering.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": 10
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": 1
+        }
+      ],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "FinancialYearsListResponse"
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "Retrieves financial years with pagination and optional text search.",
+        "preconditions": "Valid token. User exists.",
+        "validations": "Token validation.",
+        "side_effects": "Fetches actions and pagination info.",
+        "calls_services": [
+          "IFinancialYears",
+          "ICommon"
+        ],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [
+          "GetFinancialYears",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "notes": "Read-only operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FinancialYearsController.cs",
+        "action_method": "GetAll"
+      },
+      "required_permission": "planner/mpds:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "settings/accounts-settings/financial-quarters",
+        "planner/incentive-bm-target",
+        "settings/accounts-settings/financial-years"
+      ],
+      "short_description": "Retrieve paginated list of financial years with optional search text filtering.",
+      "detailed_description": "Retrieve paginated list of financial years with optional search text filtering. It calls ICommon.getUserByToken, IFinancialYears.GetFinancialYearsData, IFinancialYears.GetFinancialYearsActions. Data access uses stored procedure(s): GetFinancialYears, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve paginated list of financial years with optional search text filtering.",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/FinancialYears",
+          "GET api/FinancialYears/current",
+          "GET api/FinancialYears/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "financial_years_get_all",
+        "description": "Retrieve paginated list of financial years with optional search text filtering.",
+        "http_method": "GET",
+        "endpoint": "api/FinancialYears",
+        "parameters": {
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "fy_002",
+      "name": "GetCurrentFinancialYear",
+      "http_method": "GET",
+      "route": "api/FinancialYears/current",
+      "business_purpose": "Retrieve current financial year configuration.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "CurrentFinancialYearResponse"
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "Retrieves the current financial year. Returns null if none configured.",
+        "preconditions": "Valid token. User exists.",
+        "validations": "Token validation.",
+        "side_effects": "None",
+        "calls_services": [
+          "IFinancialYears",
+          "ICommon"
+        ],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "currentUser == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "notes": "Read-only operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FinancialYearsController.cs",
+        "action_method": "GetCurrentFinancialYear"
+      },
+      "required_permission": "planner/mpds:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "planner/incentive-bm-target",
+        "settings/accounts-settings/financial-years"
+      ],
+      "short_description": "Retrieve current financial year configuration.",
+      "detailed_description": "Retrieve current financial year configuration. It calls ICommon.getUserByToken, IFinancialYears.GetCurrentFinancialYearAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve current financial year configuration.",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/FinancialYears",
+          "GET api/FinancialYears/current",
+          "GET api/FinancialYears/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "financial_years_get_current_financial_year",
+        "description": "Retrieve current financial year configuration.",
+        "http_method": "GET",
+        "endpoint": "api/FinancialYears/current",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "fy_003",
+      "name": "GetFinancialYearById",
+      "http_method": "GET",
+      "route": "api/FinancialYears/{id}",
+      "business_purpose": "Retrieve single financial year details by ID.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          404,
+          500
+        ],
+        "dto_name": "FinancialYearDetailsResponse"
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "Retrieves financial year record by ID.",
+        "preconditions": "ID > 0. Year must exist.",
+        "validations": "ID > 0.",
+        "side_effects": "Maps to DTO.",
+        "calls_services": [
+          "IFinancialYears"
+        ],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid Financial Year ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Financial Year not found.",
+            "when": "FinancialYear == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "notes": "Read-only operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FinancialYearsController.cs",
+        "action_method": "GetFinancialYearById"
+      },
+      "required_permission": "planner/mpds:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "planner/incentive-bm-target",
+        "settings/accounts-settings/financial-years"
+      ],
+      "short_description": "Retrieve single financial year details by ID.",
+      "detailed_description": "Retrieve single financial year details by ID. It validates the request, then calls IFinancialYears.GetFinancialYearById. Possible responses: 200, 400, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid Financial Year ID is required. [when id <= 0]",
+        "not_found": "404: Financial Year not found. [when FinancialYear == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve single financial year details by ID.",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/FinancialYears",
+          "GET api/FinancialYears/current",
+          "GET api/FinancialYears/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "financial_years_get_financial_year_by_id",
+        "description": "Retrieve single financial year details by ID.",
+        "http_method": "GET",
+        "endpoint": "api/FinancialYears/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "fy_004",
+      "name": "CreateFinancialYear",
+      "http_method": "POST",
+      "route": "api/FinancialYears",
+      "business_purpose": "Create a new financial year with name and date range.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateFinancialYearRequest",
+        "properties": [
+          "financial_year_name",
+          "from_date",
+          "to_date"
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ],
+        "dto_name": "FinancialYearCreateResponse"
+      },
+      "data_effect": "CREATE",
+      "business_logic": {
+        "operation_summary": "Creates financial year. Validates name non-empty and unique.",
+        "preconditions": "Valid token. User exists. Year name non-empty and unique.",
+        "validations": "Token validation. ModelState valid. Year name non-empty. No duplicate year name.",
+        "side_effects": "Year created. Audit log created.",
+        "calls_services": [
+          "IFinancialYears",
+          "ICommon"
+        ],
+        "calls_repositories": [
+          "FinancialYears"
+        ],
+        "state_changes": "FinancialYears: INSERT; AuditLog: INSERT",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "Financial year name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.financial_year_name)"
+          },
+          {
+            "returns": 400,
+            "message": "Financial year with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "HIGH",
+        "notes": "Duplicate check prevents re-creation. Second call fails."
+      },
+      "source": {
+        "controller_file": "Controllers/FinancialYearsController.cs",
+        "action_method": "CreateFinancialYear"
+      },
+      "required_permission": "settings/accounts-settings/financial-years:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create a new financial year with name and date range.",
+      "detailed_description": "Create a new financial year with name and date range. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IFinancialYears.IsFinancialYearsDuplicateAsync, IFinancialYears.CreateFinancialYearAsync, then writes an audit log entry. Persists changes to: FinancialYears: INSERT, AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; Financial year name is required. [when string.IsNullOrWhiteSpace(request.financial_year_name)]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "Financial year with this name already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create a new financial year with name and date range.",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateFinancialYearRequest"
+        ],
+        "follow_up_apis": [
+          "GET api/FinancialYears",
+          "GET api/FinancialYears/current"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "financial_years_create_financial_year",
+        "description": "Create a new financial year with name and date range.",
+        "http_method": "POST",
+        "endpoint": "api/FinancialYears",
+        "parameters": {
+          "financial_year_name": {
+            "type": "string",
+            "required": false,
+            "description": "financial year name (body)"
+          },
+          "from_date": {
+            "type": "string",
+            "required": false,
+            "description": "from date (body)"
+          },
+          "to_date": {
+            "type": "string",
+            "required": false,
+            "description": "to date (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "fy_005",
+      "name": "UpdateFinancialYear",
+      "http_method": "PUT",
+      "route": "api/FinancialYears/{financialYearId}",
+      "business_purpose": "Update existing financial year details.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "financialYearId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateFinancialYearRequest",
+        "properties": [
+          "financial_year_name",
+          "from_date",
+          "to_date"
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ],
+        "dto_name": "FinancialYearUpdateResponse"
+      },
+      "data_effect": "UPDATE",
+      "business_logic": {
+        "operation_summary": "Updates financial year. Checks for duplicate year name excluding current ID.",
+        "preconditions": "Valid token. User exists. ID > 0. Year exists. No duplicate (excluding current ID).",
+        "validations": "Token validation. ID > 0. Year exists. No duplicate year name (excluding current).",
+        "side_effects": "Year updated. Audit log created with old/new values.",
+        "calls_services": [
+          "IFinancialYears",
+          "ICommon"
+        ],
+        "calls_repositories": [
+          "FinancialYears"
+        ],
+        "state_changes": "FinancialYears: UPDATE; AuditLog: INSERT",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Financial Year ID is required.",
+            "when": "financialYearId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Financial year with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Duplicate check per ID reduces risk."
+      },
+      "source": {
+        "controller_file": "Controllers/FinancialYearsController.cs",
+        "action_method": "UpdateFinancialYear"
+      },
+      "required_permission": "settings/accounts-settings/financial-years:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update existing financial year details.",
+      "detailed_description": "Update existing financial year details. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IFinancialYears.IsFinancialYearsDuplicateAsync, IFinancialYears.GetFinancialYearById, then writes an audit log entry. Persists changes to: FinancialYears: UPDATE, AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid Financial Year ID is required. [when financialYearId <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "Financial year with this name already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update existing financial year details.",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "financialYearId (route)",
+          "request body UpdateFinancialYearRequest"
+        ],
+        "follow_up_apis": [
+          "GET api/FinancialYears/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "financial_years_update_financial_year",
+        "description": "Update existing financial year details.",
+        "http_method": "PUT",
+        "endpoint": "api/FinancialYears/{financialYearId}",
+        "parameters": {
+          "financialYearId": {
+            "type": "int",
+            "required": true,
+            "description": "financial Year Id (route)"
+          },
+          "financial_year_name": {
+            "type": "string",
+            "required": false,
+            "description": "financial year name (body)"
+          },
+          "from_date": {
+            "type": "string",
+            "required": false,
+            "description": "from date (body)"
+          },
+          "to_date": {
+            "type": "string",
+            "required": false,
+            "description": "to date (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "fy_006",
+      "name": "Delete",
+      "http_method": "DELETE",
+      "route": "api/FinancialYears/{id}",
+      "business_purpose": "Delete financial year record.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ],
+        "dto_name": "FinancialYearDeleteResponse"
+      },
+      "data_effect": "DELETE",
+      "business_logic": {
+        "operation_summary": "Soft deletes financial year. Creates audit log.",
+        "preconditions": "Valid token. User exists. ID > 0. Year must exist.",
+        "validations": "Token validation. ID > 0. Year exists.",
+        "side_effects": "Year marked deleted. Audit log created.",
+        "calls_services": [
+          "IFinancialYears",
+          "ICommon"
+        ],
+        "calls_repositories": [
+          "FinancialYears"
+        ],
+        "state_changes": "FinancialYears: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid financial Year ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Financial year not found.",
+            "when": "existingfinancialYear == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "HIGH",
+        "notes": "Repeated DELETE fails once deleted."
+      },
+      "source": {
+        "controller_file": "Controllers/FinancialYearsController.cs",
+        "action_method": "Delete"
+      },
+      "required_permission": "settings/accounts-settings/financial-years:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete financial year record.",
+      "detailed_description": "Delete financial year record. It validates the request, then calls ICommon.getUserByToken, IFinancialYears.GetFinancialYearById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: FinancialYears: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid financial Year ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Financial year not found. [when existingfinancialYear == null]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete financial year record.",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/FinancialYears/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "financial_years_delete",
+        "description": "Delete financial year record.",
+        "http_method": "DELETE",
+        "endpoint": "api/FinancialYears/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "module": "General"
+    }
+  ]
+}

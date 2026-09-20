@@ -1,0 +1,1129 @@
+{
+  "controller": "DepartmentController",
+  "file": "Controllers/DepartmentController.cs",
+  "module": "Organization Management",
+  "base_route": "api/Department",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages department records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/factory-settings/department",
+        "module_code": "settings",
+        "section": "factory-settings",
+        "sub_section": "department",
+        "frontend_routes": [
+          "/settings/factory-settings/department",
+          "/settings/factory-settings/department/create-department",
+          "/settings/factory-settings/department/edit-department/:id",
+          "/settings/factory-settings/department/view-department/:id"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "Department"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "department_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/Department",
+      "business_purpose": "Retrieve all department records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/factory-settings/department:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all department records",
+      "detailed_description": "Retrieve all department records. It calls ICommon.getUserByToken, IDepartment.GetDepartmentData, IDepartment.GetDepartmentActions. Data access uses stored procedure(s): GetDepartment. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all department records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Department",
+          "GET api/Department/{id}",
+          "GET api/Department/output-unit"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "department_get_all",
+        "description": "Retrieve all department records",
+        "http_method": "GET",
+        "endpoint": "api/Department",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/DepartmentController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Department_repo.cs",
+          "Interfaces/IDepartment.cs"
+        ]
+      },
+      "module": "Organization Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all department records — calls ICommon.getUserByToken, IDepartment.GetDepartmentData, IDepartment.GetDepartmentActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IDepartment.GetDepartmentData",
+          "IDepartment.GetDepartmentActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Department_repo (Repositories/Department_repo.cs) via IDepartment"
+        ],
+        "stored_procedures": [
+          "GetDepartment"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "department_get_department_by_id",
+      "name": "Get Department By Id",
+      "action_method": "GetDepartmentById",
+      "http_method": "GET",
+      "route": "api/Department/{id}",
+      "business_purpose": "Retrieve department by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/factory-settings/department:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve department by ID",
+      "detailed_description": "Retrieve department by ID. It validates the request, then calls ICommon.getUserByToken, IDepartment.GetDepartmentById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid scheduler ID is required [when id <= 0]",
+        "not_found": "404: Department not found [when department == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve department by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Department",
+          "GET api/Department/{id}",
+          "GET api/Department/output-unit"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "department_get_department_by_id",
+        "description": "Retrieve department by ID",
+        "http_method": "GET",
+        "endpoint": "api/Department/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/DepartmentController.cs",
+        "action_method": "GetDepartmentById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Department_repo.cs",
+          "Interfaces/IDepartment.cs"
+        ]
+      },
+      "module": "Organization Management",
+      "business_logic": {
+        "operation_summary": "Retrieve department by ID — validates the request, calls ICommon.getUserByToken, IDepartment.GetDepartmentById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid scheduler ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IDepartment.GetDepartmentById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Department_repo (Repositories/Department_repo.cs) via IDepartment"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid scheduler ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Department not found",
+            "when": "department == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "department_delete_department",
+      "name": "Delete Department",
+      "action_method": "DeleteDepartment",
+      "http_method": "DELETE",
+      "route": "api/Department/{id}",
+      "business_purpose": "Delete department",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "settings/factory-settings/department:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete department",
+      "detailed_description": "Delete department. It validates the request, then calls ICommon.getUserByToken, IDepartment.DeleteDepartment. Persists changes to: Department: UPDATE, soft delete (is_deleted flag). Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid department ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete department",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Department/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "department_delete_department",
+        "description": "Delete department",
+        "http_method": "DELETE",
+        "endpoint": "api/Department/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/DepartmentController.cs",
+        "action_method": "DeleteDepartment",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Department_repo.cs",
+          "Interfaces/IDepartment.cs"
+        ]
+      },
+      "module": "Organization Management",
+      "business_logic": {
+        "operation_summary": "Delete department — validates the request, calls ICommon.getUserByToken, IDepartment.DeleteDepartment",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Department: UPDATE; soft delete (is_deleted flag)",
+        "validations": "Valid department ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IDepartment.DeleteDepartment"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Department_repo (Repositories/Department_repo.cs) via IDepartment"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid department ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "department_create_department",
+      "name": "Create Department",
+      "action_method": "CreateDepartment",
+      "http_method": "POST",
+      "route": "api/Department",
+      "business_purpose": "Create department",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateDepartmentDto (inline)",
+        "properties": [
+          {
+            "name": "id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "DepartmentName",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "InputUnitId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "OutputUnitId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "SuperviserId",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; a duplicate check exists so repeating usually fails with a conflict/validation message"
+      },
+      "required_permission": "settings/factory-settings/department:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create department",
+      "detailed_description": "Create department. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IDepartment.GetDepartmentById, IDepartment.GetFactoryUnitById. Persists changes to: Department: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Department name is required. [when string.IsNullOrWhiteSpace(request.DepartmentName)]; Valid input and output unit IDs are required. [when request.InputUnitId <= 0 || request.OutputUnitId <= 0]; Valid superviser ID is required. [when request.SuperviserId <= 0]",
+        "not_found": "404: Department not found. [when department == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "Duplicate factory section found. [when duplicateCheck && request.id == 0]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create department",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateDepartmentDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Department",
+          "GET api/Department/output-unit",
+          "GET api/Department/input-unit"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "department_create_department",
+        "description": "Create department",
+        "http_method": "POST",
+        "endpoint": "api/Department",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": false,
+            "description": "id (body)"
+          },
+          "DepartmentName": {
+            "type": "string",
+            "required": false,
+            "description": "Department Name (body)"
+          },
+          "InputUnitId": {
+            "type": "int",
+            "required": false,
+            "description": "Input Unit Id (body)"
+          },
+          "OutputUnitId": {
+            "type": "int",
+            "required": false,
+            "description": "Output Unit Id (body)"
+          },
+          "SuperviserId": {
+            "type": "int",
+            "required": false,
+            "description": "Superviser Id (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/DepartmentController.cs",
+        "action_method": "CreateDepartment",
+        "related_dto_files": [
+          "Controllers/DepartmentController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Department_repo.cs",
+          "Interfaces/IDepartment.cs"
+        ]
+      },
+      "module": "Organization Management",
+      "business_logic": {
+        "operation_summary": "Create department — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, IDepartment.GetDepartmentById, IDepartment.GetFactoryUnitById",
+        "preconditions": "Valid Bearer JWT; request body of type CreateDepartmentDto (inline); passes 5 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Department: INSERT",
+        "validations": "Department name is required.; Valid input and output unit IDs are required.; Valid superviser ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IDepartment.GetDepartmentById",
+          "IDepartment.GetFactoryUnitById",
+          "IDepartment.GetUserById",
+          "IDepartment.Duplicate_check",
+          "IDepartment.CreateDepartmentAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Department_repo (Repositories/Department_repo.cs) via IDepartment"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Department name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.DepartmentName)"
+          },
+          {
+            "returns": 400,
+            "message": "Valid input and output unit IDs are required.",
+            "when": "request.InputUnitId <= 0 || request.OutputUnitId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Valid superviser ID is required.",
+            "when": "request.SuperviserId <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Department not found.",
+            "when": "department == null"
+          },
+          {
+            "returns": 400,
+            "message": "Duplicate factory section found.",
+            "when": "duplicateCheck && request.id == 0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "department_update_department",
+      "name": "Update Department",
+      "action_method": "UpdateDepartment",
+      "http_method": "PUT",
+      "route": "api/Department/{departmentId}",
+      "business_purpose": "Update department",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "departmentId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateDepartmentDto (inline)",
+        "properties": [
+          {
+            "name": "DepartmentName",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "InputUnitId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "OutputUnitId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "SuperviserId",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "settings/factory-settings/department:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update department",
+      "detailed_description": "Update department. It validates the request, then calls ICommon.getUserByToken, IDepartment.UpdateDepartmentAsync. Persists changes to: LMSHeader: UPDATE. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid department ID is required. [when departmentId <= 0]; At least one field must be provided for update. [when string.IsNullOrWhiteSpace(request.DepartmentName) && request.InputUnitId == null && reques]; message built at runtime [when !result.Success]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update department",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "departmentId (route)",
+          "request body UpdateDepartmentDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Department/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "department_update_department",
+        "description": "Update department",
+        "http_method": "PUT",
+        "endpoint": "api/Department/{departmentId}",
+        "parameters": {
+          "departmentId": {
+            "type": "int",
+            "required": true,
+            "description": "department Id (route)"
+          },
+          "DepartmentName": {
+            "type": "string",
+            "required": false,
+            "description": "Department Name (body)"
+          },
+          "InputUnitId": {
+            "type": "int",
+            "required": false,
+            "description": "Input Unit Id (body)"
+          },
+          "OutputUnitId": {
+            "type": "int",
+            "required": false,
+            "description": "Output Unit Id (body)"
+          },
+          "SuperviserId": {
+            "type": "int",
+            "required": false,
+            "description": "Superviser Id (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/DepartmentController.cs",
+        "action_method": "UpdateDepartment",
+        "related_dto_files": [
+          "Controllers/DepartmentController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Department_repo.cs",
+          "Interfaces/IDepartment.cs"
+        ]
+      },
+      "module": "Organization Management",
+      "business_logic": {
+        "operation_summary": "Update department — validates the request, calls ICommon.getUserByToken, IDepartment.UpdateDepartmentAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) departmentId; request body of type UpdateDepartmentDto (inline); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "LMSHeader: UPDATE",
+        "validations": "Valid department ID is required.; At least one field must be provided for update.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IDepartment.UpdateDepartmentAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Department_repo (Repositories/Department_repo.cs) via IDepartment"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid department ID is required.",
+            "when": "departmentId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field must be provided for update.",
+            "when": "string.IsNullOrWhiteSpace(request.DepartmentName) && request.InputUnitId == null && request.OutputUnitId == null && request.SuperviserId == null"
+          },
+          {
+            "returns": 400,
+            "message": "message built at runtime",
+            "when": "!result.Success"
+          }
+        ]
+      }
+    },
+    {
+      "id": "department_get_output_units",
+      "name": "Get Output Units",
+      "action_method": "GetOutputUnits",
+      "http_method": "GET",
+      "route": "api/Department/output-unit",
+      "business_purpose": "Retrieve output units",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/factory-settings/department:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve output units",
+      "detailed_description": "Retrieve output units. It calls ICommon.getUserByToken, IDepartment.GetOutputUnit. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve output units",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Department",
+          "GET api/Department/{id}",
+          "GET api/Department/output-unit"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "department_get_output_units",
+        "description": "Retrieve output units",
+        "http_method": "GET",
+        "endpoint": "api/Department/output-unit",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/DepartmentController.cs",
+        "action_method": "GetOutputUnits",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Department_repo.cs",
+          "Interfaces/IDepartment.cs"
+        ]
+      },
+      "module": "Organization Management",
+      "business_logic": {
+        "operation_summary": "Retrieve output units — calls ICommon.getUserByToken, IDepartment.GetOutputUnit",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IDepartment.GetOutputUnit"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Department_repo (Repositories/Department_repo.cs) via IDepartment"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "department_get_input_units",
+      "name": "Get Input Units",
+      "action_method": "GetInputUnits",
+      "http_method": "GET",
+      "route": "api/Department/input-unit",
+      "business_purpose": "Retrieve input units",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/factory-settings/department:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve input units",
+      "detailed_description": "Retrieve input units. It calls ICommon.getUserByToken, IDepartment.GetOutputUnit. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve input units",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Department",
+          "GET api/Department/{id}",
+          "GET api/Department/output-unit"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "department_get_input_units",
+        "description": "Retrieve input units",
+        "http_method": "GET",
+        "endpoint": "api/Department/input-unit",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/DepartmentController.cs",
+        "action_method": "GetInputUnits",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Department_repo.cs",
+          "Interfaces/IDepartment.cs"
+        ]
+      },
+      "module": "Organization Management",
+      "business_logic": {
+        "operation_summary": "Retrieve input units — calls ICommon.getUserByToken, IDepartment.GetOutputUnit",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IDepartment.GetOutputUnit"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Department_repo (Repositories/Department_repo.cs) via IDepartment"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "department_get_users",
+      "name": "Get Users",
+      "action_method": "GetUsers",
+      "http_method": "GET",
+      "route": "api/Department/users",
+      "business_purpose": "Retrieve users",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/factory-settings/department:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve users",
+      "detailed_description": "Retrieve users. It calls ICommon.getUserByToken, IDepartment.GetUsers. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve users",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Department",
+          "GET api/Department/{id}",
+          "GET api/Department/output-unit"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "department_get_users",
+        "description": "Retrieve users",
+        "http_method": "GET",
+        "endpoint": "api/Department/users",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/DepartmentController.cs",
+        "action_method": "GetUsers",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Department_repo.cs",
+          "Interfaces/IDepartment.cs"
+        ]
+      },
+      "module": "Organization Management",
+      "business_logic": {
+        "operation_summary": "Retrieve users — calls ICommon.getUserByToken, IDepartment.GetUsers",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IDepartment.GetUsers"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Department_repo (Repositories/Department_repo.cs) via IDepartment"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,748 @@
+{
+  "controller": "GoalMasterController",
+  "file": "Controllers/GoalMasterController.cs",
+  "base_route": "api/GoalMaster",
+  "description": "Goal master data",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/accounts-settings/goal-master",
+        "module_code": "settings",
+        "section": "accounts-settings",
+        "sub_section": "goal-master",
+        "frontend_routes": [
+          "/settings/accounts-settings/goal-master"
+        ],
+        "menu_route_confirmed": true,
+        "display_names": {
+          "module": "Settings",
+          "section": "Accounts Settings",
+          "sub_section": "Goal Master"
+        }
+      }
+    ],
+    "section_configuration_keys": [
+      "GoalMaster"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Settings",
+        "section": "Accounts Settings",
+        "sub_section": "Goal Master"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "goa_001",
+      "name": "GetAll",
+      "http_method": "GET",
+      "route": "api/GoalMaster",
+      "business_purpose": "GET operation for GoalMasterController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [
+          "GetGoalMaster",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/GoalMasterController.cs",
+        "action_method": "GetAll"
+      },
+      "required_permission": "settings/accounts-settings/goal-master:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "GET operation for GoalMasterController",
+      "detailed_description": "GET operation for GoalMasterController. It calls ICommon.getUserByToken, IGoalMaster.GetGoalMasterData, IGoalMaster.GetGoalMasterActions. Data access uses stored procedure(s): GetGoalMaster, GetSectionActions. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to GET operation for goalmastercontroller",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/GoalMaster",
+          "GET api/GoalMaster/{id}",
+          "GET api/GoalMaster/goaltypeCategory"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "goal_master_get_all",
+        "description": "GET operation for GoalMasterController",
+        "http_method": "GET",
+        "endpoint": "api/GoalMaster",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "goa_002",
+      "name": "GetGoalMasterById",
+      "http_method": "GET",
+      "route": "api/GoalMaster/{id}",
+      "business_purpose": "GET operation for GoalMasterController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid Goal ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Goal not found.",
+            "when": "goal == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/GoalMasterController.cs",
+        "action_method": "GetGoalMasterById"
+      },
+      "required_permission": "settings/accounts-settings/goal-master:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "GET operation for GoalMasterController",
+      "detailed_description": "GET operation for GoalMasterController. It validates the request, then calls IGoalMaster.GetGoalMasterById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid Goal ID is required. [when id <= 0]",
+        "not_found": "404: Goal not found. [when goal == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to GET operation for goalmastercontroller",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/GoalMaster",
+          "GET api/GoalMaster/{id}",
+          "GET api/GoalMaster/goaltypeCategory"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "goal_master_get_goal_master_by_id",
+        "description": "GET operation for GoalMasterController",
+        "http_method": "GET",
+        "endpoint": "api/GoalMaster/{id}",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "goa_003",
+      "name": "CreateGoalMaster",
+      "http_method": "POST",
+      "route": "api/GoalMaster",
+      "business_purpose": "POST operation for GoalMasterController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "CREATE/UPDATE/DELETE",
+      "business_logic": {
+        "operation_summary": "POST operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "GoalMaster: INSERT; AuditLog: INSERT",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid token or user not found.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "Goal name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.GoalName)"
+          },
+          {
+            "returns": 400,
+            "message": "Goal type is required.",
+            "when": "string.IsNullOrWhiteSpace(request.GoalType)"
+          },
+          {
+            "returns": 400,
+            "message": "Role level is required.",
+            "when": "request.role_level <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Goal with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/GoalMasterController.cs",
+        "action_method": "CreateGoalMaster"
+      },
+      "required_permission": "settings/accounts-settings/goal-master:delete",
+      "permission_flags": [
+        "delete",
+        "add",
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "POST operation for GoalMasterController",
+      "detailed_description": "POST operation for GoalMasterController. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IGoalMaster.GetRoleLevelById, IGoalMaster.IsGoalMasterDuplicateAsync, then writes an audit log entry. Persists changes to: GoalMaster: INSERT, AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; Goal name is required. [when string.IsNullOrWhiteSpace(request.GoalName)]; Goal type is required. [when string.IsNullOrWhiteSpace(request.GoalType)]; Role level is required. [when request.role_level <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid token or user not found. [when current_user == null]; Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "Goal with this name already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to POST operation for goalmastercontroller",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/GoalMaster",
+          "GET api/GoalMaster/goaltypeCategory",
+          "GET api/GoalMaster/userLevel"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "goal_master_create_goal_master",
+        "description": "POST operation for GoalMasterController",
+        "http_method": "POST",
+        "endpoint": "api/GoalMaster",
+        "parameters": {},
+        "operation_type": "CREATE/UPDATE/DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "goa_004",
+      "name": "UpdateGoalMaster",
+      "http_method": "PUT",
+      "route": "api/GoalMaster/{goalId}",
+      "business_purpose": "PUT operation for GoalMasterController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "CREATE/UPDATE/DELETE",
+      "business_logic": {
+        "operation_summary": "PUT operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "GoalMaster: UPDATE; AuditLog: INSERT",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Goal ID is required.",
+            "when": "goalId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Goal with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/GoalMasterController.cs",
+        "action_method": "UpdateGoalMaster"
+      },
+      "required_permission": "settings/accounts-settings/goal-master:delete",
+      "permission_flags": [
+        "delete",
+        "add",
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "PUT operation for GoalMasterController",
+      "detailed_description": "PUT operation for GoalMasterController. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IGoalMaster.IsGoalMasterDuplicateAsync, IGoalMaster.GetGoalMasterById, then writes an audit log entry. Persists changes to: GoalMaster: UPDATE, AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid Goal ID is required. [when goalId <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "Goal with this name already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to PUT operation for goalmastercontroller",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/GoalMaster",
+          "GET api/GoalMaster/goaltypeCategory",
+          "GET api/GoalMaster/userLevel"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "goal_master_update_goal_master",
+        "description": "PUT operation for GoalMasterController",
+        "http_method": "PUT",
+        "endpoint": "api/GoalMaster/{goalId}",
+        "parameters": {},
+        "operation_type": "CREATE/UPDATE/DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "goa_005",
+      "name": "GetGoalTypeCategory",
+      "http_method": "GET",
+      "route": "api/GoalMaster/goaltypeCategory",
+      "business_purpose": "GET operation for GoalMasterController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/GoalMasterController.cs",
+        "action_method": "GetGoalTypeCategory"
+      },
+      "required_permission": "settings/accounts-settings/goal-master:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "GET operation for GoalMasterController",
+      "detailed_description": "GET operation for GoalMasterController. It calls ICommon.getUserByToken, IGoalMaster.GetGoalTypeCategory. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to GET operation for goalmastercontroller",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/GoalMaster",
+          "GET api/GoalMaster/{id}",
+          "GET api/GoalMaster/goaltypeCategory"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "goal_master_get_goal_type_category",
+        "description": "GET operation for GoalMasterController",
+        "http_method": "GET",
+        "endpoint": "api/GoalMaster/goaltypeCategory",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "goa_006",
+      "name": "GetUserLevel",
+      "http_method": "GET",
+      "route": "api/GoalMaster/userLevel",
+      "business_purpose": "GET operation for GoalMasterController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/GoalMasterController.cs",
+        "action_method": "GetUserLevel"
+      },
+      "required_permission": "settings/accounts-settings/goal-master:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "GET operation for GoalMasterController",
+      "detailed_description": "GET operation for GoalMasterController. It calls ICommon.getUserByToken, IGoalMaster.GetUserLevels. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to GET operation for goalmastercontroller",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/GoalMaster",
+          "GET api/GoalMaster/{id}",
+          "GET api/GoalMaster/goaltypeCategory"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "goal_master_get_user_level",
+        "description": "GET operation for GoalMasterController",
+        "http_method": "GET",
+        "endpoint": "api/GoalMaster/userLevel",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "goa_007",
+      "name": "Delete",
+      "http_method": "DELETE",
+      "route": "api/GoalMaster/{id}",
+      "business_purpose": "DELETE operation for GoalMasterController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "CREATE/UPDATE/DELETE",
+      "business_logic": {
+        "operation_summary": "DELETE operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "GoalMaster: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Goal ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Goal not found.",
+            "when": "existingGoal == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/GoalMasterController.cs",
+        "action_method": "Delete"
+      },
+      "required_permission": "settings/accounts-settings/goal-master:delete",
+      "permission_flags": [
+        "delete",
+        "add",
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "DELETE operation for GoalMasterController",
+      "detailed_description": "DELETE operation for GoalMasterController. It validates the request, then calls ICommon.getUserByToken, IGoalMaster.GetGoalMasterById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: GoalMaster: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid Goal ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Goal not found. [when existingGoal == null]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to DELETE operation for goalmastercontroller",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/GoalMaster",
+          "GET api/GoalMaster/goaltypeCategory",
+          "GET api/GoalMaster/userLevel"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "goal_master_delete",
+        "description": "DELETE operation for GoalMasterController",
+        "http_method": "DELETE",
+        "endpoint": "api/GoalMaster/{id}",
+        "parameters": {},
+        "operation_type": "CREATE/UPDATE/DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    }
+  ]
+}

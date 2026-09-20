@@ -1,0 +1,2621 @@
+{
+  "controller": "ClientController",
+  "file": "Controllers/ClientController.cs",
+  "module": "Lead and Client Management",
+  "base_route": "api/Client",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages client records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "crm/contact",
+        "module_code": "crm",
+        "section": "contact",
+        "sub_section": null,
+        "frontend_routes": [
+          "/crm/contact"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "crm/contacts",
+        "module_code": "crm",
+        "section": "contacts",
+        "sub_section": null,
+        "frontend_routes": [
+          "/crm/contacts"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "also_called_from_menus": [
+      "crm/contact",
+      "crm/contacts",
+      "crm/firms",
+      "crm/projects"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Customer Relationship Management",
+        "section": "Client",
+        "sub_section": "Client"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "client_client_approval",
+      "name": "Client Approval",
+      "action_method": "ClientApproval",
+      "http_method": "POST",
+      "route": "api/Client/approval",
+      "business_purpose": "Handle client approval",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "ClientApprovalRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "IsApproved",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "crm/contact",
+        "crm/contacts"
+      ],
+      "short_description": "Handle client approval",
+      "detailed_description": "Handle client approval. It validates the request, then calls ICommon.getUserByToken, IClient.GetUserById, IClient.GetClientById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: User not found [when current_user == null]",
+        "not_found": "404: Client not found [when client == null]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle client approval",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body ClientApprovalRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Client/firms",
+          "GET api/Client",
+          "GET api/Client/clientType"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "client_client_approval",
+        "description": "Handle client approval",
+        "http_method": "POST",
+        "endpoint": "api/Client/approval",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "IsApproved": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Approved (body)"
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Approves the record and advances its workflow"
+      },
+      "source": {
+        "controller_file": "Controllers/ClientController.cs",
+        "action_method": "ClientApproval",
+        "related_dto_files": [
+          "Controllers/ClientController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Client_repo.cs",
+          "Interfaces/IClient.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Handle client approval — validates the request, calls ICommon.getUserByToken, IClient.GetUserById, IClient.GetClientById",
+        "preconditions": "Valid Bearer JWT; request body of type ClientApprovalRequest (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets client.is_approved, client.operated_by, client.operated_date, client.modified_by, client.modified_date and saves changes",
+        "validations": "User not found",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IClient.GetUserById",
+          "IClient.GetClientById",
+          "IClient.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Client_repo (Repository/Client_repo.cs) via IClient"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "User not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Client not found",
+            "when": "client == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "client_client_reject",
+      "name": "Client Reject",
+      "action_method": "ClientReject",
+      "http_method": "POST",
+      "route": "api/Client/reject",
+      "business_purpose": "Handle client reject",
+      "data_effect": "REJECTION",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "ClientRejectRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "IsRejected",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "REJECTION",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "crm/contacts:reject",
+      "permission_flags": [
+        "reject"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Handle client reject",
+      "detailed_description": "Handle client reject. It validates the request, then calls ICommon.getUserByToken, IClient.GetClientById, IClient.GetUserById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: User not found [when current_user == null]",
+        "not_found": "404: Client not found [when client == null]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle client reject",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body ClientRejectRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Client/firms",
+          "GET api/Client",
+          "GET api/Client/clientType"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "client_client_reject",
+        "description": "Handle client reject",
+        "http_method": "POST",
+        "endpoint": "api/Client/reject",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "IsRejected": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Rejected (body)"
+          }
+        },
+        "operation_type": "REJECTION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Rejects the record"
+      },
+      "source": {
+        "controller_file": "Controllers/ClientController.cs",
+        "action_method": "ClientReject",
+        "related_dto_files": [
+          "Controllers/ClientController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Client_repo.cs",
+          "Interfaces/IClient.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Handle client reject — validates the request, calls ICommon.getUserByToken, IClient.GetClientById, IClient.GetUserById",
+        "preconditions": "Valid Bearer JWT; request body of type ClientRejectRequest (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets client.is_rejected, client.operated_by, client.operated_date, client.modified_by, client.modified_date and saves changes",
+        "validations": "User not found",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IClient.GetClientById",
+          "IClient.GetUserById",
+          "IClient.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Client_repo (Repository/Client_repo.cs) via IClient"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Client not found",
+            "when": "client == null"
+          },
+          {
+            "returns": 400,
+            "message": "User not found",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "client_transfer_to_firm",
+      "name": "Transfer To Firm",
+      "action_method": "TransferToFirm",
+      "http_method": "POST",
+      "route": "api/Client/transfer-to-firm",
+      "business_purpose": "Transfer to firm",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "TransferToFirmRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          409,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "crm/contacts:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Transfer to firm",
+      "detailed_description": "Transfer to firm. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IClient.GetClientById, IClient.DuplicateFirmCheckAsync. Possible responses: 200, 400, 401, 404, 409, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid client ID is required [when request == null || request.Id <= 0]; This contact is already a firm [when string.Equals(client.Class_type, \"Firm\", StringComparison.OrdinalIgnoreCase)]",
+        "not_found": "404: Client not found [when client == null]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "A firm with the same name already exists [when duplicateFirm]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to transfer to firm",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body TransferToFirmRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Client/firms",
+          "GET api/Client",
+          "GET api/Client/clientType"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "client_transfer_to_firm",
+        "description": "Transfer to firm",
+        "http_method": "POST",
+        "endpoint": "api/Client/transfer-to-firm",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/ClientController.cs",
+        "action_method": "TransferToFirm",
+        "related_dto_files": [
+          "Controllers/ClientController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Client_repo.cs",
+          "Interfaces/IClient.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Transfer to firm — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, IClient.GetClientById, IClient.DuplicateFirmCheckAsync",
+        "preconditions": "Valid Bearer JWT; request body of type TransferToFirmRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets client.Class_type, client.modified_by, client.modified_date and saves changes",
+        "validations": "Valid client ID is required; This contact is already a firm",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IClient.GetClientById",
+          "IClient.DuplicateFirmCheckAsync",
+          "IClient.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Client_repo (Repository/Client_repo.cs) via IClient"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid client ID is required",
+            "when": "request == null || request.Id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Client not found",
+            "when": "client == null"
+          },
+          {
+            "returns": 400,
+            "message": "This contact is already a firm",
+            "when": "string.Equals(client.Class_type, \"Firm\", StringComparison.OrdinalIgnoreCase)"
+          },
+          {
+            "returns": 409,
+            "message": "A firm with the same name already exists",
+            "when": "duplicateFirm"
+          }
+        ]
+      }
+    },
+    {
+      "id": "client_transfer_to_contact",
+      "name": "Transfer To Contact",
+      "action_method": "TransferToContact",
+      "http_method": "POST",
+      "route": "api/Client/transfer-to-contact",
+      "business_purpose": "Transfer to contact",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "TransferToContactRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          409,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "crm/firms:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Transfer to contact",
+      "detailed_description": "Transfer to contact. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IClient.GetClientById, IClient.DuplicateCheckAsync. Possible responses: 200, 400, 401, 404, 409, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid firm ID is required [when request == null || request.Id <= 0]; This firm is already a contact [when string.Equals(client.Class_type, \"Individual\", StringComparison.OrdinalIgnoreCase)]",
+        "not_found": "404: Firm not found [when client == null]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "A contact with the same phone number already exists [when duplicateContact]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to transfer to contact",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body TransferToContactRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Client/firms",
+          "GET api/Client",
+          "GET api/Client/clientType"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "client_transfer_to_contact",
+        "description": "Transfer to contact",
+        "http_method": "POST",
+        "endpoint": "api/Client/transfer-to-contact",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/ClientController.cs",
+        "action_method": "TransferToContact",
+        "related_dto_files": [
+          "Controllers/ClientController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Client_repo.cs",
+          "Interfaces/IClient.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Transfer to contact — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, IClient.GetClientById, IClient.DuplicateCheckAsync",
+        "preconditions": "Valid Bearer JWT; request body of type TransferToContactRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets client.Class_type, client.modified_by, client.modified_date and saves changes",
+        "validations": "Valid firm ID is required; This firm is already a contact",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IClient.GetClientById",
+          "IClient.DuplicateCheckAsync",
+          "IClient.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Client_repo (Repository/Client_repo.cs) via IClient"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid firm ID is required",
+            "when": "request == null || request.Id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Firm not found",
+            "when": "client == null"
+          },
+          {
+            "returns": 400,
+            "message": "This firm is already a contact",
+            "when": "string.Equals(client.Class_type, \"Individual\", StringComparison.OrdinalIgnoreCase)"
+          },
+          {
+            "returns": 409,
+            "message": "A contact with the same phone number already exists",
+            "when": "duplicateContact"
+          }
+        ]
+      }
+    },
+    {
+      "id": "client_get_firms",
+      "name": "Get Firms",
+      "action_method": "GetFirms",
+      "http_method": "GET",
+      "route": "api/Client/firms",
+      "business_purpose": "Retrieve firms",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "searchText",
+          "type": "string",
+          "required": false,
+          "default": "\"\""
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/contact:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/contacts",
+        "crm/firms"
+      ],
+      "short_description": "Retrieve firms",
+      "detailed_description": "Retrieve firms. It calls ICommon.getUserByToken, IClient.GetAllFirmByName. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve firms",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Client/firms",
+          "GET api/Client",
+          "GET api/Client/clientType"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "client_get_firms",
+        "description": "Retrieve firms",
+        "http_method": "GET",
+        "endpoint": "api/Client/firms",
+        "parameters": {
+          "searchText": {
+            "type": "string",
+            "required": false,
+            "description": "search Text (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ClientController.cs",
+        "action_method": "GetFirms",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Client_repo.cs",
+          "Interfaces/IClient.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Retrieve firms — calls ICommon.getUserByToken, IClient.GetAllFirmByName",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IClient.GetAllFirmByName"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Client_repo (Repository/Client_repo.cs) via IClient"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "client_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/Client",
+      "business_purpose": "Retrieve all client records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "clienttype",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "branch",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "user",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "FL",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "Scheme",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "Client[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/contact:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/contacts"
+      ],
+      "short_description": "Retrieve all client records",
+      "detailed_description": "Retrieve all client records. It calls ICommon.getUserByToken, IClient.GetClientData, IClient.GetClientActions. Data access uses stored procedure(s): GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all client records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Client/firms",
+          "GET api/Client",
+          "GET api/Client/clientType"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "client_get_all",
+        "description": "Retrieve all client records",
+        "http_method": "GET",
+        "endpoint": "api/Client",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "clienttype": {
+            "type": "int",
+            "required": false,
+            "description": "clienttype (query)"
+          },
+          "branch": {
+            "type": "int",
+            "required": false,
+            "description": "branch (query)"
+          },
+          "user": {
+            "type": "int",
+            "required": false,
+            "description": "user (query)"
+          },
+          "FL": {
+            "type": "string",
+            "required": false,
+            "description": "FL (query)"
+          },
+          "Scheme": {
+            "type": "string",
+            "required": false,
+            "description": "Scheme (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ClientController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [
+          "Models/Client.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Client_repo.cs",
+          "Interfaces/IClient.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all client records — calls ICommon.getUserByToken, IClient.GetClientData, IClient.GetClientActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IClient.GetClientData",
+          "IClient.GetClientActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Client_repo (Repository/Client_repo.cs) via IClient"
+        ],
+        "stored_procedures": [
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "client_create_client",
+      "name": "Create Client",
+      "action_method": "CreateClient",
+      "http_method": "POST",
+      "route": "api/Client",
+      "business_purpose": "Create client",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "clientnewdto (inline)",
+        "content_type": "multipart/form-data",
+        "properties": [
+          {
+            "name": "inputdata",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "file",
+            "type": "IFormFile",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          409,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; a duplicate check exists so repeating usually fails with a conflict/validation message"
+      },
+      "required_permission": "crm/contact:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/contacts"
+      ],
+      "short_description": "Create client",
+      "detailed_description": "Create client. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IClient.GetClientById, IClient.GetInfluencerSourceByID, then processes uploaded files. Persists changes to: Client: INSERT, ComplaintsFile: INSERT. Possible responses: 200, 400, 401, 409, 500.",
+      "error_handling": {
+        "validation_errors": "400: Region and Area are required [when request.RegionId <= 0 || request.AreaId <= 0]; Client type is required [when request.ClientTypeId <= 0]; Client not found [when client == null]; Invalid Organization [when organizations.Count != organizationIds.Count]; Invalid Influencer Source [when source == null]; Invalid Buying Trigger Type [when triggers.Count != buyingTriggerIds.Count]; (+4 more)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]; Invalid token [when currentUser == null]",
+        "business_rule_errors": "Duplicate client found",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create client",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body clientnewdto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Client/firms",
+          "GET api/Client",
+          "GET api/Client/clientType"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "client_create_client",
+        "description": "Create client",
+        "http_method": "POST",
+        "endpoint": "api/Client",
+        "parameters": {
+          "inputdata": {
+            "type": "string",
+            "required": false,
+            "description": "inputdata (body)"
+          },
+          "file": {
+            "type": "IFormFile",
+            "required": false,
+            "description": "file (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/ClientController.cs",
+        "action_method": "CreateClient",
+        "related_dto_files": [
+          "Controllers/ClientController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Client_repo.cs",
+          "Interfaces/IClient.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Create client — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, IClient.GetClientById, IClient.GetInfluencerSourceByID, processes uploaded files",
+        "preconditions": "Valid Bearer JWT; request body of type clientnewdto (inline); passes 11 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Client: INSERT; ComplaintsFile: INSERT",
+        "validations": "Region and Area are required; Client type is required; Client not found; Invalid Organization; Invalid Influencer Source; Invalid Buying Trigger Type; (+4 more)",
+        "side_effects": "Handles file upload/storage",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IClient.GetClientById",
+          "IClient.GetInfluencerSourceByID",
+          "IClient.DuplicateCheckAsync",
+          "IClient.GetDuplicateClientCreatorNameAsync",
+          "IClient.AttachClientRelations",
+          "IClient.CreateClient",
+          "ICommon.CreateComplaintFilesRange"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Client_repo (Repository/Client_repo.cs) via IClient"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Region and Area are required",
+            "when": "request.RegionId <= 0 || request.AreaId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Client type is required",
+            "when": "request.ClientTypeId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Client not found",
+            "when": "client == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Organization",
+            "when": "organizations.Count != organizationIds.Count"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Influencer Source",
+            "when": "source == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Buying Trigger Type",
+            "when": "triggers.Count != buyingTriggerIds.Count"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Work Type",
+            "when": "workTypes.Count != workTypeIds.Count"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Project Type",
+            "when": "projectTypes.Count != projectTypeIds.Count"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Brand",
+            "when": "brands.Count != brandIds.Count"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Preferred Dealer",
+            "when": "preferredDealers.Count != preferredDealerIds.Count"
+          },
+          {
+            "returns": 409,
+            "message": "Duplicate client found",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "client_update_kyc_client",
+      "name": "Update KYC Client",
+      "action_method": "UpdateKYCClient",
+      "http_method": "PUT",
+      "route": "api/Client/KYC-complete",
+      "business_purpose": "Update KYC client",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "clientKYCDto (inline)",
+        "content_type": "multipart/form-data",
+        "properties": [
+          {
+            "name": "inputdata",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "file",
+            "type": "IFormFile",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "crm/contacts:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/contact"
+      ],
+      "short_description": "Update KYC client",
+      "detailed_description": "Update KYC client. It validates the request, then calls ICommon.getUserByToken, IClient.GetClientById, IClient.GetInfluencerSourceByID, then processes uploaded files. Persists changes to: Client: UPDATE, ComplaintsFile: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid client ID is required [when request.Id <= 0]; Invalid Organization [when organizations.Count != organizationIds.Count]; Invalid Influencer Source [when source == null]; Invalid Buying Trigger Type [when triggers.Count != buyingTriggerIds.Count]; Invalid Work Type [when workTypes.Count != workTypeIds.Count]; Invalid Project Type [when projectTypes.Count != projectTypeIds.Count]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]; Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update KYC client",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body clientKYCDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Client/firms",
+          "GET api/Client",
+          "GET api/Client/clientType"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "client_update_kyc_client",
+        "description": "Update KYC client",
+        "http_method": "PUT",
+        "endpoint": "api/Client/KYC-complete",
+        "parameters": {
+          "inputdata": {
+            "type": "string",
+            "required": false,
+            "description": "inputdata (body)"
+          },
+          "file": {
+            "type": "IFormFile",
+            "required": false,
+            "description": "file (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/ClientController.cs",
+        "action_method": "UpdateKYCClient",
+        "related_dto_files": [
+          "Controllers/ClientController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Client_repo.cs",
+          "Interfaces/IClient.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Update KYC client — validates the request, calls ICommon.getUserByToken, IClient.GetClientById, IClient.GetInfluencerSourceByID, processes uploaded files",
+        "preconditions": "Valid Bearer JWT; request body of type clientKYCDto (inline); passes 6 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Client: UPDATE; ComplaintsFile: INSERT; sets client.Email, client.Address, client.Anniversary_date, client.Billing_Information, client.Social_Media_Links, client.gst_no",
+        "validations": "Valid client ID is required; Invalid Organization; Invalid Influencer Source; Invalid Buying Trigger Type; Invalid Work Type; Invalid Project Type",
+        "side_effects": "Handles file upload/storage",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IClient.GetClientById",
+          "IClient.GetInfluencerSourceByID",
+          "IClient.AttachClientRelations",
+          "IClient.UpdateClient",
+          "ICommon.CreateComplaintFilesRange"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Client_repo (Repository/Client_repo.cs) via IClient"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid client ID is required",
+            "when": "request.Id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Organization",
+            "when": "organizations.Count != organizationIds.Count"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Influencer Source",
+            "when": "source == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Buying Trigger Type",
+            "when": "triggers.Count != buyingTriggerIds.Count"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Work Type",
+            "when": "workTypes.Count != workTypeIds.Count"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Project Type",
+            "when": "projectTypes.Count != projectTypeIds.Count"
+          }
+        ]
+      }
+    },
+    {
+      "id": "client_delete_client",
+      "name": "Delete Client",
+      "action_method": "DeleteClient",
+      "http_method": "DELETE",
+      "route": "api/Client/{id}",
+      "business_purpose": "Delete client",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "crm/contact:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/contacts"
+      ],
+      "short_description": "Delete client",
+      "detailed_description": "Delete client. It validates the request, then calls ICommon.getUserByToken, IClient.GetClientById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: Client: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid client ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Client not found. [when existingClient == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete client",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Client/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "client_delete_client",
+        "description": "Delete client",
+        "http_method": "DELETE",
+        "endpoint": "api/Client/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/ClientController.cs",
+        "action_method": "DeleteClient",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Client_repo.cs",
+          "Interfaces/IClient.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Delete client — validates the request, calls ICommon.getUserByToken, IClient.GetClientById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Client: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "validations": "Valid client ID is required.",
+        "side_effects": "AuditLog DELETE (Customer Relationship Management > Client > Client)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IClient.GetClientById",
+          "ICommon.ToJsonString",
+          "IClient.DeleteClient",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Client_repo (Repository/Client_repo.cs) via IClient"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid client ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Client not found.",
+            "when": "existingClient == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "client_update_client",
+      "name": "Update Client",
+      "action_method": "UpdateClient",
+      "http_method": "PUT",
+      "route": "api/Client/{clientId}",
+      "business_purpose": "Update client",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "clientId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "clientnewdto (inline)",
+        "content_type": "multipart/form-data",
+        "properties": [
+          {
+            "name": "inputdata",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "file",
+            "type": "IFormFile",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "crm/contacts:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/contact"
+      ],
+      "short_description": "Update client",
+      "detailed_description": "Update client. It validates the request, then calls ICommon.getUserByToken, IClient.GetClientById, IClient.GetRegionByID, then processes uploaded files. Persists changes to: ComplaintsFile: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid client ID is required [when clientId <= 0]; At least one field must be provided for update; Invalid Organization [when organizations.Count != organizationIds.Count]; Invalid Buying Trigger Type [when triggers.Count != buyingTriggerIds.Count]; Invalid Work Type [when workTypes.Count != workTypeIds.Count]; Invalid Project Type [when projectTypes.Count != projectTypeIds.Count]; (+2 more)",
+        "not_found": "404: Client not found [when client == null]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]; Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update client",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "clientId (route)",
+          "request body clientnewdto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Client/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "client_update_client",
+        "description": "Update client",
+        "http_method": "PUT",
+        "endpoint": "api/Client/{clientId}",
+        "parameters": {
+          "clientId": {
+            "type": "int",
+            "required": true,
+            "description": "client Id (route)"
+          },
+          "inputdata": {
+            "type": "string",
+            "required": false,
+            "description": "inputdata (body)"
+          },
+          "file": {
+            "type": "IFormFile",
+            "required": false,
+            "description": "file (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/ClientController.cs",
+        "action_method": "UpdateClient",
+        "related_dto_files": [
+          "Controllers/ClientController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Client_repo.cs",
+          "Interfaces/IClient.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Update client — validates the request, calls ICommon.getUserByToken, IClient.GetClientById, IClient.GetRegionByID, processes uploaded files",
+        "preconditions": "Valid Bearer JWT; route parameter(s) clientId must reference existing record(s); request body of type clientnewdto (inline); passes 9 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "ComplaintsFile: INSERT; sets client.Name, client.Contact, client.Email, client.Address, client.DOB, client.region and saves changes",
+        "validations": "Valid client ID is required; At least one field must be provided for update; Invalid Organization; Invalid Buying Trigger Type; Invalid Work Type; Invalid Project Type; (+2 more)",
+        "side_effects": "Handles file upload/storage",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IClient.GetClientById",
+          "IClient.GetRegionByID",
+          "IClient.GetAreaByID",
+          "IClient.GetSubAreaByID",
+          "IClient.GetClientTypeByID",
+          "IClient.GetInfluencerSourceByID",
+          "IClient.SaveChangesAsync",
+          "ICommon.CreateComplaintFilesRange"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Client_repo (Repository/Client_repo.cs) via IClient"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid client ID is required",
+            "when": "clientId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field must be provided for update",
+            "when": null
+          },
+          {
+            "returns": 404,
+            "message": "Client not found",
+            "when": "client == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Organization",
+            "when": "organizations.Count != organizationIds.Count"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Buying Trigger Type",
+            "when": "triggers.Count != buyingTriggerIds.Count"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Work Type",
+            "when": "workTypes.Count != workTypeIds.Count"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Project Type",
+            "when": "projectTypes.Count != projectTypeIds.Count"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Brand",
+            "when": "brands.Count != brandIds.Count"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Preferred Dealer",
+            "when": "preferredDealers.Count != preferredDealerIds.Count"
+          }
+        ]
+      }
+    },
+    {
+      "id": "client_get_client_type",
+      "name": "Get Client Type",
+      "action_method": "GetClientType",
+      "http_method": "GET",
+      "route": "api/Client/clientType",
+      "business_purpose": "Retrieve client type",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/contact:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/projects",
+        "crm/contacts"
+      ],
+      "short_description": "Retrieve client type",
+      "detailed_description": "Retrieve client type. It calls ICommon.getUserByToken, IClient.GetClientTypes. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve client type",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Client/firms",
+          "GET api/Client",
+          "GET api/Client/clientType"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "client_get_client_type",
+        "description": "Retrieve client type",
+        "http_method": "GET",
+        "endpoint": "api/Client/clientType",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ClientController.cs",
+        "action_method": "GetClientType",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Client_repo.cs",
+          "Interfaces/IClient.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Retrieve client type — calls ICommon.getUserByToken, IClient.GetClientTypes",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IClient.GetClientTypes"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Client_repo (Repository/Client_repo.cs) via IClient"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "client_get_organization",
+      "name": "Get Organization",
+      "action_method": "GetOrganization",
+      "http_method": "GET",
+      "route": "api/Client/organization",
+      "business_purpose": "Retrieve organization",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/contact:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/contacts"
+      ],
+      "short_description": "Retrieve organization",
+      "detailed_description": "Retrieve organization. It calls ICommon.getUserByToken, IClient.GetOrganization. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve organization",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Client/firms",
+          "GET api/Client",
+          "GET api/Client/clientType"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "client_get_organization",
+        "description": "Retrieve organization",
+        "http_method": "GET",
+        "endpoint": "api/Client/organization",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ClientController.cs",
+        "action_method": "GetOrganization",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Client_repo.cs",
+          "Interfaces/IClient.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Retrieve organization — calls ICommon.getUserByToken, IClient.GetOrganization",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IClient.GetOrganization"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Client_repo (Repository/Client_repo.cs) via IClient"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "client_get_buying_trigger_type",
+      "name": "Get Buying Trigger Type",
+      "action_method": "GetBuyingTriggerType",
+      "http_method": "GET",
+      "route": "api/Client/buyingTriggerType",
+      "business_purpose": "Retrieve buying trigger type",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/contact:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/contacts"
+      ],
+      "short_description": "Retrieve buying trigger type",
+      "detailed_description": "Retrieve buying trigger type. It calls ICommon.getUserByToken, IClient.GetBuyingTriggerTypes. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve buying trigger type",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Client/firms",
+          "GET api/Client",
+          "GET api/Client/clientType"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "client_get_buying_trigger_type",
+        "description": "Retrieve buying trigger type",
+        "http_method": "GET",
+        "endpoint": "api/Client/buyingTriggerType",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ClientController.cs",
+        "action_method": "GetBuyingTriggerType",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Client_repo.cs",
+          "Interfaces/IClient.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Retrieve buying trigger type — calls ICommon.getUserByToken, IClient.GetBuyingTriggerTypes",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IClient.GetBuyingTriggerTypes"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Client_repo (Repository/Client_repo.cs) via IClient"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "client_get_project_type",
+      "name": "Get Project Type",
+      "action_method": "GetProjectType",
+      "http_method": "GET",
+      "route": "api/Client/projectType",
+      "business_purpose": "Retrieve project type",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/contact:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/contacts"
+      ],
+      "short_description": "Retrieve project type",
+      "detailed_description": "Retrieve project type. It calls ICommon.getUserByToken, IClient.GetProjectTypes. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve project type",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Client/firms",
+          "GET api/Client",
+          "GET api/Client/clientType"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "client_get_project_type",
+        "description": "Retrieve project type",
+        "http_method": "GET",
+        "endpoint": "api/Client/projectType",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ClientController.cs",
+        "action_method": "GetProjectType",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Client_repo.cs",
+          "Interfaces/IClient.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Retrieve project type — calls ICommon.getUserByToken, IClient.GetProjectTypes",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IClient.GetProjectTypes"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Client_repo (Repository/Client_repo.cs) via IClient"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "client_get_influencer_source",
+      "name": "Get Influencer Source",
+      "action_method": "GetInfluencerSource",
+      "http_method": "GET",
+      "route": "api/Client/source",
+      "business_purpose": "Retrieve influencer source",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/contact:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/contacts"
+      ],
+      "short_description": "Retrieve influencer source",
+      "detailed_description": "Retrieve influencer source. It calls ICommon.getUserByToken, IClient.GetInfluencerSource. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve influencer source",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Client/firms",
+          "GET api/Client",
+          "GET api/Client/clientType"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "client_get_influencer_source",
+        "description": "Retrieve influencer source",
+        "http_method": "GET",
+        "endpoint": "api/Client/source",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ClientController.cs",
+        "action_method": "GetInfluencerSource",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Client_repo.cs",
+          "Interfaces/IClient.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Retrieve influencer source — calls ICommon.getUserByToken, IClient.GetInfluencerSource",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IClient.GetInfluencerSource"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Client_repo (Repository/Client_repo.cs) via IClient"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "client_get_client_work_type",
+      "name": "Get Client Work Type",
+      "action_method": "GetClientWorkType",
+      "http_method": "GET",
+      "route": "api/Client/workType",
+      "business_purpose": "Retrieve client work type",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/contact:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/contacts"
+      ],
+      "short_description": "Retrieve client work type",
+      "detailed_description": "Retrieve client work type. It calls ICommon.getUserByToken, IClient.GetClientWorkTypes. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve client work type",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Client/firms",
+          "GET api/Client",
+          "GET api/Client/clientType"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "client_get_client_work_type",
+        "description": "Retrieve client work type",
+        "http_method": "GET",
+        "endpoint": "api/Client/workType",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ClientController.cs",
+        "action_method": "GetClientWorkType",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Client_repo.cs",
+          "Interfaces/IClient.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Retrieve client work type — calls ICommon.getUserByToken, IClient.GetClientWorkTypes",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IClient.GetClientWorkTypes"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Client_repo (Repository/Client_repo.cs) via IClient"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "client_get_by_id",
+      "name": "Get By Id",
+      "action_method": "GetById",
+      "http_method": "GET",
+      "route": "api/Client/{id}",
+      "business_purpose": "Retrieve a client record by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/contact:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/contacts",
+        "crm/projects",
+        "crm/firms"
+      ],
+      "short_description": "Retrieve a client record by ID",
+      "detailed_description": "Retrieve a client record by ID. It validates the request, then calls ICommon.getUserByToken, IClient.GetClientById, IClient.GetAllProjectsByClientAsync. Possible responses: 200, 400, 401, 404.",
+      "error_handling": {
+        "validation_errors": "400: Invalid firm ID provided. [when id <= 0]",
+        "not_found": "404: Client not found [when client == null]",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve a client record by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Client/firms",
+          "GET api/Client",
+          "GET api/Client/clientType"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "client_get_by_id",
+        "description": "Retrieve a client record by ID",
+        "http_method": "GET",
+        "endpoint": "api/Client/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ClientController.cs",
+        "action_method": "GetById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Client_repo.cs",
+          "Interfaces/IClient.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Retrieve a client record by ID — validates the request, calls ICommon.getUserByToken, IClient.GetClientById, IClient.GetAllProjectsByClientAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Invalid firm ID provided.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IClient.GetClientById",
+          "IClient.GetAllProjectsByClientAsync",
+          "IClient.GetAllVisitByClientAsync",
+          "IClient.GetAllSecondaryOrderByClientAsync",
+          "IClient.GetAllDealersByClientAsync",
+          "IClient.GetSchemeByClientAsync",
+          "IClient.GetSchemeRequestsBySchemeIdsAsync",
+          "IClient.GetInfluencerSchemedOrder",
+          "ICommon.GetComplaintFilesById",
+          "IClient.GetInfluencerProjectsWithRelatedInfluencersAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Client_repo (Repository/Client_repo.cs) via IClient"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid firm ID provided.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Client not found",
+            "when": "client == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "client_get_by_id_for_influencer_view",
+      "name": "Get By Id For Influencer View",
+      "action_method": "GetByIdForInfluencerView",
+      "http_method": "GET",
+      "route": "api/Client/InfluencerView",
+      "business_purpose": "Retrieve by ID for influencer view",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/contact:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/contacts"
+      ],
+      "short_description": "Retrieve by ID for influencer view",
+      "detailed_description": "Retrieve by ID for influencer view. It validates the request, then calls ICommon.getUserByToken, IClient.GetClientById, IClient.GetAllClientTypesByClientAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid client ID provided. [when id <= 0]",
+        "not_found": "404: Client not found [when client == null]",
+        "unauthorized": "401/403: Unauthorized [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve by ID for influencer view",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/Client/firms",
+          "GET api/Client",
+          "GET api/Client/clientType"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "client_get_by_id_for_influencer_view",
+        "description": "Retrieve by ID for influencer view",
+        "http_method": "GET",
+        "endpoint": "api/Client/InfluencerView",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ClientController.cs",
+        "action_method": "GetByIdForInfluencerView",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Client_repo.cs",
+          "Interfaces/IClient.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Retrieve by ID for influencer view — validates the request, calls ICommon.getUserByToken, IClient.GetClientById, IClient.GetAllClientTypesByClientAsync",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): id; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Invalid client ID provided.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IClient.GetClientById",
+          "IClient.GetAllClientTypesByClientAsync",
+          "IClient.GetLinkedProductsByClientAsync",
+          "IClient.GetLinkedTeamsByClientAsync",
+          "IClient.GetLinkedDealersByClientAsync",
+          "IClient.GetAllProjectsByClientAsync",
+          "IClient.GetAllVisitByClientAsync",
+          "IClient.GetAllSecondaryOrderByClientAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Client_repo (Repository/Client_repo.cs) via IClient"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid client ID provided.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Client not found",
+            "when": "client == null"
+          }
+        ]
+      }
+    }
+  ]
+}

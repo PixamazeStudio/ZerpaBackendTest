@@ -1,0 +1,875 @@
+{
+  "controller": "BrandController",
+  "file": "Controllers/BrandController.cs",
+  "module": "Master Data - Product",
+  "base_route": "api/Brand",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages brand records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/company-settings/brands",
+        "module_code": "settings",
+        "section": "company-settings",
+        "sub_section": "brands",
+        "frontend_routes": [
+          "/settings/company-settings/brands"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "Brand"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Settings",
+        "section": "Company Settings",
+        "sub_section": "Brand"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "brand_get_all_brands",
+      "name": "Get All Brands",
+      "action_method": "GetAllBrands",
+      "http_method": "GET",
+      "route": "api/Brand",
+      "business_purpose": "Retrieve all brands",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "Brand[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/company-settings/brands:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all brands",
+      "detailed_description": "Retrieve all brands. It calls IBrand.GetBrandData, IBrand.GetBrandActions, ICommon.GetPagination. Data access uses stored procedure(s): GetBrandData. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all brands",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Brand",
+          "GET api/Brand/dropdown",
+          "GET api/Brand/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "brand_get_all_brands",
+        "description": "Retrieve all brands",
+        "http_method": "GET",
+        "endpoint": "api/Brand",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/BrandController.cs",
+        "action_method": "GetAllBrands",
+        "related_dto_files": [
+          "Models/Brand.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/Brand_repo.cs",
+          "Interfaces/IBrand.cs",
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Master Data - Product",
+      "business_logic": {
+        "operation_summary": "Retrieve all brands — calls IBrand.GetBrandData, IBrand.GetBrandActions, ICommon.GetPagination",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IBrand.GetBrandData",
+          "IBrand.GetBrandActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Brand_repo (Repositories/Brand_repo.cs) via IBrand",
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [
+          "GetBrandData"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "brand_get_brands_dropdown",
+      "name": "Get Brands Dropdown",
+      "action_method": "GetBrandsDropdown",
+      "http_method": "GET",
+      "route": "api/Brand/dropdown",
+      "business_purpose": "Retrieve brands dropdown",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/company-settings/brands:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve brands dropdown",
+      "detailed_description": "Retrieve brands dropdown. It calls IBrand.GetActiveBrandsAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve brands dropdown",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Brand",
+          "GET api/Brand/dropdown",
+          "GET api/Brand/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "brand_get_brands_dropdown",
+        "description": "Retrieve brands dropdown",
+        "http_method": "GET",
+        "endpoint": "api/Brand/dropdown",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/BrandController.cs",
+        "action_method": "GetBrandsDropdown",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/Brand_repo.cs",
+          "Interfaces/IBrand.cs"
+        ]
+      },
+      "module": "Master Data - Product",
+      "business_logic": {
+        "operation_summary": "Retrieve brands dropdown — calls IBrand.GetActiveBrandsAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IBrand.GetActiveBrandsAsync"
+        ],
+        "calls_repositories": [
+          "Brand_repo (Repositories/Brand_repo.cs) via IBrand"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "brand_get_brand_by_id",
+      "name": "Get Brand By Id",
+      "action_method": "GetBrandById",
+      "http_method": "GET",
+      "route": "api/Brand/{id}",
+      "business_purpose": "Retrieve brand by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/company-settings/brands:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve brand by ID",
+      "detailed_description": "Retrieve brand by ID. It validates the request, then calls IBrand.GetBrandById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid brand ID is required. [when id <= 0]",
+        "not_found": "404: Brand not found. [when brand == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve brand by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Brand",
+          "GET api/Brand/dropdown",
+          "GET api/Brand/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "brand_get_brand_by_id",
+        "description": "Retrieve brand by ID",
+        "http_method": "GET",
+        "endpoint": "api/Brand/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/BrandController.cs",
+        "action_method": "GetBrandById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/Brand_repo.cs",
+          "Interfaces/IBrand.cs"
+        ]
+      },
+      "module": "Master Data - Product",
+      "business_logic": {
+        "operation_summary": "Retrieve brand by ID — validates the request, calls IBrand.GetBrandById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid brand ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IBrand.GetBrandById"
+        ],
+        "calls_repositories": [
+          "Brand_repo (Repositories/Brand_repo.cs) via IBrand"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid brand ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Brand not found.",
+            "when": "brand == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "brand_create_brand",
+      "name": "Create Brand",
+      "action_method": "CreateBrand",
+      "http_method": "POST",
+      "route": "api/Brand",
+      "business_purpose": "Create brand",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateBrandRequest",
+        "properties": [
+          {
+            "name": "brand_name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "brand_description",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; a duplicate check exists so repeating usually fails with a conflict/validation message"
+      },
+      "required_permission": "settings/company-settings/brands:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create brand",
+      "detailed_description": "Create brand. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IBrand.IsBrandNameDuplicateAsync, IBrand.CreateBrandAsync, then writes an audit log entry. Persists changes to: Brand: INSERT, AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; Brand name is required. [when string.IsNullOrWhiteSpace(request.brand_name)]; Brand description is required. [when string.IsNullOrWhiteSpace(request.brand_description)]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "Brand with this name already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create brand",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateBrandRequest"
+        ],
+        "follow_up_apis": [
+          "GET api/Brand",
+          "GET api/Brand/dropdown"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "brand_create_brand",
+        "description": "Create brand",
+        "http_method": "POST",
+        "endpoint": "api/Brand",
+        "parameters": {
+          "brand_name": {
+            "type": "string",
+            "required": false,
+            "description": "brand name (body)"
+          },
+          "brand_description": {
+            "type": "string",
+            "required": false,
+            "description": "brand description (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/BrandController.cs",
+        "action_method": "CreateBrand",
+        "related_dto_files": [
+          "Models/CreateBrandRequest.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Brand_repo.cs",
+          "Interfaces/IBrand.cs"
+        ]
+      },
+      "module": "Master Data - Product",
+      "business_logic": {
+        "operation_summary": "Create brand — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, IBrand.IsBrandNameDuplicateAsync, IBrand.CreateBrandAsync, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; request body of type CreateBrandRequest; passes 5 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Brand: INSERT; AuditLog: INSERT",
+        "validations": "ModelState (DTO data-annotation) validation; Invalid data provided.; Brand name is required.; Brand description is required.",
+        "side_effects": "AuditLog CREATE (Settings > Company Settings > Brand)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBrand.IsBrandNameDuplicateAsync",
+          "IBrand.CreateBrandAsync",
+          "ICommon.ToJsonString",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Brand_repo (Repositories/Brand_repo.cs) via IBrand"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "Brand name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.brand_name)"
+          },
+          {
+            "returns": 400,
+            "message": "Brand description is required.",
+            "when": "string.IsNullOrWhiteSpace(request.brand_description)"
+          },
+          {
+            "returns": 400,
+            "message": "Brand with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "brand_update_brand",
+      "name": "Update Brand",
+      "action_method": "UpdateBrand",
+      "http_method": "PUT",
+      "route": "api/Brand/{brandId}",
+      "business_purpose": "Update brand",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "brandId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateBrandRequest",
+        "properties": [
+          {
+            "name": "brand_name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "brand_description",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values; each call writes another audit log entry"
+      },
+      "required_permission": "settings/company-settings/brands:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update brand",
+      "detailed_description": "Update brand. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IBrand.GetBrandById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: Brand: UPDATE, AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid brand ID is required. [when brandId <= 0]; At least one field (brand_name or brand_description) must be provided for update. [when string.IsNullOrWhiteSpace(request.brand_name) && request.brand_description == null]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Brand not found. [when existingBrand == null]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "Brand with this name already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update brand",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "brandId (route)",
+          "request body UpdateBrandRequest"
+        ],
+        "follow_up_apis": [
+          "GET api/Brand/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "brand_update_brand",
+        "description": "Update brand",
+        "http_method": "PUT",
+        "endpoint": "api/Brand/{brandId}",
+        "parameters": {
+          "brandId": {
+            "type": "int",
+            "required": true,
+            "description": "brand Id (route)"
+          },
+          "brand_name": {
+            "type": "string",
+            "required": false,
+            "description": "brand name (body)"
+          },
+          "brand_description": {
+            "type": "string",
+            "required": false,
+            "description": "brand description (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/BrandController.cs",
+        "action_method": "UpdateBrand",
+        "related_dto_files": [
+          "Models/UpdateBrandRequest.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Brand_repo.cs",
+          "Interfaces/IBrand.cs"
+        ]
+      },
+      "module": "Master Data - Product",
+      "business_logic": {
+        "operation_summary": "Update brand — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, IBrand.GetBrandById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) brandId must reference existing record(s); request body of type UpdateBrandRequest; passes 5 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Brand: UPDATE; AuditLog: INSERT",
+        "validations": "Valid brand ID is required.; At least one field (brand_name or brand_description) must be provided for update.",
+        "side_effects": "AuditLog UPDATE (Settings > Company Settings > Brand)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBrand.GetBrandById",
+          "ICommon.ToJsonString",
+          "IBrand.IsBrandNameDuplicateAsync",
+          "IBrand.UpdateBrandAsync",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Brand_repo (Repositories/Brand_repo.cs) via IBrand"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid brand ID is required.",
+            "when": "brandId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field (brand_name or brand_description) must be provided for update.",
+            "when": "string.IsNullOrWhiteSpace(request.brand_name) && request.brand_description == null"
+          },
+          {
+            "returns": 404,
+            "message": "Brand not found.",
+            "when": "existingBrand == null"
+          },
+          {
+            "returns": 400,
+            "message": "Brand with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "brand_delete_brand",
+      "name": "Delete Brand",
+      "action_method": "DeleteBrand",
+      "http_method": "DELETE",
+      "route": "api/Brand/{brandId}",
+      "business_purpose": "Delete brand",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "brandId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "settings/company-settings/brands:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete brand",
+      "detailed_description": "Delete brand. It validates the request, then calls ICommon.getUserByToken, IBrand.GetBrandById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: Brand: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid brand ID is required. [when brandId <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Brand not found. [when existingBrand == null]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete brand",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "brandId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Brand/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "brand_delete_brand",
+        "description": "Delete brand",
+        "http_method": "DELETE",
+        "endpoint": "api/Brand/{brandId}",
+        "parameters": {
+          "brandId": {
+            "type": "int",
+            "required": true,
+            "description": "brand Id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/BrandController.cs",
+        "action_method": "DeleteBrand",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Brand_repo.cs",
+          "Interfaces/IBrand.cs"
+        ]
+      },
+      "module": "Master Data - Product",
+      "business_logic": {
+        "operation_summary": "Delete brand — validates the request, calls ICommon.getUserByToken, IBrand.GetBrandById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) brandId must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Brand: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "validations": "Valid brand ID is required.",
+        "side_effects": "AuditLog DELETE (Settings > Company Settings > Brand)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBrand.GetBrandById",
+          "ICommon.ToJsonString",
+          "IBrand.DeleteBrand",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Brand_repo (Repositories/Brand_repo.cs) via IBrand"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid brand ID is required.",
+            "when": "brandId <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Brand not found.",
+            "when": "existingBrand == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    }
+  ]
+}

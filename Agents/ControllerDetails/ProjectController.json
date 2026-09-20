@@ -1,0 +1,3650 @@
+{
+  "controller": "ProjectController",
+  "file": "Controllers/ProjectController.cs",
+  "module": "Project Management",
+  "base_route": "api/Project",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages project records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "crm/projects",
+        "module_code": "crm",
+        "section": "projects",
+        "sub_section": null,
+        "frontend_routes": [
+          "/crm/projects",
+          "/crm/projects/create-projects",
+          "/crm/projects/edit-projects/:projectId",
+          "/crm/projects/view-projects/:projectId"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "also_called_from_menus": [
+      "crm/contact",
+      "crm/contacts",
+      "crm/firms",
+      "crm/projects",
+      "lms/ib-leads"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "project_get_all_projects",
+      "name": "Get All Projects",
+      "action_method": "GetAllProjectsAsync",
+      "http_method": "GET",
+      "route": "api/Project",
+      "business_purpose": "Retrieve all projects",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "areaId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "statusId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        },
+        {
+          "name": "createdUserId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "assignedUserId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "CRM_Projects[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/projects:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all projects",
+      "detailed_description": "Retrieve all projects. It calls ICommon.getUserByToken, IProject.GetProjectData, IProject.GetProjectActions. Data access uses stored procedure(s): GetCRMProject. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all projects",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Project",
+          "GET api/Project/{id}",
+          "GET api/Project/ChannelUsers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "project_get_all_projects",
+        "description": "Retrieve all projects",
+        "http_method": "GET",
+        "endpoint": "api/Project",
+        "parameters": {
+          "areaId": {
+            "type": "int",
+            "required": false,
+            "description": "area Id (query)"
+          },
+          "statusId": {
+            "type": "int",
+            "required": false,
+            "description": "status Id (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          },
+          "createdUserId": {
+            "type": "int",
+            "required": false,
+            "description": "created User Id (query)"
+          },
+          "assignedUserId": {
+            "type": "int",
+            "required": false,
+            "description": "assigned User Id (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ProjectController.cs",
+        "action_method": "GetAllProjectsAsync",
+        "related_dto_files": [
+          "Models/CRM_Projects.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ProjectRepo.cs",
+          "Interfaces/IProject.cs"
+        ]
+      },
+      "module": "Project Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all projects — calls ICommon.getUserByToken, IProject.GetProjectData, IProject.GetProjectActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IProject.GetProjectData",
+          "IProject.GetProjectActions",
+          "IProject.GetAllAreas",
+          "IProject.GetAllProjectStatus",
+          "ICommon.GetAllUsersByCurrentUser"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ProjectRepo (Repositories/ProjectRepo.cs) via IProject"
+        ],
+        "stored_procedures": [
+          "GetCRMProject"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "project_get_project_by_id",
+      "name": "Get Project By Id",
+      "action_method": "GetProjectByIdAsync",
+      "http_method": "GET",
+      "route": "api/Project/{id}",
+      "business_purpose": "Retrieve project by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/projects:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve project by ID",
+      "detailed_description": "Retrieve project by ID. It calls ICommon.getUserByToken, IProject.GetProjectByIdAsync, IProject.GetProjectClientsByProjectIdAsync. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Project not found [when project == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve project by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Project",
+          "GET api/Project/{id}",
+          "GET api/Project/ChannelUsers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "project_get_project_by_id",
+        "description": "Retrieve project by ID",
+        "http_method": "GET",
+        "endpoint": "api/Project/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ProjectController.cs",
+        "action_method": "GetProjectByIdAsync",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ProjectRepo.cs",
+          "Interfaces/IProject.cs"
+        ]
+      },
+      "module": "Project Management",
+      "business_logic": {
+        "operation_summary": "Retrieve project by ID — calls ICommon.getUserByToken, IProject.GetProjectByIdAsync, IProject.GetProjectClientsByProjectIdAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IProject.GetProjectByIdAsync",
+          "IProject.GetProjectClientsByProjectIdAsync",
+          "IProject.GetSessionUsersByIdAsync",
+          "IProject.GetAllSecondaryOrderByProject",
+          "ICommon.GetFilesById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ProjectRepo (Repositories/ProjectRepo.cs) via IProject"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Project not found",
+            "when": "project == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "project_get_channel_users",
+      "name": "Get Channel Users",
+      "action_method": "GetChannelUsers",
+      "http_method": "GET",
+      "route": "api/Project/ChannelUsers",
+      "business_purpose": "Retrieve channel users",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/projects:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve channel users",
+      "detailed_description": "Retrieve channel users. It calls ICommon.getUserByToken, IProject.GetChannelusers. Possible responses: 200, 401.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve channel users",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Project",
+          "GET api/Project/{id}",
+          "GET api/Project/ChannelUsers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "project_get_channel_users",
+        "description": "Retrieve channel users",
+        "http_method": "GET",
+        "endpoint": "api/Project/ChannelUsers",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ProjectController.cs",
+        "action_method": "GetChannelUsers",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ProjectRepo.cs",
+          "Interfaces/IProject.cs"
+        ]
+      },
+      "module": "Project Management",
+      "business_logic": {
+        "operation_summary": "Retrieve channel users — calls ICommon.getUserByToken, IProject.GetChannelusers",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IProject.GetChannelusers"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ProjectRepo (Repositories/ProjectRepo.cs) via IProject"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "project_get_project_building_status",
+      "name": "Get Project Building Status",
+      "action_method": "GetProjectBuildingStatus",
+      "http_method": "GET",
+      "route": "api/Project/BuildingStatus",
+      "business_purpose": "Retrieve project building status",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/projects:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve project building status",
+      "detailed_description": "Retrieve project building status. It calls IProject.GetBuildingStatusDropdownData. Possible responses: 200, 401.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve project building status",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Project",
+          "GET api/Project/{id}",
+          "GET api/Project/ChannelUsers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "project_get_project_building_status",
+        "description": "Retrieve project building status",
+        "http_method": "GET",
+        "endpoint": "api/Project/BuildingStatus",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ProjectController.cs",
+        "action_method": "GetProjectBuildingStatus",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/ProjectRepo.cs",
+          "Interfaces/IProject.cs"
+        ]
+      },
+      "module": "Project Management",
+      "business_logic": {
+        "operation_summary": "Retrieve project building status — calls IProject.GetBuildingStatusDropdownData",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IProject.GetBuildingStatusDropdownData"
+        ],
+        "calls_repositories": [
+          "ProjectRepo (Repositories/ProjectRepo.cs) via IProject"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "project_create_project",
+      "name": "Create Project",
+      "action_method": "CreateProjectAsync",
+      "http_method": "POST",
+      "route": "api/Project",
+      "business_purpose": "Create project",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "ProjectPostDto",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "project_name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "type_of_work",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "site_address",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "remarks",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "file_type",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "stateId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "districtId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "location_name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "project_owner",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "primary_phone",
+            "type": "long",
+            "required": false
+          },
+          {
+            "name": "postal_code",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "expected_maturity_date",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "expected_qty",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "associated_branchId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "assigned_toId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "dealerId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "notes",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "materials_preferred",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "brand_preferred",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "details_for_specifications",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "reason_for_loosing",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "is_closed",
+            "type": "bool",
+            "required": false
+          },
+          {
+            "name": "section_usersId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "influencerIds",
+            "type": "List<int>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "crm/projects:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "lms/ib-leads"
+      ],
+      "short_description": "Create project",
+      "detailed_description": "Create project. It calls ICommon.getUserByToken, IProject.GetRegionByIdAsync, IProject.GetAreaByIdAsync. Persists changes to: CRM_Projects: INSERT, SectionUsers: INSERT, ProjectClient: INSERT. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create project",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body ProjectPostDto"
+        ],
+        "follow_up_apis": [
+          "GET api/Project",
+          "GET api/Project/ChannelUsers",
+          "GET api/Project/BuildingStatus"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "project_create_project",
+        "description": "Create project",
+        "http_method": "POST",
+        "endpoint": "api/Project",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "project_name": {
+            "type": "string",
+            "required": false,
+            "description": "project name (body)"
+          },
+          "type_of_work": {
+            "type": "string",
+            "required": false,
+            "description": "type of work (body)"
+          },
+          "site_address": {
+            "type": "string",
+            "required": false,
+            "description": "site address (body)"
+          },
+          "remarks": {
+            "type": "string",
+            "required": false,
+            "description": "remarks (body)"
+          },
+          "file_type": {
+            "type": "string",
+            "required": false,
+            "description": "file type (body)"
+          },
+          "stateId": {
+            "type": "int",
+            "required": false,
+            "description": "state Id (body)"
+          },
+          "districtId": {
+            "type": "int",
+            "required": false,
+            "description": "district Id (body)"
+          },
+          "location_name": {
+            "type": "string",
+            "required": false,
+            "description": "location name (body)"
+          },
+          "project_owner": {
+            "type": "string",
+            "required": false,
+            "description": "project owner (body)"
+          },
+          "primary_phone": {
+            "type": "long",
+            "required": false,
+            "description": "primary phone (body)"
+          },
+          "postal_code": {
+            "type": "string",
+            "required": false,
+            "description": "postal code (body)"
+          },
+          "expected_maturity_date": {
+            "type": "datetime",
+            "required": false,
+            "description": "expected maturity date (body)"
+          },
+          "expected_qty": {
+            "type": "int",
+            "required": false,
+            "description": "expected qty (body)"
+          },
+          "associated_branchId": {
+            "type": "int",
+            "required": false,
+            "description": "associated branch Id (body)"
+          },
+          "assigned_toId": {
+            "type": "int",
+            "required": false,
+            "description": "assigned to Id (body)"
+          },
+          "dealerId": {
+            "type": "int",
+            "required": false,
+            "description": "dealer Id (body)"
+          },
+          "notes": {
+            "type": "string",
+            "required": false,
+            "description": "notes (body)"
+          },
+          "materials_preferred": {
+            "type": "string",
+            "required": false,
+            "description": "materials preferred (body)"
+          },
+          "brand_preferred": {
+            "type": "string",
+            "required": false,
+            "description": "brand preferred (body)"
+          },
+          "details_for_specifications": {
+            "type": "string",
+            "required": false,
+            "description": "details for specifications (body)"
+          },
+          "reason_for_loosing": {
+            "type": "string",
+            "required": false,
+            "description": "reason for loosing (body)"
+          },
+          "is_closed": {
+            "type": "bool",
+            "required": false,
+            "description": "is closed (body)"
+          },
+          "section_usersId": {
+            "type": "int",
+            "required": false,
+            "description": "section users Id (body)"
+          },
+          "influencerIds": {
+            "type": "List<int>",
+            "required": false,
+            "description": "influencer Ids (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/ProjectController.cs",
+        "action_method": "CreateProjectAsync",
+        "related_dto_files": [
+          "DTOs/ProjectPostDtos.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ProjectRepo.cs",
+          "Interfaces/IProject.cs"
+        ]
+      },
+      "module": "Project Management",
+      "business_logic": {
+        "operation_summary": "Create project — calls ICommon.getUserByToken, IProject.GetRegionByIdAsync, IProject.GetAreaByIdAsync",
+        "preconditions": "Valid Bearer JWT; request body of type ProjectPostDto",
+        "state_changes": "CRM_Projects: INSERT; SectionUsers: INSERT; ProjectClient: INSERT; sets project.state, project.district, project.associated_branchId, project.associated_branch, project.dealer, project.dealerId",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IProject.GetRegionByIdAsync",
+          "IProject.GetAreaByIdAsync",
+          "IProject.GetBranchByIdAsync",
+          "IProject.GetDealerByIdAsync",
+          "IProject.CreateProjectAsync",
+          "IProject.GetUserLevelBySection",
+          "IProject.GetUsersByLevel",
+          "IProject.CreateAssociatedUsersDataRange",
+          "IProject.GetClientById",
+          "IProject.CreateProjectClientsAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ProjectRepo (Repositories/ProjectRepo.cs) via IProject"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "project_remove_influencer",
+      "name": "Remove Influencer",
+      "action_method": "RemoveInfluencerAsync",
+      "http_method": "DELETE",
+      "route": "api/Project/RemoveInfluencer",
+      "business_purpose": "Remove influencer",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "projectId",
+          "type": "int",
+          "required": true
+        },
+        {
+          "name": "influencerId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "crm/projects:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Remove influencer",
+      "detailed_description": "Remove influencer. It calls ICommon.getUserByToken, IProject.RemoveInfluencerFromProjectAsync. Persists changes to: ProjectClient: DELETE. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Project or Influencer not found [when !success]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to remove influencer",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "projectId (query)",
+          "influencerId (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/Project",
+          "GET api/Project/ChannelUsers",
+          "GET api/Project/BuildingStatus"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "project_remove_influencer",
+        "description": "Remove influencer",
+        "http_method": "DELETE",
+        "endpoint": "api/Project/RemoveInfluencer",
+        "parameters": {
+          "projectId": {
+            "type": "int",
+            "required": true,
+            "description": "project Id (query)"
+          },
+          "influencerId": {
+            "type": "int",
+            "required": true,
+            "description": "influencer Id (query)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/ProjectController.cs",
+        "action_method": "RemoveInfluencerAsync",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ProjectRepo.cs",
+          "Interfaces/IProject.cs"
+        ]
+      },
+      "module": "Project Management",
+      "business_logic": {
+        "operation_summary": "Remove influencer — calls ICommon.getUserByToken, IProject.RemoveInfluencerFromProjectAsync",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): projectId, influencerId; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "ProjectClient: DELETE",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IProject.RemoveInfluencerFromProjectAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ProjectRepo (Repositories/ProjectRepo.cs) via IProject"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Project or Influencer not found",
+            "when": "!success"
+          }
+        ]
+      }
+    },
+    {
+      "id": "project_add_influencers",
+      "name": "Add Influencers",
+      "action_method": "AddInfluencersAsync",
+      "http_method": "POST",
+      "route": "api/Project/AddInfluencers",
+      "business_purpose": "Add influencers",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "AddInfluencersRequestDto (inline)",
+        "properties": [
+          {
+            "name": "projectId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "influencerIds",
+            "type": "List<int>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "crm/projects:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Add influencers",
+      "detailed_description": "Add influencers. It calls ICommon.getUserByToken, IProject.GetProjectByIdAsync, IProject.GetProjectClientsByProjectIdAsync. Persists changes to: ProjectClient: INSERT. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Project not found [when project == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to add influencers",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body AddInfluencersRequestDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Project",
+          "GET api/Project/ChannelUsers",
+          "GET api/Project/BuildingStatus"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "project_add_influencers",
+        "description": "Add influencers",
+        "http_method": "POST",
+        "endpoint": "api/Project/AddInfluencers",
+        "parameters": {
+          "projectId": {
+            "type": "int",
+            "required": false,
+            "description": "project Id (body)"
+          },
+          "influencerIds": {
+            "type": "List<int>",
+            "required": false,
+            "description": "influencer Ids (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/ProjectController.cs",
+        "action_method": "AddInfluencersAsync",
+        "related_dto_files": [
+          "Controllers/ProjectController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ProjectRepo.cs",
+          "Interfaces/IProject.cs"
+        ]
+      },
+      "module": "Project Management",
+      "business_logic": {
+        "operation_summary": "Add influencers — calls ICommon.getUserByToken, IProject.GetProjectByIdAsync, IProject.GetProjectClientsByProjectIdAsync",
+        "preconditions": "Valid Bearer JWT; request body of type AddInfluencersRequestDto (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "ProjectClient: INSERT",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IProject.GetProjectByIdAsync",
+          "IProject.GetProjectClientsByProjectIdAsync",
+          "IProject.GetClientById",
+          "IProject.CreateProjectClientsAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ProjectRepo (Repositories/ProjectRepo.cs) via IProject"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Project not found",
+            "when": "project == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "project_update_project",
+      "name": "Update Project",
+      "action_method": "UpdateProjectAsync",
+      "http_method": "PUT",
+      "route": "api/Project/{id}",
+      "business_purpose": "Update project",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "ProjectRequestDto",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "ProjectName",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "TypeOfWork",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "SiteAddress",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Remarks",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "FileType",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "StateId",
+            "type": "int",
+            "required": true
+          },
+          {
+            "name": "DistrictId",
+            "type": "int",
+            "required": true
+          },
+          {
+            "name": "ProjectStatusId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "LocationName",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "ProjectOwner",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "PrimaryPhone",
+            "type": "long",
+            "required": false
+          },
+          {
+            "name": "PostalCode",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "ExpectedMaturityDate",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "AssociatedBranchId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "AssignedToId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "DealerId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "ArchitectId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "ContractorId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "CarpenterId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Notes",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "MaterialsPreferred",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "BrandPreferred",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "DetailsForSpecifications",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "ReasonForLoosing",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "InfluencerIds",
+            "type": "List<int>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "crm/projects:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "lms/ib-leads"
+      ],
+      "short_description": "Update project",
+      "detailed_description": "Update project. It calls ICommon.getUserByToken, IProject.GetProjectByIdAsync, IProject.UpdateProjectAsync. Persists changes to: CRM_Projects: UPDATE, ProjectClient: INSERT. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Project not found [when existingProject == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update project",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "request body ProjectRequestDto"
+        ],
+        "follow_up_apis": [
+          "GET api/Project/{id}",
+          "GET api/Project/areas/{regionId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "project_update_project",
+        "description": "Update project",
+        "http_method": "PUT",
+        "endpoint": "api/Project/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "ProjectName": {
+            "type": "string",
+            "required": true,
+            "description": "Project Name (body)"
+          },
+          "TypeOfWork": {
+            "type": "string",
+            "required": true,
+            "description": "Type Of Work (body)"
+          },
+          "SiteAddress": {
+            "type": "string",
+            "required": false,
+            "description": "Site Address (body)"
+          },
+          "Remarks": {
+            "type": "string",
+            "required": false,
+            "description": "Remarks (body)"
+          },
+          "FileType": {
+            "type": "string",
+            "required": false,
+            "description": "File Type (body)"
+          },
+          "StateId": {
+            "type": "int",
+            "required": true,
+            "description": "State Id (body)"
+          },
+          "DistrictId": {
+            "type": "int",
+            "required": true,
+            "description": "District Id (body)"
+          },
+          "ProjectStatusId": {
+            "type": "int",
+            "required": false,
+            "description": "Project Status Id (body)"
+          },
+          "LocationName": {
+            "type": "string",
+            "required": false,
+            "description": "Location Name (body)"
+          },
+          "ProjectOwner": {
+            "type": "string",
+            "required": false,
+            "description": "Project Owner (body)"
+          },
+          "PrimaryPhone": {
+            "type": "long",
+            "required": false,
+            "description": "Primary Phone (body)"
+          },
+          "PostalCode": {
+            "type": "string",
+            "required": false,
+            "description": "Postal Code (body)"
+          },
+          "ExpectedMaturityDate": {
+            "type": "datetime",
+            "required": false,
+            "description": "Expected Maturity Date (body)"
+          },
+          "AssociatedBranchId": {
+            "type": "int",
+            "required": false,
+            "description": "Associated Branch Id (body)"
+          },
+          "AssignedToId": {
+            "type": "int",
+            "required": false,
+            "description": "Assigned To Id (body)"
+          },
+          "DealerId": {
+            "type": "int",
+            "required": false,
+            "description": "Dealer Id (body)"
+          },
+          "ArchitectId": {
+            "type": "int",
+            "required": false,
+            "description": "Architect Id (body)"
+          },
+          "ContractorId": {
+            "type": "int",
+            "required": false,
+            "description": "Contractor Id (body)"
+          },
+          "CarpenterId": {
+            "type": "int",
+            "required": false,
+            "description": "Carpenter Id (body)"
+          },
+          "Notes": {
+            "type": "string",
+            "required": false,
+            "description": "Notes (body)"
+          },
+          "MaterialsPreferred": {
+            "type": "string",
+            "required": false,
+            "description": "Materials Preferred (body)"
+          },
+          "BrandPreferred": {
+            "type": "string",
+            "required": false,
+            "description": "Brand Preferred (body)"
+          },
+          "DetailsForSpecifications": {
+            "type": "string",
+            "required": false,
+            "description": "Details For Specifications (body)"
+          },
+          "ReasonForLoosing": {
+            "type": "string",
+            "required": false,
+            "description": "Reason For Loosing (body)"
+          },
+          "InfluencerIds": {
+            "type": "List<int>",
+            "required": false,
+            "description": "Influencer Ids (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/ProjectController.cs",
+        "action_method": "UpdateProjectAsync",
+        "related_dto_files": [
+          "DTOs/Request/ProjectRequestDto.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ProjectRepo.cs",
+          "Interfaces/IProject.cs"
+        ]
+      },
+      "module": "Project Management",
+      "business_logic": {
+        "operation_summary": "Update project — calls ICommon.getUserByToken, IProject.GetProjectByIdAsync, IProject.UpdateProjectAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); request body of type ProjectRequestDto; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "CRM_Projects: UPDATE; ProjectClient: INSERT; sets existingProject.modified_by, existingProject.modified_date",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IProject.GetProjectByIdAsync",
+          "IProject.UpdateProjectAsync",
+          "IProject.GetProjectClientsByProjectIdAsync",
+          "IProject.GetClientById",
+          "IProject.CreateProjectClientsAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ProjectRepo (Repositories/ProjectRepo.cs) via IProject"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Project not found",
+            "when": "existingProject == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "project_delete_project",
+      "name": "Delete Project",
+      "action_method": "DeleteProjectAsync",
+      "http_method": "DELETE",
+      "route": "api/Project/{id}",
+      "business_purpose": "Delete project",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "crm/projects:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete project",
+      "detailed_description": "Delete project. It calls ICommon.getUserByToken, IProject.DeleteProjectAsync. Persists changes to: soft delete (is_deleted flag). Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Project not found [when !success]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete project",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Project/{id}",
+          "GET api/Project/areas/{regionId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "project_delete_project",
+        "description": "Delete project",
+        "http_method": "DELETE",
+        "endpoint": "api/Project/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/ProjectController.cs",
+        "action_method": "DeleteProjectAsync",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ProjectRepo.cs",
+          "Interfaces/IProject.cs"
+        ]
+      },
+      "module": "Project Management",
+      "business_logic": {
+        "operation_summary": "Delete project — calls ICommon.getUserByToken, IProject.DeleteProjectAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "soft delete (is_deleted flag)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IProject.DeleteProjectAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ProjectRepo (Repositories/ProjectRepo.cs) via IProject"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Project not found",
+            "when": "!success"
+          }
+        ]
+      }
+    },
+    {
+      "id": "project_get_project_statuses",
+      "name": "Get Project Statuses",
+      "action_method": "GetProjectStatusesAsync",
+      "http_method": "GET",
+      "route": "api/Project/project-statuses",
+      "business_purpose": "Retrieve project statuses",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/projects:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve project statuses",
+      "detailed_description": "Retrieve project statuses. It calls ICommon.getUserByToken, IProject.GetProjectStatusesAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve project statuses",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Project",
+          "GET api/Project/{id}",
+          "GET api/Project/ChannelUsers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "project_get_project_statuses",
+        "description": "Retrieve project statuses",
+        "http_method": "GET",
+        "endpoint": "api/Project/project-statuses",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ProjectController.cs",
+        "action_method": "GetProjectStatusesAsync",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ProjectRepo.cs",
+          "Interfaces/IProject.cs"
+        ]
+      },
+      "module": "Project Management",
+      "business_logic": {
+        "operation_summary": "Retrieve project statuses — calls ICommon.getUserByToken, IProject.GetProjectStatusesAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IProject.GetProjectStatusesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ProjectRepo (Repositories/ProjectRepo.cs) via IProject"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "project_get_regions",
+      "name": "Get Regions",
+      "action_method": "GetRegionsAsync",
+      "http_method": "GET",
+      "route": "api/Project/regions",
+      "business_purpose": "Retrieve regions",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/projects:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve regions",
+      "detailed_description": "Retrieve regions. It calls ICommon.getUserByToken, IProject.GetRegionsAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve regions",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Project",
+          "GET api/Project/{id}",
+          "GET api/Project/ChannelUsers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "project_get_regions",
+        "description": "Retrieve regions",
+        "http_method": "GET",
+        "endpoint": "api/Project/regions",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ProjectController.cs",
+        "action_method": "GetRegionsAsync",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ProjectRepo.cs",
+          "Interfaces/IProject.cs"
+        ]
+      },
+      "module": "Project Management",
+      "business_logic": {
+        "operation_summary": "Retrieve regions — calls ICommon.getUserByToken, IProject.GetRegionsAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IProject.GetRegionsAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ProjectRepo (Repositories/ProjectRepo.cs) via IProject"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "project_get_active_regions",
+      "name": "Get Active Regions",
+      "action_method": "GetActiveRegionsAsync",
+      "http_method": "GET",
+      "route": "api/Project/active-regions",
+      "business_purpose": "Retrieve active regions",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/projects:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve active regions",
+      "detailed_description": "Retrieve active regions. It calls ICommon.getUserByToken, IProject.GetActiveRegionsAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve active regions",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Project",
+          "GET api/Project/{id}",
+          "GET api/Project/ChannelUsers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "project_get_active_regions",
+        "description": "Retrieve active regions",
+        "http_method": "GET",
+        "endpoint": "api/Project/active-regions",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ProjectController.cs",
+        "action_method": "GetActiveRegionsAsync",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ProjectRepo.cs",
+          "Interfaces/IProject.cs"
+        ]
+      },
+      "module": "Project Management",
+      "business_logic": {
+        "operation_summary": "Retrieve active regions — calls ICommon.getUserByToken, IProject.GetActiveRegionsAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IProject.GetActiveRegionsAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ProjectRepo (Repositories/ProjectRepo.cs) via IProject"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "project_get_areas_by_region",
+      "name": "Get Areas By Region",
+      "action_method": "GetAreasByRegionAsync",
+      "http_method": "GET",
+      "route": "api/Project/areas/{regionId}",
+      "business_purpose": "Retrieve areas by region",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "regionId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/projects:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/contact",
+        "crm/contacts",
+        "crm/firms",
+        "lms/ib-leads"
+      ],
+      "short_description": "Retrieve areas by region",
+      "detailed_description": "Retrieve areas by region. It calls ICommon.getUserByToken, IProject.GetAreasByRegionAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve areas by region",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "regionId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Project",
+          "GET api/Project/{id}",
+          "GET api/Project/ChannelUsers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "project_get_areas_by_region",
+        "description": "Retrieve areas by region",
+        "http_method": "GET",
+        "endpoint": "api/Project/areas/{regionId}",
+        "parameters": {
+          "regionId": {
+            "type": "int",
+            "required": true,
+            "description": "region Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ProjectController.cs",
+        "action_method": "GetAreasByRegionAsync",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ProjectRepo.cs",
+          "Interfaces/IProject.cs"
+        ]
+      },
+      "module": "Project Management",
+      "business_logic": {
+        "operation_summary": "Retrieve areas by region — calls ICommon.getUserByToken, IProject.GetAreasByRegionAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) regionId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IProject.GetAreasByRegionAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ProjectRepo (Repositories/ProjectRepo.cs) via IProject"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "project_get_branches",
+      "name": "Get Branches",
+      "action_method": "GetBranchesAsync",
+      "http_method": "GET",
+      "route": "api/Project/branches",
+      "business_purpose": "Retrieve branches",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/projects:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve branches",
+      "detailed_description": "Retrieve branches. It calls ICommon.getUserByToken, IProject.GetBranchesAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve branches",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Project",
+          "GET api/Project/{id}",
+          "GET api/Project/ChannelUsers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "project_get_branches",
+        "description": "Retrieve branches",
+        "http_method": "GET",
+        "endpoint": "api/Project/branches",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ProjectController.cs",
+        "action_method": "GetBranchesAsync",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ProjectRepo.cs",
+          "Interfaces/IProject.cs"
+        ]
+      },
+      "module": "Project Management",
+      "business_logic": {
+        "operation_summary": "Retrieve branches — calls ICommon.getUserByToken, IProject.GetBranchesAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IProject.GetBranchesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ProjectRepo (Repositories/ProjectRepo.cs) via IProject"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "project_get_users",
+      "name": "Get Users",
+      "action_method": "GetUsersAsync",
+      "http_method": "GET",
+      "route": "api/Project/users",
+      "business_purpose": "Retrieve users",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/projects:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve users",
+      "detailed_description": "Retrieve users. It calls ICommon.getUserByToken, IProject.GetUsersAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve users",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Project",
+          "GET api/Project/{id}",
+          "GET api/Project/ChannelUsers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "project_get_users",
+        "description": "Retrieve users",
+        "http_method": "GET",
+        "endpoint": "api/Project/users",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ProjectController.cs",
+        "action_method": "GetUsersAsync",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ProjectRepo.cs",
+          "Interfaces/IProject.cs"
+        ]
+      },
+      "module": "Project Management",
+      "business_logic": {
+        "operation_summary": "Retrieve users — calls ICommon.getUserByToken, IProject.GetUsersAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IProject.GetUsersAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ProjectRepo (Repositories/ProjectRepo.cs) via IProject"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "project_get_dealers",
+      "name": "Get Dealers",
+      "action_method": "GetDealersAsync",
+      "http_method": "GET",
+      "route": "api/Project/dealers",
+      "business_purpose": "Retrieve dealers",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "searchtext",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/projects:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve dealers",
+      "detailed_description": "Retrieve dealers. It calls ICommon.getUserByToken, IProject.GetDealersAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve dealers",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Project",
+          "GET api/Project/{id}",
+          "GET api/Project/ChannelUsers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "project_get_dealers",
+        "description": "Retrieve dealers",
+        "http_method": "GET",
+        "endpoint": "api/Project/dealers",
+        "parameters": {
+          "searchtext": {
+            "type": "string",
+            "required": false,
+            "description": "searchtext (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ProjectController.cs",
+        "action_method": "GetDealersAsync",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ProjectRepo.cs",
+          "Interfaces/IProject.cs"
+        ]
+      },
+      "module": "Project Management",
+      "business_logic": {
+        "operation_summary": "Retrieve dealers — calls ICommon.getUserByToken, IProject.GetDealersAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IProject.GetDealersAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ProjectRepo (Repositories/ProjectRepo.cs) via IProject"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "project_get_clients",
+      "name": "Get Clients",
+      "action_method": "GetClientsAsync",
+      "http_method": "GET",
+      "route": "api/Project/clients",
+      "business_purpose": "Retrieve clients",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "searchtext",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/projects:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve clients",
+      "detailed_description": "Retrieve clients. It calls ICommon.getUserByToken, IProject.GetClientsAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve clients",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Project",
+          "GET api/Project/{id}",
+          "GET api/Project/ChannelUsers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "project_get_clients",
+        "description": "Retrieve clients",
+        "http_method": "GET",
+        "endpoint": "api/Project/clients",
+        "parameters": {
+          "searchtext": {
+            "type": "string",
+            "required": false,
+            "description": "searchtext (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ProjectController.cs",
+        "action_method": "GetClientsAsync",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ProjectRepo.cs",
+          "Interfaces/IProject.cs"
+        ]
+      },
+      "module": "Project Management",
+      "business_logic": {
+        "operation_summary": "Retrieve clients — calls ICommon.getUserByToken, IProject.GetClientsAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IProject.GetClientsAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ProjectRepo (Repositories/ProjectRepo.cs) via IProject"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "project_get_influencer_types",
+      "name": "Get Influencer Types",
+      "action_method": "GetInfluencerTypesAsync",
+      "http_method": "GET",
+      "route": "api/Project/influencer-types",
+      "business_purpose": "Retrieve influencer types",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/projects:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve influencer types",
+      "detailed_description": "Retrieve influencer types. It calls ICommon.getUserByToken, IProject.GetInfluencerTypesAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve influencer types",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Project",
+          "GET api/Project/{id}",
+          "GET api/Project/ChannelUsers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "project_get_influencer_types",
+        "description": "Retrieve influencer types",
+        "http_method": "GET",
+        "endpoint": "api/Project/influencer-types",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ProjectController.cs",
+        "action_method": "GetInfluencerTypesAsync",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ProjectRepo.cs",
+          "Interfaces/IProject.cs"
+        ]
+      },
+      "module": "Project Management",
+      "business_logic": {
+        "operation_summary": "Retrieve influencer types — calls ICommon.getUserByToken, IProject.GetInfluencerTypesAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IProject.GetInfluencerTypesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ProjectRepo (Repositories/ProjectRepo.cs) via IProject"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "project_get_clients_by_type",
+      "name": "Get Clients By Type",
+      "action_method": "GetClientsByTypeAsync",
+      "http_method": "GET",
+      "route": "api/Project/clients-by-type/{clientTypeId}",
+      "business_purpose": "Retrieve clients by type",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "clientTypeId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [
+        {
+          "name": "searchText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/projects:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve clients by type",
+      "detailed_description": "Retrieve clients by type. It calls ICommon.getUserByToken, IProject.GetClientsByTypeAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve clients by type",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "clientTypeId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Project",
+          "GET api/Project/{id}",
+          "GET api/Project/ChannelUsers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "project_get_clients_by_type",
+        "description": "Retrieve clients by type",
+        "http_method": "GET",
+        "endpoint": "api/Project/clients-by-type/{clientTypeId}",
+        "parameters": {
+          "clientTypeId": {
+            "type": "int",
+            "required": true,
+            "description": "client Type Id (route)"
+          },
+          "searchText": {
+            "type": "string",
+            "required": false,
+            "description": "search Text (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ProjectController.cs",
+        "action_method": "GetClientsByTypeAsync",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ProjectRepo.cs",
+          "Interfaces/IProject.cs"
+        ]
+      },
+      "module": "Project Management",
+      "business_logic": {
+        "operation_summary": "Retrieve clients by type — calls ICommon.getUserByToken, IProject.GetClientsByTypeAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) clientTypeId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IProject.GetClientsByTypeAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ProjectRepo (Repositories/ProjectRepo.cs) via IProject"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "project_file_uploads",
+      "name": "File Uploads",
+      "action_method": "FileUploads",
+      "http_method": "POST",
+      "route": "api/Project/file-uploads",
+      "business_purpose": "Handle file uploads",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": null,
+        "content_type": "multipart/form-data",
+        "properties": [
+          {
+            "name": "id",
+            "type": "int",
+            "required": true
+          },
+          {
+            "name": "files",
+            "type": "List<IFormFile>",
+            "required": true
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "crm/projects:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "lms/ib-leads"
+      ],
+      "short_description": "Handle file uploads",
+      "detailed_description": "Handle file uploads. It calls ICommon.getUserByToken, ICommon.CreateComplaintFilesRange, then processes uploaded files. Persists changes to: ComplaintsFile: INSERT. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle file uploads",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Project",
+          "GET api/Project/ChannelUsers",
+          "GET api/Project/BuildingStatus"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "project_file_uploads",
+        "description": "Handle file uploads",
+        "http_method": "POST",
+        "endpoint": "api/Project/file-uploads",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (body)"
+          },
+          "files": {
+            "type": "List<IFormFile>",
+            "required": true,
+            "description": "files (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/ProjectController.cs",
+        "action_method": "FileUploads",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Project Management",
+      "business_logic": {
+        "operation_summary": "Handle file uploads — calls ICommon.getUserByToken, ICommon.CreateComplaintFilesRange, processes uploaded files",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "ComplaintsFile: INSERT",
+        "validations": "None found in controller code",
+        "side_effects": "Handles file upload/storage",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.CreateComplaintFilesRange"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "project_get_section_users",
+      "name": "Get Section Users",
+      "action_method": "GetSectionUsers",
+      "http_method": "GET",
+      "route": "api/Project/GetSectionUsers/{search_text}",
+      "business_purpose": "Retrieve section users",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "search_text",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/projects:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve section users",
+      "detailed_description": "Retrieve section users. It calls ICommon.getUserByToken, IProject.GetSectionUsers. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve section users",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "search_text (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Project",
+          "GET api/Project/{id}",
+          "GET api/Project/ChannelUsers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "project_get_section_users",
+        "description": "Retrieve section users",
+        "http_method": "GET",
+        "endpoint": "api/Project/GetSectionUsers/{search_text}",
+        "parameters": {
+          "search_text": {
+            "type": "string",
+            "required": true,
+            "description": "search text (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ProjectController.cs",
+        "action_method": "GetSectionUsers",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ProjectRepo.cs",
+          "Interfaces/IProject.cs"
+        ]
+      },
+      "module": "Project Management",
+      "business_logic": {
+        "operation_summary": "Retrieve section users — calls ICommon.getUserByToken, IProject.GetSectionUsers",
+        "preconditions": "Valid Bearer JWT; route parameter(s) search_text",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IProject.GetSectionUsers"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ProjectRepo (Repositories/ProjectRepo.cs) via IProject"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "project_associate_user",
+      "name": "Associate User",
+      "action_method": "AssociateUser",
+      "http_method": "POST",
+      "route": "api/Project/AssociatedUser",
+      "business_purpose": "Handle associate user",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "TransferProjectRequestDto (inline)",
+        "properties": [
+          {
+            "name": "projectId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "newUserId",
+            "type": "List<int>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "crm/projects:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Handle associate user",
+      "detailed_description": "Handle associate user. It calls ICommon.getUserByToken, IProject.GetProjectByIdAsync, IProject.GetUserByIdAsync. Persists changes to: SectionUsers: INSERT. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Project not found [when project == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle associate user",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body TransferProjectRequestDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Project",
+          "GET api/Project/ChannelUsers",
+          "GET api/Project/BuildingStatus"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "project_associate_user",
+        "description": "Handle associate user",
+        "http_method": "POST",
+        "endpoint": "api/Project/AssociatedUser",
+        "parameters": {
+          "projectId": {
+            "type": "int",
+            "required": false,
+            "description": "project Id (body)"
+          },
+          "newUserId": {
+            "type": "List<int>",
+            "required": false,
+            "description": "new User Id (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/ProjectController.cs",
+        "action_method": "AssociateUser",
+        "related_dto_files": [
+          "Controllers/ProjectController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ProjectRepo.cs",
+          "Interfaces/IProject.cs"
+        ]
+      },
+      "module": "Project Management",
+      "business_logic": {
+        "operation_summary": "Handle associate user — calls ICommon.getUserByToken, IProject.GetProjectByIdAsync, IProject.GetUserByIdAsync",
+        "preconditions": "Valid Bearer JWT; request body of type TransferProjectRequestDto (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "SectionUsers: INSERT",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IProject.GetProjectByIdAsync",
+          "IProject.GetUserByIdAsync",
+          "IProject.CreateAssociatedUsersDataRange"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ProjectRepo (Repositories/ProjectRepo.cs) via IProject"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Project not found",
+            "when": "project == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "project_transfer_project",
+      "name": "Transfer Project",
+      "action_method": "TransferProject",
+      "http_method": "POST",
+      "route": "api/Project/TransferProject",
+      "business_purpose": "Transfer project",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "TransferProjectStatusRequestDto (inline)",
+        "properties": [
+          {
+            "name": "projectId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "newUserId",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "crm/projects:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Transfer project",
+      "detailed_description": "Transfer project. It calls ICommon.getUserByToken, IProject.GetProjectByIdAsync, ICommon.RemoveAssociatedUser. Persists changes to: SectionUsers: DELETE, SectionUsers: INSERT. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Project not found [when project == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to transfer project",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body TransferProjectStatusRequestDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Project",
+          "GET api/Project/ChannelUsers",
+          "GET api/Project/BuildingStatus"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "project_transfer_project",
+        "description": "Transfer project",
+        "http_method": "POST",
+        "endpoint": "api/Project/TransferProject",
+        "parameters": {
+          "projectId": {
+            "type": "int",
+            "required": false,
+            "description": "project Id (body)"
+          },
+          "newUserId": {
+            "type": "int",
+            "required": false,
+            "description": "new User Id (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/ProjectController.cs",
+        "action_method": "TransferProject",
+        "related_dto_files": [
+          "Controllers/ProjectController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ProjectRepo.cs",
+          "Interfaces/IProject.cs"
+        ]
+      },
+      "module": "Project Management",
+      "business_logic": {
+        "operation_summary": "Transfer project — calls ICommon.getUserByToken, IProject.GetProjectByIdAsync, ICommon.RemoveAssociatedUser",
+        "preconditions": "Valid Bearer JWT; request body of type TransferProjectStatusRequestDto (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "SectionUsers: DELETE; SectionUsers: INSERT; sets project.assigned_to and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IProject.GetProjectByIdAsync",
+          "ICommon.RemoveAssociatedUser",
+          "IProject.GetUserByIdAsync",
+          "IProject.CreateAssociatedUsersDataRange",
+          "IProject.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ProjectRepo (Repositories/ProjectRepo.cs) via IProject"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Project not found",
+            "when": "project == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "project_project_status",
+      "name": "Project Status",
+      "action_method": "ProjectStatus",
+      "http_method": "POST",
+      "route": "api/Project/TransferProjectStatus",
+      "business_purpose": "Handle project status",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "TransferProjectStatusDto (inline)",
+        "properties": [
+          {
+            "name": "projectId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "statusId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "remarks",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "crm/projects:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Handle project status",
+      "detailed_description": "Handle project status. It calls ICommon.getUserByToken, IProject.GetProjectByIdAsync, IProject.GetProjectStatusByIdAsync. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Project not found [when project == null]; Status not found [when status == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle project status",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body TransferProjectStatusDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Project",
+          "GET api/Project/ChannelUsers",
+          "GET api/Project/BuildingStatus"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "project_project_status",
+        "description": "Handle project status",
+        "http_method": "POST",
+        "endpoint": "api/Project/TransferProjectStatus",
+        "parameters": {
+          "projectId": {
+            "type": "int",
+            "required": false,
+            "description": "project Id (body)"
+          },
+          "statusId": {
+            "type": "int",
+            "required": false,
+            "description": "status Id (body)"
+          },
+          "remarks": {
+            "type": "string",
+            "required": false,
+            "description": "remarks (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/ProjectController.cs",
+        "action_method": "ProjectStatus",
+        "related_dto_files": [
+          "Controllers/ProjectController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ProjectRepo.cs",
+          "Interfaces/IProject.cs"
+        ]
+      },
+      "module": "Project Management",
+      "business_logic": {
+        "operation_summary": "Handle project status — calls ICommon.getUserByToken, IProject.GetProjectByIdAsync, IProject.GetProjectStatusByIdAsync",
+        "preconditions": "Valid Bearer JWT; request body of type TransferProjectStatusDto (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets project.project_status, project.notes and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IProject.GetProjectByIdAsync",
+          "IProject.GetProjectStatusByIdAsync",
+          "IProject.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ProjectRepo (Repositories/ProjectRepo.cs) via IProject"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Project not found",
+            "when": "project == null"
+          },
+          {
+            "returns": 404,
+            "message": "Status not found",
+            "when": "status == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "project_building_status",
+      "name": "Building Status",
+      "action_method": "BuildingStatus",
+      "http_method": "POST",
+      "route": "api/Project/BuildingStatus",
+      "business_purpose": "Handle building status",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "TransferProjectStatusDto (inline)",
+        "properties": [
+          {
+            "name": "projectId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "statusId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "remarks",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "crm/projects:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Handle building status",
+      "detailed_description": "Handle building status. It calls ICommon.getUserByToken, IProject.GetProjectByIdAsync, IProject.GetProjectBuildingStatusByIdAsync. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Project not found [when project == null]; Status not found [when status == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle building status",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body TransferProjectStatusDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Project",
+          "GET api/Project/ChannelUsers",
+          "GET api/Project/BuildingStatus"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "project_building_status",
+        "description": "Handle building status",
+        "http_method": "POST",
+        "endpoint": "api/Project/BuildingStatus",
+        "parameters": {
+          "projectId": {
+            "type": "int",
+            "required": false,
+            "description": "project Id (body)"
+          },
+          "statusId": {
+            "type": "int",
+            "required": false,
+            "description": "status Id (body)"
+          },
+          "remarks": {
+            "type": "string",
+            "required": false,
+            "description": "remarks (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/ProjectController.cs",
+        "action_method": "BuildingStatus",
+        "related_dto_files": [
+          "Controllers/ProjectController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ProjectRepo.cs",
+          "Interfaces/IProject.cs"
+        ]
+      },
+      "module": "Project Management",
+      "business_logic": {
+        "operation_summary": "Handle building status — calls ICommon.getUserByToken, IProject.GetProjectByIdAsync, IProject.GetProjectBuildingStatusByIdAsync",
+        "preconditions": "Valid Bearer JWT; request body of type TransferProjectStatusDto (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets project.building_status and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IProject.GetProjectByIdAsync",
+          "IProject.GetProjectBuildingStatusByIdAsync",
+          "IProject.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ProjectRepo (Repositories/ProjectRepo.cs) via IProject"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Project not found",
+            "when": "project == null"
+          },
+          {
+            "returns": 404,
+            "message": "Status not found",
+            "when": "status == null"
+          }
+        ]
+      }
+    }
+  ]
+}
