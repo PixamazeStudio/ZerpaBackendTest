@@ -1,0 +1,310 @@
+{
+  "table_name": "StockCorrectionDetails",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Stock Correction Details",
+  "description": "Holds stock correction details records (defined in the EF Core model), linked to products, stock correction header.",
+  "business_domain": "Factory & Inventory",
+  "business_purpose": "Used to track and report stock correction details records, including amounts and quantities, for the Factory & Inventory area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one stock correction detail.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "natural",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the stock correction detail.",
+      "business_meaning": "Stock Correction Details identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "correction_headerId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "StockCorrectionHeader",
+        "column": "Id"
+      },
+      "description": "Reference to the stock correction header linked to this stock correction detail.",
+      "business_meaning": "Stock Correction Header",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "productId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Products",
+        "column": "id"
+      },
+      "description": "Reference to the products linked to this stock correction detail.",
+      "business_meaning": "Products",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "product_name_type",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Product name type of the stock correction detail.",
+      "business_meaning": "Product Name Type",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "size",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Size of the stock correction detail.",
+      "business_meaning": "Size",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "grade",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Grade of the stock correction detail.",
+      "business_meaning": "Grade",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "thickeness",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Thickeness of the stock correction detail.",
+      "business_meaning": "Thickeness",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "product_wise_notional_area",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Product wise notional area of the stock correction detail.",
+      "business_meaning": "Product Wise Notional Area",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "beforeqty",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Beforeqty of the stock correction detail.",
+      "business_meaning": "Beforeqty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "qty",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Qty of the stock correction detail.",
+      "business_meaning": "Qty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "total_amount",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total amount of the stock correction detail.",
+      "business_meaning": "Total Amount",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "total_weight",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total weight of the stock correction detail.",
+      "business_meaning": "Total Weight",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "correction_headerId",
+      "to_table": "StockCorrectionHeader",
+      "to_column": "Id",
+      "description": "Each stock correction detail references one stock correction header (correction header)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "productId",
+      "to_table": "Products",
+      "to_column": "id",
+      "description": "Each stock correction detail references one products (product)."
+    }
+  ],
+  "indexes": [],
+  "business_rules": [
+    "Use total_amount / total_weight for monetary or quantity totals.",
+    "Columns product_name_type classify the record; check the distinct values before filtering on them.",
+    "Join to Products, Stock Correction Header through the foreign key columns to resolve names.",
+    "StockCorrectionDetails is defined in the EF Core model but was not found in the connected database, so it may not be deployed there."
+  ],
+  "common_filters": [
+    "correction_headerId",
+    "productId",
+    "product_name_type"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total Product Wise Notional Area",
+      "formula": "SUM(product_wise_notional_area)"
+    },
+    {
+      "name": "Total Beforeqty",
+      "formula": "SUM(beforeqty)"
+    },
+    {
+      "name": "Total Qty",
+      "formula": "SUM(qty)"
+    },
+    {
+      "name": "Average Product Wise Notional Area per stock correction detail",
+      "formula": "SUM(product_wise_notional_area) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Stock Correction Details by stock correction header",
+    "Stock Correction Details by products",
+    "Stock Correction Details count by product name type",
+    "Top stock correction header by product wise notional area"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "correction_headerId",
+      "productId",
+      "product_name_type",
+      "size",
+      "grade",
+      "thickeness",
+      "product_wise_notional_area",
+      "beforeqty"
+    ],
+    "known_issues": [
+      "product_wise_notional_area, total_amount, total_weight are stored as floating point, so sums can carry small rounding differences.",
+      "product_wise_notional_area, beforeqty are nullable; use COALESCE when summing or comparing."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "total_amount",
+      "total_weight"
+    ],
+    "default_sort": "id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against StockCorrectionDetails: no table or view with this name exists in the connected database.",
+      "Use COUNT(DISTINCT id) when counting stock correction detail records; joins can duplicate rows.",
+      "Use SUM(total_amount) for totals of total amount.",
+      "To resolve names, join on: correction_headerId = StockCorrectionHeader.Id; productId = Products.id.",
+      "Defined in the EF Core model but not found in the connected database; confirm it has been migrated before relying on it."
+    ]
+  }
+}

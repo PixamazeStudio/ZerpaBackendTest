@@ -1,0 +1,352 @@
+{
+  "table_name": "IBLeads",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "IB Leads",
+  "description": "Holds ib leads records, linked to client, crm visit, ib status.",
+  "business_domain": "Sales & CRM",
+  "business_purpose": "Used to track and report ib leads records for the Sales & CRM area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one ib lead.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the ib lead.",
+      "business_meaning": "IB Leads identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "title",
+      "data_type": "varchar(255)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Title of the ib lead.",
+      "business_meaning": "Title",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "description",
+      "data_type": "text",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text description for the ib lead.",
+      "business_meaning": "Description",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the ib lead.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "due_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of due.",
+      "business_meaning": "Due Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the ib lead.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "ib_statusId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "IBStatus",
+        "column": "Id"
+      },
+      "description": "Reference to the ib status linked to this ib lead.",
+      "business_meaning": "IB Status",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "clientId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Client",
+        "column": "Id"
+      },
+      "description": "Reference to the client linked to this ib lead.",
+      "business_meaning": "Client",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "visitid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "CRM_Visit",
+        "column": "id"
+      },
+      "description": "Reference to the crm visit linked to this ib lead.",
+      "business_meaning": "CRM Visit",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the ib lead."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the ib lead."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "ib_statusId",
+      "to_table": "IBStatus",
+      "to_column": "Id",
+      "description": "Each ib lead references one ib status (ib status)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "clientId",
+      "to_table": "Client",
+      "to_column": "Id",
+      "description": "Each ib lead references one client (client)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "visitid",
+      "to_table": "CRM_Visit",
+      "to_column": "id",
+      "description": "Each ib lead references one crm visit (visit)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "fk_ibleads_modified_by",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_IBLeads_clientId",
+      "columns": [
+        "clientId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_IBLeads_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_IBLeads_created_date",
+      "columns": [
+        "created_date"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_IBLeads_ib_statusId",
+      "columns": [
+        "ib_statusId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_IBLeads_is_deleted",
+      "columns": [
+        "is_deleted"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_IBLeads_visitid",
+      "columns": [
+        "visitid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Join to CRM Visit, Client, IB Status through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "created_date",
+    "ib_statusId",
+    "clientId",
+    "visitid",
+    "is_deleted"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "IB Leads by month",
+    "Recent ib leads",
+    "IB Leads by ib status",
+    "IB Leads by client",
+    "IB Leads by crm visit"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "description",
+      "created_byId",
+      "due_date",
+      "modified_byId",
+      "modified_date",
+      "ib_statusId",
+      "visitid"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name IBLeads (identifiers can be case-sensitive).",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT Id) when counting ib lead records; joins can duplicate rows.",
+      "To resolve names, join on: ib_statusId = IBStatus.Id; clientId = Client.Id; visitid = CRM_Visit.id."
+    ]
+  }
+}

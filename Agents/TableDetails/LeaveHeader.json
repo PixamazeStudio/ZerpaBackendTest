@@ -1,0 +1,398 @@
+{
+  "table_name": "LeaveHeader",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Leave Header",
+  "description": "Holds leave header records, linked to leave sub type, leave types.",
+  "business_domain": "HR & User Management",
+  "business_purpose": "Used to track and report leave header records, including approval status, for the HR & User Management area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one leave header.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the leave header.",
+      "business_meaning": "Leave Header identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "LeaveTypeid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "LeaveTypes",
+        "column": "id"
+      },
+      "description": "Reference to the leave types linked to this leave header.",
+      "business_meaning": "Leave Types",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "FromDate",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time of from.",
+      "business_meaning": "From Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "ToDate",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time of to.",
+      "business_meaning": "To Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Reason",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Free-text reason for the leave header.",
+      "business_meaning": "Reason",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "CreatedById",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the leave header.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "CreatedDate",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "IsDeleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "IsApproved",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the leave header is approved.",
+      "business_meaning": "Is Approved",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "IsRejected",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the leave header is rejected.",
+      "business_meaning": "Is Rejected",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "OperatedDate",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of operated.",
+      "business_meaning": "Operated Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "OperatedById",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who approved or rejected the leave header.",
+      "business_meaning": "Operated By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "ModifiedById",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the leave header.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "ModifiedDate",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "half_or_full",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Half or full of the leave header.",
+      "business_meaning": "Half Or Full",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Leave_sub_Typeid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "LeaveSubType",
+        "column": "id"
+      },
+      "description": "Reference to the leave sub type linked to this leave header.",
+      "business_meaning": "Leave Sub Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "LeaveTypeid",
+      "to_table": "LeaveTypes",
+      "to_column": "id",
+      "description": "Each leave header references one leave types (leave type)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "CreatedById",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the leave header."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "OperatedById",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who approved or rejected the leave header."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "ModifiedById",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the leave header."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "Leave_sub_Typeid",
+      "to_table": "LeaveSubType",
+      "to_column": "id",
+      "description": "Each leave header references one leave sub type (leave sub type)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "FK_LeaveHeader_LeaveSubType_Leave_sub_Typeid",
+      "columns": [
+        "Leave_sub_Typeid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_LeaveHeader_CreatedById",
+      "columns": [
+        "CreatedById"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_LeaveHeader_LeaveTypeid",
+      "columns": [
+        "LeaveTypeid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_LeaveHeader_ModifiedById",
+      "columns": [
+        "ModifiedById"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_LeaveHeader_OperatedById",
+      "columns": [
+        "OperatedById"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (IsDeleted = 1) should normally be excluded from reporting.",
+    "Approval state is tracked with IsApproved, IsRejected; a record with neither flag set is typically still pending.",
+    "CreatedDate is the preferred date column for period-based reporting.",
+    "Join to Leave Sub Type, Leave Types through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "CreatedDate",
+    "LeaveTypeid",
+    "Leave_sub_Typeid",
+    "IsDeleted",
+    "IsApproved",
+    "IsRejected"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "Leave Header by month",
+    "Recent leave header",
+    "Leave Header by leave types",
+    "Leave Header by leave sub type"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "OperatedDate",
+      "OperatedById",
+      "ModifiedById",
+      "ModifiedDate",
+      "half_or_full",
+      "Leave_sub_Typeid"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "CreatedDate",
+    "preferred_amount_columns": [],
+    "default_sort": "CreatedDate DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name LeaveHeader (identifiers can be case-sensitive).",
+      "Always filter IsDeleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT Id) when counting leave header records; joins can duplicate rows.",
+      "To resolve names, join on: LeaveTypeid = LeaveTypes.id; Leave_sub_Typeid = LeaveSubType.id."
+    ]
+  }
+}

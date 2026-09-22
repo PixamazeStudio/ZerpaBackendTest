@@ -1,0 +1,262 @@
+{
+  "table_name": "ClubbingDetails",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Clubbing Details",
+  "description": "Holds clubbing details records, linked to clubbing header, indent header.",
+  "business_domain": "System & Communication",
+  "business_purpose": "Used to track and report clubbing details records, including amounts and quantities, for the System & Communication area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one clubbing detail.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the clubbing detail.",
+      "business_meaning": "Clubbing Details identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "indentid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "IndentHeader",
+        "column": "id"
+      },
+      "description": "Reference to the indent header linked to this clubbing detail.",
+      "business_meaning": "Indent Header",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "indent_code",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Indent code reference of the clubbing detail.",
+      "business_meaning": "Indent Code",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "total_items",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total items of the clubbing detail.",
+      "business_meaning": "Total Items",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "total_price",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total price of the clubbing detail.",
+      "business_meaning": "Total Price",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "total_weight",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total weight of the clubbing detail.",
+      "business_meaning": "Total Weight",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "clubheaderid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "ClubbingHeader",
+        "column": "id"
+      },
+      "description": "Reference to the clubbing header linked to this clubbing detail.",
+      "business_meaning": "Clubbing Header",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "indentid",
+      "to_table": "IndentHeader",
+      "to_column": "id",
+      "description": "Each clubbing detail references one indent header (indent)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "clubheaderid",
+      "to_table": "ClubbingHeader",
+      "to_column": "id",
+      "description": "Each clubbing detail references one clubbing header (clubheader)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_ClubbingDetails_clubheaderid",
+      "columns": [
+        "clubheaderid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ClubbingDetails_indentid",
+      "columns": [
+        "indentid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "Use total_items / total_price for monetary or quantity totals.",
+    "Join to Clubbing Header, Indent Header through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "indentid",
+    "clubheaderid",
+    "is_deleted",
+    "indent_code"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total Items",
+      "formula": "SUM(total_items)"
+    },
+    {
+      "name": "Average Total Price",
+      "formula": "AVG(total_price)"
+    },
+    {
+      "name": "Total Weight",
+      "formula": "SUM(total_weight)"
+    },
+    {
+      "name": "Average Total Items per clubbing detail",
+      "formula": "SUM(total_items) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Clubbing Details by indent header",
+    "Clubbing Details by clubbing header",
+    "Top indent header by total items"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "is_deleted"
+    ],
+    "known_issues": [
+      "total_items, total_price, total_weight are stored as floating point, so sums can carry small rounding differences."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "total_items",
+      "total_price"
+    ],
+    "default_sort": "id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name ClubbingDetails (identifiers can be case-sensitive).",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting clubbing detail records; joins can duplicate rows.",
+      "Use SUM(total_items) for totals of total items.",
+      "To resolve names, join on: indentid = IndentHeader.id; clubheaderid = ClubbingHeader.id."
+    ]
+  }
+}

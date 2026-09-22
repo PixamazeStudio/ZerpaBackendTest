@@ -1,0 +1,199 @@
+{
+  "table_name": "Vw_InfluencerPlannerSummaryAsPerFL",
+  "schema": null,
+  "object_type": "view",
+  "view_name": "Vw_InfluencerPlannerSummaryAsPerFL",
+  "exists_in_database": true,
+  "display_name": "Influencer Planner Summary As Per FL",
+  "description": "Database view exposing influencer planner summary as per fl data.",
+  "business_domain": "Sales Planning & Performance",
+  "business_purpose": "Used to track and report influencer planner summary as per fl records, including amounts and quantities, for the Sales Planning & Performance area.",
+  "table_type": "view",
+  "record_granularity": "One row represents one record returned by the influencer planner summary as per fl view.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "branch_id",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Branch id of the influencer planner summary as per fl.",
+      "business_meaning": "Branch Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "branch_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the branch.",
+      "business_meaning": "Branch Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "user_id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "User id of the influencer planner summary as per fl.",
+      "business_meaning": "User Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "user_name",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Name of the user.",
+      "business_meaning": "User Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "mpds_target",
+      "data_type": "decimal(65,30)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Mpds target of the influencer planner summary as per fl.",
+      "business_meaning": "Mpds Target",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "monthly_plan_target",
+      "data_type": "bigint(21)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Monthly plan target of the influencer planner summary as per fl.",
+      "business_meaning": "Monthly Plan Target",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "ply_achieved",
+      "data_type": "bigint(21)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Ply achieved of the influencer planner summary as per fl.",
+      "business_meaning": "Ply Achieved",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "pvc_achieved",
+      "data_type": "bigint(21)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Pvc achieved of the influencer planner summary as per fl.",
+      "business_meaning": "Pvc Achieved",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "total_achieved",
+      "data_type": "bigint(21)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total achieved of the influencer planner summary as per fl.",
+      "business_meaning": "Total Achieved",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "Use total_achieved / mpds_target for monetary or quantity totals.",
+    "Vw_InfluencerPlannerSummaryAsPerFL is a database view: it is read-only and its rows are computed, so apply filters and a LIMIT when querying."
+  ],
+  "common_filters": [
+    "branch_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    },
+    {
+      "name": "Total Mpds Target",
+      "formula": "SUM(mpds_target)"
+    },
+    {
+      "name": "Total Achieved",
+      "formula": "SUM(total_achieved)"
+    }
+  ],
+  "common_queries": [
+    "List influencer planner summary as per fl",
+    "Count of influencer planner summary as per fl"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [],
+    "known_issues": [
+      "Views expose no primary key or nullability guarantees; rows may repeat depending on the view definition."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "total_achieved",
+      "mpds_target"
+    ],
+    "default_sort": "",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name Vw_InfluencerPlannerSummaryAsPerFL (identifiers can be case-sensitive).",
+      "Use SUM(total_achieved) for totals of total achieved.",
+      "This is a view; always apply filters and a LIMIT, as it may be expensive to scan."
+    ]
+  }
+}

@@ -1,0 +1,388 @@
+{
+  "table_name": "CRM_SecondaryDetails",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "CRM Secondary Details",
+  "description": "Holds crm secondary details records, linked to crm secondary order, products.",
+  "business_domain": "Sales & CRM",
+  "business_purpose": "Used to track and report crm secondary details records, including amounts and quantities, for the Sales & CRM area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one crm secondary detail.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the crm secondary detail.",
+      "business_meaning": "CRM Secondary Details identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "productsid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Products",
+        "column": "id"
+      },
+      "description": "Reference to the products linked to this crm secondary detail.",
+      "business_meaning": "Products",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "quantity",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Quantity of the crm secondary detail.",
+      "business_meaning": "Quantity",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the crm secondary detail.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the crm secondary detail.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "CRM_SecondaryOrderHeaderid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "CRM_SecondaryOrder",
+        "column": "id"
+      },
+      "description": "Reference to the crm secondary order linked to this crm secondary detail.",
+      "business_meaning": "CRM Secondary Order",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "product_name",
+      "data_type": "varchar(255)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the product.",
+      "business_meaning": "Product Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "thickness",
+      "data_type": "varchar(100)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Thickness of the crm secondary detail.",
+      "business_meaning": "Thickness",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "grade",
+      "data_type": "varchar(100)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Grade of the crm secondary detail.",
+      "business_meaning": "Grade",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "size",
+      "data_type": "varchar(100)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Size of the crm secondary detail.",
+      "business_meaning": "Size",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "notional_area",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Notional area of the crm secondary detail.",
+      "business_meaning": "Notional Area",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "productsid",
+      "to_table": "Products",
+      "to_column": "id",
+      "description": "Each crm secondary detail references one products (products)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the crm secondary detail."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the crm secondary detail."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "CRM_SecondaryOrderHeaderid",
+      "to_table": "CRM_SecondaryOrder",
+      "to_column": "id",
+      "description": "Each crm secondary detail references one crm secondary order (CRM secondary order header)."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "ERPSchemeRequestDetails",
+      "to_column": "secondary_detailid",
+      "description": "Each crm secondary detail can have many erp scheme request details records referencing it through secondary_detailid."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "FK_CRM_SecondaryDetails_CRM_SecondaryOrderHeader",
+      "columns": [
+        "CRM_SecondaryOrderHeaderid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CRM_SecondaryDetails_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CRM_SecondaryDetails_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CRM_SecondaryDetails_productsid",
+      "columns": [
+        "productsid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Use quantity / notional_area for monetary or quantity totals.",
+    "Join to CRM Secondary Order, Products through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "created_date",
+    "productsid",
+    "CRM_SecondaryOrderHeaderid",
+    "is_deleted",
+    "product_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total Quantity",
+      "formula": "SUM(quantity)"
+    },
+    {
+      "name": "Total Notional Area",
+      "formula": "SUM(notional_area)"
+    },
+    {
+      "name": "Average Quantity per crm secondary detail",
+      "formula": "SUM(quantity) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "CRM Secondary Details by month",
+    "Recent crm secondary details",
+    "CRM Secondary Details by products",
+    "CRM Secondary Details by crm secondary order",
+    "Total quantity by month",
+    "Top products by quantity"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "created_byId",
+      "modified_byId",
+      "modified_date",
+      "CRM_SecondaryOrderHeaderid",
+      "product_name",
+      "thickness",
+      "grade",
+      "size",
+      "notional_area"
+    ],
+    "known_issues": [
+      "notional_area is stored as floating point, so sums can carry small rounding differences.",
+      "notional_area is nullable; use COALESCE when summing or comparing."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [
+      "quantity",
+      "notional_area"
+    ],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name CRM_SecondaryDetails (identifiers can be case-sensitive).",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting crm secondary detail records; joins can duplicate rows.",
+      "Use SUM(quantity) for totals of quantity.",
+      "To resolve names, join on: productsid = Products.id; CRM_SecondaryOrderHeaderid = CRM_SecondaryOrder.id."
+    ]
+  }
+}

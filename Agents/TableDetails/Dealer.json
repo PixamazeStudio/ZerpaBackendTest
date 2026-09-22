@@ -1,0 +1,718 @@
+{
+  "table_name": "Dealer",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Dealer",
+  "description": "Holds dealer records, linked to area, region, sub area.",
+  "business_domain": "Sales & CRM",
+  "business_purpose": "Used to track and report dealer records, including amounts and quantities, for the Sales & CRM area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one dealer.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the dealer.",
+      "business_meaning": "Dealer identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "dealer_name",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Name of the dealer.",
+      "business_meaning": "Dealer Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "gst_no",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Gst no reference of the dealer.",
+      "business_meaning": "Gst No",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "phone",
+      "data_type": "bigint(20)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Phone of the dealer.",
+      "business_meaning": "Phone",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "address",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Address of the dealer.",
+      "business_meaning": "Address",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "pan_card_no",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Pan card no reference of the dealer.",
+      "business_meaning": "Pan Card No",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "discount",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Discount of the dealer.",
+      "business_meaning": "Discount",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "maximum_outstanding",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Maximum outstanding of the dealer.",
+      "business_meaning": "Maximum Outstanding",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "maximum_days",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Maximum days of the dealer.",
+      "business_meaning": "Maximum Days",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "current_outstanding",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Current outstanding of the dealer.",
+      "business_meaning": "Current Outstanding",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "current_pending_days",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Current pending days of the dealer.",
+      "business_meaning": "Current Pending Days",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the dealer.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the dealer.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "areaid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Area",
+        "column": "id"
+      },
+      "description": "Reference to the area linked to this dealer.",
+      "business_meaning": "Area",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "regionid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Region",
+        "column": "id"
+      },
+      "description": "Reference to the region linked to this dealer.",
+      "business_meaning": "Region",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "sub_areaid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "SubArea",
+        "column": "id"
+      },
+      "description": "Reference to the sub area linked to this dealer.",
+      "business_meaning": "Sub Area",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "shipping_address",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Shipping address of the dealer.",
+      "business_meaning": "Shipping Address",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_inactive",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the dealer is inactive.",
+      "business_meaning": "Is Inactive",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "branchid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Branchid of the dealer.",
+      "business_meaning": "Branchid",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_it_branch",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the dealer is it branch.",
+      "business_meaning": "Is It Branch",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "branch_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the branch.",
+      "business_meaning": "Branch Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_subdealer",
+      "data_type": "tinyint(1)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "True when the dealer is subdealer.",
+      "business_meaning": "Is Subdealer",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "account_no",
+      "data_type": "bigint(20)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Account no of the dealer.",
+      "business_meaning": "Account No",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "bank_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the bank.",
+      "business_meaning": "Bank Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "ifsc_code",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Ifsc code reference of the dealer.",
+      "business_meaning": "Ifsc Code",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the dealer."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the dealer."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "areaid",
+      "to_table": "Area",
+      "to_column": "id",
+      "description": "Each dealer references one area (area)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "regionid",
+      "to_table": "Region",
+      "to_column": "id",
+      "description": "Each dealer references one region (region)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "sub_areaid",
+      "to_table": "SubArea",
+      "to_column": "id",
+      "description": "Each dealer references one sub area (sub area)."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "CRM_Projects",
+      "to_column": "dealerid",
+      "description": "Each dealer can have many crm projects records referencing it through dealerid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "CRM_SecondaryOrder",
+      "to_column": "supplied_byid",
+      "description": "Each dealer can have many crm secondary order records referencing it through supplied_byid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "CRM_Visit",
+      "to_column": "dealerid",
+      "description": "Each dealer can have many crm visit records referencing it through dealerid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "ClientPreferredDealerLinks",
+      "to_column": "DealerId",
+      "description": "Each dealer can have many client preferred dealer links records referencing it through DealerId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "Cms_CreditNotesHeader",
+      "to_column": "dealerid",
+      "description": "Each dealer can have many cms credit notes header records referencing it through dealerid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "ComplaintsHeader",
+      "to_column": "dealerid",
+      "description": "Each dealer can have many complaints header records referencing it through dealerid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "CreditNotes",
+      "to_column": "dealerid",
+      "description": "Each dealer can have many credit notes records referencing it through dealerid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "DealerMapping",
+      "to_column": "Dealerid",
+      "description": "Each dealer can have many dealer mapping records referencing it through Dealerid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "DiscountScenarioHeader",
+      "to_column": "dealerid",
+      "description": "Each dealer can have many discount scenario header records referencing it through dealerid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "ERPSchemeRequestDetails",
+      "to_column": "supplied_byid",
+      "description": "Each dealer can have many erp scheme request details records referencing it through supplied_byid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "IndentHeader",
+      "to_column": "dealerid",
+      "description": "Each dealer can have many indent header records referencing it through dealerid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "IndentPlanningDetails",
+      "to_column": "dealerid",
+      "description": "Each dealer can have many indent planning details records referencing it through dealerid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "(other tables)",
+      "to_column": "(various)",
+      "description": "9 more tables reference this table; only the first 12 are listed."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_Dealer_areaid",
+      "columns": [
+        "areaid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Dealer_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Dealer_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Dealer_regionid",
+      "columns": [
+        "regionid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Dealer_sub_areaid",
+      "columns": [
+        "sub_areaid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Use discount / maximum_outstanding for monetary or quantity totals.",
+    "Join to Area, Region, Sub Area through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "created_date",
+    "areaid",
+    "regionid",
+    "sub_areaid",
+    "is_deleted",
+    "is_inactive",
+    "is_it_branch",
+    "dealer_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total Discount",
+      "formula": "SUM(discount)"
+    },
+    {
+      "name": "Total Maximum Outstanding",
+      "formula": "SUM(maximum_outstanding)"
+    },
+    {
+      "name": "Total Current Outstanding",
+      "formula": "SUM(current_outstanding)"
+    },
+    {
+      "name": "Average Discount per dealer",
+      "formula": "SUM(discount) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Dealer by month",
+    "Recent dealer",
+    "Dealer by area",
+    "Dealer by region",
+    "Dealer by sub area",
+    "Total discount by month",
+    "Top area by discount"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "gst_no",
+      "phone",
+      "address",
+      "pan_card_no",
+      "discount",
+      "maximum_outstanding",
+      "maximum_days",
+      "modified_date",
+      "current_outstanding",
+      "current_pending_days",
+      "created_byId",
+      "modified_byId",
+      "areaid",
+      "regionid",
+      "sub_areaid",
+      "shipping_address",
+      "branch_name",
+      "is_subdealer",
+      "account_no",
+      "bank_name",
+      "ifsc_code"
+    ],
+    "known_issues": [
+      "maximum_outstanding, current_outstanding are stored as floating point, so sums can carry small rounding differences.",
+      "discount, maximum_outstanding, current_outstanding are nullable; use COALESCE when summing or comparing."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [
+      "discount",
+      "maximum_outstanding"
+    ],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [
+      "phone",
+      "address",
+      "pan_card_no",
+      "shipping_address",
+      "account_no",
+      "ifsc_code"
+    ],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name Dealer (identifiers can be case-sensitive).",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting dealer records; joins can duplicate rows.",
+      "Use SUM(discount) for totals of discount.",
+      "To resolve names, join on: areaid = Area.id; regionid = Region.id; sub_areaid = SubArea.id.",
+      "Do not select phone, address, pan_card_no, shipping_address, account_no, ifsc_code; they are sensitive or may hold very large content."
+    ]
+  }
+}

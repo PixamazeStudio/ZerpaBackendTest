@@ -1,0 +1,168 @@
+{
+  "table_name": "ProjectSupplySummaryData",
+  "schema": null,
+  "object_type": "model",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Project Supply Summary Data",
+  "description": "Application view model for project supply summary data data (not stored as a database table).",
+  "business_domain": "Sales & CRM",
+  "business_purpose": "Used to track and report project supply summary data records, including amounts and quantities, for the Sales & CRM area.",
+  "table_type": "view_model",
+  "record_granularity": "One object represents one project supply summary data result row.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "UserId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "User id of the project supply summary data.",
+      "business_meaning": "User Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "ProjectId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Project id of the project supply summary data.",
+      "business_meaning": "Project Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "ProjectName",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Project name of the project supply summary data.",
+      "business_meaning": "Project Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "TotalQty",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total qty of the project supply summary data.",
+      "business_meaning": "Total Qty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "PlyQty",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Ply qty of the project supply summary data.",
+      "business_meaning": "Ply Qty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "PvcQty",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Pvc qty of the project supply summary data.",
+      "business_meaning": "Pvc Qty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "Use TotalQty / PlyQty for monetary or quantity totals.",
+    "ProjectSupplySummaryData is an application view model or report DTO populated in code, not a table stored in the database."
+  ],
+  "common_filters": [],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    },
+    {
+      "name": "Total Qty",
+      "formula": "SUM(TotalQty)"
+    },
+    {
+      "name": "Total Ply Qty",
+      "formula": "SUM(PlyQty)"
+    },
+    {
+      "name": "Total Pvc Qty",
+      "formula": "SUM(PvcQty)"
+    }
+  ],
+  "common_queries": [
+    "List project supply summary data",
+    "Count of project supply summary data"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [
+      "ProjectName"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "TotalQty",
+      "PlyQty"
+    ],
+    "default_sort": "",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against ProjectSupplySummaryData: no table or view with this name exists in the connected database.",
+      "Use SUM(TotalQty) for totals of total qty.",
+      "Populated in application code (for example from a stored procedure or joined query); query the underlying tables instead."
+    ]
+  }
+}

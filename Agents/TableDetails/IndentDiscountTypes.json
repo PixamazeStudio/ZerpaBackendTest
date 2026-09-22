@@ -1,0 +1,226 @@
+{
+  "table_name": "IndentDiscountTypes",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Indent Discount Types",
+  "description": "Holds indent discount types records.",
+  "business_domain": "Factory & Inventory",
+  "business_purpose": "Used to track and report indent discount types records for the Factory & Inventory area.",
+  "table_type": "master",
+  "record_granularity": "One row represents one indent discount type.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the indent discount type.",
+      "business_meaning": "Indent Discount Types identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "indent_discount_name",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Name of the indent discount.",
+      "business_meaning": "Indent Discount Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_default",
+      "data_type": "tinyint(1)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "True when the indent discount type is default.",
+      "business_meaning": "Is Default",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the indent discount type.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the indent discount type.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the indent discount type."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the indent discount type."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_IndentDiscountTypes_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_IndentDiscountTypes_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "created_date is the preferred date column for period-based reporting."
+  ],
+  "common_filters": [
+    "created_date",
+    "is_default",
+    "is_deleted",
+    "indent_discount_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Indent Discount Types by month",
+    "Recent indent discount types"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "is_default",
+      "modified_byId",
+      "modified_date"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name IndentDiscountTypes (identifiers can be case-sensitive).",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting indent discount type records; joins can duplicate rows."
+    ]
+  }
+}

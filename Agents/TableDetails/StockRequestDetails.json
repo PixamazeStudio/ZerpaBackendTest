@@ -1,0 +1,328 @@
+{
+  "table_name": "StockRequestDetails",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Stock Request Details",
+  "description": "Holds stock request details records, linked to products, stock request header.",
+  "business_domain": "Factory & Inventory",
+  "business_purpose": "Used to track and report stock request details records, including amounts and quantities, for the Factory & Inventory area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one stock request detail.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the stock request detail.",
+      "business_meaning": "Stock Request Details identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "request_headerid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "StockRequestHeader",
+        "column": "id"
+      },
+      "description": "Reference to the stock request header linked to this stock request detail.",
+      "business_meaning": "Stock Request Header",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "productid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Products",
+        "column": "id"
+      },
+      "description": "Reference to the products linked to this stock request detail.",
+      "business_meaning": "Products",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "product_name_type",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Product name type of the stock request detail.",
+      "business_meaning": "Product Name Type",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "size",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Size of the stock request detail.",
+      "business_meaning": "Size",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "grade",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Grade of the stock request detail.",
+      "business_meaning": "Grade",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "thickeness",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Thickeness of the stock request detail.",
+      "business_meaning": "Thickeness",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "product_wise_notional_area",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Product wise notional area of the stock request detail.",
+      "business_meaning": "Product Wise Notional Area",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "qty",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Qty of the stock request detail.",
+      "business_meaning": "Qty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "total_amount",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total amount of the stock request detail.",
+      "business_meaning": "Total Amount",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "total_weight",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total weight of the stock request detail.",
+      "business_meaning": "Total Weight",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "beforeqty",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Beforeqty of the stock request detail.",
+      "business_meaning": "Beforeqty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "request_headerid",
+      "to_table": "StockRequestHeader",
+      "to_column": "id",
+      "description": "Each stock request detail references one stock request header (request header)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "productid",
+      "to_table": "Products",
+      "to_column": "id",
+      "description": "Each stock request detail references one products (product)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_StockRequestDetails_productid",
+      "columns": [
+        "productid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_StockRequestDetails_request_headerid",
+      "columns": [
+        "request_headerid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Use total_amount / total_weight for monetary or quantity totals.",
+    "Columns product_name_type classify the record; check the distinct values before filtering on them.",
+    "Join to Products, Stock Request Header through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "request_headerid",
+    "productid",
+    "product_name_type"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total Product Wise Notional Area",
+      "formula": "SUM(product_wise_notional_area)"
+    },
+    {
+      "name": "Total Qty",
+      "formula": "SUM(qty)"
+    },
+    {
+      "name": "Total Amount",
+      "formula": "SUM(total_amount)"
+    },
+    {
+      "name": "Average Product Wise Notional Area per stock request detail",
+      "formula": "SUM(product_wise_notional_area) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Stock Request Details by stock request header",
+    "Stock Request Details by products",
+    "Stock Request Details count by product name type",
+    "Top stock request header by product wise notional area"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "product_name_type",
+      "size",
+      "grade",
+      "thickeness",
+      "product_wise_notional_area",
+      "beforeqty"
+    ],
+    "known_issues": [
+      "product_wise_notional_area, total_amount, total_weight are stored as floating point, so sums can carry small rounding differences.",
+      "product_wise_notional_area, beforeqty are nullable; use COALESCE when summing or comparing."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "total_amount",
+      "total_weight"
+    ],
+    "default_sort": "id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name StockRequestDetails (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT id) when counting stock request detail records; joins can duplicate rows.",
+      "Use SUM(total_amount) for totals of total amount.",
+      "To resolve names, join on: request_headerid = StockRequestHeader.id; productid = Products.id."
+    ]
+  }
+}

@@ -1,0 +1,180 @@
+{
+  "table_name": "Vw_UserWiseHierarchy",
+  "schema": null,
+  "object_type": "view",
+  "view_name": "Vw_UserWiseHierarchy",
+  "exists_in_database": true,
+  "display_name": "User Wise Hierarchy",
+  "description": "Database view exposing user wise hierarchy data.",
+  "business_domain": "HR & User Management",
+  "business_purpose": "Used to track and report user wise hierarchy records for the HR & User Management area.",
+  "table_type": "view",
+  "record_granularity": "One row represents one record returned by the user wise hierarchy view.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "currentUserId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Current user id of the user wise hierarchy.",
+      "business_meaning": "Current User Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "CurrentUserRoleLevel",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Current user role level of the user wise hierarchy.",
+      "business_meaning": "Current User Role Level",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "CurrentUserName",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Current user name of the user wise hierarchy.",
+      "business_meaning": "Current User Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "AllocatedUsersId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Allocated users id of the user wise hierarchy.",
+      "business_meaning": "Allocated Users Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "AllocatedUserRoleLevel",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Allocated user role level of the user wise hierarchy.",
+      "business_meaning": "Allocated User Role Level",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "AllocatedUserName",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Allocated user name of the user wise hierarchy.",
+      "business_meaning": "Allocated User Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "BranchId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Branch id of the user wise hierarchy.",
+      "business_meaning": "Branch Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Email",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Email of the user wise hierarchy.",
+      "business_meaning": "Email",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "BranchName",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Branch name of the user wise hierarchy.",
+      "business_meaning": "Branch Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "Columns CurrentUserRoleLevel, AllocatedUserRoleLevel classify the record; check the distinct values before filtering on them.",
+    "Vw_UserWiseHierarchy is a database view: it is read-only and its rows are computed, so apply filters and a LIMIT when querying."
+  ],
+  "common_filters": [
+    "CurrentUserRoleLevel",
+    "AllocatedUserRoleLevel"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    }
+  ],
+  "common_queries": [
+    "List user wise hierarchy",
+    "Count of user wise hierarchy",
+    "User Wise Hierarchy count by current user role level"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [],
+    "known_issues": [
+      "Views expose no primary key or nullability guarantees; rows may repeat depending on the view definition."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [],
+    "default_sort": "",
+    "avoid_columns": [
+      "Email"
+    ],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name Vw_UserWiseHierarchy (identifiers can be case-sensitive).",
+      "This is a view; always apply filters and a LIMIT, as it may be expensive to scan.",
+      "Do not select Email; they are sensitive or may hold very large content."
+    ]
+  }
+}

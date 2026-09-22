@@ -1,0 +1,450 @@
+{
+  "table_name": "Products",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Products",
+  "description": "Holds products records.",
+  "business_domain": "Sales & CRM",
+  "business_purpose": "Used to track and report products records, including amounts and quantities, for the Sales & CRM area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one product.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the product.",
+      "business_meaning": "Products identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "product_name",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Name of the product.",
+      "business_meaning": "Product Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "product_description",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text product description for the product.",
+      "business_meaning": "Product Description",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "price",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Price of the product.",
+      "business_meaning": "Price",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "thickness",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Thickness of the product.",
+      "business_meaning": "Thickness",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "weight",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Weight of the product.",
+      "business_meaning": "Weight",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "grade",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Grade of the product.",
+      "business_meaning": "Grade",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "size",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Size of the product.",
+      "business_meaning": "Size",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "sub_brand",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Sub brand of the product.",
+      "business_meaning": "Sub Brand",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the product.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the product.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "notional_area",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Notional area of the product.",
+      "business_meaning": "Notional Area",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "HSN_code",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "HSN code reference of the product.",
+      "business_meaning": "HSN Code",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "categoryid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Categoryid of the product.",
+      "business_meaning": "Categoryid",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "GST",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "GST of the product.",
+      "business_meaning": "GST",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the product."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the product."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "CRM_SecondaryDetails",
+      "to_column": "productsid",
+      "description": "Each product can have many crm secondary details records referencing it through productsid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "DefaultStock",
+      "to_column": "Productsid",
+      "description": "Each product can have many default stock records referencing it through Productsid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "IndentDetails",
+      "to_column": "productid",
+      "description": "Each product can have many indent details records referencing it through productid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "ProductionHistory",
+      "to_column": "Productsid",
+      "description": "Each product can have many production history records referencing it through Productsid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "StockRequestDetails",
+      "to_column": "productid",
+      "description": "Each product can have many stock request details records referencing it through productid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "WarrantyCard",
+      "to_column": "productid",
+      "description": "Each product can have many warranty card records referencing it through productid."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_Products_categoryid",
+      "columns": [
+        "categoryid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Products_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Products_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Use price / weight for monetary or quantity totals."
+  ],
+  "common_filters": [
+    "created_date",
+    "is_deleted",
+    "product_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Average Price",
+      "formula": "AVG(price)"
+    },
+    {
+      "name": "Total Weight",
+      "formula": "SUM(weight)"
+    },
+    {
+      "name": "Total Notional Area",
+      "formula": "SUM(notional_area)"
+    }
+  ],
+  "common_queries": [
+    "Products by month",
+    "Recent products",
+    "Total price by month"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "product_description",
+      "price",
+      "modified_date",
+      "weight",
+      "grade",
+      "sub_brand",
+      "created_byId",
+      "modified_byId",
+      "GST"
+    ],
+    "known_issues": [
+      "price, weight, notional_area, GST are stored as floating point, so sums can carry small rounding differences.",
+      "price, weight, GST are nullable; use COALESCE when summing or comparing."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [
+      "price",
+      "weight"
+    ],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name Products (identifiers can be case-sensitive).",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting product records; joins can duplicate rows.",
+      "Use SUM(price) for totals of price."
+    ]
+  }
+}

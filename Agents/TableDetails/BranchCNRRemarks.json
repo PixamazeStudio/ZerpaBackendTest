@@ -1,0 +1,207 @@
+{
+  "table_name": "BranchCNRRemarks",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Branch CNR Remarks",
+  "description": "Holds branch cnr remarks records, linked to cms credit note requisition, users.",
+  "business_domain": "Branch & Geography",
+  "business_purpose": "Used to track and report branch cnr remarks records for the Branch & Geography area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one branch cnr remark.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the branch cnr remark.",
+      "business_meaning": "Branch CNR Remarks identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "requisitionid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "CMS_CreditNoteRequisition",
+        "column": "id"
+      },
+      "description": "Reference to the cms credit note requisition linked to this branch cnr remark.",
+      "business_meaning": "CMS Credit Note Requisition",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "userId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this branch cnr remark.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "role",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Role of the branch cnr remark.",
+      "business_meaning": "Role",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "remarks",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Free-text remarks for the branch cnr remark.",
+      "business_meaning": "Remarks",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_initial_remark",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the branch cnr remark is initial remark.",
+      "business_meaning": "Is Initial Remark",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "remark_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time of remark.",
+      "business_meaning": "Remark Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "requisitionid",
+      "to_table": "CMS_CreditNoteRequisition",
+      "to_column": "id",
+      "description": "Each branch cnr remark references one cms credit note requisition (requisition)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "userId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each branch cnr remark references one users (user)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_BranchCNRRemarks_requisitionid",
+      "columns": [
+        "requisitionid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_BranchCNRRemarks_userId",
+      "columns": [
+        "userId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "remark_date is the preferred date column for period-based reporting.",
+    "Join to CMS Credit Note Requisition, Users through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "remark_date",
+    "requisitionid",
+    "userId",
+    "is_initial_remark"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Branch CNR Remarks by month",
+    "Recent branch cnr remarks",
+    "Branch CNR Remarks by cms credit note requisition",
+    "Branch CNR Remarks by users"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "remark_date",
+    "preferred_amount_columns": [],
+    "default_sort": "remark_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name BranchCNRRemarks (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT id) when counting branch cnr remark records; joins can duplicate rows.",
+      "To resolve names, join on: requisitionid = CMS_CreditNoteRequisition.id; userId = Users.Id."
+    ]
+  }
+}

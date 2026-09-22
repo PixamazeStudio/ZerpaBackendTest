@@ -1,0 +1,206 @@
+{
+  "table_name": "PVCSalesPercentage",
+  "schema": null,
+  "object_type": "model",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "PVC Sales Percentage",
+  "description": "Application view model for pvc sales percentage data (not stored as a database table).",
+  "business_domain": "Sales & CRM",
+  "business_purpose": "Used to track and report pvc sales percentage records, including amounts and quantities, for the Sales & CRM area.",
+  "table_type": "view_model",
+  "record_granularity": "One object represents one pvc sales percentage result row.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "product_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the product.",
+      "business_meaning": "Product Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "mtd_qty",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Mtd qty of the pvc sales percentage.",
+      "business_meaning": "Mtd Qty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "mtd_percentage",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Mtd percentage of the pvc sales percentage.",
+      "business_meaning": "Mtd Percentage",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "ytd_qty",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Ytd qty of the pvc sales percentage.",
+      "business_meaning": "Ytd Qty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "ytd_percentage",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Ytd percentage of the pvc sales percentage.",
+      "business_meaning": "Ytd Percentage",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "ytd_na",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Ytd na of the pvc sales percentage.",
+      "business_meaning": "Ytd Na",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "last6month_qty",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Last6month qty of the pvc sales percentage.",
+      "business_meaning": "Last6month Qty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "last6month_percentage",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Last6month percentage of the pvc sales percentage.",
+      "business_meaning": "Last6month Percentage",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "Use mtd_qty / ytd_qty for monetary or quantity totals.",
+    "PVCSalesPercentage is an application view model or report DTO populated in code, not a table stored in the database."
+  ],
+  "common_filters": [
+    "product_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    },
+    {
+      "name": "Total Mtd Qty",
+      "formula": "SUM(mtd_qty)"
+    },
+    {
+      "name": "Average Mtd Percentage",
+      "formula": "AVG(mtd_percentage)"
+    },
+    {
+      "name": "Total Ytd Qty",
+      "formula": "SUM(ytd_qty)"
+    }
+  ],
+  "common_queries": [
+    "List pvc sales percentage",
+    "Count of pvc sales percentage"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [
+      "product_name"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "mtd_qty",
+      "ytd_qty"
+    ],
+    "default_sort": "",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against PVCSalesPercentage: no table or view with this name exists in the connected database.",
+      "Use SUM(mtd_qty) for totals of mtd qty.",
+      "Populated in application code (for example from a stored procedure or joined query); query the underlying tables instead."
+    ]
+  }
+}

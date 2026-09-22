@@ -1,0 +1,239 @@
+{
+  "table_name": "VW_ProductionAndDispatchAnalysis",
+  "schema": null,
+  "object_type": "view",
+  "view_name": "VW_ProductionAndDispatchAnalysis",
+  "exists_in_database": true,
+  "display_name": "Production And Dispatch Analysis",
+  "description": "Database view exposing production and dispatch analysis data.",
+  "business_domain": "Factory & Inventory",
+  "business_purpose": "Used to track and report production and dispatch analysis records, including amounts and quantities, for the Factory & Inventory area.",
+  "table_type": "view",
+  "record_granularity": "One row represents one record returned by the production and dispatch analysis view.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "FullName",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Full name of the production and dispatch analysis.",
+      "business_meaning": "Full Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "production_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of production.",
+      "business_meaning": "Production Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "dispatched_date",
+      "data_type": "varchar(10)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Dispatched date of the production and dispatch analysis.",
+      "business_meaning": "Dispatched Date",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "product_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the product.",
+      "business_meaning": "Product Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "thickness",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Thickness of the production and dispatch analysis.",
+      "business_meaning": "Thickness",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "grade",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Grade of the production and dispatch analysis.",
+      "business_meaning": "Grade",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "size",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Size of the production and dispatch analysis.",
+      "business_meaning": "Size",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "stock_request_qty",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Stock request qty of the production and dispatch analysis.",
+      "business_meaning": "Stock Request Qty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "opening_qty",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Opening qty of the production and dispatch analysis.",
+      "business_meaning": "Opening Qty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "dispatched_qty",
+      "data_type": "int(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Dispatched qty of the production and dispatch analysis.",
+      "business_meaning": "Dispatched Qty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "category_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the category.",
+      "business_meaning": "Category Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "production_date is the preferred date column for period-based reporting.",
+    "Use stock_request_qty / opening_qty for monetary or quantity totals.",
+    "VW_ProductionAndDispatchAnalysis is a database view: it is read-only and its rows are computed, so apply filters and a LIMIT when querying."
+  ],
+  "common_filters": [
+    "production_date",
+    "product_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    },
+    {
+      "name": "Total Stock Request Qty",
+      "formula": "SUM(stock_request_qty)"
+    },
+    {
+      "name": "Total Opening Qty",
+      "formula": "SUM(opening_qty)"
+    },
+    {
+      "name": "Total Dispatched Qty",
+      "formula": "SUM(dispatched_qty)"
+    }
+  ],
+  "common_queries": [
+    "Production And Dispatch Analysis by month",
+    "Recent production and dispatch analysis",
+    "Total stock request qty by month"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [],
+    "known_issues": [
+      "stock_request_qty, opening_qty are nullable; use COALESCE when summing or comparing.",
+      "Views expose no primary key or nullability guarantees; rows may repeat depending on the view definition."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "production_date",
+    "preferred_amount_columns": [
+      "stock_request_qty",
+      "opening_qty"
+    ],
+    "default_sort": "production_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name VW_ProductionAndDispatchAnalysis (identifiers can be case-sensitive).",
+      "Use SUM(stock_request_qty) for totals of stock request qty.",
+      "This is a view; always apply filters and a LIMIT, as it may be expensive to scan."
+    ]
+  }
+}

@@ -1,0 +1,875 @@
+{
+  "table_name": "CRM_Projects",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "CRM Projects",
+  "description": "Holds crm projects records, linked to area, branch, region.",
+  "business_domain": "Sales & CRM",
+  "business_purpose": "Used to track and report crm projects records, including amounts and quantities, for the Sales & CRM area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one crm project.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the crm project.",
+      "business_meaning": "CRM Projects identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "project_name",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Name of the project.",
+      "business_meaning": "Project Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "type_of_work",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Type of work of the crm project.",
+      "business_meaning": "Type Of Work",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "site_address",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Site address of the crm project.",
+      "business_meaning": "Site Address",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "remarks",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text remarks for the crm project.",
+      "business_meaning": "Remarks",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "stateid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Region",
+        "column": "id"
+      },
+      "description": "Reference to the region linked to this crm project.",
+      "business_meaning": "Region",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "districtid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Area",
+        "column": "id"
+      },
+      "description": "Reference to the area linked to this crm project.",
+      "business_meaning": "Area",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "location_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the location.",
+      "business_meaning": "Location Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "project_owner",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Project owner of the crm project.",
+      "business_meaning": "Project Owner",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "primary_phone",
+      "data_type": "bigint(20)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Primary phone of the crm project.",
+      "business_meaning": "Primary Phone",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "postal_code",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Postal code reference of the crm project.",
+      "business_meaning": "Postal Code",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "expected_maturity_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of expected maturity.",
+      "business_meaning": "Expected Maturity Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "associated_branchid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Branch",
+        "column": "id"
+      },
+      "description": "Reference to the branch linked to this crm project.",
+      "business_meaning": "Branch",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "assigned_toId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this crm project.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "dealerid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Dealer",
+        "column": "id"
+      },
+      "description": "Reference to the dealer linked to this crm project.",
+      "business_meaning": "Dealer",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "architectId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Client",
+        "column": "Id"
+      },
+      "description": "Reference to the client linked to this crm project.",
+      "business_meaning": "Client",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "contractorId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Client",
+        "column": "Id"
+      },
+      "description": "Reference to the client linked to this crm project.",
+      "business_meaning": "Client",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "carpenterId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Client",
+        "column": "Id"
+      },
+      "description": "Reference to the client linked to this crm project.",
+      "business_meaning": "Client",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "materials_preferred",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Materials preferred of the crm project.",
+      "business_meaning": "Materials Preferred",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "brand_preferred",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Brand preferred of the crm project.",
+      "business_meaning": "Brand Preferred",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "details_for_specifications",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Details for specifications of the crm project.",
+      "business_meaning": "Details For Specifications",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "reason_for_loosing",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Reason for loosing of the crm project.",
+      "business_meaning": "Reason For Loosing",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the crm project.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the crm project.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "file_type",
+      "data_type": "varchar(45)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "File type of the crm project.",
+      "business_meaning": "File Type",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_closed",
+      "data_type": "bit(1)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "True when the crm project is closed.",
+      "business_meaning": "Is Closed",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "NOTES",
+      "data_type": "varchar(150)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text notes for the crm project.",
+      "business_meaning": "Notes",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "project_statusId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "ProjectStatus",
+        "column": "Id"
+      },
+      "description": "Reference to the project status linked to this crm project.",
+      "business_meaning": "Project Status",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "section_usersid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "SectionUsers",
+        "column": "id"
+      },
+      "description": "Reference to the section users linked to this crm project.",
+      "business_meaning": "Section Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "team_type",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Team type of the crm project.",
+      "business_meaning": "Team Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_IB_spec",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the crm project is IB spec.",
+      "business_meaning": "Is IB Spec",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "building_statusid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Building statusid of the crm project.",
+      "business_meaning": "Building Statusid",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "expected_qty",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Expected qty of the crm project.",
+      "business_meaning": "Expected Qty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "stateid",
+      "to_table": "Region",
+      "to_column": "id",
+      "description": "Each crm project references one region (state)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "districtid",
+      "to_table": "Area",
+      "to_column": "id",
+      "description": "Each crm project references one area (district)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "associated_branchid",
+      "to_table": "Branch",
+      "to_column": "id",
+      "description": "Each crm project references one branch (associated branch)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "assigned_toId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each crm project references one users (assigned to)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "dealerid",
+      "to_table": "Dealer",
+      "to_column": "id",
+      "description": "Each crm project references one dealer (dealer)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "architectId",
+      "to_table": "Client",
+      "to_column": "Id",
+      "description": "Each crm project references one client (architect)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "contractorId",
+      "to_table": "Client",
+      "to_column": "Id",
+      "description": "Each crm project references one client (contractor)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "carpenterId",
+      "to_table": "Client",
+      "to_column": "Id",
+      "description": "Each crm project references one client (carpenter)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the crm project."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the crm project."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "project_statusId",
+      "to_table": "ProjectStatus",
+      "to_column": "Id",
+      "description": "Each crm project references one project status (project status)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "section_usersid",
+      "to_table": "SectionUsers",
+      "to_column": "id",
+      "description": "Each crm project references one section users (section users)."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "CRM_SecondaryOrder",
+      "to_column": "projectId",
+      "description": "Each crm project can have many crm secondary order records referencing it through projectId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "CRM_Visit",
+      "to_column": "related_projectId",
+      "description": "Each crm project can have many crm visit records referencing it through related_projectId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "ProjectClient",
+      "to_column": "projectId",
+      "description": "Each crm project can have many project client records referencing it through projectId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "weaklyPlannerProjectDetails",
+      "to_column": "projectId",
+      "description": "Each crm project can have many weakly planner project details records referencing it through projectId."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "FK_CRM_Projects_SectionUsers_section_usersId",
+      "columns": [
+        "section_usersid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "FK_Projects_ProjectStatus_project_statusId",
+      "columns": [
+        "project_statusId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CRM_Projects_architectId",
+      "columns": [
+        "architectId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CRM_Projects_assigned_toId",
+      "columns": [
+        "assigned_toId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CRM_Projects_associated_branchid",
+      "columns": [
+        "associated_branchid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CRM_Projects_building_statusid",
+      "columns": [
+        "building_statusid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CRM_Projects_carpenterId",
+      "columns": [
+        "carpenterId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CRM_Projects_contractorId",
+      "columns": [
+        "contractorId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CRM_Projects_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CRM_Projects_dealerid",
+      "columns": [
+        "dealerid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CRM_Projects_districtid",
+      "columns": [
+        "districtid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CRM_Projects_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CRM_Projects_stateid",
+      "columns": [
+        "stateid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "is_closed = 1 marks the record as closed.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Use expected_qty for monetary or quantity totals.",
+    "Columns file_type, team_type classify the record; check the distinct values before filtering on them.",
+    "Join to Area, Branch, Region, Users through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "created_date",
+    "stateid",
+    "districtid",
+    "associated_branchid",
+    "assigned_toId",
+    "file_type",
+    "team_type",
+    "is_deleted",
+    "is_closed",
+    "is_IB_spec",
+    "project_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    },
+    {
+      "name": "Total Expected Qty",
+      "formula": "SUM(expected_qty)"
+    },
+    {
+      "name": "Average Expected Qty per crm project",
+      "formula": "SUM(expected_qty) / COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "CRM Projects by month",
+    "Recent crm projects",
+    "CRM Projects by region",
+    "CRM Projects by area",
+    "CRM Projects by branch",
+    "CRM Projects count by file type",
+    "Total expected qty by month",
+    "Top region by expected qty"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "site_address",
+      "remarks",
+      "location_name",
+      "project_owner",
+      "primary_phone",
+      "postal_code",
+      "expected_maturity_date",
+      "associated_branchid",
+      "assigned_toId",
+      "dealerid",
+      "architectId",
+      "contractorId",
+      "carpenterId",
+      "materials_preferred",
+      "brand_preferred",
+      "details_for_specifications",
+      "reason_for_loosing",
+      "created_byId",
+      "modified_byId",
+      "modified_date",
+      "file_type",
+      "is_closed",
+      "NOTES",
+      "project_statusId",
+      "section_usersid",
+      "team_type",
+      "building_statusid",
+      "expected_qty"
+    ],
+    "known_issues": [
+      "expected_qty is nullable; use COALESCE when summing or comparing."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [
+      "expected_qty"
+    ],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [
+      "site_address",
+      "primary_phone"
+    ],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name CRM_Projects (identifiers can be case-sensitive).",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT Id) when counting crm project records; joins can duplicate rows.",
+      "Use SUM(expected_qty) for totals of expected qty.",
+      "To resolve names, join on: stateid = Region.id; districtid = Area.id; associated_branchid = Branch.id; assigned_toId = Users.Id; dealerid = Dealer.id.",
+      "Do not select site_address, primary_phone; they are sensitive or may hold very large content."
+    ]
+  }
+}

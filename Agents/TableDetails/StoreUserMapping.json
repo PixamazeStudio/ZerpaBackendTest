@@ -1,0 +1,151 @@
+{
+  "table_name": "StoreUserMapping",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Store User Mapping",
+  "description": "Holds store user mapping records (defined in the EF Core model), linked to stores, users.",
+  "business_domain": "Factory & Inventory",
+  "business_purpose": "Used to track and report store user mapping records for the Factory & Inventory area.",
+  "table_type": "mapping",
+  "record_granularity": "One row represents one store user mapping.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the store user mapping.",
+      "business_meaning": "Store User Mapping identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "storeid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Stores",
+        "column": "id"
+      },
+      "description": "Reference to the stores linked to this store user mapping.",
+      "business_meaning": "Stores",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "userId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this store user mapping.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "storeid",
+      "to_table": "Stores",
+      "to_column": "id",
+      "description": "Each store user mapping references one stores (store)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "userId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each store user mapping references one users (user)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    },
+    {
+      "name": "IX_StoreUserMapping_storeid",
+      "columns": [
+        "storeid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_StoreUserMapping_userId",
+      "columns": [
+        "userId"
+      ],
+      "type": "non_clustered"
+    }
+  ],
+  "business_rules": [
+    "Join to Stores, Users through the foreign key columns to resolve names.",
+    "StoreUserMapping is defined in the EF Core model but was not found in the connected database, so it may not be deployed there."
+  ],
+  "common_filters": [
+    "storeid",
+    "userId"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Store User Mapping by stores",
+    "Store User Mapping by users"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "storeid",
+      "userId"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [],
+    "default_sort": "id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against StoreUserMapping: no table or view with this name exists in the connected database.",
+      "Use COUNT(DISTINCT id) when counting store user mapping records; joins can duplicate rows.",
+      "To resolve names, join on: storeid = Stores.id; userId = Users.Id.",
+      "Defined in the EF Core model but not found in the connected database; confirm it has been migrated before relying on it."
+    ]
+  }
+}

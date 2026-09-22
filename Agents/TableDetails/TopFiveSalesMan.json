@@ -1,0 +1,109 @@
+{
+  "table_name": "VW_Top5SalesmanSecondarySales",
+  "schema": null,
+  "object_type": "view",
+  "view_name": "VW_Top5SalesmanSecondarySales",
+  "exists_in_database": true,
+  "display_name": "Top5 Salesman Secondary Sales",
+  "description": "Database view exposing top5 salesman secondary sales data.",
+  "business_domain": "Sales Planning & Performance",
+  "business_purpose": "Used to track and report top5 salesman secondary sales records, including amounts and quantities, for the Sales Planning & Performance area.",
+  "table_type": "view",
+  "record_granularity": "One row represents one record returned by the top5 salesman secondary sales view.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "SalesmanId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Salesman id of the top5 salesman secondary sales.",
+      "business_meaning": "Salesman Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Salesman",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Salesman of the top5 salesman secondary sales.",
+      "business_meaning": "Salesman",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "TotalSalesQuantity",
+      "data_type": "decimal(32,0)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Total sales quantity of the top5 salesman secondary sales.",
+      "business_meaning": "Total Sales Quantity",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "Use TotalSalesQuantity for monetary or quantity totals.",
+    "VW_Top5SalesmanSecondarySales is a database view: it is read-only and its rows are computed, so apply filters and a LIMIT when querying."
+  ],
+  "common_filters": [],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    },
+    {
+      "name": "Total Sales Quantity",
+      "formula": "SUM(TotalSalesQuantity)"
+    }
+  ],
+  "common_queries": [
+    "List top5 salesman secondary sales",
+    "Count of top5 salesman secondary sales"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [],
+    "known_issues": [
+      "TotalSalesQuantity is nullable; use COALESCE when summing or comparing.",
+      "Views expose no primary key or nullability guarantees; rows may repeat depending on the view definition."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "TotalSalesQuantity"
+    ],
+    "default_sort": "",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name VW_Top5SalesmanSecondarySales (identifiers can be case-sensitive).",
+      "Use SUM(TotalSalesQuantity) for totals of total sales quantity.",
+      "This is a view; always apply filters and a LIMIT, as it may be expensive to scan."
+    ]
+  }
+}

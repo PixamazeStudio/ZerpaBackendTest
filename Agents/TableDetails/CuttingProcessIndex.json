@@ -1,0 +1,230 @@
+{
+  "table_name": "Vw_CuttingProcessIndex",
+  "schema": null,
+  "object_type": "view",
+  "view_name": "Vw_CuttingProcessIndex",
+  "exists_in_database": false,
+  "display_name": "Cutting Process Index",
+  "description": "Holds cutting process index records (defined in the EF Core model).",
+  "business_domain": "Factory & Inventory",
+  "business_purpose": "Used to track and report cutting process index records for the Factory & Inventory area.",
+  "table_type": "view",
+  "record_granularity": "One row represents one cutting process index.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "Date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time of the record.",
+      "business_meaning": "Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Departmentid",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Departmentid of the cutting process index.",
+      "business_meaning": "Departmentid",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "OperatorId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Operator id of the cutting process index.",
+      "business_meaning": "Operator Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Shift",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Shift of the cutting process index.",
+      "business_meaning": "Shift",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "SupervisorId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Supervisor id of the cutting process index.",
+      "business_meaning": "Supervisor Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "code",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Code reference of the cutting process index.",
+      "business_meaning": "Code",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Created by id of the cutting process index.",
+      "business_meaning": "Created By Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "id",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Id of the cutting process index.",
+      "business_meaning": "Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Modified by id of the cutting process index.",
+      "business_meaning": "Modified By Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Columns Shift classify the record; check the distinct values before filtering on them.",
+    "Vw_CuttingProcessIndex is defined in the EF Core model but was not found in the connected database, so it may not be deployed there."
+  ],
+  "common_filters": [
+    "created_date",
+    "Shift",
+    "is_deleted",
+    "code"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    }
+  ],
+  "common_queries": [
+    "Cutting Process Index by month",
+    "Recent cutting process index",
+    "Cutting Process Index count by shift"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [
+      "OperatorId",
+      "SupervisorId",
+      "created_byId",
+      "created_date",
+      "modified_byId",
+      "modified_date"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against Vw_CuttingProcessIndex: no table or view with this name exists in the connected database.",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Defined in the EF Core model but not found in the connected database; confirm it has been migrated before relying on it."
+    ]
+  }
+}

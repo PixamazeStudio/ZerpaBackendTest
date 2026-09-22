@@ -1,0 +1,225 @@
+{
+  "table_name": "DealerSalesPercentage",
+  "schema": null,
+  "object_type": "model",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Dealer Sales Percentage",
+  "description": "Application view model for dealer sales percentage data (not stored as a database table).",
+  "business_domain": "Sales & CRM",
+  "business_purpose": "Used to track and report dealer sales percentage records, including amounts and quantities, for the Sales & CRM area.",
+  "table_type": "view_model",
+  "record_granularity": "One object represents one dealer sales percentage result row.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "branch_id",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Branch id of the dealer sales percentage.",
+      "business_meaning": "Branch Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "dealer_id",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Dealer id of the dealer sales percentage.",
+      "business_meaning": "Dealer Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "dealer_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the dealer.",
+      "business_meaning": "Dealer Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "primary_sales_ytd",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Primary sales ytd of the dealer sales percentage.",
+      "business_meaning": "Primary Sales Ytd",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "secondary_sales_ytd",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Secondary sales ytd of the dealer sales percentage.",
+      "business_meaning": "Secondary Sales Ytd",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "secondary_percentage_ytd",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Secondary percentage ytd of the dealer sales percentage.",
+      "business_meaning": "Secondary Percentage Ytd",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "primary_sales_last6",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Primary sales last6 of the dealer sales percentage.",
+      "business_meaning": "Primary Sales Last6",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "secondary_sales_last6",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Secondary sales last6 of the dealer sales percentage.",
+      "business_meaning": "Secondary Sales Last6",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "secondary_percentage_last6",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Secondary percentage last6 of the dealer sales percentage.",
+      "business_meaning": "Secondary Percentage Last6",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "Use primary_sales_ytd / secondary_sales_ytd for monetary or quantity totals.",
+    "DealerSalesPercentage is an application view model or report DTO populated in code, not a table stored in the database."
+  ],
+  "common_filters": [
+    "dealer_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    },
+    {
+      "name": "Total Primary Sales Ytd",
+      "formula": "SUM(primary_sales_ytd)"
+    },
+    {
+      "name": "Total Secondary Sales Ytd",
+      "formula": "SUM(secondary_sales_ytd)"
+    },
+    {
+      "name": "Average Secondary Percentage Ytd",
+      "formula": "AVG(secondary_percentage_ytd)"
+    }
+  ],
+  "common_queries": [
+    "List dealer sales percentage",
+    "Count of dealer sales percentage"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [
+      "dealer_name"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "primary_sales_ytd",
+      "secondary_sales_ytd"
+    ],
+    "default_sort": "",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against DealerSalesPercentage: no table or view with this name exists in the connected database.",
+      "Use SUM(primary_sales_ytd) for totals of primary sales ytd.",
+      "Populated in application code (for example from a stored procedure or joined query); query the underlying tables instead."
+    ]
+  }
+}

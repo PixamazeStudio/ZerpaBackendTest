@@ -1,0 +1,457 @@
+{
+  "table_name": "TravelPricing",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Travel Pricing",
+  "description": "Holds travel pricing records (defined in the EF Core model), linked to area category, fuel type, job grade.",
+  "business_domain": "HR & User Management",
+  "business_purpose": "Used to track and report travel pricing records, including amounts and quantities, for the HR & User Management area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one travel pricing.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the travel pricing.",
+      "business_meaning": "Travel Pricing identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "amount",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Amount of the travel pricing.",
+      "business_meaning": "Amount",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "area_categoryId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "AreaCategory",
+        "column": "Id"
+      },
+      "description": "Reference to the area category linked to this travel pricing.",
+      "business_meaning": "Area Category",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the travel pricing.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "fuel_typeId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "FuelType",
+        "column": "Id"
+      },
+      "description": "Reference to the fuel type linked to this travel pricing.",
+      "business_meaning": "Fuel Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "job_gradeId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "JobGrade",
+        "column": "Id"
+      },
+      "description": "Reference to the job grade linked to this travel pricing.",
+      "business_meaning": "Job Grade",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "mode_of_travelId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "ModeOfTravel",
+        "column": "Id"
+      },
+      "description": "Reference to the mode of travel linked to this travel pricing.",
+      "business_meaning": "Mode Of Travel",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the travel pricing.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "travel_typeId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "TravelType",
+        "column": "Id"
+      },
+      "description": "Reference to the travel type linked to this travel pricing.",
+      "business_meaning": "Travel Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "unitId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Unit",
+        "column": "Id"
+      },
+      "description": "Reference to the unit linked to this travel pricing.",
+      "business_meaning": "Unit",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "vehicle_typeId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "VehicleType",
+        "column": "Id"
+      },
+      "description": "Reference to the vehicle type linked to this travel pricing.",
+      "business_meaning": "Vehicle Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "area_categoryId",
+      "to_table": "AreaCategory",
+      "to_column": "Id",
+      "description": "Each travel pricing references one area category (area category)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the travel pricing."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "fuel_typeId",
+      "to_table": "FuelType",
+      "to_column": "Id",
+      "description": "Each travel pricing references one fuel type (fuel type)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "job_gradeId",
+      "to_table": "JobGrade",
+      "to_column": "Id",
+      "description": "Each travel pricing references one job grade (job grade)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "mode_of_travelId",
+      "to_table": "ModeOfTravel",
+      "to_column": "Id",
+      "description": "Each travel pricing references one mode of travel (mode of travel)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the travel pricing."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "travel_typeId",
+      "to_table": "TravelType",
+      "to_column": "Id",
+      "description": "Each travel pricing references one travel type (travel type)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "unitId",
+      "to_table": "Unit",
+      "to_column": "Id",
+      "description": "Each travel pricing references one unit (unit)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "vehicle_typeId",
+      "to_table": "VehicleType",
+      "to_column": "Id",
+      "description": "Each travel pricing references one vehicle type (vehicle type)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    },
+    {
+      "name": "IX_TravelPricing_area_categoryId",
+      "columns": [
+        "area_categoryId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_TravelPricing_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_TravelPricing_fuel_typeId",
+      "columns": [
+        "fuel_typeId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_TravelPricing_job_gradeId",
+      "columns": [
+        "job_gradeId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_TravelPricing_mode_of_travelId",
+      "columns": [
+        "mode_of_travelId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_TravelPricing_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_TravelPricing_travel_typeId",
+      "columns": [
+        "travel_typeId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_TravelPricing_unitId",
+      "columns": [
+        "unitId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_TravelPricing_vehicle_typeId",
+      "columns": [
+        "vehicle_typeId"
+      ],
+      "type": "non_clustered"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Use amount for monetary or quantity totals.",
+    "Join to Area Category, Fuel Type, Job Grade, Mode Of Travel through the foreign key columns to resolve names.",
+    "TravelPricing is defined in the EF Core model but was not found in the connected database, so it may not be deployed there."
+  ],
+  "common_filters": [
+    "created_date",
+    "area_categoryId",
+    "fuel_typeId",
+    "job_gradeId",
+    "mode_of_travelId",
+    "is_deleted"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total Amount",
+      "formula": "SUM(amount)"
+    },
+    {
+      "name": "Average Amount per travel pricing",
+      "formula": "SUM(amount) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Travel Pricing by month",
+    "Recent travel pricing",
+    "Travel Pricing by area category",
+    "Travel Pricing by fuel type",
+    "Travel Pricing by job grade",
+    "Total amount by month",
+    "Top area category by amount"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "created_byId",
+      "modified_byId",
+      "modified_date"
+    ],
+    "known_issues": [
+      "amount is stored as floating point, so sums can carry small rounding differences."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [
+      "amount"
+    ],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against TravelPricing: no table or view with this name exists in the connected database.",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting travel pricing records; joins can duplicate rows.",
+      "Use SUM(amount) for totals of amount.",
+      "To resolve names, join on: area_categoryId = AreaCategory.Id; fuel_typeId = FuelType.Id; job_gradeId = JobGrade.Id; mode_of_travelId = ModeOfTravel.Id; travel_typeId = TravelType.Id.",
+      "Defined in the EF Core model but not found in the connected database; confirm it has been migrated before relying on it."
+    ]
+  }
+}

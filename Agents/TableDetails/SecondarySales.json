@@ -1,0 +1,342 @@
+{
+  "table_name": "SecondarySales",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Secondary Sales",
+  "description": "Holds secondary sales records, linked to dealer, users.",
+  "business_domain": "Sales & CRM",
+  "business_purpose": "Used to track and report secondary sales records, including amounts and quantities, for the Sales & CRM area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one secondary sale.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the secondary sale.",
+      "business_meaning": "Secondary Sales identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "SalesPerson",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Sales person of the secondary sale.",
+      "business_meaning": "Sales Person",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "DealerSupplying",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Dealer supplying of the secondary sale.",
+      "business_meaning": "Dealer Supplying",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "ProjectSupplied",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Project supplied of the secondary sale.",
+      "business_meaning": "Project Supplied",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "SuppliedOn",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time of supplied.",
+      "business_meaning": "Supplied On",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Sales_Sheet",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Sales sheet of the secondary sale.",
+      "business_meaning": "Sales Sheet",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "Sales_Sheet_Na",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Sales sheet na of the secondary sale.",
+      "business_meaning": "Sales Sheet Na",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "uploaded_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time of uploaded.",
+      "business_meaning": "Uploaded Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "uploaded_byId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this secondary sale.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "dealerId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Dealer",
+        "column": "id"
+      },
+      "description": "Reference to the dealer linked to this secondary sale.",
+      "business_meaning": "Dealer",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "secondaryorderid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Secondaryorderid of the secondary sale.",
+      "business_meaning": "Secondaryorderid",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "email1",
+      "data_type": "varchar(45)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Email1 of the secondary sale.",
+      "business_meaning": "Email1",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "type_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the type.",
+      "business_meaning": "Type Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "uploaded_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each secondary sale references one users (uploaded by)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "dealerId",
+      "to_table": "Dealer",
+      "to_column": "id",
+      "description": "Each secondary sale references one dealer (dealer)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "fk_dealer_idx",
+      "columns": [
+        "dealerId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_SecondarySales_uploaded_byId",
+      "columns": [
+        "uploaded_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "uploaded_date is the preferred date column for period-based reporting.",
+    "Use Sales_Sheet / Sales_Sheet_Na for monetary or quantity totals.",
+    "Join to Dealer, Users through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "uploaded_date",
+    "uploaded_byId",
+    "dealerId",
+    "is_deleted",
+    "type_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    },
+    {
+      "name": "Total Sales Sheet",
+      "formula": "SUM(Sales_Sheet)"
+    },
+    {
+      "name": "Total Sales Sheet Na",
+      "formula": "SUM(Sales_Sheet_Na)"
+    },
+    {
+      "name": "Average Sales Sheet per secondary sale",
+      "formula": "SUM(Sales_Sheet) / COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "Secondary Sales by month",
+    "Recent secondary sales",
+    "Secondary Sales by users",
+    "Secondary Sales by dealer",
+    "Total sales sheet by month",
+    "Top users by sales sheet"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "dealerId",
+      "secondaryorderid",
+      "email1",
+      "type_name"
+    ],
+    "known_issues": [
+      "Sales_Sheet_Na is stored as floating point, so sums can carry small rounding differences."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "uploaded_date",
+    "preferred_amount_columns": [
+      "Sales_Sheet",
+      "Sales_Sheet_Na"
+    ],
+    "default_sort": "uploaded_date DESC",
+    "avoid_columns": [
+      "email1"
+    ],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name SecondarySales (identifiers can be case-sensitive).",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT Id) when counting secondary sale records; joins can duplicate rows.",
+      "Use SUM(Sales_Sheet) for totals of sales sheet.",
+      "To resolve names, join on: uploaded_byId = Users.Id; dealerId = Dealer.id.",
+      "Do not select email1; they are sensitive or may hold very large content."
+    ]
+  }
+}

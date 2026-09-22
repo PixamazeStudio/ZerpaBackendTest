@@ -1,0 +1,353 @@
+{
+  "table_name": "SchemeDetails",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Scheme Details",
+  "description": "Holds scheme details records, linked to scheme header, unit.",
+  "business_domain": "Sales Planning & Performance",
+  "business_purpose": "Used to track and report scheme details records for the Sales Planning & Performance area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one scheme detail.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the scheme detail.",
+      "business_meaning": "Scheme Details identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Slab_Name",
+      "data_type": "varchar(255)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Name of the slab.",
+      "business_meaning": "Slab Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Points",
+      "data_type": "varchar(255)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Points of the scheme detail.",
+      "business_meaning": "Points",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Point_UnitId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Unit",
+        "column": "Id"
+      },
+      "description": "Reference to the unit linked to this scheme detail.",
+      "business_meaning": "Unit",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Reward",
+      "data_type": "varchar(255)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Reward of the scheme detail.",
+      "business_meaning": "Reward",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Reward_UnitId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Unit",
+        "column": "Id"
+      },
+      "description": "Reference to the unit linked to this scheme detail.",
+      "business_meaning": "Unit",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Image_upload",
+      "data_type": "varchar(255)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Image upload of the scheme detail.",
+      "business_meaning": "Image Upload",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Created_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the scheme detail.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Created_date",
+      "data_type": "datetime",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Modified_date",
+      "data_type": "datetime",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Modified_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the scheme detail.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "SchemeHeaderId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "SchemeHeader",
+        "column": "Id"
+      },
+      "description": "Reference to the scheme header linked to this scheme detail.",
+      "business_meaning": "Scheme Header",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "Point_UnitId",
+      "to_table": "Unit",
+      "to_column": "Id",
+      "description": "Each scheme detail references one unit (point unit)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "Reward_UnitId",
+      "to_table": "Unit",
+      "to_column": "Id",
+      "description": "Each scheme detail references one unit (reward unit)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "Created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the scheme detail."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "Modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the scheme detail."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "SchemeHeaderId",
+      "to_table": "SchemeHeader",
+      "to_column": "Id",
+      "description": "Each scheme detail references one scheme header (scheme header)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "Created_byId",
+      "columns": [
+        "Created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "Modified_byId",
+      "columns": [
+        "Modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "Point_UnitId",
+      "columns": [
+        "Point_UnitId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    },
+    {
+      "name": "Reward_UnitId",
+      "columns": [
+        "Reward_UnitId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "SchemeHeaderId",
+      "columns": [
+        "SchemeHeaderId"
+      ],
+      "type": "non_clustered"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "Created_date is the preferred date column for period-based reporting.",
+    "Join to Scheme Header, Unit through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "Created_date",
+    "Point_UnitId",
+    "Reward_UnitId",
+    "SchemeHeaderId",
+    "is_deleted",
+    "Slab_Name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "Scheme Details by month",
+    "Recent scheme details",
+    "Scheme Details by unit",
+    "Scheme Details by unit",
+    "Scheme Details by scheme header"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "Image_upload",
+      "Created_byId",
+      "Created_date",
+      "Modified_date",
+      "Modified_byId"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "Created_date",
+    "preferred_amount_columns": [],
+    "default_sort": "Created_date DESC",
+    "avoid_columns": [
+      "Image_upload"
+    ],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name SchemeDetails (identifiers can be case-sensitive).",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT Id) when counting scheme detail records; joins can duplicate rows.",
+      "To resolve names, join on: Point_UnitId = Unit.Id; Reward_UnitId = Unit.Id; SchemeHeaderId = SchemeHeader.Id.",
+      "Do not select Image_upload; they are sensitive or may hold very large content."
+    ]
+  }
+}

@@ -1,0 +1,387 @@
+{
+  "table_name": "Department",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Department",
+  "description": "Holds department records (defined in the EF Core model), linked to department levels, factory units.",
+  "business_domain": "HR & User Management",
+  "business_purpose": "Used to track and report department records for the HR & User Management area.",
+  "table_type": "master",
+  "record_granularity": "One row represents one department.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the department.",
+      "business_meaning": "Department identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Department_name",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Name of the department.",
+      "business_meaning": "Department Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the department.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "department_levelid",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "DepartmentLevels",
+        "column": "id"
+      },
+      "description": "Reference to the department levels linked to this department.",
+      "business_meaning": "Department Levels",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "input_unitid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "FactoryUnits",
+        "column": "id"
+      },
+      "description": "Reference to the factory units linked to this department.",
+      "business_meaning": "Factory Units",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the department.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "output_unitid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "FactoryUnits",
+        "column": "id"
+      },
+      "description": "Reference to the factory units linked to this department.",
+      "business_meaning": "Factory Units",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "superviserId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this department.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the department."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "department_levelid",
+      "to_table": "DepartmentLevels",
+      "to_column": "id",
+      "description": "Each department references one department levels (department level)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "input_unitid",
+      "to_table": "FactoryUnits",
+      "to_column": "id",
+      "description": "Each department references one factory units (input unit)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the department."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "output_unitid",
+      "to_table": "FactoryUnits",
+      "to_column": "id",
+      "description": "Each department references one factory units (output unit)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "superviserId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each department references one users (superviser)."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "FactoryOpsHeader",
+      "to_column": "Departmentid",
+      "description": "Each department can have many factory ops header records referencing it through Departmentid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "FactoryProductRequisitionHeader",
+      "to_column": "departmentid",
+      "description": "Each department can have many factory product requisition header records referencing it through departmentid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "LotSpace",
+      "to_column": "departmentid",
+      "description": "Each department can have many lot space records referencing it through departmentid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "MLP",
+      "to_column": "departmentid",
+      "description": "Each department can have many mlp records referencing it through departmentid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "ParkingSpace",
+      "to_column": "departmentid",
+      "description": "Each department can have many parking space records referencing it through departmentid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "YardHeader",
+      "to_column": "departmentid",
+      "description": "Each department can have many yard header records referencing it through departmentid."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    },
+    {
+      "name": "IX_Department_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Department_department_levelid",
+      "columns": [
+        "department_levelid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Department_input_unitid",
+      "columns": [
+        "input_unitid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Department_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Department_output_unitid",
+      "columns": [
+        "output_unitid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Department_superviserId",
+      "columns": [
+        "superviserId"
+      ],
+      "type": "non_clustered"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Join to Department Levels, Factory Units, Users through the foreign key columns to resolve names.",
+    "Department is defined in the EF Core model but was not found in the connected database, so it may not be deployed there."
+  ],
+  "common_filters": [
+    "created_date",
+    "department_levelid",
+    "input_unitid",
+    "output_unitid",
+    "superviserId",
+    "is_deleted",
+    "Department_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Department by month",
+    "Recent department",
+    "Department by department levels",
+    "Department by factory units",
+    "Department by factory units"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "input_unitid",
+      "modified_byId",
+      "modified_date",
+      "output_unitid",
+      "superviserId"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against Department: no table or view with this name exists in the connected database.",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting department records; joins can duplicate rows.",
+      "To resolve names, join on: department_levelid = DepartmentLevels.id; input_unitid = FactoryUnits.id; output_unitid = FactoryUnits.id; superviserId = Users.Id.",
+      "Defined in the EF Core model but not found in the connected database; confirm it has been migrated before relying on it."
+    ]
+  }
+}

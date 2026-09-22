@@ -1,0 +1,265 @@
+{
+  "table_name": "weaklyPlannerProjectDetails",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Weakly Planner Project Details",
+  "description": "Holds weakly planner project details records, linked to crm projects, weakly planner headers.",
+  "business_domain": "HR & User Management",
+  "business_purpose": "Used to track and report weakly planner project details records, including amounts and quantities, for the HR & User Management area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one weakly planner project detail.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the weakly planner project detail.",
+      "business_meaning": "Weakly Planner Project Details identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "weaklyPlannerHeaderId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "weaklyPlannerHeaders",
+        "column": "id"
+      },
+      "description": "Reference to the weakly planner headers linked to this weakly planner project detail.",
+      "business_meaning": "Weakly Planner Headers",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "projectId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "CRM_Projects",
+        "column": "Id"
+      },
+      "description": "Reference to the crm projects linked to this weakly planner project detail.",
+      "business_meaning": "CRM Projects",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "project_ply_sheet_supplied",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Project ply sheet supplied of the weakly planner project detail.",
+      "business_meaning": "Project Ply Sheet Supplied",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "project_pvc_sheet_supplied",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Project pvc sheet supplied of the weakly planner project detail.",
+      "business_meaning": "Project Pvc Sheet Supplied",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "project_total_sheet_supplied",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Project total sheet supplied of the weakly planner project detail.",
+      "business_meaning": "Project Total Sheet Supplied",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "project_ply_sheet_planned",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Project ply sheet planned of the weakly planner project detail.",
+      "business_meaning": "Project Ply Sheet Planned",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "project_pvc_sheet_planned",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Project pvc sheet planned of the weakly planner project detail.",
+      "business_meaning": "Project Pvc Sheet Planned",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "project_total_sheet_planned",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Project total sheet planned of the weakly planner project detail.",
+      "business_meaning": "Project Total Sheet Planned",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "weaklyPlannerHeaderId",
+      "to_table": "weaklyPlannerHeaders",
+      "to_column": "id",
+      "description": "Each weakly planner project detail references one weakly planner headers (weakly planner header)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "projectId",
+      "to_table": "CRM_Projects",
+      "to_column": "Id",
+      "description": "Each weakly planner project detail references one crm projects (project)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_weaklyPlannerProjectDetails_projectId",
+      "columns": [
+        "projectId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_weaklyPlannerProjectDetails_weaklyPlannerHeaderId",
+      "columns": [
+        "weaklyPlannerHeaderId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Use project_total_sheet_supplied / project_total_sheet_planned for monetary or quantity totals.",
+    "Join to CRM Projects, Weakly Planner Headers through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "weaklyPlannerHeaderId",
+    "projectId"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total Project Total Sheet Supplied",
+      "formula": "SUM(project_total_sheet_supplied)"
+    },
+    {
+      "name": "Total Project Total Sheet Planned",
+      "formula": "SUM(project_total_sheet_planned)"
+    },
+    {
+      "name": "Average Project Total Sheet Supplied per weakly planner project detail",
+      "formula": "SUM(project_total_sheet_supplied) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Weakly Planner Project Details by weakly planner headers",
+    "Weakly Planner Project Details by crm projects",
+    "Top weakly planner headers by project total sheet supplied"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "weaklyPlannerHeaderId",
+      "projectId",
+      "project_ply_sheet_supplied",
+      "project_pvc_sheet_supplied",
+      "project_total_sheet_supplied",
+      "project_ply_sheet_planned",
+      "project_pvc_sheet_planned",
+      "project_total_sheet_planned"
+    ],
+    "known_issues": [
+      "project_total_sheet_supplied, project_total_sheet_planned are nullable; use COALESCE when summing or comparing."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "project_total_sheet_supplied",
+      "project_total_sheet_planned"
+    ],
+    "default_sort": "id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name weaklyPlannerProjectDetails (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT id) when counting weakly planner project detail records; joins can duplicate rows.",
+      "Use SUM(project_total_sheet_supplied) for totals of project total sheet supplied.",
+      "To resolve names, join on: weaklyPlannerHeaderId = weaklyPlannerHeaders.id; projectId = CRM_Projects.Id."
+    ]
+  }
+}

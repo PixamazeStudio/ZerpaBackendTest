@@ -1,0 +1,154 @@
+{
+  "table_name": "vw_CRM_Visit_Combined",
+  "schema": null,
+  "object_type": "view",
+  "view_name": "vw_CRM_Visit_Combined",
+  "exists_in_database": false,
+  "display_name": "CRM Visit Combined",
+  "description": "Holds crm visit combined records (defined in the EF Core model).",
+  "business_domain": "Sales & CRM",
+  "business_purpose": "Used to track and report crm visit combined records for the Sales & CRM area.",
+  "table_type": "view",
+  "record_granularity": "One row represents one crm visit combined.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "activity_type",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Activity type of the crm visit combined.",
+      "business_meaning": "Activity Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "id",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Id of the crm visit combined.",
+      "business_meaning": "Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "met_person_type",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Met person type of the crm visit combined.",
+      "business_meaning": "Met Person Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "name",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Name of the crm visit combined.",
+      "business_meaning": "Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "next_meeting_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of next meeting.",
+      "business_meaning": "Next Meeting Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "objective_of_meeting",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Objective of meeting of the crm visit combined.",
+      "business_meaning": "Objective Of Meeting",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "created_date is the preferred date column for period-based reporting.",
+    "Columns activity_type, met_person_type classify the record; check the distinct values before filtering on them.",
+    "vw_CRM_Visit_Combined is defined in the EF Core model but was not found in the connected database, so it may not be deployed there."
+  ],
+  "common_filters": [
+    "created_date",
+    "activity_type",
+    "met_person_type",
+    "name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    }
+  ],
+  "common_queries": [
+    "CRM Visit Combined by month",
+    "Recent crm visit combined",
+    "CRM Visit Combined count by activity type"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [
+      "next_meeting_date"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against vw_CRM_Visit_Combined: no table or view with this name exists in the connected database.",
+      "Defined in the EF Core model but not found in the connected database; confirm it has been migrated before relying on it."
+    ]
+  }
+}

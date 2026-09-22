@@ -1,0 +1,149 @@
+{
+  "table_name": "Vw_SixMonthsInfluencerPlannerData",
+  "schema": null,
+  "object_type": "view",
+  "view_name": "Vw_SixMonthsInfluencerPlannerData",
+  "exists_in_database": true,
+  "display_name": "Six Months Influencer Planner Data",
+  "description": "Database view exposing six months influencer planner data data.",
+  "business_domain": "Sales Planning & Performance",
+  "business_purpose": "Used to track and report six months influencer planner data records, including amounts and quantities, for the Sales Planning & Performance area.",
+  "table_type": "view",
+  "record_granularity": "One row represents one record returned by the six months influencer planner data view.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "month",
+      "data_type": "varchar(9)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Month of the six months influencer planner data.",
+      "business_meaning": "Month",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "year",
+      "data_type": "int(5)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Year of the six months influencer planner data.",
+      "business_meaning": "Year",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "client_id",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Client id of the six months influencer planner data.",
+      "business_meaning": "Client Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "client_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the client.",
+      "business_meaning": "Client Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "proposed_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Proposed by id of the six months influencer planner data.",
+      "business_meaning": "Proposed By Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "total_quantity",
+      "data_type": "decimal(32,0)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total quantity of the six months influencer planner data.",
+      "business_meaning": "Total Quantity",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "Use total_quantity for monetary or quantity totals.",
+    "Vw_SixMonthsInfluencerPlannerData is a database view: it is read-only and its rows are computed, so apply filters and a LIMIT when querying."
+  ],
+  "common_filters": [
+    "client_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    },
+    {
+      "name": "Total Quantity",
+      "formula": "SUM(total_quantity)"
+    }
+  ],
+  "common_queries": [
+    "List six months influencer planner data",
+    "Count of six months influencer planner data"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [],
+    "known_issues": [
+      "Views expose no primary key or nullability guarantees; rows may repeat depending on the view definition."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "total_quantity"
+    ],
+    "default_sort": "",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name Vw_SixMonthsInfluencerPlannerData (identifiers can be case-sensitive).",
+      "Use SUM(total_quantity) for totals of total quantity.",
+      "This is a view; always apply filters and a LIMIT, as it may be expensive to scan."
+    ]
+  }
+}

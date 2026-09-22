@@ -1,0 +1,324 @@
+{
+  "table_name": "VehicleMaintenancePricing",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Vehicle Maintenance Pricing",
+  "description": "Holds vehicle maintenance pricing records (defined in the EF Core model), linked to fuel type, job grade, vehicle type.",
+  "business_domain": "Factory & Inventory",
+  "business_purpose": "Used to track and report vehicle maintenance pricing records, including amounts and quantities, for the Factory & Inventory area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one vehicle maintenance pricing.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the vehicle maintenance pricing.",
+      "business_meaning": "Vehicle Maintenance Pricing identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the vehicle maintenance pricing.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "fuel_typeId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "FuelType",
+        "column": "Id"
+      },
+      "description": "Reference to the fuel type linked to this vehicle maintenance pricing.",
+      "business_meaning": "Fuel Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "gradeId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "JobGrade",
+        "column": "Id"
+      },
+      "description": "Reference to the job grade linked to this vehicle maintenance pricing.",
+      "business_meaning": "Job Grade",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the vehicle maintenance pricing.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "price",
+      "data_type": "decimal(65,30)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Price of the vehicle maintenance pricing.",
+      "business_meaning": "Price",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "vehicle_typeId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "VehicleType",
+        "column": "Id"
+      },
+      "description": "Reference to the vehicle type linked to this vehicle maintenance pricing.",
+      "business_meaning": "Vehicle Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the vehicle maintenance pricing."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "fuel_typeId",
+      "to_table": "FuelType",
+      "to_column": "Id",
+      "description": "Each vehicle maintenance pricing references one fuel type (fuel type)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "gradeId",
+      "to_table": "JobGrade",
+      "to_column": "Id",
+      "description": "Each vehicle maintenance pricing references one job grade (grade)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the vehicle maintenance pricing."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "vehicle_typeId",
+      "to_table": "VehicleType",
+      "to_column": "Id",
+      "description": "Each vehicle maintenance pricing references one vehicle type (vehicle type)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    },
+    {
+      "name": "IX_VehicleMaintenancePricing_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_VehicleMaintenancePricing_fuel_typeId",
+      "columns": [
+        "fuel_typeId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_VehicleMaintenancePricing_gradeId",
+      "columns": [
+        "gradeId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_VehicleMaintenancePricing_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_VehicleMaintenancePricing_vehicle_typeId",
+      "columns": [
+        "vehicle_typeId"
+      ],
+      "type": "non_clustered"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Use price for monetary or quantity totals.",
+    "Join to Fuel Type, Job Grade, Vehicle Type through the foreign key columns to resolve names.",
+    "VehicleMaintenancePricing is defined in the EF Core model but was not found in the connected database, so it may not be deployed there."
+  ],
+  "common_filters": [
+    "created_date",
+    "fuel_typeId",
+    "gradeId",
+    "vehicle_typeId",
+    "is_deleted"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Average Price",
+      "formula": "AVG(price)"
+    }
+  ],
+  "common_queries": [
+    "Vehicle Maintenance Pricing by month",
+    "Recent vehicle maintenance pricing",
+    "Vehicle Maintenance Pricing by fuel type",
+    "Vehicle Maintenance Pricing by job grade",
+    "Vehicle Maintenance Pricing by vehicle type",
+    "Total price by month",
+    "Top fuel type by price"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "modified_byId",
+      "modified_date"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [
+      "price"
+    ],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against VehicleMaintenancePricing: no table or view with this name exists in the connected database.",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting vehicle maintenance pricing records; joins can duplicate rows.",
+      "Use SUM(price) for totals of price.",
+      "To resolve names, join on: fuel_typeId = FuelType.Id; gradeId = JobGrade.Id; vehicle_typeId = VehicleType.Id.",
+      "Defined in the EF Core model but not found in the connected database; confirm it has been migrated before relying on it."
+    ]
+  }
+}

@@ -1,0 +1,171 @@
+{
+  "table_name": "VW_UserWiseKYCCompletionSummary",
+  "schema": null,
+  "object_type": "view",
+  "view_name": "VW_UserWiseKYCCompletionSummary",
+  "exists_in_database": true,
+  "display_name": "User Wise KYC Completion Summary",
+  "description": "Database view exposing user wise kyc completion summary data.",
+  "business_domain": "General",
+  "business_purpose": "Used to track and report user wise kyc completion summary records, including amounts and quantities, for the General area.",
+  "table_type": "view",
+  "record_granularity": "One row represents one record returned by the user wise kyc completion summary view.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "UserId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "User id of the user wise kyc completion summary.",
+      "business_meaning": "User Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "FullName",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Full name of the user wise kyc completion summary.",
+      "business_meaning": "Full Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "FocusListCount",
+      "data_type": "bigint(21)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Focus list count of the user wise kyc completion summary.",
+      "business_meaning": "Focus List Count",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "_100_Percent",
+      "data_type": "bigint(21)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "100 percent of the user wise kyc completion summary.",
+      "business_meaning": "100 Percent",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "_80_To_99_Percent",
+      "data_type": "bigint(21)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "80 to 99 percent of the user wise kyc completion summary.",
+      "business_meaning": "80 To 99 Percent",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "Below_80_Percent",
+      "data_type": "bigint(21)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Below 80 percent of the user wise kyc completion summary.",
+      "business_meaning": "Below 80 Percent",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "Use FocusListCount / _100_Percent for monetary or quantity totals.",
+    "VW_UserWiseKYCCompletionSummary is a database view: it is read-only and its rows are computed, so apply filters and a LIMIT when querying."
+  ],
+  "common_filters": [],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    },
+    {
+      "name": "Total Focus List Count",
+      "formula": "SUM(FocusListCount)"
+    },
+    {
+      "name": "Average 100 Percent",
+      "formula": "AVG(_100_Percent)"
+    },
+    {
+      "name": "Average 80 To 99 Percent",
+      "formula": "AVG(_80_To_99_Percent)"
+    }
+  ],
+  "common_queries": [
+    "List user wise kyc completion summary",
+    "Count of user wise kyc completion summary"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [],
+    "known_issues": [
+      "Views expose no primary key or nullability guarantees; rows may repeat depending on the view definition."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "FocusListCount",
+      "_100_Percent"
+    ],
+    "default_sort": "",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name VW_UserWiseKYCCompletionSummary (identifiers can be case-sensitive).",
+      "Use SUM(FocusListCount) for totals of focus list count.",
+      "This is a view; always apply filters and a LIMIT, as it may be expensive to scan."
+    ]
+  }
+}

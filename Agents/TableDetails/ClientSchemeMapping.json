@@ -1,0 +1,263 @@
+{
+  "table_name": "ClientSchemeMapping",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Client Scheme Mapping",
+  "description": "Holds client scheme mapping records (defined in the EF Core model), linked to client, scheme details.",
+  "business_domain": "Sales Planning & Performance",
+  "business_purpose": "Used to track and report client scheme mapping records for the Sales Planning & Performance area.",
+  "table_type": "mapping",
+  "record_granularity": "One row represents one client scheme mapping.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the client scheme mapping.",
+      "business_meaning": "Client Scheme Mapping identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "ClientId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Client",
+        "column": "Id"
+      },
+      "description": "Reference to the client linked to this client scheme mapping.",
+      "business_meaning": "Client",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "SchemeDetailsId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "SchemeDetails",
+        "column": "Id"
+      },
+      "description": "Reference to the scheme details linked to this client scheme mapping.",
+      "business_meaning": "Scheme Details",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the client scheme mapping.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the client scheme mapping.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "ClientId",
+      "to_table": "Client",
+      "to_column": "Id",
+      "description": "Each client scheme mapping references one client (client)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "SchemeDetailsId",
+      "to_table": "SchemeDetails",
+      "to_column": "Id",
+      "description": "Each client scheme mapping references one scheme details (scheme details)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the client scheme mapping."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the client scheme mapping."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    },
+    {
+      "name": "IX_ClientSchemeMapping_ClientId",
+      "columns": [
+        "ClientId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ClientSchemeMapping_SchemeDetailsId",
+      "columns": [
+        "SchemeDetailsId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ClientSchemeMapping_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ClientSchemeMapping_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Join to Client, Scheme Details through the foreign key columns to resolve names.",
+    "ClientSchemeMapping is defined in the EF Core model but was not found in the connected database, so it may not be deployed there."
+  ],
+  "common_filters": [
+    "created_date",
+    "ClientId",
+    "SchemeDetailsId",
+    "is_deleted"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "Client Scheme Mapping by month",
+    "Recent client scheme mapping",
+    "Client Scheme Mapping by client",
+    "Client Scheme Mapping by scheme details"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "modified_byId",
+      "modified_date"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against ClientSchemeMapping: no table or view with this name exists in the connected database.",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT Id) when counting client scheme mapping records; joins can duplicate rows.",
+      "To resolve names, join on: ClientId = Client.Id; SchemeDetailsId = SchemeDetails.Id.",
+      "Defined in the EF Core model but not found in the connected database; confirm it has been migrated before relying on it."
+    ]
+  }
+}

@@ -1,0 +1,500 @@
+{
+  "table_name": "BranchReviewHeader",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Branch Review Header",
+  "description": "Holds branch review header records, linked to branch.",
+  "business_domain": "Sales Planning & Performance",
+  "business_purpose": "Used to track and report branch review header records, including approval status, for the Sales Planning & Performance area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one branch review header.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the branch review header.",
+      "business_meaning": "Branch Review Header identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "branch_id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Branch",
+        "column": "id"
+      },
+      "description": "Reference to the branch linked to this branch review header.",
+      "business_meaning": "Branch",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_by",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the branch review header.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "month",
+      "data_type": "varchar(20)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Month of the branch review header.",
+      "business_meaning": "Month",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "year",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Year of the branch review header.",
+      "business_meaning": "Year",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_submitted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the branch review header is submitted.",
+      "business_meaning": "Is Submitted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_approved",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the branch review header is approved.",
+      "business_meaning": "Is Approved",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_rejected",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the branch review header is rejected.",
+      "business_meaning": "Is Rejected",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "reviewed_by",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who reviewed the branch review header.",
+      "business_meaning": "Reviewed By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "reviewed_date",
+      "data_type": "datetime",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of reviewed.",
+      "business_meaning": "Reviewed Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "remark",
+      "data_type": "varchar(500)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text remark for the branch review header.",
+      "business_meaning": "Remark",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "remarks",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text remarks for the branch review header.",
+      "business_meaning": "Remarks",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the branch review header.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "operated_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who approved or rejected the branch review header.",
+      "business_meaning": "Operated By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "operated_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of operated.",
+      "business_meaning": "Operated Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "branch_id",
+      "to_table": "Branch",
+      "to_column": "id",
+      "description": "Each branch review header references one branch (branch)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "created_by",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the branch review header."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "reviewed_by",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who reviewed the branch review header."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the branch review header."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "operated_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who approved or rejected the branch review header."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "BranchReviewBrandSales",
+      "to_column": "header_id",
+      "description": "Each branch review header can have many branch review brand sales records referencing it through header_id."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "BranchReviewComplaintAging",
+      "to_column": "header_id",
+      "description": "Each branch review header can have many branch review complaint aging records referencing it through header_id."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "BranchReviewComplaintNature",
+      "to_column": "header_id",
+      "description": "Each branch review header can have many branch review complaint nature records referencing it through header_id."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "BranchReviewDealerPerformance",
+      "to_column": "header_id",
+      "description": "Each branch review header can have many branch review dealer performance records referencing it through header_id."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "BranchReviewDealerSecondary",
+      "to_column": "header_id",
+      "description": "Each branch review header can have many branch review dealer secondary records referencing it through header_id."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "BranchReviewEmployeeDetails",
+      "to_column": "BranchReviewId",
+      "description": "Each branch review header can have many branch review employee details records referencing it through BranchReviewId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "BranchReviewFLMovement",
+      "to_column": "header_id",
+      "description": "Each branch review header can have many branch review fl movement records referencing it through header_id."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "BranchReviewFLMovementDetail",
+      "to_column": "header_id",
+      "description": "Each branch review header can have many branch review fl movement detail records referencing it through header_id."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "BranchReviewMonthlyPlan",
+      "to_column": "header_id",
+      "description": "Each branch review header can have many branch review monthly plan records referencing it through header_id."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "BranchReviewOutstandingDetail",
+      "to_column": "header_id",
+      "description": "Each branch review header can have many branch review outstanding detail records referencing it through header_id."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "BranchReviewPVCSales",
+      "to_column": "header_id",
+      "description": "Each branch review header can have many branch review pvc sales records referencing it through header_id."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "BranchReviewProjectAnalysis",
+      "to_column": "header_id",
+      "description": "Each branch review header can have many branch review project analysis records referencing it through header_id."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "(other tables)",
+      "to_column": "(various)",
+      "description": "7 more tables reference this table; only the first 12 are listed."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "fk_brh_branch",
+      "columns": [
+        "branch_id"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "fk_brh_created_by",
+      "columns": [
+        "created_by"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "fk_brh_reviewed_by",
+      "columns": [
+        "reviewed_by"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_BranchReviewHeader_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_BranchReviewHeader_operated_byId",
+      "columns": [
+        "operated_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Approval state is tracked with is_approved, is_rejected; a record with neither flag set is typically still pending.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Join to Branch through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "created_date",
+    "branch_id",
+    "is_submitted",
+    "is_approved",
+    "is_rejected"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "Branch Review Header by month",
+    "Recent branch review header",
+    "Branch Review Header by branch"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "reviewed_by",
+      "reviewed_date",
+      "remark",
+      "remarks",
+      "modified_byId",
+      "modified_date",
+      "operated_byId",
+      "operated_date"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name BranchReviewHeader (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT Id) when counting branch review header records; joins can duplicate rows.",
+      "To resolve names, join on: branch_id = Branch.id."
+    ]
+  }
+}

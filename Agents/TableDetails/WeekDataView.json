@@ -1,0 +1,215 @@
+{
+  "table_name": "Vw_WeekDataView",
+  "schema": null,
+  "object_type": "view",
+  "view_name": "Vw_WeekDataView",
+  "exists_in_database": true,
+  "display_name": "Week Data View",
+  "description": "Database view exposing week data view data.",
+  "business_domain": "General",
+  "business_purpose": "Used to track and report week data view records for the General area.",
+  "table_type": "view",
+  "record_granularity": "One row represents one record returned by the week data view view.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "branch_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the branch.",
+      "business_meaning": "Branch Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "branch_id",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Branch id of the week data view.",
+      "business_meaning": "Branch Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "weekName",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Week name of the week data view.",
+      "business_meaning": "Week Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "startDate",
+      "data_type": "date",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date of start.",
+      "business_meaning": "Start Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "endDate",
+      "data_type": "date",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date of end.",
+      "business_meaning": "End Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "userId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "User id of the week data view.",
+      "business_meaning": "User Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "userName",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "User name of the week data view.",
+      "business_meaning": "User Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Created by id of the week data view.",
+      "business_meaning": "Created By Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "month",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Month of the week data view.",
+      "business_meaning": "Month",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "year",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Year of the week data view.",
+      "business_meaning": "Year",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "createdDate",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "noOfUsers",
+      "data_type": "bigint(21)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "No of users of the week data view.",
+      "business_meaning": "No Of Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "createdDate is the preferred date column for period-based reporting.",
+    "Vw_WeekDataView is a database view: it is read-only and its rows are computed, so apply filters and a LIMIT when querying."
+  ],
+  "common_filters": [
+    "createdDate",
+    "branch_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    }
+  ],
+  "common_queries": [
+    "Week Data View by month",
+    "Recent week data view"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [],
+    "known_issues": [
+      "Views expose no primary key or nullability guarantees; rows may repeat depending on the view definition."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "createdDate",
+    "preferred_amount_columns": [],
+    "default_sort": "createdDate DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name Vw_WeekDataView (identifiers can be case-sensitive).",
+      "This is a view; always apply filters and a LIMIT, as it may be expensive to scan."
+    ]
+  }
+}

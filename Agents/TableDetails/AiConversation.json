@@ -1,0 +1,209 @@
+{
+  "table_name": "AiConversation",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Ai Conversation",
+  "description": "Holds ai conversation records, linked to users.",
+  "business_domain": "System & Communication",
+  "business_purpose": "Used to track and report ai conversation records for the System & Communication area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one ai conversation.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "natural",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "varchar(64)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the ai conversation.",
+      "business_meaning": "Ai Conversation identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "UserId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this ai conversation.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Title",
+      "data_type": "varchar(255)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Title of the ai conversation.",
+      "business_meaning": "Title",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Status",
+      "data_type": "varchar(20)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Status of the ai conversation.",
+      "business_meaning": "Status",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "ContextSnapshot",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Context snapshot of the ai conversation.",
+      "business_meaning": "Context Snapshot",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "StartedAt",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time of started.",
+      "business_meaning": "Started At",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "LastActivityAt",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time of last activity.",
+      "business_meaning": "Last Activity At",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "UserId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each ai conversation references one users (user)."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "AiMessage",
+      "to_column": "ConversationId",
+      "description": "Each ai conversation can have many ai message records referencing it through ConversationId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "AiToolExecution",
+      "to_column": "ConversationId",
+      "description": "Each ai conversation can have many ai tool execution records referencing it through ConversationId."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_AiConversation_LastActivityAt",
+      "columns": [
+        "LastActivityAt"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_AiConversation_UserId",
+      "columns": [
+        "UserId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "StartedAt is the preferred date column for period-based reporting.",
+    "Columns Status classify the record; check the distinct values before filtering on them.",
+    "Join to Users through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "StartedAt",
+    "UserId",
+    "Status"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "Ai Conversation by month",
+    "Recent ai conversation",
+    "Ai Conversation by users",
+    "Ai Conversation count by status"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "Title",
+      "ContextSnapshot"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "StartedAt",
+    "preferred_amount_columns": [],
+    "default_sort": "StartedAt DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name AiConversation (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT Id) when counting ai conversation records; joins can duplicate rows.",
+      "To resolve names, join on: UserId = Users.Id."
+    ]
+  }
+}

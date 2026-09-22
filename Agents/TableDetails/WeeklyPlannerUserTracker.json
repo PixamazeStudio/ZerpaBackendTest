@@ -1,0 +1,223 @@
+{
+  "table_name": "Vw_WeeklyPlannerUserTracker",
+  "schema": null,
+  "object_type": "view",
+  "view_name": "Vw_WeeklyPlannerUserTracker",
+  "exists_in_database": true,
+  "display_name": "Weekly Planner User Tracker",
+  "description": "Database view exposing weekly planner user tracker data.",
+  "business_domain": "HR & User Management",
+  "business_purpose": "Used to track and report weekly planner user tracker records for the HR & User Management area.",
+  "table_type": "view",
+  "record_granularity": "One row represents one record returned by the weekly planner user tracker view.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "user_id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "User id of the weekly planner user tracker.",
+      "business_meaning": "User Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "role_level",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Role level of the weekly planner user tracker.",
+      "business_meaning": "Role Level",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "UserName",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "User name of the weekly planner user tracker.",
+      "business_meaning": "User Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "user_week_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the user week.",
+      "business_meaning": "User Week Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "planner_header_id",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Planner header id of the weekly planner user tracker.",
+      "business_meaning": "Planner Header Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "planner_month",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Planner month of the weekly planner user tracker.",
+      "business_meaning": "Planner Month",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "planner_year",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Planner year of the weekly planner user tracker.",
+      "business_meaning": "Planner Year",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "planner_start_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of planner start.",
+      "business_meaning": "Planner Start Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "planner_end_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of planner end.",
+      "business_meaning": "Planner End Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "planner_week_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the planner week.",
+      "business_meaning": "Planner Week Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "planner_is_approved",
+      "data_type": "tinyint(1)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Flag indicating planner is approved for the weekly planner user tracker.",
+      "business_meaning": "Planner Is Approved",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "planner_created_by",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Planner created by of the weekly planner user tracker.",
+      "business_meaning": "Planner Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "planner_start_date is the preferred date column for period-based reporting.",
+    "Columns role_level classify the record; check the distinct values before filtering on them.",
+    "Vw_WeeklyPlannerUserTracker is a database view: it is read-only and its rows are computed, so apply filters and a LIMIT when querying."
+  ],
+  "common_filters": [
+    "planner_start_date",
+    "role_level",
+    "planner_is_approved",
+    "user_week_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    }
+  ],
+  "common_queries": [
+    "Weekly Planner User Tracker by month",
+    "Recent weekly planner user tracker",
+    "Weekly Planner User Tracker count by role level"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [],
+    "known_issues": [
+      "Views expose no primary key or nullability guarantees; rows may repeat depending on the view definition."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "planner_start_date",
+    "preferred_amount_columns": [],
+    "default_sort": "planner_start_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name Vw_WeeklyPlannerUserTracker (identifiers can be case-sensitive).",
+      "This is a view; always apply filters and a LIMIT, as it may be expensive to scan."
+    ]
+  }
+}

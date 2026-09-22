@@ -1,0 +1,473 @@
+{
+  "table_name": "MLP",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "MLP",
+  "description": "Holds mlp records (defined in the EF Core model), linked to department, factory section, lot space.",
+  "business_domain": "General",
+  "business_purpose": "Used to track and report mlp records, including amounts and quantities, for the General area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one mlp.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the mlp.",
+      "business_meaning": "MLP identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the mlp.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "departmentid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Department",
+        "column": "id"
+      },
+      "description": "Reference to the department linked to this mlp.",
+      "business_meaning": "Department",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "factory_sectionid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "FactorySection",
+        "column": "id"
+      },
+      "description": "Reference to the factory section linked to this mlp.",
+      "business_meaning": "Factory Section",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "lot_spaceid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "LotSpace",
+        "column": "id"
+      },
+      "description": "Reference to the lot space linked to this mlp.",
+      "business_meaning": "Lot Space",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the mlp.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "parked_by",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Parked by of the mlp.",
+      "business_meaning": "Parked By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "parked_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of parked.",
+      "business_meaning": "Parked Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "parking_spaceid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "ParkingSpace",
+        "column": "id"
+      },
+      "description": "Reference to the parking space linked to this mlp.",
+      "business_meaning": "Parking Space",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "quantity",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Quantity of the mlp.",
+      "business_meaning": "Quantity",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "taken_byId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this mlp.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "taken_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of taken.",
+      "business_meaning": "Taken Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "unitid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "FactoryUnits",
+        "column": "id"
+      },
+      "description": "Reference to the factory units linked to this mlp.",
+      "business_meaning": "Factory Units",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the mlp."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "departmentid",
+      "to_table": "Department",
+      "to_column": "id",
+      "description": "Each mlp references one department (department)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "factory_sectionid",
+      "to_table": "FactorySection",
+      "to_column": "id",
+      "description": "Each mlp references one factory section (factory section)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "lot_spaceid",
+      "to_table": "LotSpace",
+      "to_column": "id",
+      "description": "Each mlp references one lot space (lot space)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the mlp."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "parking_spaceid",
+      "to_table": "ParkingSpace",
+      "to_column": "id",
+      "description": "Each mlp references one parking space (parking space)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "taken_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each mlp references one users (taken by)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "unitid",
+      "to_table": "FactoryUnits",
+      "to_column": "id",
+      "description": "Each mlp references one factory units (unit)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    },
+    {
+      "name": "IX_MLP_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_MLP_departmentid",
+      "columns": [
+        "departmentid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_MLP_factory_sectionid",
+      "columns": [
+        "factory_sectionid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_MLP_lot_spaceid",
+      "columns": [
+        "lot_spaceid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_MLP_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_MLP_parking_spaceid",
+      "columns": [
+        "parking_spaceid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_MLP_taken_byId",
+      "columns": [
+        "taken_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_MLP_unitid",
+      "columns": [
+        "unitid"
+      ],
+      "type": "non_clustered"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Use quantity for monetary or quantity totals.",
+    "Join to Department, Factory Section, Lot Space, Parking Space through the foreign key columns to resolve names.",
+    "MLP is defined in the EF Core model but was not found in the connected database, so it may not be deployed there."
+  ],
+  "common_filters": [
+    "created_date",
+    "departmentid",
+    "factory_sectionid",
+    "lot_spaceid",
+    "parking_spaceid",
+    "is_deleted"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total Quantity",
+      "formula": "SUM(quantity)"
+    },
+    {
+      "name": "Average Quantity per mlp",
+      "formula": "SUM(quantity) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "MLP by month",
+    "Recent mlp",
+    "MLP by department",
+    "MLP by factory section",
+    "MLP by lot space",
+    "Total quantity by month",
+    "Top department by quantity"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "departmentid",
+      "factory_sectionid",
+      "lot_spaceid",
+      "parked_by",
+      "parked_date",
+      "parking_spaceid",
+      "quantity",
+      "taken_byId",
+      "taken_date",
+      "unitid"
+    ],
+    "known_issues": [
+      "quantity is stored as floating point, so sums can carry small rounding differences.",
+      "quantity is nullable; use COALESCE when summing or comparing."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [
+      "quantity"
+    ],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against MLP: no table or view with this name exists in the connected database.",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting mlp records; joins can duplicate rows.",
+      "Use SUM(quantity) for totals of quantity.",
+      "To resolve names, join on: departmentid = Department.id; factory_sectionid = FactorySection.id; lot_spaceid = LotSpace.id; parking_spaceid = ParkingSpace.id; taken_byId = Users.Id.",
+      "Defined in the EF Core model but not found in the connected database; confirm it has been migrated before relying on it."
+    ]
+  }
+}

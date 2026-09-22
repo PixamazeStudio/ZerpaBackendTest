@@ -1,0 +1,246 @@
+{
+  "table_name": "MPDSQuarterlyReviewDetails",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "MPDS Quarterly Review Details",
+  "description": "Holds mpds quarterly review details records, linked to mpds quarterly review header.",
+  "business_domain": "Sales Planning & Performance",
+  "business_purpose": "Used to track and report mpds quarterly review details records, including amounts and quantities, for the Sales Planning & Performance area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one mpds quarterly review detail.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the mpds quarterly review detail.",
+      "business_meaning": "MPDS Quarterly Review Details identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "headerid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "MPDSQuarterlyReviewHeader",
+        "column": "id"
+      },
+      "description": "Reference to the mpds quarterly review header linked to this mpds quarterly review detail.",
+      "business_meaning": "MPDS Quarterly Review Header",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "acheived",
+      "data_type": "decimal(65,30)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Acheived of the mpds quarterly review detail.",
+      "business_meaning": "Acheived",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "percentage",
+      "data_type": "decimal(65,30)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Percentage of the mpds quarterly review detail.",
+      "business_meaning": "Percentage",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "MPDSQuarterlyReviewHeaderid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "MPDS quarterly review headerid of the mpds quarterly review detail.",
+      "business_meaning": "MPDS Quarterly Review Headerid",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "goal_masterId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Goal master id of the mpds quarterly review detail.",
+      "business_meaning": "Goal Master Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "weightage",
+      "data_type": "decimal(10,2)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Weightage of the mpds quarterly review detail.",
+      "business_meaning": "Weightage",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "target",
+      "data_type": "decimal(65,30)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Target of the mpds quarterly review detail.",
+      "business_meaning": "Target",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "headerid",
+      "to_table": "MPDSQuarterlyReviewHeader",
+      "to_column": "id",
+      "description": "Each mpds quarterly review detail references one mpds quarterly review header (header)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "fk_mpdsqrd_header",
+      "columns": [
+        "headerid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Use acheived / percentage for monetary or quantity totals.",
+    "Join to MPDS Quarterly Review Header through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "headerid"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total Acheived",
+      "formula": "SUM(acheived)"
+    },
+    {
+      "name": "Average Percentage",
+      "formula": "AVG(percentage)"
+    },
+    {
+      "name": "Total Weightage",
+      "formula": "SUM(weightage)"
+    },
+    {
+      "name": "Average Acheived per mpds quarterly review detail",
+      "formula": "SUM(acheived) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "MPDS Quarterly Review Details by mpds quarterly review header",
+    "Top mpds quarterly review header by acheived"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "acheived",
+      "percentage",
+      "MPDSQuarterlyReviewHeaderid",
+      "goal_masterId",
+      "weightage",
+      "target"
+    ],
+    "known_issues": [
+      "acheived, percentage, weightage, target are nullable; use COALESCE when summing or comparing.",
+      "The table appeared empty (estimated 0 rows) when the metadata was last read."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "acheived",
+      "percentage"
+    ],
+    "default_sort": "id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name MPDSQuarterlyReviewDetails (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT id) when counting mpds quarterly review detail records; joins can duplicate rows.",
+      "Use SUM(acheived) for totals of acheived.",
+      "To resolve names, join on: headerid = MPDSQuarterlyReviewHeader.id."
+    ]
+  }
+}

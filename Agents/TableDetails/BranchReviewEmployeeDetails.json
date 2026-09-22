@@ -1,0 +1,280 @@
+{
+  "table_name": "BranchReviewEmployeeDetails",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Branch Review Employee Details",
+  "description": "Holds branch review employee details records, linked to branch review header.",
+  "business_domain": "HR & User Management",
+  "business_purpose": "Used to track and report branch review employee details records, including amounts and quantities, for the HR & User Management area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one branch review employee detail.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the branch review employee detail.",
+      "business_meaning": "Branch Review Employee Details identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "BranchReviewId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "BranchReviewHeader",
+        "column": "Id"
+      },
+      "description": "Reference to the branch review header linked to this branch review employee detail.",
+      "business_meaning": "Branch Review Header",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "TeamPerformanceId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Team performance id of the branch review employee detail.",
+      "business_meaning": "Team Performance Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "TeamMemberId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Team member id of the branch review employee detail.",
+      "business_meaning": "Team Member Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "FocusListId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Focus list id of the branch review employee detail.",
+      "business_meaning": "Focus List Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "ClientId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Client id of the branch review employee detail.",
+      "business_meaning": "Client Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the branch review employee detail.",
+      "business_meaning": "Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "PlyTarget",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Ply target of the branch review employee detail.",
+      "business_meaning": "Ply Target",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "PlyActual",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Ply actual of the branch review employee detail.",
+      "business_meaning": "Ply Actual",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "PvcActual",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Pvc actual of the branch review employee detail.",
+      "business_meaning": "Pvc Actual",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "PvcTarget",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Pvc target of the branch review employee detail.",
+      "business_meaning": "Pvc Target",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "BranchReviewId",
+      "to_table": "BranchReviewHeader",
+      "to_column": "Id",
+      "description": "Each branch review employee detail references one branch review header (branch review)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "FK_BranchReviewEmployeeDetails_BranchReviewHeader_BranchReviewId",
+      "columns": [
+        "BranchReviewId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Use PlyTarget / PlyActual for monetary or quantity totals.",
+    "Join to Branch Review Header through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "BranchReviewId",
+    "Name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    },
+    {
+      "name": "Total Ply Target",
+      "formula": "SUM(PlyTarget)"
+    },
+    {
+      "name": "Total Ply Actual",
+      "formula": "SUM(PlyActual)"
+    },
+    {
+      "name": "Total Pvc Actual",
+      "formula": "SUM(PvcActual)"
+    },
+    {
+      "name": "Average Ply Target per branch review employee detail",
+      "formula": "SUM(PlyTarget) / COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "Branch Review Employee Details by branch review header",
+    "Top branch review header by ply target"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "TeamPerformanceId",
+      "Name"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "PlyTarget",
+      "PlyActual"
+    ],
+    "default_sort": "Id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name BranchReviewEmployeeDetails (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT Id) when counting branch review employee detail records; joins can duplicate rows.",
+      "Use SUM(PlyTarget) for totals of ply target.",
+      "To resolve names, join on: BranchReviewId = BranchReviewHeader.Id."
+    ]
+  }
+}

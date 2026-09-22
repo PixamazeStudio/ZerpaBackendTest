@@ -1,0 +1,270 @@
+{
+  "table_name": "UserPerformanceSummary",
+  "schema": null,
+  "object_type": "model",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "User Performance Summary",
+  "description": "Application view model for user performance summary data (not stored as a database table).",
+  "business_domain": "Sales Planning & Performance",
+  "business_purpose": "Used to track and report user performance summary records, including amounts and quantities, for the Sales Planning & Performance area.",
+  "table_type": "view_model",
+  "record_granularity": "One object represents one user performance summary result row.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "natural",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the user performance summary.",
+      "business_meaning": "User Performance Summary identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "FullName",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Full name of the user performance summary.",
+      "business_meaning": "Full Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "BranchId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Branch id of the user performance summary.",
+      "business_meaning": "Branch Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "BranchName",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Branch name of the user performance summary.",
+      "business_meaning": "Branch Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "RegionId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Region id of the user performance summary.",
+      "business_meaning": "Region Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "RegionName",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Region name of the user performance summary.",
+      "business_meaning": "Region Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "AreaId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Area id of the user performance summary.",
+      "business_meaning": "Area Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "AreaName",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Area name of the user performance summary.",
+      "business_meaning": "Area Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "NoOfFl",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "No of fl of the user performance summary.",
+      "business_meaning": "No Of Fl",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "AvgVisitsPerClient",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Avg visits per client of the user performance summary.",
+      "business_meaning": "Avg Visits Per Client",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "FlMetInPeriod",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Fl met in period of the user performance summary.",
+      "business_meaning": "Fl Met In Period",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "NoOfFlSales",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "No of fl sales of the user performance summary.",
+      "business_meaning": "No Of Fl Sales",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "SaleQty",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Sale qty of the user performance summary.",
+      "business_meaning": "Sale Qty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "Use SaleQty / AvgVisitsPerClient for monetary or quantity totals.",
+    "UserPerformanceSummary is an application view model or report DTO populated in code, not a table stored in the database."
+  ],
+  "common_filters": [],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    },
+    {
+      "name": "Average Avg Visits Per Client",
+      "formula": "AVG(AvgVisitsPerClient)"
+    },
+    {
+      "name": "Total No Of Fl Sales",
+      "formula": "SUM(NoOfFlSales)"
+    },
+    {
+      "name": "Total Sale Qty",
+      "formula": "SUM(SaleQty)"
+    }
+  ],
+  "common_queries": [
+    "List user performance summary",
+    "Count of user performance summary"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "FullName",
+      "BranchId",
+      "BranchName",
+      "RegionId",
+      "RegionName",
+      "AreaId",
+      "AreaName"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "SaleQty",
+      "AvgVisitsPerClient"
+    ],
+    "default_sort": "Id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against UserPerformanceSummary: no table or view with this name exists in the connected database.",
+      "Use COUNT(DISTINCT Id) when counting user performance summary records; joins can duplicate rows.",
+      "Use SUM(SaleQty) for totals of sale qty.",
+      "Populated in application code (for example from a stored procedure or joined query); query the underlying tables instead."
+    ]
+  }
+}

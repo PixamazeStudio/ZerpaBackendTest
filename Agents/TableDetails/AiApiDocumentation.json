@@ -1,0 +1,137 @@
+{
+  "table_name": "AiApiDocumentation",
+  "schema": null,
+  "object_type": "model",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Ai Api Documentation",
+  "description": "Application view model for ai api documentation data (not stored as a database table).",
+  "business_domain": "System & Communication",
+  "business_purpose": "Used to track and report ai api documentation records, including amounts and quantities, for the System & Communication area.",
+  "table_type": "view_model",
+  "record_granularity": "One object represents one ai api documentation result row.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "Project",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Project of the ai api documentation.",
+      "business_meaning": "Project",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Description",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text description for the ai api documentation.",
+      "business_meaning": "Description",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "BaseUrl",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Base url (file or link reference) for the ai api documentation.",
+      "business_meaning": "Base Url",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "TotalControllers",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total controllers of the ai api documentation.",
+      "business_meaning": "Total Controllers",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "Generated",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Generated of the ai api documentation.",
+      "business_meaning": "Generated",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "Use TotalControllers for monetary or quantity totals.",
+    "AiApiDocumentation is an application view model or report DTO populated in code, not a table stored in the database."
+  ],
+  "common_filters": [],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    },
+    {
+      "name": "Total Controllers",
+      "formula": "SUM(TotalControllers)"
+    }
+  ],
+  "common_queries": [
+    "List ai api documentation",
+    "Count of ai api documentation"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [
+      "Project",
+      "Description",
+      "BaseUrl",
+      "Generated"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "TotalControllers"
+    ],
+    "default_sort": "",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against AiApiDocumentation: no table or view with this name exists in the connected database.",
+      "Use SUM(TotalControllers) for totals of total controllers.",
+      "Populated in application code (for example from a stored procedure or joined query); query the underlying tables instead."
+    ]
+  }
+}

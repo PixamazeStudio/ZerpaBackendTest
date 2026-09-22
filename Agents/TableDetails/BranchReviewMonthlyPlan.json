@@ -1,0 +1,161 @@
+{
+  "table_name": "BranchReviewMonthlyPlan",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Branch Review Monthly Plan",
+  "description": "Holds branch review monthly plan records, linked to branch review header.",
+  "business_domain": "Sales Planning & Performance",
+  "business_purpose": "Used to track and report branch review monthly plan records for the Sales Planning & Performance area.",
+  "table_type": "master",
+  "record_granularity": "One row represents one branch review monthly plan.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the branch review monthly plan.",
+      "business_meaning": "Branch Review Monthly Plan identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "header_id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "BranchReviewHeader",
+        "column": "Id"
+      },
+      "description": "Reference to the branch review header linked to this branch review monthly plan.",
+      "business_meaning": "Branch Review Header",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "dealer_name",
+      "data_type": "varchar(200)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the dealer.",
+      "business_meaning": "Dealer Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "section_type",
+      "data_type": "varchar(10)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Section type of the branch review monthly plan.",
+      "business_meaning": "Section Type",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "monthly_plan",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Monthly plan of the branch review monthly plan.",
+      "business_meaning": "Monthly Plan",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "header_id",
+      "to_table": "BranchReviewHeader",
+      "to_column": "Id",
+      "description": "Each branch review monthly plan references one branch review header (header)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "fk_brmp_header",
+      "columns": [
+        "header_id"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Columns section_type classify the record; check the distinct values before filtering on them.",
+    "Join to Branch Review Header through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "header_id",
+    "section_type",
+    "dealer_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "Branch Review Monthly Plan by branch review header",
+    "Branch Review Monthly Plan count by section type"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "dealer_name",
+      "section_type"
+    ],
+    "known_issues": [
+      "The table appeared empty (estimated 0 rows) when the metadata was last read."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [],
+    "default_sort": "Id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name BranchReviewMonthlyPlan (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT Id) when counting branch review monthly plan records; joins can duplicate rows.",
+      "To resolve names, join on: header_id = BranchReviewHeader.Id."
+    ]
+  }
+}

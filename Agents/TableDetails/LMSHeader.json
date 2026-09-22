@@ -1,0 +1,475 @@
+{
+  "table_name": "LMSHeader",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "LMS Header",
+  "description": "Holds lms header records, linked to lead lost reasons, lead status, lead type.",
+  "business_domain": "General",
+  "business_purpose": "Used to track and report lms header records for the General area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one lms header.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the lms header.",
+      "business_meaning": "LMS Header identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "name",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Name of the lms header.",
+      "business_meaning": "Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "contact",
+      "data_type": "bigint(20)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Contact of the lms header.",
+      "business_meaning": "Contact",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "state",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "State of the lms header.",
+      "business_meaning": "State",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "district",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "District of the lms header.",
+      "business_meaning": "District",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "social_media_platform",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Social media platform of the lms header.",
+      "business_meaning": "Social Media Platform",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "lead_statusid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "LeadStatus",
+        "column": "id"
+      },
+      "description": "Reference to the lead status linked to this lms header.",
+      "business_meaning": "Lead Status",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "remark",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text remark for the lms header.",
+      "business_meaning": "Remark",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the lms header.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the lms header.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_closed",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the lms header is closed.",
+      "business_meaning": "Is Closed",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "branch_remark",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text branch remark for the lms header.",
+      "business_meaning": "Branch Remark",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "code",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Code reference of the lms header.",
+      "business_meaning": "Code",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "assigned_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of assigned.",
+      "business_meaning": "Assigned Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "lead_lost_reasonid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "LeadLostReasons",
+        "column": "id"
+      },
+      "description": "Reference to the lead lost reasons linked to this lms header.",
+      "business_meaning": "Lead Lost Reasons",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "lead_typeid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "LeadType",
+        "column": "id"
+      },
+      "description": "Reference to the lead type linked to this lms header.",
+      "business_meaning": "Lead Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "assigned_toId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this lms header.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "lead_statusid",
+      "to_table": "LeadStatus",
+      "to_column": "id",
+      "description": "Each lms header references one lead status (lead status)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the lms header."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the lms header."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "lead_lost_reasonid",
+      "to_table": "LeadLostReasons",
+      "to_column": "id",
+      "description": "Each lms header references one lead lost reasons (lead lost reason)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "lead_typeid",
+      "to_table": "LeadType",
+      "to_column": "id",
+      "description": "Each lms header references one lead type (lead type)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "assigned_toId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each lms header references one users (assigned to)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "FK_LMSHeader_LeadLostReasons_lead_lost_reasonid",
+      "columns": [
+        "lead_lost_reasonid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "FK_LMSHeader_LeadType_lead_typeid",
+      "columns": [
+        "lead_typeid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "FK_LMSHeader_Users_assigned_toId",
+      "columns": [
+        "assigned_toId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_LMSHeader_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_LMSHeader_lead_statusid",
+      "columns": [
+        "lead_statusid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_LMSHeader_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "is_closed = 1 marks the record as closed.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Columns state classify the record; check the distinct values before filtering on them.",
+    "Join to Lead Lost Reasons, Lead Status, Lead Type, Users through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "created_date",
+    "lead_statusid",
+    "lead_lost_reasonid",
+    "lead_typeid",
+    "assigned_toId",
+    "state",
+    "is_deleted",
+    "is_closed",
+    "name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "LMS Header by month",
+    "Recent lms header",
+    "LMS Header by lead status",
+    "LMS Header by lead lost reasons",
+    "LMS Header by lead type",
+    "LMS Header count by state"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "remark",
+      "created_byId",
+      "created_date",
+      "modified_byId",
+      "modified_date",
+      "branch_remark",
+      "code",
+      "assigned_date",
+      "lead_lost_reasonid",
+      "lead_typeid",
+      "assigned_toId"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name LMSHeader (identifiers can be case-sensitive).",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting lms header records; joins can duplicate rows.",
+      "To resolve names, join on: lead_statusid = LeadStatus.id; lead_lost_reasonid = LeadLostReasons.id; lead_typeid = LeadType.id; assigned_toId = Users.Id."
+    ]
+  }
+}

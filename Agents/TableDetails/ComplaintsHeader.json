@@ -1,0 +1,895 @@
+{
+  "table_name": "ComplaintsHeader",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Complaints Header",
+  "description": "Holds complaints header records, linked to dealer, users.",
+  "business_domain": "Customer Support",
+  "business_purpose": "Used to track and report complaints header records, including amounts and quantities, for the Customer Support area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one complaints header.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the complaints header.",
+      "business_meaning": "Complaints Header identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "cms_code",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Cms code reference of the complaints header.",
+      "business_meaning": "Cms Code",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "dealerid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Dealer",
+        "column": "id"
+      },
+      "description": "Reference to the dealer linked to this complaints header.",
+      "business_meaning": "Dealer",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_branch_approved",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the complaints header is branch approved.",
+      "business_meaning": "Is Branch Approved",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_branch_rejected",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the complaints header is branch rejected.",
+      "business_meaning": "Is Branch Rejected",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "branch_operated_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of branch operated.",
+      "business_meaning": "Branch Operated Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "branch_operated_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this complaints header.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the complaints header.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the complaints header.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "status",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Status of the complaints header.",
+      "business_meaning": "Status",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_cms_closed",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the complaints header is cms closed.",
+      "business_meaning": "Is Cms Closed",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_sitevisit_required",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the complaints header is sitevisit required.",
+      "business_meaning": "Is Sitevisit Required",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "sitevisit_scheduled_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of sitevisit scheduled.",
+      "business_meaning": "Sitevisit Scheduled Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "sitevisit_scheduled_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this complaints header.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "sitevisit_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this complaints header.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_cms_approved",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the complaints header is cms approved.",
+      "business_meaning": "Is Cms Approved",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_cms_rejected",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the complaints header is cms rejected.",
+      "business_meaning": "Is Cms Rejected",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "cms_operated_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of cms operated.",
+      "business_meaning": "Cms Operated Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "cms_operated_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this complaints header.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "branchid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Branch",
+        "column": "id"
+      },
+      "description": "Reference to the branch linked to this complaints header.",
+      "business_meaning": "Branch",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "carpenter_contractor_architect",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Carpenter contractor architect of the complaints header.",
+      "business_meaning": "Carpenter Contractor Architect",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "complaint_attended_by",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Complaint attended by of the complaints header.",
+      "business_meaning": "Complaint Attended By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "customer_name",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Name of the customer.",
+      "business_meaning": "Customer Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "inv_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of inv.",
+      "business_meaning": "Inv Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "inv_nos",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Inv nos of the complaints header.",
+      "business_meaning": "Inv Nos",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "location",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Location of the complaints header.",
+      "business_meaning": "Location",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "ref_no",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Ref no reference of the complaints header.",
+      "business_meaning": "Ref No",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "reason",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text reason for the complaints header.",
+      "business_meaning": "Reason",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_factory_remark_required",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the complaints header is factory remark required.",
+      "business_meaning": "Is Factory Remark Required",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "claim_status",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Claim status of the complaints header.",
+      "business_meaning": "Claim Status",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "other_amount",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Other amount of the complaints header.",
+      "business_meaning": "Other Amount",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "areaid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Area",
+        "column": "id"
+      },
+      "description": "Reference to the area linked to this complaints header.",
+      "business_meaning": "Area",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "closed_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of closed.",
+      "business_meaning": "Closed Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "base64_image",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Base64 image of the complaints header.",
+      "business_meaning": "Base64 Image",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "complaint_statusid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "ComplaintsStatus",
+        "column": "id"
+      },
+      "description": "Reference to the complaints status linked to this complaints header.",
+      "business_meaning": "Complaints Status",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "notes",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text notes for the complaints header.",
+      "business_meaning": "Notes",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "dealerid",
+      "to_table": "Dealer",
+      "to_column": "id",
+      "description": "Each complaints header references one dealer (dealer)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "branch_operated_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each complaints header references one users (branch operated by)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the complaints header."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the complaints header."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "sitevisit_scheduled_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each complaints header references one users (sitevisit scheduled by)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "sitevisit_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each complaints header references one users (sitevisit by)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "cms_operated_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each complaints header references one users (cms operated by)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "branchid",
+      "to_table": "Branch",
+      "to_column": "id",
+      "description": "Each complaints header references one branch (branch)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "areaid",
+      "to_table": "Area",
+      "to_column": "id",
+      "description": "Each complaints header references one area (area)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "complaint_statusid",
+      "to_table": "ComplaintsStatus",
+      "to_column": "id",
+      "description": "Each complaints header references one complaints status (complaint status)."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "ComplaintsDetails",
+      "to_column": "complaints_headerid",
+      "description": "Each complaints header can have many complaints details records referencing it through complaints_headerid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "ComplaintsFile",
+      "to_column": "cms_headerid",
+      "description": "Each complaints header can have many complaints file records referencing it through cms_headerid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "ComplaintsRemark",
+      "to_column": "cms_headerid",
+      "description": "Each complaints header can have many complaints remark records referencing it through cms_headerid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "ObservationReport",
+      "to_column": "complaintsheaderid",
+      "description": "Each complaints header can have many observation report records referencing it through complaintsheaderid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "Scheduler",
+      "to_column": "complaint_headerid",
+      "description": "Each complaints header can have many scheduler records referencing it through complaint_headerid."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "FK_ComplaintsHeader_Area_areaid",
+      "columns": [
+        "areaid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "FK_ComplaintsHeader_ComplaintsStatus_complaint_statusid",
+      "columns": [
+        "complaint_statusid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ComplaintsHeader_branchid",
+      "columns": [
+        "branchid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ComplaintsHeader_branch_operated_byId",
+      "columns": [
+        "branch_operated_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ComplaintsHeader_cms_operated_byId",
+      "columns": [
+        "cms_operated_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ComplaintsHeader_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ComplaintsHeader_dealerid",
+      "columns": [
+        "dealerid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ComplaintsHeader_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ComplaintsHeader_sitevisit_byId",
+      "columns": [
+        "sitevisit_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ComplaintsHeader_sitevisit_scheduled_byId",
+      "columns": [
+        "sitevisit_scheduled_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Use other_amount for monetary or quantity totals.",
+    "Columns status, claim_status classify the record; check the distinct values before filtering on them.",
+    "Join to Dealer, Users through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "created_date",
+    "dealerid",
+    "branch_operated_byId",
+    "sitevisit_scheduled_byId",
+    "sitevisit_byId",
+    "status",
+    "claim_status",
+    "is_branch_approved",
+    "is_branch_rejected",
+    "is_cms_closed",
+    "cms_code"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total Other Amount",
+      "formula": "SUM(other_amount)"
+    },
+    {
+      "name": "Average Other Amount per complaints header",
+      "formula": "SUM(other_amount) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Complaints Header by month",
+    "Recent complaints header",
+    "Complaints Header by dealer",
+    "Complaints Header by users",
+    "Complaints Header by users",
+    "Complaints Header count by status",
+    "Total other amount by month",
+    "Top dealer by other amount"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "cms_code",
+      "dealerid",
+      "branch_operated_date",
+      "branch_operated_byId",
+      "created_date",
+      "created_byId",
+      "modified_date",
+      "modified_byId",
+      "status",
+      "sitevisit_scheduled_date",
+      "sitevisit_scheduled_byId",
+      "sitevisit_byId",
+      "cms_operated_date",
+      "cms_operated_byId",
+      "carpenter_contractor_architect",
+      "complaint_attended_by",
+      "inv_date",
+      "inv_nos",
+      "reason",
+      "claim_status",
+      "other_amount",
+      "areaid",
+      "closed_date",
+      "base64_image",
+      "complaint_statusid",
+      "notes"
+    ],
+    "known_issues": [
+      "other_amount is stored as floating point, so sums can carry small rounding differences.",
+      "other_amount is nullable; use COALESCE when summing or comparing."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [
+      "other_amount"
+    ],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [
+      "base64_image"
+    ],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name ComplaintsHeader (identifiers can be case-sensitive).",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting complaints header records; joins can duplicate rows.",
+      "Use SUM(other_amount) for totals of other amount.",
+      "To resolve names, join on: dealerid = Dealer.id; branch_operated_byId = Users.Id; sitevisit_scheduled_byId = Users.Id; sitevisit_byId = Users.Id; cms_operated_byId = Users.Id.",
+      "Do not select base64_image; they are sensitive or may hold very large content."
+    ]
+  }
+}

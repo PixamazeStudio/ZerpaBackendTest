@@ -1,0 +1,573 @@
+{
+  "table_name": "Customer",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Customer",
+  "description": "Holds customer records, linked to area, region, sub area.",
+  "business_domain": "Sales & CRM",
+  "business_purpose": "Used to track and report customer records, including approval status, for the Sales & CRM area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one customer.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the customer.",
+      "business_meaning": "Customer identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "name",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Name of the customer.",
+      "business_meaning": "Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "address",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Address of the customer.",
+      "business_meaning": "Address",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "contact",
+      "data_type": "bigint(20)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Contact of the customer.",
+      "business_meaning": "Contact",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "email",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Email of the customer.",
+      "business_meaning": "Email",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "regionid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Region",
+        "column": "id"
+      },
+      "description": "Reference to the region linked to this customer.",
+      "business_meaning": "Region",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "areaid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Area",
+        "column": "id"
+      },
+      "description": "Reference to the area linked to this customer.",
+      "business_meaning": "Area",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "subareaid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "SubArea",
+        "column": "id"
+      },
+      "description": "Reference to the sub area linked to this customer.",
+      "business_meaning": "Sub Area",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "company_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the company.",
+      "business_meaning": "Company Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "customer_type",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Customer type of the customer.",
+      "business_meaning": "Customer Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "tax_number",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Tax number reference of the customer.",
+      "business_meaning": "Tax Number",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "total_orders",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Total orders of the customer.",
+      "business_meaning": "Total Orders",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "status",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Status of the customer.",
+      "business_meaning": "Status",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "assigned_toId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this customer.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "notes",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text notes for the customer.",
+      "business_meaning": "Notes",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the customer.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "operated_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who approved or rejected the customer.",
+      "business_meaning": "Operated By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_approved",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the customer is approved.",
+      "business_meaning": "Is Approved",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_rejected",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the customer is rejected.",
+      "business_meaning": "Is Rejected",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "operated_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of operated.",
+      "business_meaning": "Operated Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the customer.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "regionid",
+      "to_table": "Region",
+      "to_column": "id",
+      "description": "Each customer references one region (region)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "areaid",
+      "to_table": "Area",
+      "to_column": "id",
+      "description": "Each customer references one area (area)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "subareaid",
+      "to_table": "SubArea",
+      "to_column": "id",
+      "description": "Each customer references one sub area (subarea)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "assigned_toId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each customer references one users (assigned to)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the customer."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "operated_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who approved or rejected the customer."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the customer."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "CRM_Visit",
+      "to_column": "customerId",
+      "description": "Each customer can have many crm visit records referencing it through customerId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "SchemeMapping",
+      "to_column": "CustomerId",
+      "description": "Each customer can have many scheme mapping records referencing it through CustomerId."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_Customer_areaid",
+      "columns": [
+        "areaid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Customer_assigned_toId",
+      "columns": [
+        "assigned_toId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Customer_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Customer_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Customer_operated_byId",
+      "columns": [
+        "operated_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Customer_regionid",
+      "columns": [
+        "regionid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Customer_subareaid",
+      "columns": [
+        "subareaid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "Approval state is tracked with is_approved, is_rejected; a record with neither flag set is typically still pending.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Columns customer_type, status classify the record; check the distinct values before filtering on them.",
+    "Join to Area, Region, Sub Area, Users through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "created_date",
+    "regionid",
+    "areaid",
+    "subareaid",
+    "assigned_toId",
+    "customer_type",
+    "status",
+    "is_deleted",
+    "is_approved",
+    "is_rejected",
+    "name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "Customer by month",
+    "Recent customer",
+    "Customer by region",
+    "Customer by area",
+    "Customer by sub area",
+    "Customer count by customer type"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "address",
+      "subareaid",
+      "company_name",
+      "customer_type",
+      "tax_number",
+      "total_orders",
+      "status",
+      "assigned_toId",
+      "notes",
+      "operated_byId",
+      "operated_date",
+      "modified_byId",
+      "modified_date"
+    ],
+    "known_issues": [
+      "The table appeared empty (estimated 0 rows) when the metadata was last read."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [
+      "address",
+      "email"
+    ],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name Customer (identifiers can be case-sensitive).",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT Id) when counting customer records; joins can duplicate rows.",
+      "To resolve names, join on: regionid = Region.id; areaid = Area.id; subareaid = SubArea.id; assigned_toId = Users.Id.",
+      "Do not select address, email; they are sensitive or may hold very large content."
+    ]
+  }
+}

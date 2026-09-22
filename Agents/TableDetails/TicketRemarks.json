@@ -1,0 +1,192 @@
+{
+  "table_name": "TicketRemarks",
+  "schema": null,
+  "object_type": "model",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Ticket Remarks",
+  "description": "Application view model for ticket remarks data (not stored as a database table), linked to ticket header, users.",
+  "business_domain": "Customer Support",
+  "business_purpose": "Used to track and report ticket remarks records for the Customer Support area.",
+  "table_type": "view_model",
+  "record_granularity": "One object represents one ticket remark result row.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "natural",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the ticket remark.",
+      "business_meaning": "Ticket Remarks identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "ticket_headerId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "TicketHeader",
+        "column": "Id"
+      },
+      "description": "Reference to the ticket header linked to this ticket remark.",
+      "business_meaning": "Ticket Header",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "userId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this ticket remark.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "role",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Role of the ticket remark.",
+      "business_meaning": "Role",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "remarks",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text remarks for the ticket remark.",
+      "business_meaning": "Remarks",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_initial_remark",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the ticket remark is initial remark.",
+      "business_meaning": "Is Initial Remark",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "remark_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time of remark.",
+      "business_meaning": "Remark Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "ticket_headerId",
+      "to_table": "TicketHeader",
+      "to_column": "Id",
+      "description": "Each ticket remark references one ticket header (ticket header)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "userId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each ticket remark references one users (user)."
+    }
+  ],
+  "indexes": [],
+  "business_rules": [
+    "remark_date is the preferred date column for period-based reporting.",
+    "Join to Ticket Header, Users through the foreign key columns to resolve names.",
+    "TicketRemarks is an application view model or report DTO populated in code, not a table stored in the database."
+  ],
+  "common_filters": [
+    "remark_date",
+    "ticket_headerId",
+    "userId",
+    "is_initial_remark"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Ticket Remarks by month",
+    "Recent ticket remarks",
+    "Ticket Remarks by ticket header",
+    "Ticket Remarks by users"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "ticket_headerId",
+      "userId",
+      "role",
+      "remarks"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": "remark_date",
+    "preferred_amount_columns": [],
+    "default_sort": "remark_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against TicketRemarks: no table or view with this name exists in the connected database.",
+      "Use COUNT(DISTINCT id) when counting ticket remark records; joins can duplicate rows.",
+      "To resolve names, join on: ticket_headerId = TicketHeader.Id; userId = Users.Id.",
+      "Populated in application code (for example from a stored procedure or joined query); query the underlying tables instead."
+    ]
+  }
+}

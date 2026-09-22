@@ -1,0 +1,469 @@
+{
+  "table_name": "LotSpace",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Lot Space",
+  "description": "Holds lot space records (defined in the EF Core model), linked to department, factory section, parking space.",
+  "business_domain": "Factory & Inventory",
+  "business_purpose": "Used to track and report lot space records, including amounts and quantities, for the Factory & Inventory area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one lot space.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the lot space.",
+      "business_meaning": "Lot Space identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the lot space.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "departmentid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Department",
+        "column": "id"
+      },
+      "description": "Reference to the department linked to this lot space.",
+      "business_meaning": "Department",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "description",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text description for the lot space.",
+      "business_meaning": "Description",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "factory_sectionid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "FactorySection",
+        "column": "id"
+      },
+      "description": "Reference to the factory section linked to this lot space.",
+      "business_meaning": "Factory Section",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_available",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the lot space is available.",
+      "business_meaning": "Is Available",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "lot_name",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Name of the lot.",
+      "business_meaning": "Lot Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "maximum_capacity",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Maximum capacity of the lot space.",
+      "business_meaning": "Maximum Capacity",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the lot space.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "occupied_capacity",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Occupied capacity of the lot space.",
+      "business_meaning": "Occupied Capacity",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "parking_spaceid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "ParkingSpace",
+        "column": "id"
+      },
+      "description": "Reference to the parking space linked to this lot space.",
+      "business_meaning": "Parking Space",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "unitid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "FactoryUnits",
+        "column": "id"
+      },
+      "description": "Reference to the factory units linked to this lot space.",
+      "business_meaning": "Factory Units",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the lot space."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "departmentid",
+      "to_table": "Department",
+      "to_column": "id",
+      "description": "Each lot space references one department (department)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "factory_sectionid",
+      "to_table": "FactorySection",
+      "to_column": "id",
+      "description": "Each lot space references one factory section (factory section)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the lot space."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "parking_spaceid",
+      "to_table": "ParkingSpace",
+      "to_column": "id",
+      "description": "Each lot space references one parking space (parking space)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "unitid",
+      "to_table": "FactoryUnits",
+      "to_column": "id",
+      "description": "Each lot space references one factory units (unit)."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "FactoryOpsDetails",
+      "to_column": "input_lotid",
+      "description": "Each lot space can have many factory ops details records referencing it through input_lotid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "FactoryOpsDetails",
+      "to_column": "output_lotid",
+      "description": "Each lot space can have many factory ops details records referencing it through output_lotid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "MLP",
+      "to_column": "lot_spaceid",
+      "description": "Each lot space can have many mlp records referencing it through lot_spaceid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "YardHeader",
+      "to_column": "lotspaceid",
+      "description": "Each lot space can have many yard header records referencing it through lotspaceid."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    },
+    {
+      "name": "IX_LotSpace_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_LotSpace_departmentid",
+      "columns": [
+        "departmentid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_LotSpace_factory_sectionid",
+      "columns": [
+        "factory_sectionid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_LotSpace_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_LotSpace_parking_spaceid",
+      "columns": [
+        "parking_spaceid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_LotSpace_unitid",
+      "columns": [
+        "unitid"
+      ],
+      "type": "non_clustered"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Use maximum_capacity / occupied_capacity for monetary or quantity totals.",
+    "Join to Department, Factory Section, Factory Units, Parking Space through the foreign key columns to resolve names.",
+    "LotSpace is defined in the EF Core model but was not found in the connected database, so it may not be deployed there."
+  ],
+  "common_filters": [
+    "created_date",
+    "departmentid",
+    "factory_sectionid",
+    "parking_spaceid",
+    "unitid",
+    "is_available",
+    "is_deleted",
+    "lot_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total Maximum Capacity",
+      "formula": "SUM(maximum_capacity)"
+    },
+    {
+      "name": "Total Occupied Capacity",
+      "formula": "SUM(occupied_capacity)"
+    },
+    {
+      "name": "Average Maximum Capacity per lot space",
+      "formula": "SUM(maximum_capacity) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Lot Space by month",
+    "Recent lot space",
+    "Lot Space by department",
+    "Lot Space by factory section",
+    "Lot Space by parking space",
+    "Total maximum capacity by month",
+    "Top department by maximum capacity"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "created_byId",
+      "departmentid",
+      "description",
+      "factory_sectionid",
+      "maximum_capacity",
+      "modified_byId",
+      "modified_date",
+      "occupied_capacity",
+      "parking_spaceid",
+      "unitid"
+    ],
+    "known_issues": [
+      "maximum_capacity, occupied_capacity are stored as floating point, so sums can carry small rounding differences.",
+      "maximum_capacity, occupied_capacity are nullable; use COALESCE when summing or comparing."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [
+      "maximum_capacity",
+      "occupied_capacity"
+    ],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against LotSpace: no table or view with this name exists in the connected database.",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting lot space records; joins can duplicate rows.",
+      "Use SUM(maximum_capacity) for totals of maximum capacity.",
+      "To resolve names, join on: departmentid = Department.id; factory_sectionid = FactorySection.id; parking_spaceid = ParkingSpace.id; unitid = FactoryUnits.id.",
+      "Defined in the EF Core model but not found in the connected database; confirm it has been migrated before relying on it."
+    ]
+  }
+}

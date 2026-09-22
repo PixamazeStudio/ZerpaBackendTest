@@ -1,0 +1,709 @@
+{
+  "table_name": "Users",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Users",
+  "description": "Holds users records, linked to internal departments, user roles.",
+  "business_domain": "HR & User Management",
+  "business_purpose": "Used to track and report users records for the HR & User Management area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one user.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the user.",
+      "business_meaning": "Users identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Username",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Username of the user.",
+      "business_meaning": "Username",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Email",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Email of the user.",
+      "business_meaning": "Email",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Password",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Password of the user.",
+      "business_meaning": "Password",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "FullName",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Full name of the user.",
+      "business_meaning": "Full Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Roleid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "UserRoles",
+        "column": "id"
+      },
+      "description": "Reference to the user roles linked to this user.",
+      "business_meaning": "User Roles",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "DateOfBirth",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of date of birth.",
+      "business_meaning": "Date Of Birth",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "role_level",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Role level of the user.",
+      "business_meaning": "Role Level",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Address",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Address of the user.",
+      "business_meaning": "Address",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "image",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Image of the user.",
+      "business_meaning": "Image",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "PhoneNumber",
+      "data_type": "bigint(20)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Phone number of the user.",
+      "business_meaning": "Phone Number",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Inactive",
+      "data_type": "tinyint(1)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Flag indicating inactive for the user.",
+      "business_meaning": "Inactive",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Keep_Logined",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Flag indicating keep logined for the user.",
+      "business_meaning": "Keep Logined",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "IsDeleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "IsAdmin",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the user is admin.",
+      "business_meaning": "Is Admin",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "IsSuperAdmin",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the user is super admin.",
+      "business_meaning": "Is Super Admin",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "ModifiedBy",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Modified by of the user.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "ModifiedAt",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified At",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "summary",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Summary of the user.",
+      "business_meaning": "Summary",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "category",
+      "data_type": "varchar(10)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Category of the user.",
+      "business_meaning": "Category",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "user_type",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "User type of the user.",
+      "business_meaning": "User Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "related_id",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Related id of the user.",
+      "business_meaning": "Related Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "related_section",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Related section of the user.",
+      "business_meaning": "Related Section",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "BaseLocation",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Base location of the user.",
+      "business_meaning": "Base Location",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Designation",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Designation of the user.",
+      "business_meaning": "Designation",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "FuelType",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Fuel type of the user.",
+      "business_meaning": "Fuel Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "VehicleType",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Vehicle type of the user.",
+      "business_meaning": "Vehicle Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Grade",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Grade of the user.",
+      "business_meaning": "Grade",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "internal_departmentid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "InternalDepartments",
+        "column": "id"
+      },
+      "description": "Reference to the internal departments linked to this user.",
+      "business_meaning": "Internal Departments",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Status",
+      "data_type": "varchar(45)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Status of the user.",
+      "business_meaning": "Status",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Doj",
+      "data_type": "datetime",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of doj.",
+      "business_meaning": "Doj",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "primary_branch_id",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Primary branch id of the user.",
+      "business_meaning": "Primary Branch Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "token",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Token of the user.",
+      "business_meaning": "Token",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "agent_enabled",
+      "data_type": "tinyint(4)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Agent enabled of the user.",
+      "business_meaning": "Agent Enabled",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "Roleid",
+      "to_table": "UserRoles",
+      "to_column": "id",
+      "description": "Each user references one user roles (role)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "internal_departmentid",
+      "to_table": "InternalDepartments",
+      "to_column": "id",
+      "description": "Each user references one internal departments (internal department)."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "AccountTransfer",
+      "to_column": "account_operated_byId",
+      "description": "Each user can have many account transfer records referencing it through account_operated_byId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "AccountTransfer",
+      "to_column": "amount_changed_byId",
+      "description": "Each user can have many account transfer records referencing it through amount_changed_byId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "AccountTransfer",
+      "to_column": "closed_byId",
+      "description": "Each user can have many account transfer records referencing it through closed_byId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "AccountTransfer",
+      "to_column": "created_byId",
+      "description": "Each user can have many account transfer records referencing it through created_byId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "AccountTransfer",
+      "to_column": "modified_byId",
+      "description": "Each user can have many account transfer records referencing it through modified_byId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "AccountTransfer",
+      "to_column": "operated_byId",
+      "description": "Each user can have many account transfer records referencing it through operated_byId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "AccountTransferMainHeader",
+      "to_column": "created_byId",
+      "description": "Each user can have many account transfer main header records referencing it through created_byId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "AccountTransferMainHeader",
+      "to_column": "modified_byId",
+      "description": "Each user can have many account transfer main header records referencing it through modified_byId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "AccountTransferSubHeader",
+      "to_column": "created_byId",
+      "description": "Each user can have many account transfer sub header records referencing it through created_byId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "AccountTransferSubHeader",
+      "to_column": "modified_byId",
+      "description": "Each user can have many account transfer sub header records referencing it through modified_byId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "AiConversation",
+      "to_column": "UserId",
+      "description": "Each user can have many ai conversation records referencing it through UserId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "Announcements",
+      "to_column": "created_byId",
+      "description": "Each user can have many announcements records referencing it through created_byId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "(other tables)",
+      "to_column": "(various)",
+      "description": "290 more tables reference this table; only the first 12 are listed."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "FK_Users_InternalDepartments_internal_departmentid",
+      "columns": [
+        "internal_departmentid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Users_Roleid",
+      "columns": [
+        "Roleid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (IsDeleted = 1) should normally be excluded from reporting.",
+    "DateOfBirth is the preferred date column for period-based reporting.",
+    "Columns role_level, category, user_type classify the record; check the distinct values before filtering on them.",
+    "Join to Internal Departments, User Roles through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "DateOfBirth",
+    "Roleid",
+    "internal_departmentid",
+    "role_level",
+    "category",
+    "Inactive",
+    "Keep_Logined",
+    "IsDeleted"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "Users by month",
+    "Recent users",
+    "Users by user roles",
+    "Users by internal departments",
+    "Users count by role level"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "Email",
+      "Roleid",
+      "DateOfBirth",
+      "role_level",
+      "Address",
+      "image",
+      "PhoneNumber",
+      "Inactive",
+      "ModifiedBy",
+      "ModifiedAt",
+      "summary",
+      "category",
+      "user_type",
+      "related_id",
+      "related_section",
+      "BaseLocation",
+      "Designation",
+      "FuelType",
+      "VehicleType",
+      "Grade",
+      "internal_departmentid",
+      "Status",
+      "Doj",
+      "primary_branch_id",
+      "token",
+      "agent_enabled"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "DateOfBirth",
+    "preferred_amount_columns": [],
+    "default_sort": "DateOfBirth DESC",
+    "avoid_columns": [
+      "Email",
+      "Password",
+      "DateOfBirth",
+      "Address",
+      "image",
+      "PhoneNumber",
+      "token"
+    ],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name Users (identifiers can be case-sensitive).",
+      "Always filter IsDeleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT Id) when counting user records; joins can duplicate rows.",
+      "To resolve names, join on: Roleid = UserRoles.id; internal_departmentid = InternalDepartments.id.",
+      "Do not select Email, Password, DateOfBirth, Address, image, PhoneNumber and others; they are sensitive or may hold very large content."
+    ]
+  }
+}

@@ -1,0 +1,191 @@
+{
+  "table_name": "FLPlannerVsActual",
+  "schema": null,
+  "object_type": "model",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "FL Planner Vs Actual",
+  "description": "Application view model for fl planner vs actual data (not stored as a database table).",
+  "business_domain": "Sales Planning & Performance",
+  "business_purpose": "Used to track and report fl planner vs actual records, including amounts and quantities, for the Sales Planning & Performance area.",
+  "table_type": "view_model",
+  "record_granularity": "One object represents one fl planner vs actual result row.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "natural",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the fl planner vs actual.",
+      "business_meaning": "FL Planner Vs Actual identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "FullName",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Full name of the fl planner vs actual.",
+      "business_meaning": "Full Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "fl_count",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Fl count of the fl planner vs actual.",
+      "business_meaning": "Fl Count",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "plannedFls",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Planned fls of the fl planner vs actual.",
+      "business_meaning": "Planned Fls",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "planned",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Planned of the fl planner vs actual.",
+      "business_meaning": "Planned",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "actual_fls",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Actual fls of the fl planner vs actual.",
+      "business_meaning": "Actual Fls",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "quantity",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Quantity of the fl planner vs actual.",
+      "business_meaning": "Quantity",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "Use quantity / fl_count for monetary or quantity totals.",
+    "FLPlannerVsActual is an application view model or report DTO populated in code, not a table stored in the database."
+  ],
+  "common_filters": [],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    },
+    {
+      "name": "Total Fl Count",
+      "formula": "SUM(fl_count)"
+    },
+    {
+      "name": "Total Planned",
+      "formula": "SUM(planned)"
+    },
+    {
+      "name": "Total Quantity",
+      "formula": "SUM(quantity)"
+    },
+    {
+      "name": "Average Fl Count per fl planner vs actual",
+      "formula": "SUM(fl_count) / COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "List fl planner vs actual",
+    "Count of fl planner vs actual"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "FullName"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "quantity",
+      "fl_count"
+    ],
+    "default_sort": "Id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against FLPlannerVsActual: no table or view with this name exists in the connected database.",
+      "Use COUNT(DISTINCT Id) when counting fl planner vs actual records; joins can duplicate rows.",
+      "Use SUM(quantity) for totals of quantity.",
+      "Populated in application code (for example from a stored procedure or joined query); query the underlying tables instead."
+    ]
+  }
+}

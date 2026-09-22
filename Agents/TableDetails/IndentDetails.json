@@ -1,0 +1,379 @@
+{
+  "table_name": "IndentDetails",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Indent Details",
+  "description": "Holds indent details records, linked to indent header, products.",
+  "business_domain": "Factory & Inventory",
+  "business_purpose": "Used to track and report indent details records, including amounts and quantities, for the Factory & Inventory area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one indent detail.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the indent detail.",
+      "business_meaning": "Indent Details identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "indent_headerid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "IndentHeader",
+        "column": "id"
+      },
+      "description": "Reference to the indent header linked to this indent detail.",
+      "business_meaning": "Indent Header",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "productid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Products",
+        "column": "id"
+      },
+      "description": "Reference to the products linked to this indent detail.",
+      "business_meaning": "Products",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "qty",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Qty of the indent detail.",
+      "business_meaning": "Qty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "rate",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Rate of the indent detail.",
+      "business_meaning": "Rate",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "total_amount",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total amount of the indent detail.",
+      "business_meaning": "Total Amount",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "total_weight",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total weight of the indent detail.",
+      "business_meaning": "Total Weight",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "invoice_qty",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Invoice qty of the indent detail.",
+      "business_meaning": "Invoice Qty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "invoice_total_amount",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Invoice total amount of the indent detail.",
+      "business_meaning": "Invoice Total Amount",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "invoice_total_weight",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Invoice total weight of the indent detail.",
+      "business_meaning": "Invoice Total Weight",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "product_wise_notional_area",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Product wise notional area of the indent detail.",
+      "business_meaning": "Product Wise Notional Area",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "discount_structure",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Discount structure of the indent detail.",
+      "business_meaning": "Discount Structure",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "invoice_notional_area",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Invoice notional area of the indent detail.",
+      "business_meaning": "Invoice Notional Area",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "indent_headerid",
+      "to_table": "IndentHeader",
+      "to_column": "id",
+      "description": "Each indent detail references one indent header (indent header)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "productid",
+      "to_table": "Products",
+      "to_column": "id",
+      "description": "Each indent detail references one products (product)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_IndentDetails_indent_headerid",
+      "columns": [
+        "indent_headerid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_IndentDetails_productid",
+      "columns": [
+        "productid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "Use total_amount / total_weight for monetary or quantity totals.",
+    "Join to Indent Header, Products through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "indent_headerid",
+    "productid",
+    "is_deleted"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total Qty",
+      "formula": "SUM(qty)"
+    },
+    {
+      "name": "Average Rate",
+      "formula": "AVG(rate)"
+    },
+    {
+      "name": "Total Amount",
+      "formula": "SUM(total_amount)"
+    },
+    {
+      "name": "Average Qty per indent detail",
+      "formula": "SUM(qty) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Indent Details by indent header",
+    "Indent Details by products",
+    "Top indent header by qty"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "invoice_qty",
+      "product_wise_notional_area",
+      "discount_structure",
+      "invoice_notional_area"
+    ],
+    "known_issues": [
+      "rate, total_amount, total_weight, invoice_total_amount are stored as floating point, so sums can carry small rounding differences.",
+      "invoice_qty, product_wise_notional_area, invoice_notional_area are nullable; use COALESCE when summing or comparing."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "total_amount",
+      "total_weight"
+    ],
+    "default_sort": "id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name IndentDetails (identifiers can be case-sensitive).",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting indent detail records; joins can duplicate rows.",
+      "Use SUM(total_amount) for totals of total amount.",
+      "To resolve names, join on: indent_headerid = IndentHeader.id; productid = Products.id."
+    ]
+  }
+}

@@ -1,0 +1,198 @@
+{
+  "table_name": "BranchReviewSchemeInfluencerMonthly",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Branch Review Scheme Influencer Monthly",
+  "description": "Holds branch review scheme influencer monthly records, linked to branch review header.",
+  "business_domain": "Sales Planning & Performance",
+  "business_purpose": "Used to track and report branch review scheme influencer monthly records, including amounts and quantities, for the Sales Planning & Performance area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one branch review scheme influencer monthly.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the branch review scheme influencer monthly.",
+      "business_meaning": "Branch Review Scheme Influencer Monthly identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "header_id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "BranchReviewHeader",
+        "column": "Id"
+      },
+      "description": "Reference to the branch review header linked to this branch review scheme influencer monthly.",
+      "business_meaning": "Branch Review Header",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "scheme_influencer_detail_id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Scheme influencer detail id of the branch review scheme influencer monthly.",
+      "business_meaning": "Scheme Influencer Detail Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "month_name",
+      "data_type": "varchar(20)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Name of the month.",
+      "business_meaning": "Month Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "year",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Year of the branch review scheme influencer monthly.",
+      "business_meaning": "Year",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "qty",
+      "data_type": "decimal(65,30)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Qty of the branch review scheme influencer monthly.",
+      "business_meaning": "Qty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "visits",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Visits of the branch review scheme influencer monthly.",
+      "business_meaning": "Visits",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "header_id",
+      "to_table": "BranchReviewHeader",
+      "to_column": "Id",
+      "description": "Each branch review scheme influencer monthly references one branch review header (header)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "FK_BranchReviewSchemeInfluencerMonthly_BranchReviewHeader_header",
+      "columns": [
+        "header_id"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Use qty for monetary or quantity totals.",
+    "Join to Branch Review Header through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "header_id",
+    "month_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    },
+    {
+      "name": "Total Qty",
+      "formula": "SUM(qty)"
+    },
+    {
+      "name": "Average Qty per branch review scheme influencer monthly",
+      "formula": "SUM(qty) / COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "Branch Review Scheme Influencer Monthly by branch review header",
+    "Top branch review header by qty"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "qty"
+    ],
+    "default_sort": "Id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name BranchReviewSchemeInfluencerMonthly (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT Id) when counting branch review scheme influencer monthly records; joins can duplicate rows.",
+      "Use SUM(qty) for totals of qty.",
+      "To resolve names, join on: header_id = BranchReviewHeader.Id."
+    ]
+  }
+}

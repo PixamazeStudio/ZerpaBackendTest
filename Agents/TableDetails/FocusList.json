@@ -1,0 +1,484 @@
+{
+  "table_name": "FocusList",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Focus List",
+  "description": "Holds focus list records, linked to client, crm client type, users.",
+  "business_domain": "General",
+  "business_purpose": "Used to track and report focus list records, including approval status, for the General area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one focus list.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the focus list.",
+      "business_meaning": "Focus List identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "assigned_toId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this focus list.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "ClientId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Client",
+        "column": "Id"
+      },
+      "description": "Reference to the client linked to this focus list.",
+      "business_meaning": "Client",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Client_TypeId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "CrmClientType",
+        "column": "Id"
+      },
+      "description": "Reference to the crm client type linked to this focus list.",
+      "business_meaning": "Crm Client Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the focus list.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the focus list.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_approved",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the focus list is approved.",
+      "business_meaning": "Is Approved",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_canceled",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the focus list is canceled.",
+      "business_meaning": "Is Canceled",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "operated_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who approved or rejected the focus list.",
+      "business_meaning": "Operated By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "operated_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of operated.",
+      "business_meaning": "Operated Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "deleted_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who deleted the focus list.",
+      "business_meaning": "Deleted By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "deleted_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was deleted.",
+      "business_meaning": "Deleted Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "reject_remark",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text reject remark for the focus list.",
+      "business_meaning": "Reject Remark",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "approved_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who approved the focus list.",
+      "business_meaning": "Approved By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "approved_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of approved.",
+      "business_meaning": "Approved Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "assigned_toId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each focus list references one users (assigned to)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "ClientId",
+      "to_table": "Client",
+      "to_column": "Id",
+      "description": "Each focus list references one client (client)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "Client_TypeId",
+      "to_table": "CrmClientType",
+      "to_column": "Id",
+      "description": "Each focus list references one crm client type (client type)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the focus list."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the focus list."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "operated_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who approved or rejected the focus list."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "deleted_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who deleted the focus list."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "approved_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who approved the focus list."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_FocusList_approved_byId",
+      "columns": [
+        "approved_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_FocusList_assigned_toId",
+      "columns": [
+        "assigned_toId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_FocusList_ClientId",
+      "columns": [
+        "ClientId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_FocusList_Client_TypeId",
+      "columns": [
+        "Client_TypeId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_FocusList_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_FocusList_deleted_byId",
+      "columns": [
+        "deleted_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_FocusList_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_FocusList_operated_byId",
+      "columns": [
+        "operated_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "Approval state is tracked with is_approved; a record with neither flag set is typically still pending.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Join to Client, Crm Client Type, Users through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "created_date",
+    "assigned_toId",
+    "ClientId",
+    "Client_TypeId",
+    "is_deleted",
+    "is_approved",
+    "is_canceled"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "Focus List by month",
+    "Recent focus list",
+    "Focus List by users",
+    "Focus List by client",
+    "Focus List by crm client type"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "created_byId",
+      "modified_byId",
+      "modified_date",
+      "operated_byId",
+      "operated_date",
+      "deleted_byId",
+      "deleted_date",
+      "reject_remark",
+      "approved_byId",
+      "approved_date"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name FocusList (identifiers can be case-sensitive).",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT Id) when counting focus list records; joins can duplicate rows.",
+      "To resolve names, join on: assigned_toId = Users.Id; ClientId = Client.Id; Client_TypeId = CrmClientType.Id."
+    ]
+  }
+}

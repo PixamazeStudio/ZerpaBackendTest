@@ -1,0 +1,428 @@
+{
+  "table_name": "CrmClientTeams",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Crm Client Teams",
+  "description": "Holds crm client teams records (defined in the EF Core model), linked to area, client, region.",
+  "business_domain": "HR & User Management",
+  "business_purpose": "Used to track and report crm client teams records for the HR & User Management area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one crm client team.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the crm client team.",
+      "business_meaning": "Crm Client Teams identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Address",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Address of the crm client team.",
+      "business_meaning": "Address",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Anniversary_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of anniversary.",
+      "business_meaning": "Anniversary Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "ClientId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Client",
+        "column": "Id"
+      },
+      "description": "Reference to the client linked to this crm client team.",
+      "business_meaning": "Client",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Contact",
+      "data_type": "bigint",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Contact of the crm client team.",
+      "business_meaning": "Contact",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "DOB",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "DOB of the crm client team.",
+      "business_meaning": "DOB",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Email",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Email of the crm client team.",
+      "business_meaning": "Email",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Name",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Name of the crm client team.",
+      "business_meaning": "Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Social_Media_Links",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Social media links of the crm client team.",
+      "business_meaning": "Social Media Links",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "areaid",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Area",
+        "column": "id"
+      },
+      "description": "Reference to the area linked to this crm client team.",
+      "business_meaning": "Area",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the crm client team.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the crm client team.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "regionid",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Region",
+        "column": "id"
+      },
+      "description": "Reference to the region linked to this crm client team.",
+      "business_meaning": "Region",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "subareaid",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "SubArea",
+        "column": "id"
+      },
+      "description": "Reference to the sub area linked to this crm client team.",
+      "business_meaning": "Sub Area",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "ClientId",
+      "to_table": "Client",
+      "to_column": "Id",
+      "description": "Each crm client team references one client (client)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "areaid",
+      "to_table": "Area",
+      "to_column": "id",
+      "description": "Each crm client team references one area (area)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the crm client team."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the crm client team."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "regionid",
+      "to_table": "Region",
+      "to_column": "id",
+      "description": "Each crm client team references one region (region)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "subareaid",
+      "to_table": "SubArea",
+      "to_column": "id",
+      "description": "Each crm client team references one sub area (subarea)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    },
+    {
+      "name": "IX_CrmClientTeams_ClientId",
+      "columns": [
+        "ClientId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CrmClientTeams_areaid",
+      "columns": [
+        "areaid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CrmClientTeams_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CrmClientTeams_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CrmClientTeams_regionid",
+      "columns": [
+        "regionid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CrmClientTeams_subareaid",
+      "columns": [
+        "subareaid"
+      ],
+      "type": "non_clustered"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Join to Area, Client, Region, Sub Area through the foreign key columns to resolve names.",
+    "CrmClientTeams is defined in the EF Core model but was not found in the connected database, so it may not be deployed there."
+  ],
+  "common_filters": [
+    "created_date",
+    "ClientId",
+    "areaid",
+    "regionid",
+    "subareaid",
+    "is_deleted",
+    "Name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "Crm Client Teams by month",
+    "Recent crm client teams",
+    "Crm Client Teams by client",
+    "Crm Client Teams by area",
+    "Crm Client Teams by region"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "Anniversary_date",
+      "DOB",
+      "Social_Media_Links",
+      "modified_byId",
+      "modified_date"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [
+      "Address",
+      "DOB",
+      "Email"
+    ],
+    "query_notes": [
+      "Do not generate SQL against CrmClientTeams: no table or view with this name exists in the connected database.",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT Id) when counting crm client team records; joins can duplicate rows.",
+      "To resolve names, join on: ClientId = Client.Id; areaid = Area.id; regionid = Region.id; subareaid = SubArea.id.",
+      "Do not select Address, DOB, Email; they are sensitive or may hold very large content.",
+      "Defined in the EF Core model but not found in the connected database; confirm it has been migrated before relying on it."
+    ]
+  }
+}

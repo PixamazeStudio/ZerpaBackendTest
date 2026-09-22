@@ -1,0 +1,1603 @@
+{
+  "table_name": "IndentHeader",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Indent Header",
+  "description": "Holds indent header records, linked to users.",
+  "business_domain": "Factory & Inventory",
+  "business_purpose": "Used to track and report indent header records, including amounts and quantities, for the Factory & Inventory area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one indent header.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the indent header.",
+      "business_meaning": "Indent Header identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "indent_code",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Indent code reference of the indent header.",
+      "business_meaning": "Indent Code",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "total_items",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total items of the indent header.",
+      "business_meaning": "Total Items",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "total_price",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total price of the indent header.",
+      "business_meaning": "Total Price",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "total_weight",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total weight of the indent header.",
+      "business_meaning": "Total Weight",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the indent header.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_branch_approved",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the indent header is branch approved.",
+      "business_meaning": "Is Branch Approved",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "branch_approved_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of branch approved.",
+      "business_meaning": "Branch Approved Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "branch_approved_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this indent header.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_credit_approved",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the indent header is credit approved.",
+      "business_meaning": "Is Credit Approved",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "credit_approved_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of credit approved.",
+      "business_meaning": "Credit Approved Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "credit_approved_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this indent header.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_vp_approval_required",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the indent header is vp approval required.",
+      "business_meaning": "Is Vp Approval Required",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_vp_approved",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the indent header is vp approved.",
+      "business_meaning": "Is Vp Approved",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "vp_approved_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of vp approved.",
+      "business_meaning": "Vp Approved Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "vp_approved_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this indent header.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_director_approval_required",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the indent header is director approval required.",
+      "business_meaning": "Is Director Approval Required",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_director_approved",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the indent header is director approved.",
+      "business_meaning": "Is Director Approved",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "director_approved_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of director approved.",
+      "business_meaning": "Director Approved Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "director_approved_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this indent header.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "factory_status",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Factory status of the indent header.",
+      "business_meaning": "Factory Status",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "indent_status",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Indent status of the indent header.",
+      "business_meaning": "Indent Status",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "areaid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Area",
+        "column": "id"
+      },
+      "description": "Reference to the area linked to this indent header.",
+      "business_meaning": "Area",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "dealerid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Dealer",
+        "column": "id"
+      },
+      "description": "Reference to the dealer linked to this indent header.",
+      "business_meaning": "Dealer",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_editable",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the indent header is editable.",
+      "business_meaning": "Is Editable",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "regionid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Region",
+        "column": "id"
+      },
+      "description": "Reference to the region linked to this indent header.",
+      "business_meaning": "Region",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the indent header.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "branch_rejected_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this indent header.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "branch_rejected_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of branch rejected.",
+      "business_meaning": "Branch Rejected Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_branch_rejected",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the indent header is branch rejected.",
+      "business_meaning": "Is Branch Rejected",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "credit_rejected_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this indent header.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "credit_rejected_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of credit rejected.",
+      "business_meaning": "Credit Rejected Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "director_rejected_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this indent header.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "director_rejected_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of director rejected.",
+      "business_meaning": "Director Rejected Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_credit_rejected",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the indent header is credit rejected.",
+      "business_meaning": "Is Credit Rejected",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_director_rejected",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the indent header is director rejected.",
+      "business_meaning": "Is Director Rejected",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_indent_dispatched",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the indent header is indent dispatched.",
+      "business_meaning": "Is Indent Dispatched",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_vp_rejected",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the indent header is vp rejected.",
+      "business_meaning": "Is Vp Rejected",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "vp_rejected_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this indent header.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "vp_rejected_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of vp rejected.",
+      "business_meaning": "Vp Rejected Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_approved_from_credit",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the indent header is approved from credit.",
+      "business_meaning": "Is Approved From Credit",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "delivery_order",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Delivery order of the indent header.",
+      "business_meaning": "Delivery Order",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "dispatched_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of dispatched.",
+      "business_meaning": "Dispatched Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "factory_planning_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of factory planning.",
+      "business_meaning": "Factory Planning Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "priority",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Priority of the indent header.",
+      "business_meaning": "Priority",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "actual_Sheet_count",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Actual sheet count of the indent header.",
+      "business_meaning": "Actual Sheet Count",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "filepath",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Filepath (file or link reference) for the indent header.",
+      "business_meaning": "Filepath",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "invoiceNo",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Invoice no reference of the indent header.",
+      "business_meaning": "Invoice No",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "total_qty",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Total qty of the indent header.",
+      "business_meaning": "Total Qty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "dispatch_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this indent header.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_clubbed",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the indent header is clubbed.",
+      "business_meaning": "Is Clubbed",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "dispatch_address",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Dispatch address of the indent header.",
+      "business_meaning": "Dispatch Address",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "dispatch_instructions",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Dispatch instructions of the indent header.",
+      "business_meaning": "Dispatch Instructions",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "factory_order",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Factory order of the indent header.",
+      "business_meaning": "Factory Order",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "total_notional_area",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Total notional area of the indent header.",
+      "business_meaning": "Total Notional Area",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "priority_order",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Priority order of the indent header.",
+      "business_meaning": "Priority Order",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "shipping_address",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Shipping address of the indent header.",
+      "business_meaning": "Shipping Address",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "shipping_instruction",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Shipping instruction of the indent header.",
+      "business_meaning": "Shipping Instruction",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "confirm_for_dispatch",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Flag indicating confirm for dispatch for the indent header.",
+      "business_meaning": "Confirm For Dispatch",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "reason",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text reason for the indent header.",
+      "business_meaning": "Reason",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Initialfilepath",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Initialfilepath (file or link reference) for the indent header.",
+      "business_meaning": "Initialfilepath",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "initially_planned_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of initially planned.",
+      "business_meaning": "Initially Planned Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Scenario_structure",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Scenario structure of the indent header.",
+      "business_meaning": "Scenario Structure",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "factoryid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Factories",
+        "column": "id"
+      },
+      "description": "Reference to the factories linked to this indent header.",
+      "business_meaning": "Factories",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "scenarioid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "DiscountScenarioHeader",
+        "column": "id"
+      },
+      "description": "Reference to the discount scenario header linked to this indent header.",
+      "business_meaning": "Discount Scenario Header",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "club_code",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Club code reference of the indent header.",
+      "business_meaning": "Club Code",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_club_approved",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the indent header is club approved.",
+      "business_meaning": "Is Club Approved",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "branchid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Branchid of the indent header.",
+      "business_meaning": "Branchid",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "invoice_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of invoice.",
+      "business_meaning": "Invoice Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "factory_remark",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text factory remark for the indent header.",
+      "business_meaning": "Factory Remark",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "invoice_notional_area",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Invoice notional area of the indent header.",
+      "business_meaning": "Invoice Notional Area",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "indent_discount_typesid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this indent header.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "parent_id",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Parent id of the indent header.",
+      "business_meaning": "Parent Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the indent header."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "branch_approved_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each indent header references one users (branch approved by)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "credit_approved_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each indent header references one users (credit approved by)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "vp_approved_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each indent header references one users (vp approved by)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "director_approved_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each indent header references one users (director approved by)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "areaid",
+      "to_table": "Area",
+      "to_column": "id",
+      "description": "Each indent header references one area (area)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "dealerid",
+      "to_table": "Dealer",
+      "to_column": "id",
+      "description": "Each indent header references one dealer (dealer)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "regionid",
+      "to_table": "Region",
+      "to_column": "id",
+      "description": "Each indent header references one region (region)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the indent header."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "branch_rejected_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each indent header references one users (branch rejected by)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "credit_rejected_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each indent header references one users (credit rejected by)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "director_rejected_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each indent header references one users (director rejected by)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "vp_rejected_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each indent header references one users (vp rejected by)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "dispatch_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each indent header references one users (dispatch by)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "factoryid",
+      "to_table": "Factories",
+      "to_column": "id",
+      "description": "Each indent header references one factories (factory)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "scenarioid",
+      "to_table": "DiscountScenarioHeader",
+      "to_column": "id",
+      "description": "Each indent header references one discount scenario header (scenario)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "indent_discount_typesid",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each indent header references one users (indent discount types)."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "ClubbingDetails",
+      "to_column": "indentid",
+      "description": "Each indent header can have many clubbing details records referencing it through indentid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "IndentDetails",
+      "to_column": "indent_headerid",
+      "description": "Each indent header can have many indent details records referencing it through indent_headerid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "IndentRemarks",
+      "to_column": "indentid",
+      "description": "Each indent header can have many indent remarks records referencing it through indentid."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "FK_IndentHeader_IndentDiscountTypes_indent_discount_typesid",
+      "columns": [
+        "indent_discount_typesid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_IndentHeader_areaid",
+      "columns": [
+        "areaid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_IndentHeader_branch_approved_byId",
+      "columns": [
+        "branch_approved_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_IndentHeader_branch_rejected_byId",
+      "columns": [
+        "branch_rejected_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_IndentHeader_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_IndentHeader_credit_approved_byId",
+      "columns": [
+        "credit_approved_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_IndentHeader_credit_rejected_byId",
+      "columns": [
+        "credit_rejected_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_IndentHeader_dealerid",
+      "columns": [
+        "dealerid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_IndentHeader_director_approved_byId",
+      "columns": [
+        "director_approved_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_IndentHeader_director_rejected_byId",
+      "columns": [
+        "director_rejected_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_IndentHeader_dispatch_byId",
+      "columns": [
+        "dispatch_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_IndentHeader_factoryid",
+      "columns": [
+        "factoryid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_IndentHeader_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_IndentHeader_regionid",
+      "columns": [
+        "regionid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_IndentHeader_scenarioid",
+      "columns": [
+        "scenarioid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_IndentHeader_vp_approved_byId",
+      "columns": [
+        "vp_approved_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_IndentHeader_vp_rejected_byId",
+      "columns": [
+        "vp_rejected_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Use total_items / total_price for monetary or quantity totals.",
+    "Columns factory_status, indent_status, priority classify the record; check the distinct values before filtering on them.",
+    "Join to Users through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "created_date",
+    "branch_approved_byId",
+    "credit_approved_byId",
+    "vp_approved_byId",
+    "director_approved_byId",
+    "factory_status",
+    "indent_status",
+    "is_branch_approved",
+    "is_credit_approved",
+    "is_vp_approval_required",
+    "indent_code"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total Items",
+      "formula": "SUM(total_items)"
+    },
+    {
+      "name": "Average Total Price",
+      "formula": "AVG(total_price)"
+    },
+    {
+      "name": "Total Weight",
+      "formula": "SUM(total_weight)"
+    },
+    {
+      "name": "Average Total Items per indent header",
+      "formula": "SUM(total_items) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Indent Header by month",
+    "Recent indent header",
+    "Indent Header by users",
+    "Indent Header by users",
+    "Indent Header by users",
+    "Indent Header count by factory status",
+    "Total total items by month",
+    "Top users by total items"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "branch_approved_date",
+      "branch_approved_byId",
+      "credit_approved_date",
+      "credit_approved_byId",
+      "vp_approved_date",
+      "vp_approved_byId",
+      "director_approved_date",
+      "director_approved_byId",
+      "factory_status",
+      "indent_status",
+      "modified_byId",
+      "modified_date",
+      "branch_rejected_byId",
+      "branch_rejected_date",
+      "credit_rejected_byId",
+      "credit_rejected_date",
+      "director_rejected_byId",
+      "director_rejected_date",
+      "vp_rejected_byId",
+      "vp_rejected_date",
+      "dispatched_date",
+      "factory_planning_date",
+      "actual_Sheet_count",
+      "filepath",
+      "invoiceNo",
+      "total_qty",
+      "dispatch_byId",
+      "dispatch_address",
+      "dispatch_instructions",
+      "factory_order",
+      "total_notional_area",
+      "priority_order",
+      "shipping_address",
+      "shipping_instruction",
+      "reason",
+      "Initialfilepath",
+      "initially_planned_date",
+      "factoryid",
+      "scenarioid",
+      "club_code",
+      "branchid",
+      "invoice_date",
+      "factory_remark",
+      "invoice_notional_area",
+      "indent_discount_typesid",
+      "parent_id"
+    ],
+    "known_issues": [
+      "total_items, total_price, total_weight, delivery_order are stored as floating point, so sums can carry small rounding differences.",
+      "actual_Sheet_count, total_qty, factory_order, total_notional_area are nullable; use COALESCE when summing or comparing."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [
+      "total_items",
+      "total_price"
+    ],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [
+      "filepath",
+      "dispatch_address",
+      "shipping_address",
+      "Initialfilepath"
+    ],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name IndentHeader (identifiers can be case-sensitive).",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting indent header records; joins can duplicate rows.",
+      "Use SUM(total_items) for totals of total items.",
+      "To resolve names, join on: branch_approved_byId = Users.Id; credit_approved_byId = Users.Id; vp_approved_byId = Users.Id; director_approved_byId = Users.Id; areaid = Area.id.",
+      "Do not select filepath, dispatch_address, shipping_address, Initialfilepath; they are sensitive or may hold very large content."
+    ]
+  }
+}

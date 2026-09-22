@@ -1,0 +1,206 @@
+{
+  "table_name": "SchemeInfluencerDetailRow",
+  "schema": null,
+  "object_type": "model",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Scheme Influencer Detail Row",
+  "description": "Application view model for scheme influencer detail row data (not stored as a database table).",
+  "business_domain": "Sales Planning & Performance",
+  "business_purpose": "Used to track and report scheme influencer detail row records, including amounts and quantities, for the Sales Planning & Performance area.",
+  "table_type": "view_model",
+  "record_granularity": "One object represents one scheme influencer detail row result row.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "ClientId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Client id of the scheme influencer detail row.",
+      "business_meaning": "Client Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "InfluencerName",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Influencer name of the scheme influencer detail row.",
+      "business_meaning": "Influencer Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "TeamMemberName",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Team member name of the scheme influencer detail row.",
+      "business_meaning": "Team Member Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "IsFl",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the scheme influencer detail row is fl.",
+      "business_meaning": "Is Fl",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "IsScheme",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the scheme influencer detail row is scheme.",
+      "business_meaning": "Is Scheme",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "TotalVisits",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total visits of the scheme influencer detail row.",
+      "business_meaning": "Total Visits",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "TotalQty",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total qty of the scheme influencer detail row.",
+      "business_meaning": "Total Qty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "PendingPayoutCount",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Pending payout count of the scheme influencer detail row.",
+      "business_meaning": "Pending Payout Count",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "Use TotalVisits / TotalQty for monetary or quantity totals.",
+    "SchemeInfluencerDetailRow is an application view model or report DTO populated in code, not a table stored in the database."
+  ],
+  "common_filters": [
+    "IsFl",
+    "IsScheme"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    },
+    {
+      "name": "Total Visits",
+      "formula": "SUM(TotalVisits)"
+    },
+    {
+      "name": "Total Qty",
+      "formula": "SUM(TotalQty)"
+    },
+    {
+      "name": "Total Pending Payout Count",
+      "formula": "SUM(PendingPayoutCount)"
+    }
+  ],
+  "common_queries": [
+    "List scheme influencer detail row",
+    "Count of scheme influencer detail row"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [
+      "InfluencerName",
+      "TeamMemberName"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "TotalVisits",
+      "TotalQty"
+    ],
+    "default_sort": "",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against SchemeInfluencerDetailRow: no table or view with this name exists in the connected database.",
+      "Use SUM(TotalVisits) for totals of total visits.",
+      "Populated in application code (for example from a stored procedure or joined query); query the underlying tables instead."
+    ]
+  }
+}

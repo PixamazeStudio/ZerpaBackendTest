@@ -1,0 +1,246 @@
+{
+  "table_name": "BranchReviewComplaintAging",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Branch Review Complaint Aging",
+  "description": "Holds branch review complaint aging records, linked to branch review header.",
+  "business_domain": "Customer Support",
+  "business_purpose": "Used to track and report branch review complaint aging records, including amounts and quantities, for the Customer Support area.",
+  "table_type": "master",
+  "record_granularity": "One row represents one branch review complaint aging.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the branch review complaint aging.",
+      "business_meaning": "Branch Review Complaint Aging identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "header_id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "BranchReviewHeader",
+        "column": "Id"
+      },
+      "description": "Reference to the branch review header linked to this branch review complaint aging.",
+      "business_meaning": "Branch Review Header",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "dealer_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the dealer.",
+      "business_meaning": "Dealer Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "days_0_3",
+      "data_type": "decimal(65,30)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Days 0 3 of the branch review complaint aging.",
+      "business_meaning": "Days 0 3",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "days_4_7",
+      "data_type": "decimal(65,30)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Days 4 7 of the branch review complaint aging.",
+      "business_meaning": "Days 4 7",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "days_8_10",
+      "data_type": "decimal(65,30)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Days 8 10 of the branch review complaint aging.",
+      "business_meaning": "Days 8 10",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "days_10_plus",
+      "data_type": "decimal(65,30)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Days 10 plus of the branch review complaint aging.",
+      "business_meaning": "Days 10 Plus",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "total_complaints",
+      "data_type": "decimal(65,30)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total complaints of the branch review complaint aging.",
+      "business_meaning": "Total Complaints",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "header_id",
+      "to_table": "BranchReviewHeader",
+      "to_column": "Id",
+      "description": "Each branch review complaint aging references one branch review header (header)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_BranchReviewComplaintAging_header_id",
+      "columns": [
+        "header_id"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Use total_complaints / days_0_3 for monetary or quantity totals.",
+    "Join to Branch Review Header through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "header_id",
+    "dealer_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    },
+    {
+      "name": "Total Days 0 3",
+      "formula": "SUM(days_0_3)"
+    },
+    {
+      "name": "Total Days 4 7",
+      "formula": "SUM(days_4_7)"
+    },
+    {
+      "name": "Total Days 8 10",
+      "formula": "SUM(days_8_10)"
+    },
+    {
+      "name": "Average Days 0 3 per branch review complaint aging",
+      "formula": "SUM(days_0_3) / COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "Branch Review Complaint Aging by branch review header",
+    "Top branch review header by days 0 3"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "dealer_name"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "total_complaints",
+      "days_0_3"
+    ],
+    "default_sort": "Id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name BranchReviewComplaintAging (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT Id) when counting branch review complaint aging records; joins can duplicate rows.",
+      "Use SUM(total_complaints) for totals of total complaints.",
+      "To resolve names, join on: header_id = BranchReviewHeader.Id."
+    ]
+  }
+}

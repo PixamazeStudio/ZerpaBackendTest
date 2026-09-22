@@ -1,0 +1,236 @@
+{
+  "table_name": "RefreshTokens",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Refresh Tokens",
+  "description": "Holds refresh tokens records.",
+  "business_domain": "System & Communication",
+  "business_purpose": "Used to track and report refresh tokens records for the System & Communication area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one refresh token.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the refresh token.",
+      "business_meaning": "Refresh Tokens identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "UserId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "User id of the refresh token.",
+      "business_meaning": "User Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "TokenHash",
+      "data_type": "varchar(128)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Token hash of the refresh token.",
+      "business_meaning": "Token Hash",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "ExpiresAt",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time of expires.",
+      "business_meaning": "Expires At",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "CreatedAt",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created At",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "CreatedByIp",
+      "data_type": "varchar(64)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Created by ip of the refresh token.",
+      "business_meaning": "Created By Ip",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "UserAgent",
+      "data_type": "varchar(512)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "User agent of the refresh token.",
+      "business_meaning": "User Agent",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "RevokedAt",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of revoked.",
+      "business_meaning": "Revoked At",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "RevokedByIp",
+      "data_type": "varchar(64)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Revoked by ip of the refresh token.",
+      "business_meaning": "Revoked By Ip",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "ReplacedByTokenHash",
+      "data_type": "varchar(128)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Replaced by token hash of the refresh token.",
+      "business_meaning": "Replaced By Token Hash",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "ReasonRevoked",
+      "data_type": "varchar(256)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Reason revoked of the refresh token.",
+      "business_meaning": "Reason Revoked",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [],
+  "indexes": [
+    {
+      "name": "IX_RefreshTokens_UserId",
+      "columns": [
+        "UserId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    },
+    {
+      "name": "UX_RefreshTokens_TokenHash",
+      "columns": [
+        "TokenHash"
+      ],
+      "type": "unique"
+    }
+  ],
+  "business_rules": [
+    "CreatedAt is the preferred date column for period-based reporting."
+  ],
+  "common_filters": [
+    "CreatedAt"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "Refresh Tokens by month",
+    "Recent refresh tokens"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "CreatedByIp",
+      "UserAgent",
+      "RevokedAt",
+      "RevokedByIp",
+      "ReplacedByTokenHash",
+      "ReasonRevoked"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "CreatedAt",
+    "preferred_amount_columns": [],
+    "default_sort": "CreatedAt DESC",
+    "avoid_columns": [
+      "TokenHash",
+      "ReplacedByTokenHash"
+    ],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name RefreshTokens (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT Id) when counting refresh token records; joins can duplicate rows.",
+      "Do not select TokenHash, ReplacedByTokenHash; they are sensitive or may hold very large content."
+    ]
+  }
+}

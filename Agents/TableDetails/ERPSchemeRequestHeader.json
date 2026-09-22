@@ -1,0 +1,590 @@
+{
+  "table_name": "ERPSchemeRequestHeader",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "ERP Scheme Request Header",
+  "description": "Holds erp scheme request header records, linked to branch, scheme mapping, users.",
+  "business_domain": "Sales Planning & Performance",
+  "business_purpose": "Used to track and report erp scheme request header records for the Sales Planning & Performance area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one erp scheme request header.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the erp scheme request header.",
+      "business_meaning": "ERP Scheme Request Header identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "code",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Code reference of the erp scheme request header.",
+      "business_meaning": "Code",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "schemeId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "SchemeMapping",
+        "column": "Id"
+      },
+      "description": "Reference to the scheme mapping linked to this erp scheme request header.",
+      "business_meaning": "Scheme Mapping",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "branchid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Branch",
+        "column": "id"
+      },
+      "description": "Reference to the branch linked to this erp scheme request header.",
+      "business_meaning": "Branch",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the erp scheme request header.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_branch_approved",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the erp scheme request header is branch approved.",
+      "business_meaning": "Is Branch Approved",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_branch_rejected",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the erp scheme request header is branch rejected.",
+      "business_meaning": "Is Branch Rejected",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "branch_operated_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this erp scheme request header.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "branch_operated_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of branch operated.",
+      "business_meaning": "Branch Operated Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_head_approved",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the erp scheme request header is head approved.",
+      "business_meaning": "Is Head Approved",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_head_rejected",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the erp scheme request header is head rejected.",
+      "business_meaning": "Is Head Rejected",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "head_operated_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this erp scheme request header.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "head_operated_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of head operated.",
+      "business_meaning": "Head Operated Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_corporate_approved",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the erp scheme request header is corporate approved.",
+      "business_meaning": "Is Corporate Approved",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_corporate_rejected",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the erp scheme request header is corporate rejected.",
+      "business_meaning": "Is Corporate Rejected",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "corporate_operated_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this erp scheme request header.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "corporate_operated_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of corporate operated.",
+      "business_meaning": "Corporate Operated Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "status",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Status of the erp scheme request header.",
+      "business_meaning": "Status",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "message",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text message for the erp scheme request header.",
+      "business_meaning": "Message",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the erp scheme request header.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "schemeHeaderId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "SchemeHeader",
+        "column": "Id"
+      },
+      "description": "Reference to the scheme header linked to this erp scheme request header.",
+      "business_meaning": "Scheme Header",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "schemeId",
+      "to_table": "SchemeMapping",
+      "to_column": "Id",
+      "description": "Each erp scheme request header references one scheme mapping (scheme)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "branchid",
+      "to_table": "Branch",
+      "to_column": "id",
+      "description": "Each erp scheme request header references one branch (branch)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the erp scheme request header."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "branch_operated_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each erp scheme request header references one users (branch operated by)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "head_operated_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each erp scheme request header references one users (head operated by)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "corporate_operated_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each erp scheme request header references one users (corporate operated by)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the erp scheme request header."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "schemeHeaderId",
+      "to_table": "SchemeHeader",
+      "to_column": "Id",
+      "description": "Each erp scheme request header references one scheme header (scheme header)."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "ERPSchemeRequestDetails",
+      "to_column": "ERPSchemeRequestHeaderid",
+      "description": "Each erp scheme request header can have many erp scheme request details records referencing it through ERPSchemeRequestHeaderid."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_ERPSchemeRequestHeader_branchid",
+      "columns": [
+        "branchid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ERPSchemeRequestHeader_branch_operated_byId",
+      "columns": [
+        "branch_operated_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ERPSchemeRequestHeader_corporate_operated_byId",
+      "columns": [
+        "corporate_operated_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ERPSchemeRequestHeader_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ERPSchemeRequestHeader_head_operated_byId",
+      "columns": [
+        "head_operated_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ERPSchemeRequestHeader_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ERPSchemeRequestHeader_schemeHeaderId",
+      "columns": [
+        "schemeHeaderId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ERPSchemeRequestHeader_schemeId",
+      "columns": [
+        "schemeId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Columns status classify the record; check the distinct values before filtering on them.",
+    "Join to Branch, Scheme Mapping, Users through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "created_date",
+    "schemeId",
+    "branchid",
+    "branch_operated_byId",
+    "head_operated_byId",
+    "status",
+    "is_branch_approved",
+    "is_branch_rejected",
+    "is_head_approved",
+    "code"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "ERP Scheme Request Header by month",
+    "Recent erp scheme request header",
+    "ERP Scheme Request Header by scheme mapping",
+    "ERP Scheme Request Header by branch",
+    "ERP Scheme Request Header by users",
+    "ERP Scheme Request Header count by status"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "schemeId",
+      "branch_operated_byId",
+      "branch_operated_date",
+      "head_operated_byId",
+      "head_operated_date",
+      "corporate_operated_byId",
+      "corporate_operated_date",
+      "status",
+      "message",
+      "modified_byId",
+      "modified_date"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name ERPSchemeRequestHeader (identifiers can be case-sensitive).",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting erp scheme request header records; joins can duplicate rows.",
+      "To resolve names, join on: schemeId = SchemeMapping.Id; branchid = Branch.id; branch_operated_byId = Users.Id; head_operated_byId = Users.Id; corporate_operated_byId = Users.Id."
+    ]
+  }
+}

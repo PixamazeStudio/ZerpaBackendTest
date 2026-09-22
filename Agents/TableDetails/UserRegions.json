@@ -1,0 +1,129 @@
+{
+  "table_name": "UserRegions",
+  "schema": null,
+  "object_type": "model",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "User Regions",
+  "description": "Application view model for user regions data (not stored as a database table), linked to region, users.",
+  "business_domain": "HR & User Management",
+  "business_purpose": "Used to track and report user regions records for the HR & User Management area.",
+  "table_type": "view_model",
+  "record_granularity": "One object represents one user region result row.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "natural",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the user region.",
+      "business_meaning": "User Regions identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "userId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this user region.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "regionId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Region",
+        "column": "id"
+      },
+      "description": "Reference to the region linked to this user region.",
+      "business_meaning": "Region",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "userId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each user region references one users (user)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "regionId",
+      "to_table": "Region",
+      "to_column": "id",
+      "description": "Each user region references one region (region)."
+    }
+  ],
+  "indexes": [],
+  "business_rules": [
+    "Join to Region, Users through the foreign key columns to resolve names.",
+    "UserRegions is an application view model or report DTO populated in code, not a table stored in the database."
+  ],
+  "common_filters": [
+    "userId",
+    "regionId"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "User Regions by users",
+    "User Regions by region"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "userId",
+      "regionId"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [],
+    "default_sort": "id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against UserRegions: no table or view with this name exists in the connected database.",
+      "Use COUNT(DISTINCT id) when counting user region records; joins can duplicate rows.",
+      "To resolve names, join on: userId = Users.Id; regionId = Region.id.",
+      "Populated in application code (for example from a stored procedure or joined query); query the underlying tables instead."
+    ]
+  }
+}

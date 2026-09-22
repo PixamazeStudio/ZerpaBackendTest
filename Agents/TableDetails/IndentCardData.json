@@ -1,0 +1,109 @@
+{
+  "table_name": "IndentCardData",
+  "schema": null,
+  "object_type": "model",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Indent Card Data",
+  "description": "Application view model for indent card data data (not stored as a database table).",
+  "business_domain": "Factory & Inventory",
+  "business_purpose": "Used to track and report indent card data records, including amounts and quantities, for the Factory & Inventory area.",
+  "table_type": "view_model",
+  "record_granularity": "One object represents one indent card data result row.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "key",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Key of the indent card data.",
+      "business_meaning": "Key",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "label",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Label of the indent card data.",
+      "business_meaning": "Label",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "value",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Value of the indent card data.",
+      "business_meaning": "Value",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "Use value for monetary or quantity totals.",
+    "IndentCardData is an application view model or report DTO populated in code, not a table stored in the database."
+  ],
+  "common_filters": [],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    },
+    {
+      "name": "Total Value",
+      "formula": "SUM(value)"
+    }
+  ],
+  "common_queries": [
+    "List indent card data",
+    "Count of indent card data"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [
+      "key",
+      "label"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "value"
+    ],
+    "default_sort": "",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against IndentCardData: no table or view with this name exists in the connected database.",
+      "Use SUM(value) for totals of value.",
+      "Populated in application code (for example from a stored procedure or joined query); query the underlying tables instead."
+    ]
+  }
+}

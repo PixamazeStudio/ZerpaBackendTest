@@ -1,0 +1,264 @@
+{
+  "table_name": "weaklyPlannerDetails",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Weakly Planner Details",
+  "description": "Holds weakly planner details records, linked to client, weakly planner headers.",
+  "business_domain": "HR & User Management",
+  "business_purpose": "Used to track and report weakly planner details records, including amounts and quantities, for the HR & User Management area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one weakly planner detail.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the weakly planner detail.",
+      "business_meaning": "Weakly Planner Details identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "WeaklyPlannerHeaderid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "weaklyPlannerHeaders",
+        "column": "id"
+      },
+      "description": "Reference to the weakly planner headers linked to this weakly planner detail.",
+      "business_meaning": "Weakly Planner Headers",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "influencerId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Client",
+        "column": "Id"
+      },
+      "description": "Reference to the client linked to this weakly planner detail.",
+      "business_meaning": "Client",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "influencer_ply_sheet_supplied",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Influencer ply sheet supplied of the weakly planner detail.",
+      "business_meaning": "Influencer Ply Sheet Supplied",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "influencer_pvc_sheet_supplied",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Influencer pvc sheet supplied of the weakly planner detail.",
+      "business_meaning": "Influencer Pvc Sheet Supplied",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "influencer_total_sheet_supplied",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Influencer total sheet supplied of the weakly planner detail.",
+      "business_meaning": "Influencer Total Sheet Supplied",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "influencer_ply_sheet_planned",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Influencer ply sheet planned of the weakly planner detail.",
+      "business_meaning": "Influencer Ply Sheet Planned",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "influencer_pvc_sheet_planned",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Influencer pvc sheet planned of the weakly planner detail.",
+      "business_meaning": "Influencer Pvc Sheet Planned",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "influencer_total_sheet_planned",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Influencer total sheet planned of the weakly planner detail.",
+      "business_meaning": "Influencer Total Sheet Planned",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "WeaklyPlannerHeaderid",
+      "to_table": "weaklyPlannerHeaders",
+      "to_column": "id",
+      "description": "Each weakly planner detail references one weakly planner headers (weakly planner header)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "influencerId",
+      "to_table": "Client",
+      "to_column": "Id",
+      "description": "Each weakly planner detail references one client (influencer)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_weaklyPlannerDetails_influencerId",
+      "columns": [
+        "influencerId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_weaklyPlannerDetails_WeaklyPlannerHeaderid",
+      "columns": [
+        "WeaklyPlannerHeaderid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Use influencer_total_sheet_supplied / influencer_total_sheet_planned for monetary or quantity totals.",
+    "Join to Client, Weakly Planner Headers through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "WeaklyPlannerHeaderid",
+    "influencerId"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total Influencer Total Sheet Supplied",
+      "formula": "SUM(influencer_total_sheet_supplied)"
+    },
+    {
+      "name": "Total Influencer Total Sheet Planned",
+      "formula": "SUM(influencer_total_sheet_planned)"
+    },
+    {
+      "name": "Average Influencer Total Sheet Supplied per weakly planner detail",
+      "formula": "SUM(influencer_total_sheet_supplied) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Weakly Planner Details by weakly planner headers",
+    "Weakly Planner Details by client",
+    "Top weakly planner headers by influencer total sheet supplied"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "WeaklyPlannerHeaderid",
+      "influencer_ply_sheet_supplied",
+      "influencer_pvc_sheet_supplied",
+      "influencer_total_sheet_supplied",
+      "influencer_ply_sheet_planned",
+      "influencer_pvc_sheet_planned",
+      "influencer_total_sheet_planned"
+    ],
+    "known_issues": [
+      "influencer_total_sheet_supplied, influencer_total_sheet_planned are nullable; use COALESCE when summing or comparing."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "influencer_total_sheet_supplied",
+      "influencer_total_sheet_planned"
+    ],
+    "default_sort": "id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name weaklyPlannerDetails (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT id) when counting weakly planner detail records; joins can duplicate rows.",
+      "Use SUM(influencer_total_sheet_supplied) for totals of influencer total sheet supplied.",
+      "To resolve names, join on: WeaklyPlannerHeaderid = weaklyPlannerHeaders.id; influencerId = Client.Id."
+    ]
+  }
+}

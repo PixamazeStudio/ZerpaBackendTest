@@ -1,0 +1,153 @@
+{
+  "table_name": "UserLoginHistory",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "User Login History",
+  "description": "Holds user login history records.",
+  "business_domain": "System & Communication",
+  "business_purpose": "Used to track and report user login history records for the System & Communication area.",
+  "table_type": "log",
+  "record_granularity": "One row represents one user login history.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the user login history.",
+      "business_meaning": "User Login History identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "UserId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "User id of the user login history.",
+      "business_meaning": "User Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "LoginAt",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time of login.",
+      "business_meaning": "Login At",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "IpAddress",
+      "data_type": "varchar(64)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Ip address of the user login history.",
+      "business_meaning": "Ip Address",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "UserAgent",
+      "data_type": "varchar(512)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "User agent of the user login history.",
+      "business_meaning": "User Agent",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [],
+  "indexes": [
+    {
+      "name": "IX_UserLoginHistory_LoginAt",
+      "columns": [
+        "LoginAt"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_UserLoginHistory_UserId",
+      "columns": [
+        "UserId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "LoginAt is the preferred date column for period-based reporting."
+  ],
+  "common_filters": [
+    "LoginAt"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "User Login History by month",
+    "Recent user login history"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "IpAddress",
+      "UserAgent"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "LoginAt",
+    "preferred_amount_columns": [],
+    "default_sort": "LoginAt DESC",
+    "avoid_columns": [
+      "IpAddress"
+    ],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name UserLoginHistory (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT Id) when counting user login history records; joins can duplicate rows.",
+      "Do not select IpAddress; they are sensitive or may hold very large content."
+    ]
+  }
+}

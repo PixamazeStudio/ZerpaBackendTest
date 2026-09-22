@@ -1,0 +1,196 @@
+{
+  "table_name": "OutstandingByFactoryRow",
+  "schema": null,
+  "object_type": "model",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Outstanding By Factory Row",
+  "description": "Application view model for outstanding by factory row data (not stored as a database table).",
+  "business_domain": "Accounts & Finance",
+  "business_purpose": "Used to track and report outstanding by factory row records, including amounts and quantities, for the Accounts & Finance area.",
+  "table_type": "view_model",
+  "record_granularity": "One object represents one outstanding by factory row result row.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "factory_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the factory.",
+      "business_meaning": "Factory Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "dealer_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the dealer.",
+      "business_meaning": "Dealer Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "days_0_21",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Days 0 21 of the outstanding by factory row.",
+      "business_meaning": "Days 0 21",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "days_21_30",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Days 21 30 of the outstanding by factory row.",
+      "business_meaning": "Days 21 30",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "days_30_45",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Days 30 45 of the outstanding by factory row.",
+      "business_meaning": "Days 30 45",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "days_45_60",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Days 45 60 of the outstanding by factory row.",
+      "business_meaning": "Days 45 60",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "days_60_above",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Days 60 above of the outstanding by factory row.",
+      "business_meaning": "Days 60 Above",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "Use days_0_21 / days_21_30 for monetary or quantity totals.",
+    "OutstandingByFactoryRow is an application view model or report DTO populated in code, not a table stored in the database."
+  ],
+  "common_filters": [
+    "factory_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    },
+    {
+      "name": "Total Days 0 21",
+      "formula": "SUM(days_0_21)"
+    },
+    {
+      "name": "Total Days 21 30",
+      "formula": "SUM(days_21_30)"
+    },
+    {
+      "name": "Total Days 30 45",
+      "formula": "SUM(days_30_45)"
+    }
+  ],
+  "common_queries": [
+    "List outstanding by factory row",
+    "Count of outstanding by factory row"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [
+      "factory_name",
+      "dealer_name"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "days_0_21",
+      "days_21_30"
+    ],
+    "default_sort": "",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against OutstandingByFactoryRow: no table or view with this name exists in the connected database.",
+      "Use SUM(days_0_21) for totals of days 0 21.",
+      "Populated in application code (for example from a stored procedure or joined query); query the underlying tables instead."
+    ]
+  }
+}

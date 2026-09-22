@@ -1,0 +1,488 @@
+{
+  "table_name": "CRM_Visit",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "CRM Visit",
+  "description": "Holds crm visit records, linked to client, dealer, vist activity type.",
+  "business_domain": "Sales & CRM",
+  "business_purpose": "Used to track and report crm visit records for the Sales & CRM area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one crm visit.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the crm visit.",
+      "business_meaning": "CRM Visit identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "dealerid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Dealer",
+        "column": "id"
+      },
+      "description": "Reference to the dealer linked to this crm visit.",
+      "business_meaning": "Dealer",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time of the record.",
+      "business_meaning": "Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the crm visit.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the crm visit.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "description",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text description for the crm visit.",
+      "business_meaning": "Description",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "next_meeting_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of next meeting.",
+      "business_meaning": "Next Meeting Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "objective_of_meeting",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Objective of meeting of the crm visit.",
+      "business_meaning": "Objective Of Meeting",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "visit_activity_typeId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "VistActivityType",
+        "column": "Id"
+      },
+      "description": "Reference to the vist activity type linked to this crm visit.",
+      "business_meaning": "Vist Activity Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "clientId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Client",
+        "column": "Id"
+      },
+      "description": "Reference to the client linked to this crm visit.",
+      "business_meaning": "Client",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "customerId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Customer",
+        "column": "Id"
+      },
+      "description": "Reference to the customer linked to this crm visit.",
+      "business_meaning": "Customer",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "leadCreated",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Flag indicating lead created for the crm visit.",
+      "business_meaning": "Lead Created",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "related_projectId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "CRM_Projects",
+        "column": "Id"
+      },
+      "description": "Reference to the crm projects linked to this crm visit.",
+      "business_meaning": "CRM Projects",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "met_person_type",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Met person type of the crm visit.",
+      "business_meaning": "Met Person Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "meeting_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of meeting.",
+      "business_meaning": "Meeting Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "leads",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Leads of the crm visit.",
+      "business_meaning": "Leads",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "dealerid",
+      "to_table": "Dealer",
+      "to_column": "id",
+      "description": "Each crm visit references one dealer (dealer)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the crm visit."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the crm visit."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "visit_activity_typeId",
+      "to_table": "VistActivityType",
+      "to_column": "Id",
+      "description": "Each crm visit references one vist activity type (visit activity type)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "clientId",
+      "to_table": "Client",
+      "to_column": "Id",
+      "description": "Each crm visit references one client (client)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "customerId",
+      "to_table": "Customer",
+      "to_column": "Id",
+      "description": "Each crm visit references one customer (customer)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "related_projectId",
+      "to_table": "CRM_Projects",
+      "to_column": "Id",
+      "description": "Each crm visit references one crm projects (related project)."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "IBLeads",
+      "to_column": "visitid",
+      "description": "Each crm visit can have many ib leads records referencing it through visitid."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_CRM_Visit_clientId",
+      "columns": [
+        "clientId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CRM_Visit_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CRM_Visit_customerId",
+      "columns": [
+        "customerId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CRM_Visit_dealerid",
+      "columns": [
+        "dealerid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CRM_Visit_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CRM_Visit_related_projectId",
+      "columns": [
+        "related_projectId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CRM_Visit_visit_activity_typeId",
+      "columns": [
+        "visit_activity_typeId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Columns met_person_type classify the record; check the distinct values before filtering on them.",
+    "Join to Client, Customer, Dealer, Vist Activity Type through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "created_date",
+    "dealerid",
+    "visit_activity_typeId",
+    "clientId",
+    "customerId",
+    "met_person_type",
+    "is_deleted",
+    "leadCreated"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "CRM Visit by month",
+    "Recent crm visit",
+    "CRM Visit by dealer",
+    "CRM Visit by vist activity type",
+    "CRM Visit by client",
+    "CRM Visit count by met person type"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "dealerid",
+      "created_byId",
+      "modified_byId",
+      "modified_date",
+      "description",
+      "next_meeting_date",
+      "objective_of_meeting",
+      "visit_activity_typeId",
+      "clientId",
+      "customerId",
+      "related_projectId",
+      "met_person_type",
+      "meeting_date",
+      "leads"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name CRM_Visit (identifiers can be case-sensitive).",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting crm visit records; joins can duplicate rows.",
+      "To resolve names, join on: dealerid = Dealer.id; visit_activity_typeId = VistActivityType.Id; clientId = Client.Id; customerId = Customer.Id; related_projectId = CRM_Projects.Id."
+    ]
+  }
+}

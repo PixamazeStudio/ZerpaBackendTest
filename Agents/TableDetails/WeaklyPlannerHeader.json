@@ -1,0 +1,642 @@
+{
+  "table_name": "weaklyPlannerHeaders",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Weakly Planner Headers",
+  "description": "Holds weakly planner headers records, linked to users.",
+  "business_domain": "HR & User Management",
+  "business_purpose": "Used to track and report weakly planner headers records, including approval status, amounts and quantities, for the HR & User Management area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one weakly planner header.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the weakly planner header.",
+      "business_meaning": "Weakly Planner Headers identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "total",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total of the weakly planner header.",
+      "business_meaning": "Total",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "month",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Month of the weakly planner header.",
+      "business_meaning": "Month",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "year",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Year of the weakly planner header.",
+      "business_meaning": "Year",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the weakly planner header.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_editable",
+      "data_type": "tinyint(1)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "True when the weakly planner header is editable.",
+      "business_meaning": "Is Editable",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the weakly planner header.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "end_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of end.",
+      "business_meaning": "End Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "start_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time of start.",
+      "business_meaning": "Start Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "week_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the week.",
+      "business_meaning": "Week Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "average_calls",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Average calls of the weakly planner header.",
+      "business_meaning": "Average Calls",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "no_of_fl_met_this_week",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "No of fl met this week of the weakly planner header.",
+      "business_meaning": "No Of Fl Met This Week",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "no_of_hot_projects",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "No of hot projects of the weakly planner header.",
+      "business_meaning": "No Of Hot Projects",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "no_of_influencers",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "No of influencers of the weakly planner header.",
+      "business_meaning": "No Of Influencers",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "selectedUserId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this weakly planner header.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "total_influencer_wise_planned",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total influencer wise planned of the weakly planner header.",
+      "business_meaning": "Total Influencer Wise Planned",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "total_influencer_wise_supplied",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total influencer wise supplied of the weakly planner header.",
+      "business_meaning": "Total Influencer Wise Supplied",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "total_project_wise_planned",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total project wise planned of the weakly planner header.",
+      "business_meaning": "Total Project Wise Planned",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "total_project_wise_supplied",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total project wise supplied of the weakly planner header.",
+      "business_meaning": "Total Project Wise Supplied",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "is_completed",
+      "data_type": "tinyint(1)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "True when the weakly planner header is completed.",
+      "business_meaning": "Is Completed",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_approved",
+      "data_type": "tinyint(1)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "True when the weakly planner header is approved.",
+      "business_meaning": "Is Approved",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_rejected",
+      "data_type": "tinyint(1)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "True when the weakly planner header is rejected.",
+      "business_meaning": "Is Rejected",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "operatedById",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who approved or rejected the weakly planner header.",
+      "business_meaning": "Operated By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "operatedDate",
+      "data_type": "datetime",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of operated.",
+      "business_meaning": "Operated Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "remarks",
+      "data_type": "varchar(45)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text remarks for the weakly planner header.",
+      "business_meaning": "Remarks",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the weakly planner header."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the weakly planner header."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "selectedUserId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each weakly planner header references one users (selected user)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "operatedById",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who approved or rejected the weakly planner header."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "weaklyPlannerDetails",
+      "to_column": "WeaklyPlannerHeaderid",
+      "description": "Each weakly planner header can have many weakly planner details records referencing it through WeaklyPlannerHeaderid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "weaklyPlannerProjectDetails",
+      "to_column": "weaklyPlannerHeaderId",
+      "description": "Each weakly planner header can have many weakly planner project details records referencing it through weaklyPlannerHeaderId."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "fk_weaklyPlannerHeaders_users",
+      "columns": [
+        "operatedById"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_weaklyPlannerHeaders_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_weaklyPlannerHeaders_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_weaklyPlannerHeaders_selectedUserId",
+      "columns": [
+        "selectedUserId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "Approval state is tracked with is_approved, is_rejected; a record with neither flag set is typically still pending.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Use total / total_influencer_wise_planned for monetary or quantity totals.",
+    "Join to Users through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "created_date",
+    "selectedUserId",
+    "is_deleted",
+    "is_editable",
+    "is_completed",
+    "week_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total",
+      "formula": "SUM(total)"
+    },
+    {
+      "name": "Average Average Calls",
+      "formula": "AVG(average_calls)"
+    },
+    {
+      "name": "Total No Of Fl Met This Week",
+      "formula": "SUM(no_of_fl_met_this_week)"
+    },
+    {
+      "name": "Average Total per weakly planner header",
+      "formula": "SUM(total) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Weakly Planner Headers by month",
+    "Recent weakly planner headers",
+    "Weakly Planner Headers by users",
+    "Total total by month",
+    "Top users by total"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "month",
+      "year",
+      "is_editable",
+      "modified_date",
+      "modified_byId",
+      "end_date",
+      "week_name",
+      "is_completed",
+      "is_approved",
+      "is_rejected",
+      "operatedById",
+      "operatedDate",
+      "remarks"
+    ],
+    "known_issues": [
+      "total, average_calls, no_of_fl_met_this_week, no_of_hot_projects are stored as floating point, so sums can carry small rounding differences."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [
+      "total",
+      "total_influencer_wise_planned"
+    ],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name weaklyPlannerHeaders (identifiers can be case-sensitive).",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting weakly planner header records; joins can duplicate rows.",
+      "Use SUM(total) for totals of total.",
+      "To resolve names, join on: selectedUserId = Users.Id."
+    ]
+  }
+}

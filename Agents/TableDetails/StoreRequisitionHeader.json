@@ -1,0 +1,461 @@
+{
+  "table_name": "StoreRequisitionHeader",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Store Requisition Header",
+  "description": "Holds store requisition header records (defined in the EF Core model), linked to factories, stores.",
+  "business_domain": "Factory & Inventory",
+  "business_purpose": "Used to track and report store requisition header records, including approval status, amounts and quantities, for the Factory & Inventory area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one store requisition header.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the store requisition header.",
+      "business_meaning": "Store Requisition Header identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "code",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Code reference of the store requisition header.",
+      "business_meaning": "Code",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the store requisition header.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "factoryid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Factories",
+        "column": "id"
+      },
+      "description": "Reference to the factories linked to this store requisition header.",
+      "business_meaning": "Factories",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_approved",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the store requisition header is approved.",
+      "business_meaning": "Is Approved",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_closed",
+      "data_type": "tinyint(1)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "True when the store requisition header is closed.",
+      "business_meaning": "Is Closed",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_rejected",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the store requisition header is rejected.",
+      "business_meaning": "Is Rejected",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the store requisition header.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "operated_byId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who approved or rejected the store requisition header.",
+      "business_meaning": "Operated By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "operated_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of operated.",
+      "business_meaning": "Operated Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "status",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Status of the store requisition header.",
+      "business_meaning": "Status",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "storeid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Stores",
+        "column": "id"
+      },
+      "description": "Reference to the stores linked to this store requisition header.",
+      "business_meaning": "Stores",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "total_amount",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Total amount of the store requisition header.",
+      "business_meaning": "Total Amount",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "total_items",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Total items of the store requisition header.",
+      "business_meaning": "Total Items",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the store requisition header."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "factoryid",
+      "to_table": "Factories",
+      "to_column": "id",
+      "description": "Each store requisition header references one factories (factory)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the store requisition header."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "operated_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who approved or rejected the store requisition header."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "storeid",
+      "to_table": "Stores",
+      "to_column": "id",
+      "description": "Each store requisition header references one stores (store)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    },
+    {
+      "name": "IX_StoreRequisitionHeader_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_StoreRequisitionHeader_factoryid",
+      "columns": [
+        "factoryid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_StoreRequisitionHeader_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_StoreRequisitionHeader_operated_byId",
+      "columns": [
+        "operated_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_StoreRequisitionHeader_storeid",
+      "columns": [
+        "storeid"
+      ],
+      "type": "non_clustered"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "Approval state is tracked with is_approved, is_rejected; a record with neither flag set is typically still pending.",
+    "is_closed = 1 marks the record as closed.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Use total_amount / total_items for monetary or quantity totals.",
+    "Columns status classify the record; check the distinct values before filtering on them.",
+    "Join to Factories, Stores through the foreign key columns to resolve names.",
+    "StoreRequisitionHeader is defined in the EF Core model but was not found in the connected database, so it may not be deployed there."
+  ],
+  "common_filters": [
+    "created_date",
+    "factoryid",
+    "storeid",
+    "status",
+    "is_approved",
+    "is_closed",
+    "is_deleted",
+    "code"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total Amount",
+      "formula": "SUM(total_amount)"
+    },
+    {
+      "name": "Total Items",
+      "formula": "SUM(total_items)"
+    },
+    {
+      "name": "Average Total Amount per store requisition header",
+      "formula": "SUM(total_amount) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Store Requisition Header by month",
+    "Recent store requisition header",
+    "Store Requisition Header by factories",
+    "Store Requisition Header by stores",
+    "Store Requisition Header count by status",
+    "Total total amount by month",
+    "Top factories by total amount"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "created_byId",
+      "factoryid",
+      "is_closed",
+      "modified_byId",
+      "modified_date",
+      "operated_byId",
+      "operated_date",
+      "status",
+      "storeid",
+      "total_amount",
+      "total_items"
+    ],
+    "known_issues": [
+      "total_amount is stored as floating point, so sums can carry small rounding differences.",
+      "total_amount, total_items are nullable; use COALESCE when summing or comparing."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [
+      "total_amount",
+      "total_items"
+    ],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against StoreRequisitionHeader: no table or view with this name exists in the connected database.",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting store requisition header records; joins can duplicate rows.",
+      "Use SUM(total_amount) for totals of total amount.",
+      "To resolve names, join on: factoryid = Factories.id; storeid = Stores.id.",
+      "Defined in the EF Core model but not found in the connected database; confirm it has been migrated before relying on it."
+    ]
+  }
+}

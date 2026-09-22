@@ -1,0 +1,151 @@
+{
+  "table_name": "StoreCategoryMapping",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Store Category Mapping",
+  "description": "Holds store category mapping records (defined in the EF Core model), linked to factory category, stores.",
+  "business_domain": "Factory & Inventory",
+  "business_purpose": "Used to track and report store category mapping records for the Factory & Inventory area.",
+  "table_type": "mapping",
+  "record_granularity": "One row represents one store category mapping.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the store category mapping.",
+      "business_meaning": "Store Category Mapping identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "categoryid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "FactoryCategory",
+        "column": "id"
+      },
+      "description": "Reference to the factory category linked to this store category mapping.",
+      "business_meaning": "Factory Category",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "storeid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Stores",
+        "column": "id"
+      },
+      "description": "Reference to the stores linked to this store category mapping.",
+      "business_meaning": "Stores",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "categoryid",
+      "to_table": "FactoryCategory",
+      "to_column": "id",
+      "description": "Each store category mapping references one factory category (category)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "storeid",
+      "to_table": "Stores",
+      "to_column": "id",
+      "description": "Each store category mapping references one stores (store)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    },
+    {
+      "name": "IX_StoreCategoryMapping_categoryid",
+      "columns": [
+        "categoryid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_StoreCategoryMapping_storeid",
+      "columns": [
+        "storeid"
+      ],
+      "type": "non_clustered"
+    }
+  ],
+  "business_rules": [
+    "Join to Factory Category, Stores through the foreign key columns to resolve names.",
+    "StoreCategoryMapping is defined in the EF Core model but was not found in the connected database, so it may not be deployed there."
+  ],
+  "common_filters": [
+    "categoryid",
+    "storeid"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Store Category Mapping by factory category",
+    "Store Category Mapping by stores"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "categoryid",
+      "storeid"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [],
+    "default_sort": "id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against StoreCategoryMapping: no table or view with this name exists in the connected database.",
+      "Use COUNT(DISTINCT id) when counting store category mapping records; joins can duplicate rows.",
+      "To resolve names, join on: categoryid = FactoryCategory.id; storeid = Stores.id.",
+      "Defined in the EF Core model but not found in the connected database; confirm it has been migrated before relying on it."
+    ]
+  }
+}

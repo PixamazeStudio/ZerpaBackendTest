@@ -1,0 +1,117 @@
+{
+  "table_name": "DealerGroupDeatails",
+  "schema": null,
+  "object_type": "model",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Dealer Group Deatails",
+  "description": "Application view model for dealer group deatails data (not stored as a database table), linked to dealer.",
+  "business_domain": "Sales & CRM",
+  "business_purpose": "Used to track and report dealer group deatails records for the Sales & CRM area.",
+  "table_type": "view_model",
+  "record_granularity": "One object represents one dealer group deatail result row.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "natural",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the dealer group deatail.",
+      "business_meaning": "Dealer Group Deatails identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "group_header_id",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Group header id of the dealer group deatail.",
+      "business_meaning": "Group Header Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "dealerId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Dealer",
+        "column": "id"
+      },
+      "description": "Reference to the dealer linked to this dealer group deatail.",
+      "business_meaning": "Dealer",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "dealerId",
+      "to_table": "Dealer",
+      "to_column": "id",
+      "description": "Each dealer group deatail references one dealer (dealer)."
+    }
+  ],
+  "indexes": [],
+  "business_rules": [
+    "Join to Dealer through the foreign key columns to resolve names.",
+    "DealerGroupDeatails is an application view model or report DTO populated in code, not a table stored in the database."
+  ],
+  "common_filters": [
+    "dealerId"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "List dealer group deatails",
+    "Count of dealer group deatails",
+    "Dealer Group Deatails by dealer"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "dealerId"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [],
+    "default_sort": "id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against DealerGroupDeatails: no table or view with this name exists in the connected database.",
+      "Use COUNT(DISTINCT id) when counting dealer group deatail records; joins can duplicate rows.",
+      "To resolve names, join on: dealerId = Dealer.id.",
+      "Populated in application code (for example from a stored procedure or joined query); query the underlying tables instead."
+    ]
+  }
+}

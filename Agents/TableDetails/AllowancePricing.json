@@ -1,0 +1,324 @@
+{
+  "table_name": "AllowancePricing",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Allowance Pricing",
+  "description": "Holds allowance pricing records (defined in the EF Core model), linked to allowance type, area category, grade.",
+  "business_domain": "HR & User Management",
+  "business_purpose": "Used to track and report allowance pricing records, including amounts and quantities, for the HR & User Management area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one allowance pricing.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the allowance pricing.",
+      "business_meaning": "Allowance Pricing identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "allowance_typeid",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "AllowanceType",
+        "column": "id"
+      },
+      "description": "Reference to the allowance type linked to this allowance pricing.",
+      "business_meaning": "Allowance Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "area_categoryId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "AreaCategory",
+        "column": "Id"
+      },
+      "description": "Reference to the area category linked to this allowance pricing.",
+      "business_meaning": "Area Category",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the allowance pricing.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "gradeid",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Grade",
+        "column": "id"
+      },
+      "description": "Reference to the grade linked to this allowance pricing.",
+      "business_meaning": "Grade",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the allowance pricing.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "price",
+      "data_type": "decimal(65,30)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Price of the allowance pricing.",
+      "business_meaning": "Price",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "allowance_typeid",
+      "to_table": "AllowanceType",
+      "to_column": "id",
+      "description": "Each allowance pricing references one allowance type (allowance type)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "area_categoryId",
+      "to_table": "AreaCategory",
+      "to_column": "Id",
+      "description": "Each allowance pricing references one area category (area category)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the allowance pricing."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "gradeid",
+      "to_table": "Grade",
+      "to_column": "id",
+      "description": "Each allowance pricing references one grade (grade)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the allowance pricing."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    },
+    {
+      "name": "IX_AllowancePricing_allowance_typeid",
+      "columns": [
+        "allowance_typeid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_AllowancePricing_area_categoryId",
+      "columns": [
+        "area_categoryId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_AllowancePricing_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_AllowancePricing_gradeid",
+      "columns": [
+        "gradeid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_AllowancePricing_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Use price for monetary or quantity totals.",
+    "Join to Allowance Type, Area Category, Grade through the foreign key columns to resolve names.",
+    "AllowancePricing is defined in the EF Core model but was not found in the connected database, so it may not be deployed there."
+  ],
+  "common_filters": [
+    "created_date",
+    "allowance_typeid",
+    "area_categoryId",
+    "gradeid",
+    "is_deleted"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Average Price",
+      "formula": "AVG(price)"
+    }
+  ],
+  "common_queries": [
+    "Allowance Pricing by month",
+    "Recent allowance pricing",
+    "Allowance Pricing by allowance type",
+    "Allowance Pricing by area category",
+    "Allowance Pricing by grade",
+    "Total price by month",
+    "Top allowance type by price"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "modified_byId",
+      "modified_date"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [
+      "price"
+    ],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against AllowancePricing: no table or view with this name exists in the connected database.",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting allowance pricing records; joins can duplicate rows.",
+      "Use SUM(price) for totals of price.",
+      "To resolve names, join on: allowance_typeid = AllowanceType.id; area_categoryId = AreaCategory.Id; gradeid = Grade.id.",
+      "Defined in the EF Core model but not found in the connected database; confirm it has been migrated before relying on it."
+    ]
+  }
+}

@@ -1,0 +1,193 @@
+{
+  "table_name": "Modules",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Modules",
+  "description": "Holds modules records.",
+  "business_domain": "General",
+  "business_purpose": "Used to track and report modules records for the General area.",
+  "table_type": "master",
+  "record_granularity": "One row represents one module.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the module.",
+      "business_meaning": "Modules identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "module_name",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Name of the module.",
+      "business_meaning": "Module Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "module_code",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Module code reference of the module.",
+      "business_meaning": "Module Code",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "module_description",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text module description for the module.",
+      "business_meaning": "Module Description",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "order",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Order of the module.",
+      "business_meaning": "Order",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "icon",
+      "data_type": "varchar(255)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Icon of the module.",
+      "business_meaning": "Icon",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "slug",
+      "data_type": "varchar(255)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Slug of the module.",
+      "business_meaning": "Slug",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "path",
+      "data_type": "varchar(255)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Path (file or link reference) for the module.",
+      "business_meaning": "Path",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "Sections",
+      "to_column": "Modulesid",
+      "description": "Each module can have many sections records referencing it through Modulesid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "UserRoleDetailed",
+      "to_column": "moduleid",
+      "description": "Each module can have many user role detailed records referencing it through moduleid."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Use the primary key to identify a single record."
+  ],
+  "common_filters": [
+    "module_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "List modules",
+    "Count of modules"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "module_description",
+      "order",
+      "icon",
+      "slug",
+      "path"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [],
+    "default_sort": "id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name Modules (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT id) when counting module records; joins can duplicate rows."
+    ]
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "table_name": "InfluencerMapping",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Influencer Mapping",
+  "description": "Holds influencer mapping records, linked to category, client.",
+  "business_domain": "Sales & CRM",
+  "business_purpose": "Used to track and report influencer mapping records for the Sales & CRM area.",
+  "table_type": "mapping",
+  "record_granularity": "One row represents one influencer mapping.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the influencer mapping.",
+      "business_meaning": "Influencer Mapping identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "influencerId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Client",
+        "column": "Id"
+      },
+      "description": "Reference to the client linked to this influencer mapping.",
+      "business_meaning": "Client",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Categoryid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Category",
+        "column": "id"
+      },
+      "description": "Reference to the category linked to this influencer mapping.",
+      "business_meaning": "Category",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "influencerId",
+      "to_table": "Client",
+      "to_column": "Id",
+      "description": "Each influencer mapping references one client (influencer)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "Categoryid",
+      "to_table": "Category",
+      "to_column": "id",
+      "description": "Each influencer mapping references one category (category)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_InfluencerMapping_Categoryid",
+      "columns": [
+        "Categoryid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_InfluencerMapping_influencerId",
+      "columns": [
+        "influencerId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Join to Category, Client through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "influencerId",
+    "Categoryid"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "Influencer Mapping by client",
+    "Influencer Mapping by category"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "influencerId",
+      "Categoryid"
+    ],
+    "known_issues": [
+      "The table appeared empty (estimated 0 rows) when the metadata was last read."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [],
+    "default_sort": "Id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name InfluencerMapping (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT Id) when counting influencer mapping records; joins can duplicate rows.",
+      "To resolve names, join on: influencerId = Client.Id; Categoryid = Category.id."
+    ]
+  }
+}

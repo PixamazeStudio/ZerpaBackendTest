@@ -1,0 +1,214 @@
+{
+  "table_name": "ProductionHistory",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Production History",
+  "description": "Holds production history records, linked to products, users.",
+  "business_domain": "Factory & Inventory",
+  "business_purpose": "Used to track and report production history records, including amounts and quantities, for the Factory & Inventory area.",
+  "table_type": "log",
+  "record_granularity": "One row represents one production history.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the production history.",
+      "business_meaning": "Production History identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Productsid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Products",
+        "column": "id"
+      },
+      "description": "Reference to the products linked to this production history.",
+      "business_meaning": "Products",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Qty",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Qty of the production history.",
+      "business_meaning": "Qty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "Date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time of the record.",
+      "business_meaning": "Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "ById",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this production history.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Priority_order",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Flag indicating priority order for the production history.",
+      "business_meaning": "Priority Order",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "Productsid",
+      "to_table": "Products",
+      "to_column": "id",
+      "description": "Each production history references one products (products)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "ById",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each production history references one users (by)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_ProductionHistory_ById",
+      "columns": [
+        "ById"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ProductionHistory_Productsid",
+      "columns": [
+        "Productsid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Date is the preferred date column for period-based reporting.",
+    "Use Qty for monetary or quantity totals.",
+    "Join to Products, Users through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "Date",
+    "Productsid",
+    "ById",
+    "Priority_order"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    },
+    {
+      "name": "Total Qty",
+      "formula": "SUM(Qty)"
+    },
+    {
+      "name": "Average Qty per production history",
+      "formula": "SUM(Qty) / COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "Production History by month",
+    "Recent production history",
+    "Production History by products",
+    "Production History by users",
+    "Total qty by month",
+    "Top products by qty"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "Date",
+    "preferred_amount_columns": [
+      "Qty"
+    ],
+    "default_sort": "Date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name ProductionHistory (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT Id) when counting production history records; joins can duplicate rows.",
+      "Use SUM(Qty) for totals of qty.",
+      "To resolve names, join on: Productsid = Products.id; ById = Users.Id."
+    ]
+  }
+}

@@ -1,0 +1,283 @@
+{
+  "table_name": "SMDashboard",
+  "schema": null,
+  "object_type": "model",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "SM Dashboard",
+  "description": "Application view model for sm dashboard data (not stored as a database table).",
+  "business_domain": "General",
+  "business_purpose": "Used to track and report sm dashboard records, including amounts and quantities, for the General area.",
+  "table_type": "view_model",
+  "record_granularity": "One object represents one sm dashboard result row.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "natural",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the sm dashboard.",
+      "business_meaning": "SM Dashboard identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "FullName",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Full name of the sm dashboard.",
+      "business_meaning": "Full Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "InfluencerPlannedSheets",
+      "data_type": "decimal(18,2)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Influencer planned sheets of the sm dashboard.",
+      "business_meaning": "Influencer Planned Sheets",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "PlanningInfluencerCount",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Planning influencer count of the sm dashboard.",
+      "business_meaning": "Planning Influencer Count",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "SupliedInfluencersCount",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Suplied influencers count of the sm dashboard.",
+      "business_meaning": "Suplied Influencers Count",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "InfluencerSupliedSheets",
+      "data_type": "decimal(18,2)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Influencer suplied sheets of the sm dashboard.",
+      "business_meaning": "Influencer Suplied Sheets",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "FocusListCount",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Focus list count of the sm dashboard.",
+      "business_meaning": "Focus List Count",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "SchemeInfluencersCount",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Scheme influencers count of the sm dashboard.",
+      "business_meaning": "Scheme Influencers Count",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "HotProjects",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Hot projects of the sm dashboard.",
+      "business_meaning": "Hot Projects",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "WeeklyPlannedSheets",
+      "data_type": "decimal(18,2)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Weekly planned sheets of the sm dashboard.",
+      "business_meaning": "Weekly Planned Sheets",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "WeeklySuppliedSheets",
+      "data_type": "decimal(18,2)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Weekly supplied sheets of the sm dashboard.",
+      "business_meaning": "Weekly Supplied Sheets",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "Use InfluencerPlannedSheets / PlanningInfluencerCount for monetary or quantity totals.",
+    "SMDashboard is an application view model or report DTO populated in code, not a table stored in the database."
+  ],
+  "common_filters": [],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    },
+    {
+      "name": "Total Influencer Planned Sheets",
+      "formula": "SUM(InfluencerPlannedSheets)"
+    },
+    {
+      "name": "Total Planning Influencer Count",
+      "formula": "SUM(PlanningInfluencerCount)"
+    },
+    {
+      "name": "Total Suplied Influencers Count",
+      "formula": "SUM(SupliedInfluencersCount)"
+    },
+    {
+      "name": "Average Influencer Planned Sheets per sm dashboard",
+      "formula": "SUM(InfluencerPlannedSheets) / COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "List sm dashboard",
+    "Count of sm dashboard"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "FullName",
+      "InfluencerPlannedSheets",
+      "SupliedInfluencersCount",
+      "InfluencerSupliedSheets",
+      "WeeklyPlannedSheets",
+      "WeeklySuppliedSheets"
+    ],
+    "known_issues": [
+      "InfluencerPlannedSheets, SupliedInfluencersCount, InfluencerSupliedSheets, WeeklyPlannedSheets are nullable; use COALESCE when summing or comparing."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "InfluencerPlannedSheets",
+      "PlanningInfluencerCount"
+    ],
+    "default_sort": "Id DESC",
+    "avoid_columns": [
+      "HotProjects"
+    ],
+    "query_notes": [
+      "Do not generate SQL against SMDashboard: no table or view with this name exists in the connected database.",
+      "Use COUNT(DISTINCT Id) when counting sm dashboard records; joins can duplicate rows.",
+      "Use SUM(InfluencerPlannedSheets) for totals of influencer planned sheets.",
+      "Do not select HotProjects; they are sensitive or may hold very large content.",
+      "Populated in application code (for example from a stored procedure or joined query); query the underlying tables instead."
+    ]
+  }
+}

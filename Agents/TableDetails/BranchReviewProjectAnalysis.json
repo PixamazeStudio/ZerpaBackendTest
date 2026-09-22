@@ -1,0 +1,241 @@
+{
+  "table_name": "BranchReviewProjectAnalysis",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Branch Review Project Analysis",
+  "description": "Holds branch review project analysis records, linked to branch review header.",
+  "business_domain": "Sales Planning & Performance",
+  "business_purpose": "Used to track and report branch review project analysis records, including amounts and quantities, for the Sales Planning & Performance area.",
+  "table_type": "master",
+  "record_granularity": "One row represents one branch review project analysis.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the branch review project analysis.",
+      "business_meaning": "Branch Review Project Analysis identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "header_id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "BranchReviewHeader",
+        "column": "Id"
+      },
+      "description": "Reference to the branch review header linked to this branch review project analysis.",
+      "business_meaning": "Branch Review Header",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "team_member_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the team member.",
+      "business_meaning": "Team Member Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "hot_fl",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Hot fl of the branch review project analysis.",
+      "business_meaning": "Hot Fl",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "hot_scout",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Hot scout of the branch review project analysis.",
+      "business_meaning": "Hot Scout",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "warm_fl",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Warm fl of the branch review project analysis.",
+      "business_meaning": "Warm Fl",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "warm_scout",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Warm scout of the branch review project analysis.",
+      "business_meaning": "Warm Scout",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "cool_fl",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Cool fl of the branch review project analysis.",
+      "business_meaning": "Cool Fl",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "cool_scout",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Cool scout of the branch review project analysis.",
+      "business_meaning": "Cool Scout",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "total",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total of the branch review project analysis.",
+      "business_meaning": "Total",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "header_id",
+      "to_table": "BranchReviewHeader",
+      "to_column": "Id",
+      "description": "Each branch review project analysis references one branch review header (header)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_BranchReviewProjectAnalysis_header_id",
+      "columns": [
+        "header_id"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Use total for monetary or quantity totals.",
+    "Join to Branch Review Header through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "header_id",
+    "team_member_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    },
+    {
+      "name": "Total",
+      "formula": "SUM(total)"
+    },
+    {
+      "name": "Average Total per branch review project analysis",
+      "formula": "SUM(total) / COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "Branch Review Project Analysis by branch review header",
+    "Top branch review header by total"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "team_member_name"
+    ],
+    "known_issues": [
+      "The table appeared empty (estimated 0 rows) when the metadata was last read."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "total"
+    ],
+    "default_sort": "Id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name BranchReviewProjectAnalysis (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT Id) when counting branch review project analysis records; joins can duplicate rows.",
+      "Use SUM(total) for totals of total.",
+      "To resolve names, join on: header_id = BranchReviewHeader.Id."
+    ]
+  }
+}

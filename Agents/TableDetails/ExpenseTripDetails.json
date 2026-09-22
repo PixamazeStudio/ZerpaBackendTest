@@ -1,0 +1,261 @@
+{
+  "table_name": "ExpenseTripDetails",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Expense Trip Details",
+  "description": "Holds expense trip details records (defined in the EF Core model), linked to expense trips.",
+  "business_domain": "Accounts & Finance",
+  "business_purpose": "Used to track and report expense trip details records, including amounts and quantities, for the Accounts & Finance area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one expense trip detail.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "natural",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the expense trip detail.",
+      "business_meaning": "Expense Trip Details identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "expense_tripId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "ExpenseTrips",
+        "column": "Id"
+      },
+      "description": "Reference to the expense trips linked to this expense trip detail.",
+      "business_meaning": "Expense Trips",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "category",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Category of the expense trip detail.",
+      "business_meaning": "Category",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "amount",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Amount of the expense trip detail.",
+      "business_meaning": "Amount",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "expense_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of expense.",
+      "business_meaning": "Expense Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "description",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text description for the expense trip detail.",
+      "business_meaning": "Description",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the expense trip detail.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the expense trip detail.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "expense_tripId",
+      "to_table": "ExpenseTrips",
+      "to_column": "Id",
+      "description": "Each expense trip detail references one expense trips (expense trip)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the expense trip detail."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the expense trip detail."
+    }
+  ],
+  "indexes": [],
+  "business_rules": [
+    "created_date is the preferred date column for period-based reporting.",
+    "Use amount for monetary or quantity totals.",
+    "Columns category classify the record; check the distinct values before filtering on them.",
+    "Join to Expense Trips through the foreign key columns to resolve names.",
+    "ExpenseTripDetails is defined in the EF Core model but was not found in the connected database, so it may not be deployed there."
+  ],
+  "common_filters": [
+    "created_date",
+    "expense_tripId",
+    "category"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total Amount",
+      "formula": "SUM(amount)"
+    },
+    {
+      "name": "Average Amount per expense trip detail",
+      "formula": "SUM(amount) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Expense Trip Details by month",
+    "Recent expense trip details",
+    "Expense Trip Details by expense trips",
+    "Expense Trip Details count by category",
+    "Total amount by month",
+    "Top expense trips by amount"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "expense_tripId",
+      "category",
+      "expense_date",
+      "description",
+      "created_byId",
+      "modified_byId",
+      "modified_date"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [
+      "amount"
+    ],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against ExpenseTripDetails: no table or view with this name exists in the connected database.",
+      "Use COUNT(DISTINCT id) when counting expense trip detail records; joins can duplicate rows.",
+      "Use SUM(amount) for totals of amount.",
+      "To resolve names, join on: expense_tripId = ExpenseTrips.Id.",
+      "Defined in the EF Core model but not found in the connected database; confirm it has been migrated before relying on it."
+    ]
+  }
+}

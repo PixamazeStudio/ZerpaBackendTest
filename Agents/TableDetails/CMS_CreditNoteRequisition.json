@@ -1,0 +1,562 @@
+{
+  "table_name": "CMS_CreditNoteRequisition",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "CMS Credit Note Requisition",
+  "description": "Holds cms credit note requisition records, linked to branch, branch closing reasons, cms credit note types.",
+  "business_domain": "Accounts & Finance",
+  "business_purpose": "Used to track and report cms credit note requisition records, including approval status, amounts and quantities, for the Accounts & Finance area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one cms credit note requisition.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the cms credit note requisition.",
+      "business_meaning": "CMS Credit Note Requisition identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "code",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Code reference of the cms credit note requisition.",
+      "business_meaning": "Code",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "message",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text message for the cms credit note requisition.",
+      "business_meaning": "Message",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "creditnote_typeid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "CMS_CreditNoteTypes",
+        "column": "id"
+      },
+      "description": "Reference to the cms credit note types linked to this cms credit note requisition.",
+      "business_meaning": "CMS Credit Note Types",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the cms credit note requisition.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "branchid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Branch",
+        "column": "id"
+      },
+      "description": "Reference to the branch linked to this cms credit note requisition.",
+      "business_meaning": "Branch",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the cms credit note requisition.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_approved",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the cms credit note requisition is approved.",
+      "business_meaning": "Is Approved",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_rejected",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the cms credit note requisition is rejected.",
+      "business_meaning": "Is Rejected",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "operated_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of operated.",
+      "business_meaning": "Operated Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "operated_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who approved or rejected the cms credit note requisition.",
+      "business_meaning": "Operated By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "file",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "File (file or link reference) for the cms credit note requisition.",
+      "business_meaning": "File",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "JVCNRorBranchTransfer",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "JVCN ror branch transfer of the cms credit note requisition.",
+      "business_meaning": "JVCN Ror Branch Transfer",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_closed",
+      "data_type": "tinyint(1)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "True when the cms credit note requisition is closed.",
+      "business_meaning": "Is Closed",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "creditnote_type",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Creditnote type of the cms credit note requisition.",
+      "business_meaning": "Creditnote Type",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "branch_closing_reasonid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "BranchClosingReasons",
+        "column": "id"
+      },
+      "description": "Reference to the branch closing reasons linked to this cms credit note requisition.",
+      "business_meaning": "Branch Closing Reasons",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "remarks",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text remarks for the cms credit note requisition.",
+      "business_meaning": "Remarks",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Vendor_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the vendor.",
+      "business_meaning": "Vendor Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Amount",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Amount of the cms credit note requisition.",
+      "business_meaning": "Amount",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "Title",
+      "data_type": "varchar(255)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Title of the cms credit note requisition.",
+      "business_meaning": "Title",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "creditnote_typeid",
+      "to_table": "CMS_CreditNoteTypes",
+      "to_column": "id",
+      "description": "Each cms credit note requisition references one cms credit note types (creditnote type)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the cms credit note requisition."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "branchid",
+      "to_table": "Branch",
+      "to_column": "id",
+      "description": "Each cms credit note requisition references one branch (branch)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the cms credit note requisition."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "operated_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who approved or rejected the cms credit note requisition."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "branch_closing_reasonid",
+      "to_table": "BranchClosingReasons",
+      "to_column": "id",
+      "description": "Each cms credit note requisition references one branch closing reasons (branch closing reason)."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "BranchCNRRemarks",
+      "to_column": "requisitionid",
+      "description": "Each cms credit note requisition can have many branch cnr remarks records referencing it through requisitionid."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "FK_CMS_CreditNoteRequisition_BranchClosingReasons_branch_closin",
+      "columns": [
+        "branch_closing_reasonid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CMS_CreditNoteRequisition_branchid",
+      "columns": [
+        "branchid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CMS_CreditNoteRequisition_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CMS_CreditNoteRequisition_creditnote_typeid",
+      "columns": [
+        "creditnote_typeid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CMS_CreditNoteRequisition_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CMS_CreditNoteRequisition_operated_byId",
+      "columns": [
+        "operated_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "Approval state is tracked with is_approved, is_rejected; a record with neither flag set is typically still pending.",
+    "is_closed = 1 marks the record as closed.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Use Amount for monetary or quantity totals.",
+    "Columns creditnote_type classify the record; check the distinct values before filtering on them.",
+    "Join to Branch, Branch Closing Reasons, CMS Credit Note Types through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "created_date",
+    "creditnote_typeid",
+    "branchid",
+    "branch_closing_reasonid",
+    "creditnote_type",
+    "is_deleted",
+    "is_approved",
+    "is_rejected",
+    "code"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total Amount",
+      "formula": "SUM(Amount)"
+    },
+    {
+      "name": "Average Amount per cms credit note requisition",
+      "formula": "SUM(Amount) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "CMS Credit Note Requisition by month",
+    "Recent cms credit note requisition",
+    "CMS Credit Note Requisition by cms credit note types",
+    "CMS Credit Note Requisition by branch",
+    "CMS Credit Note Requisition by branch closing reasons",
+    "CMS Credit Note Requisition count by creditnote type",
+    "Total amount by month",
+    "Top cms credit note types by amount"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "message",
+      "creditnote_typeid",
+      "created_byId",
+      "branchid",
+      "modified_date",
+      "modified_byId",
+      "operated_date",
+      "operated_byId",
+      "file",
+      "JVCNRorBranchTransfer",
+      "is_closed",
+      "creditnote_type",
+      "branch_closing_reasonid",
+      "remarks",
+      "Vendor_name",
+      "Amount",
+      "Title"
+    ],
+    "known_issues": [
+      "Amount is stored as floating point, so sums can carry small rounding differences.",
+      "Amount is nullable; use COALESCE when summing or comparing."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [
+      "Amount"
+    ],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [
+      "file"
+    ],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name CMS_CreditNoteRequisition (identifiers can be case-sensitive).",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting cms credit note requisition records; joins can duplicate rows.",
+      "Use SUM(Amount) for totals of amount.",
+      "To resolve names, join on: creditnote_typeid = CMS_CreditNoteTypes.id; branchid = Branch.id; branch_closing_reasonid = BranchClosingReasons.id.",
+      "Do not select file; they are sensitive or may hold very large content."
+    ]
+  }
+}

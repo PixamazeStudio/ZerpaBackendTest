@@ -1,0 +1,252 @@
+{
+  "table_name": "BranchYearComparison",
+  "schema": null,
+  "object_type": "model",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Branch Year Comparison",
+  "description": "Application view model for branch year comparison data (not stored as a database table).",
+  "business_domain": "Branch & Geography",
+  "business_purpose": "Used to track and report branch year comparison records, including amounts and quantities, for the Branch & Geography area.",
+  "table_type": "view_model",
+  "record_granularity": "One object represents one branch year comparison result row.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "BranchId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Branch id of the branch year comparison.",
+      "business_meaning": "Branch Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "branch_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the branch.",
+      "business_meaning": "Branch Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "ytd_ly_qty",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Ytd ly qty of the branch year comparison.",
+      "business_meaning": "Ytd Ly Qty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "ytd_ly_na",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Ytd ly na of the branch year comparison.",
+      "business_meaning": "Ytd Ly Na",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "ytd_ly_truck",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Ytd ly truck of the branch year comparison.",
+      "business_meaning": "Ytd Ly Truck",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "ytd_ty_qty",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Ytd ty qty of the branch year comparison.",
+      "business_meaning": "Ytd Ty Qty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "ytd_ty_na",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Ytd ty na of the branch year comparison.",
+      "business_meaning": "Ytd Ty Na",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "ytd_ty_truck",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Ytd ty truck of the branch year comparison.",
+      "business_meaning": "Ytd Ty Truck",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "goly_na",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Goly na of the branch year comparison.",
+      "business_meaning": "Goly Na",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "goly_truck",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Goly truck of the branch year comparison.",
+      "business_meaning": "Goly Truck",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "Use ytd_ly_qty / ytd_ty_qty for monetary or quantity totals.",
+    "BranchYearComparison is an application view model or report DTO populated in code, not a table stored in the database."
+  ],
+  "common_filters": [
+    "branch_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    },
+    {
+      "name": "Total Ytd Ly Qty",
+      "formula": "SUM(ytd_ly_qty)"
+    },
+    {
+      "name": "Total Ytd Ly Na",
+      "formula": "SUM(ytd_ly_na)"
+    },
+    {
+      "name": "Total Ytd Ly Truck",
+      "formula": "SUM(ytd_ly_truck)"
+    }
+  ],
+  "common_queries": [
+    "List branch year comparison",
+    "Count of branch year comparison"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [
+      "branch_name"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "ytd_ly_qty",
+      "ytd_ty_qty"
+    ],
+    "default_sort": "",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against BranchYearComparison: no table or view with this name exists in the connected database.",
+      "Use SUM(ytd_ly_qty) for totals of ytd ly qty.",
+      "Populated in application code (for example from a stored procedure or joined query); query the underlying tables instead."
+    ]
+  }
+}

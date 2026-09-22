@@ -1,0 +1,136 @@
+{
+  "table_name": "Vw_ComplaintsDashboardMonthlyWiseGraphData",
+  "schema": null,
+  "object_type": "view",
+  "view_name": "Vw_ComplaintsDashboardMonthlyWiseGraphData",
+  "exists_in_database": true,
+  "display_name": "Complaints Dashboard Monthly Wise Graph Data",
+  "description": "Database view exposing complaints dashboard monthly wise graph data data.",
+  "business_domain": "Customer Support",
+  "business_purpose": "Used to track and report complaints dashboard monthly wise graph data records, including amounts and quantities, for the Customer Support area.",
+  "table_type": "view",
+  "record_granularity": "One row represents one record returned by the complaints dashboard monthly wise graph data view.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "year",
+      "data_type": "int(5)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Year of the complaints dashboard monthly wise graph data.",
+      "business_meaning": "Year",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "month",
+      "data_type": "varchar(9)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Month of the complaints dashboard monthly wise graph data.",
+      "business_meaning": "Month",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "month_order",
+      "data_type": "int(3)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Month order of the complaints dashboard monthly wise graph data.",
+      "business_meaning": "Month Order",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "value",
+      "data_type": "double(35,2)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Value of the complaints dashboard monthly wise graph data.",
+      "business_meaning": "Value",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "section",
+      "data_type": "varchar(13)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Section of the complaints dashboard monthly wise graph data.",
+      "business_meaning": "Section",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "Use value for monetary or quantity totals.",
+    "Vw_ComplaintsDashboardMonthlyWiseGraphData is a database view: it is read-only and its rows are computed, so apply filters and a LIMIT when querying."
+  ],
+  "common_filters": [],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    },
+    {
+      "name": "Total Value",
+      "formula": "SUM(value)"
+    }
+  ],
+  "common_queries": [
+    "List complaints dashboard monthly wise graph data",
+    "Count of complaints dashboard monthly wise graph data"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [],
+    "known_issues": [
+      "value is stored as floating point, so sums can carry small rounding differences.",
+      "value is nullable; use COALESCE when summing or comparing.",
+      "Views expose no primary key or nullability guarantees; rows may repeat depending on the view definition."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "value"
+    ],
+    "default_sort": "",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name Vw_ComplaintsDashboardMonthlyWiseGraphData (identifiers can be case-sensitive).",
+      "Use SUM(value) for totals of value.",
+      "This is a view; always apply filters and a LIMIT, as it may be expensive to scan."
+    ]
+  }
+}

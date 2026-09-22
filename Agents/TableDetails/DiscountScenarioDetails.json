@@ -1,0 +1,187 @@
+{
+  "table_name": "DiscountScenarioDetails",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Discount Scenario Details",
+  "description": "Holds discount scenario details records, linked to discount scenario header.",
+  "business_domain": "Sales & CRM",
+  "business_purpose": "Used to track and report discount scenario details records, including amounts and quantities, for the Sales & CRM area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one discount scenario detail.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the discount scenario detail.",
+      "business_meaning": "Discount Scenario Details identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "structure",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Structure of the discount scenario detail.",
+      "business_meaning": "Structure",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "total_percentage",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Total percentage of the discount scenario detail.",
+      "business_meaning": "Total Percentage",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "descount_scenario_header_id",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Descount scenario header id of the discount scenario detail.",
+      "business_meaning": "Descount Scenario Header Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "DiscountScenarioHeaderid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "DiscountScenarioHeader",
+        "column": "id"
+      },
+      "description": "Reference to the discount scenario header linked to this discount scenario detail.",
+      "business_meaning": "Discount Scenario Header",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "product",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Product of the discount scenario detail.",
+      "business_meaning": "Product",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "DiscountScenarioHeaderid",
+      "to_table": "DiscountScenarioHeader",
+      "to_column": "id",
+      "description": "Each discount scenario detail references one discount scenario header (discount scenario header)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_DiscountScenarioDetails_DiscountScenarioHeaderid",
+      "columns": [
+        "DiscountScenarioHeaderid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Use total_percentage for monetary or quantity totals.",
+    "Join to Discount Scenario Header through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "DiscountScenarioHeaderid"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Average Total Percentage",
+      "formula": "AVG(total_percentage)"
+    }
+  ],
+  "common_queries": [
+    "Discount Scenario Details by discount scenario header",
+    "Top discount scenario header by total percentage"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "structure",
+      "total_percentage",
+      "descount_scenario_header_id",
+      "DiscountScenarioHeaderid"
+    ],
+    "known_issues": [
+      "total_percentage is stored as floating point, so sums can carry small rounding differences.",
+      "total_percentage is nullable; use COALESCE when summing or comparing."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "total_percentage"
+    ],
+    "default_sort": "id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name DiscountScenarioDetails (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT id) when counting discount scenario detail records; joins can duplicate rows.",
+      "Use SUM(total_percentage) for totals of total percentage.",
+      "To resolve names, join on: DiscountScenarioHeaderid = DiscountScenarioHeader.id."
+    ]
+  }
+}

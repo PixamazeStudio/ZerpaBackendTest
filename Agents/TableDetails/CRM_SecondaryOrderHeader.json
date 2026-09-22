@@ -1,0 +1,723 @@
+{
+  "table_name": "CRM_SecondaryOrder",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "CRM Secondary Order",
+  "description": "Holds crm secondary order records, linked to client, dealer, users.",
+  "business_domain": "Sales & CRM",
+  "business_purpose": "Used to track and report crm secondary order records, including approval status, amounts and quantities, for the Sales & CRM area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one crm secondary order.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the crm secondary order.",
+      "business_meaning": "CRM Secondary Order identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "supplied_byid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Dealer",
+        "column": "id"
+      },
+      "description": "Reference to the dealer linked to this crm secondary order.",
+      "business_meaning": "Dealer",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "primary_decision_makerId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Client",
+        "column": "Id"
+      },
+      "description": "Reference to the client linked to this crm secondary order.",
+      "business_meaning": "Client",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "remarks",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text remarks for the crm secondary order.",
+      "business_meaning": "Remarks",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "discount_from_MRP",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Discount from MRP of the crm secondary order.",
+      "business_meaning": "Discount From MRP",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "supplied_on",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time of supplied.",
+      "business_meaning": "Supplied On",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the crm secondary order.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the crm secondary order.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "operated_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who approved or rejected the crm secondary order.",
+      "business_meaning": "Operated By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "total_notional_area",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Total notional area of the crm secondary order.",
+      "business_meaning": "Total Notional Area",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "total_quantity",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Total quantity of the crm secondary order.",
+      "business_meaning": "Total Quantity",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "is_approved",
+      "data_type": "tinyint(1)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "True when the crm secondary order is approved.",
+      "business_meaning": "Is Approved",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_rejected",
+      "data_type": "tinyint(1)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "True when the crm secondary order is rejected.",
+      "business_meaning": "Is Rejected",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "operated_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of operated.",
+      "business_meaning": "Operated Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "status",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Status of the crm secondary order.",
+      "business_meaning": "Status",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "secondary_order_typeId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Secondary order type id of the crm secondary order.",
+      "business_meaning": "Secondary Order Type Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "related_id",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Related id of the crm secondary order.",
+      "business_meaning": "Related Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "related_section",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Related section of the crm secondary order.",
+      "business_meaning": "Related Section",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "branchid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this crm secondary order.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "areaid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this crm secondary order.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "secondary_typeId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this crm secondary order.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "projectId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "CRM_Projects",
+        "column": "Id"
+      },
+      "description": "Reference to the crm projects linked to this crm secondary order.",
+      "business_meaning": "CRM Projects",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "primary_type",
+      "data_type": "varchar(45)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Primary type of the crm secondary order.",
+      "business_meaning": "Primary Type",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "secondary_order_code",
+      "data_type": "varchar(255)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Secondary order code reference of the crm secondary order.",
+      "business_meaning": "Secondary Order Code",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "invoice_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of invoice.",
+      "business_meaning": "Invoice Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "invoice_no",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Invoice no reference of the crm secondary order.",
+      "business_meaning": "Invoice No",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "supplied_byid",
+      "to_table": "Dealer",
+      "to_column": "id",
+      "description": "Each crm secondary order references one dealer (supplied by)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "primary_decision_makerId",
+      "to_table": "Client",
+      "to_column": "Id",
+      "description": "Each crm secondary order references one client (primary decision maker)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the crm secondary order."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the crm secondary order."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "operated_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who approved or rejected the crm secondary order."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "branchid",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each crm secondary order references one users (branch)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "areaid",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each crm secondary order references one users (area)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "secondary_typeId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each crm secondary order references one users (secondary type)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "projectId",
+      "to_table": "CRM_Projects",
+      "to_column": "Id",
+      "description": "Each crm secondary order references one crm projects (project)."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "CRM_SecondaryDetails",
+      "to_column": "CRM_SecondaryOrderHeaderid",
+      "description": "Each crm secondary order can have many crm secondary details records referencing it through CRM_SecondaryOrderHeaderid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "ERPSchemeRequestDetails",
+      "to_column": "secondary_order_headerid",
+      "description": "Each crm secondary order can have many erp scheme request details records referencing it through secondary_order_headerid."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "FK_CRM_SecondaryOrder_Area_areaid",
+      "columns": [
+        "areaid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "FK_CRM_SecondaryOrder_Branch_branchid",
+      "columns": [
+        "branchid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "FK_CRM_SecondaryOrder_CRM_Projects_projectId",
+      "columns": [
+        "projectId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "FK_CRM_SecondaryOrder_SecondaryType_secondary_typeId",
+      "columns": [
+        "secondary_typeId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "FK_CRM_SecondaryOrder_Users_operated_byId",
+      "columns": [
+        "operated_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CRM_SecondaryOrder_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CRM_SecondaryOrder_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CRM_SecondaryOrder_primary_decision_makerId",
+      "columns": [
+        "primary_decision_makerId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CRM_SecondaryOrder_supplied_byid",
+      "columns": [
+        "supplied_byid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "Approval state is tracked with is_approved, is_rejected; a record with neither flag set is typically still pending.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Use total_notional_area / total_quantity for monetary or quantity totals.",
+    "Columns status, primary_type classify the record; check the distinct values before filtering on them.",
+    "Join to Client, Dealer, Users through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "created_date",
+    "supplied_byid",
+    "primary_decision_makerId",
+    "branchid",
+    "areaid",
+    "status",
+    "primary_type",
+    "is_deleted",
+    "is_approved",
+    "is_rejected",
+    "secondary_order_code"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total Discount From MRP",
+      "formula": "SUM(discount_from_MRP)"
+    },
+    {
+      "name": "Total Notional Area",
+      "formula": "SUM(total_notional_area)"
+    },
+    {
+      "name": "Total Quantity",
+      "formula": "SUM(total_quantity)"
+    },
+    {
+      "name": "Average Discount From MRP per crm secondary order",
+      "formula": "SUM(discount_from_MRP) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "CRM Secondary Order by month",
+    "Recent crm secondary order",
+    "CRM Secondary Order by dealer",
+    "CRM Secondary Order by client",
+    "CRM Secondary Order by users",
+    "CRM Secondary Order count by status",
+    "Total discount from MRP by month",
+    "Top dealer by discount from MRP"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "primary_decision_makerId",
+      "remarks",
+      "discount_from_MRP",
+      "created_byId",
+      "modified_byId",
+      "modified_date",
+      "operated_byId",
+      "total_notional_area",
+      "total_quantity",
+      "is_approved",
+      "is_rejected",
+      "operated_date",
+      "status",
+      "secondary_order_typeId",
+      "related_id",
+      "related_section",
+      "branchid",
+      "areaid",
+      "secondary_typeId",
+      "projectId",
+      "primary_type",
+      "secondary_order_code",
+      "invoice_date",
+      "invoice_no"
+    ],
+    "known_issues": [
+      "discount_from_MRP, total_notional_area are stored as floating point, so sums can carry small rounding differences.",
+      "discount_from_MRP, total_notional_area, total_quantity are nullable; use COALESCE when summing or comparing."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [
+      "total_notional_area",
+      "total_quantity"
+    ],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name CRM_SecondaryOrder (identifiers can be case-sensitive).",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting crm secondary order records; joins can duplicate rows.",
+      "Use SUM(total_notional_area) for totals of total notional area.",
+      "To resolve names, join on: supplied_byid = Dealer.id; primary_decision_makerId = Client.Id; branchid = Users.Id; areaid = Users.Id; secondary_typeId = Users.Id."
+    ]
+  }
+}

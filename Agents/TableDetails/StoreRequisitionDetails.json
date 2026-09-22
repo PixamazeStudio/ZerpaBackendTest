@@ -1,0 +1,303 @@
+{
+  "table_name": "StoreRequisitionDetails",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Store Requisition Details",
+  "description": "Holds store requisition details records (defined in the EF Core model), linked to factory category, factory products.",
+  "business_domain": "Factory & Inventory",
+  "business_purpose": "Used to track and report store requisition details records, including amounts and quantities, for the Factory & Inventory area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one store requisition detail.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the store requisition detail.",
+      "business_meaning": "Store Requisition Details identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "StoreRequisitionHeaderid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Store requisition headerid of the store requisition detail.",
+      "business_meaning": "Store Requisition Headerid",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "batch",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Batch of the store requisition detail.",
+      "business_meaning": "Batch",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "buying_price",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Buying price of the store requisition detail.",
+      "business_meaning": "Buying Price",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "categoryid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "FactoryCategory",
+        "column": "id"
+      },
+      "description": "Reference to the factory category linked to this store requisition detail.",
+      "business_meaning": "Factory Category",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "last_bought_price",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Last bought price of the store requisition detail.",
+      "business_meaning": "Last Bought Price",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "productid",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "FactoryProducts",
+        "column": "id"
+      },
+      "description": "Reference to the factory products linked to this store requisition detail.",
+      "business_meaning": "Factory Products",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "quantity",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Quantity of the store requisition detail.",
+      "business_meaning": "Quantity",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "total_price",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Total price of the store requisition detail.",
+      "business_meaning": "Total Price",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "categoryid",
+      "to_table": "FactoryCategory",
+      "to_column": "id",
+      "description": "Each store requisition detail references one factory category (category)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "productid",
+      "to_table": "FactoryProducts",
+      "to_column": "id",
+      "description": "Each store requisition detail references one factory products (product)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    },
+    {
+      "name": "IX_StoreRequisitionDetails_StoreRequisitionHeaderid",
+      "columns": [
+        "StoreRequisitionHeaderid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_StoreRequisitionDetails_categoryid",
+      "columns": [
+        "categoryid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_StoreRequisitionDetails_productid",
+      "columns": [
+        "productid"
+      ],
+      "type": "non_clustered"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "Use total_price / quantity for monetary or quantity totals.",
+    "Join to Factory Category, Factory Products through the foreign key columns to resolve names.",
+    "StoreRequisitionDetails is defined in the EF Core model but was not found in the connected database, so it may not be deployed there."
+  ],
+  "common_filters": [
+    "categoryid",
+    "productid",
+    "is_deleted"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Average Buying Price",
+      "formula": "AVG(buying_price)"
+    },
+    {
+      "name": "Average Last Bought Price",
+      "formula": "AVG(last_bought_price)"
+    },
+    {
+      "name": "Total Quantity",
+      "formula": "SUM(quantity)"
+    }
+  ],
+  "common_queries": [
+    "Store Requisition Details by factory category",
+    "Store Requisition Details by factory products",
+    "Top factory category by buying price"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "StoreRequisitionHeaderid",
+      "batch",
+      "buying_price",
+      "categoryid",
+      "last_bought_price",
+      "quantity",
+      "total_price"
+    ],
+    "known_issues": [
+      "buying_price, last_bought_price, total_price are stored as floating point, so sums can carry small rounding differences.",
+      "buying_price, last_bought_price, quantity, total_price are nullable; use COALESCE when summing or comparing."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "total_price",
+      "quantity"
+    ],
+    "default_sort": "id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against StoreRequisitionDetails: no table or view with this name exists in the connected database.",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting store requisition detail records; joins can duplicate rows.",
+      "Use SUM(total_price) for totals of total price.",
+      "To resolve names, join on: categoryid = FactoryCategory.id; productid = FactoryProducts.id.",
+      "Defined in the EF Core model but not found in the connected database; confirm it has been migrated before relying on it."
+    ]
+  }
+}

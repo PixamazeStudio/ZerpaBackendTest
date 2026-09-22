@@ -1,0 +1,179 @@
+{
+  "table_name": "ReceiptDetails",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Receipt Details",
+  "description": "Holds receipt details records, linked to receipt header.",
+  "business_domain": "System & Communication",
+  "business_purpose": "Used to track and report receipt details records, including amounts and quantities, for the System & Communication area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one receipt detail.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the receipt detail.",
+      "business_meaning": "Receipt Details identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "refNo",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Ref no reference of the receipt detail.",
+      "business_meaning": "Ref No",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "particular",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Particular of the receipt detail.",
+      "business_meaning": "Particular",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "debit_amount",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Debit amount of the receipt detail.",
+      "business_meaning": "Debit Amount",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "ReceiptHeaderid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "ReceiptHeader",
+        "column": "id"
+      },
+      "description": "Reference to the receipt header linked to this receipt detail.",
+      "business_meaning": "Receipt Header",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "ReceiptHeaderid",
+      "to_table": "ReceiptHeader",
+      "to_column": "id",
+      "description": "Each receipt detail references one receipt header (receipt header)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_ReceiptDetails_ReceiptHeaderid",
+      "columns": [
+        "ReceiptHeaderid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Use debit_amount for monetary or quantity totals.",
+    "Join to Receipt Header through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "ReceiptHeaderid"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    },
+    {
+      "name": "Total Debit Amount",
+      "formula": "SUM(debit_amount)"
+    },
+    {
+      "name": "Average Debit Amount per receipt detail",
+      "formula": "SUM(debit_amount) / COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "Receipt Details by receipt header",
+    "Top receipt header by debit amount"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "refNo",
+      "particular",
+      "debit_amount",
+      "ReceiptHeaderid"
+    ],
+    "known_issues": [
+      "debit_amount is stored as floating point, so sums can carry small rounding differences.",
+      "debit_amount is nullable; use COALESCE when summing or comparing."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "debit_amount"
+    ],
+    "default_sort": "Id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name ReceiptDetails (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT Id) when counting receipt detail records; joins can duplicate rows.",
+      "Use SUM(debit_amount) for totals of debit amount.",
+      "To resolve names, join on: ReceiptHeaderid = ReceiptHeader.id."
+    ]
+  }
+}

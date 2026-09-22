@@ -1,0 +1,199 @@
+{
+  "table_name": "Vw_IndentHeaderForClubbing",
+  "schema": null,
+  "object_type": "view",
+  "view_name": "Vw_IndentHeaderForClubbing",
+  "exists_in_database": true,
+  "display_name": "Indent Header For Clubbing",
+  "description": "Database view exposing indent header for clubbing data.",
+  "business_domain": "Factory & Inventory",
+  "business_purpose": "Used to track and report indent header for clubbing records, including amounts and quantities, for the Factory & Inventory area.",
+  "table_type": "view",
+  "record_granularity": "One row represents one record returned by the indent header for clubbing view.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Id of the indent header for clubbing.",
+      "business_meaning": "Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "indent_code",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Indent code reference of the indent header for clubbing.",
+      "business_meaning": "Indent Code",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "dealer_name",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Name of the dealer.",
+      "business_meaning": "Dealer Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "total_weight",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total weight of the indent header for clubbing.",
+      "business_meaning": "Total Weight",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "total_price",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total price of the indent header for clubbing.",
+      "business_meaning": "Total Price",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "areaid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Areaid of the indent header for clubbing.",
+      "business_meaning": "Areaid",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "priority",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Priority of the indent header for clubbing.",
+      "business_meaning": "Priority",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "delivery_order",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Delivery order of the indent header for clubbing.",
+      "business_meaning": "Delivery Order",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "Use total_weight / total_price for monetary or quantity totals.",
+    "Columns priority classify the record; check the distinct values before filtering on them.",
+    "Vw_IndentHeaderForClubbing is a database view: it is read-only and its rows are computed, so apply filters and a LIMIT when querying."
+  ],
+  "common_filters": [
+    "priority",
+    "indent_code"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    },
+    {
+      "name": "Total Weight",
+      "formula": "SUM(total_weight)"
+    },
+    {
+      "name": "Average Total Price",
+      "formula": "AVG(total_price)"
+    },
+    {
+      "name": "Total Delivery Order",
+      "formula": "SUM(delivery_order)"
+    }
+  ],
+  "common_queries": [
+    "List indent header for clubbing",
+    "Count of indent header for clubbing",
+    "Indent Header For Clubbing count by priority"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [],
+    "known_issues": [
+      "total_weight, total_price, delivery_order are stored as floating point, so sums can carry small rounding differences.",
+      "Views expose no primary key or nullability guarantees; rows may repeat depending on the view definition."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "total_weight",
+      "total_price"
+    ],
+    "default_sort": "",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name Vw_IndentHeaderForClubbing (identifiers can be case-sensitive).",
+      "Use SUM(total_weight) for totals of total weight.",
+      "This is a view; always apply filters and a LIMIT, as it may be expensive to scan."
+    ]
+  }
+}

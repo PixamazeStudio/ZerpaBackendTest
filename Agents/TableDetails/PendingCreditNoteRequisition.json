@@ -1,0 +1,165 @@
+{
+  "table_name": "PendingCreditNoteRequisition",
+  "schema": null,
+  "object_type": "model",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Pending Credit Note Requisition",
+  "description": "Application view model for pending credit note requisition data (not stored as a database table).",
+  "business_domain": "Accounts & Finance",
+  "business_purpose": "Used to track and report pending credit note requisition records, including amounts and quantities, for the Accounts & Finance area.",
+  "table_type": "view_model",
+  "record_granularity": "One object represents one pending credit note requisition result row.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "natural",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the pending credit note requisition.",
+      "business_meaning": "Pending Credit Note Requisition identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "code",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Code reference of the pending credit note requisition.",
+      "business_meaning": "Code",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "type",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Type of the pending credit note requisition.",
+      "business_meaning": "Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "customer_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the customer.",
+      "business_meaning": "Customer Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "dealer_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the dealer.",
+      "business_meaning": "Dealer Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "cnr_value",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Cnr value of the pending credit note requisition.",
+      "business_meaning": "Cnr Value",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "Use cnr_value for monetary or quantity totals.",
+    "Columns type classify the record; check the distinct values before filtering on them.",
+    "PendingCreditNoteRequisition is an application view model or report DTO populated in code, not a table stored in the database."
+  ],
+  "common_filters": [
+    "type",
+    "code"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total Cnr Value",
+      "formula": "SUM(cnr_value)"
+    },
+    {
+      "name": "Average Cnr Value per pending credit note requisition",
+      "formula": "SUM(cnr_value) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "List pending credit note requisition",
+    "Count of pending credit note requisition",
+    "Pending Credit Note Requisition count by type"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "code",
+      "type",
+      "customer_name",
+      "dealer_name"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "cnr_value"
+    ],
+    "default_sort": "id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against PendingCreditNoteRequisition: no table or view with this name exists in the connected database.",
+      "Use COUNT(DISTINCT id) when counting pending credit note requisition records; joins can duplicate rows.",
+      "Use SUM(cnr_value) for totals of cnr value.",
+      "Populated in application code (for example from a stored procedure or joined query); query the underlying tables instead."
+    ]
+  }
+}

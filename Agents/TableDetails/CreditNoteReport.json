@@ -1,0 +1,248 @@
+{
+  "table_name": "Vw_Creditnotesview",
+  "schema": null,
+  "object_type": "view",
+  "view_name": "Vw_Creditnotesview",
+  "exists_in_database": true,
+  "display_name": "Creditnotesview",
+  "description": "Database view exposing creditnotesview data.",
+  "business_domain": "Accounts & Finance",
+  "business_purpose": "Used to track and report creditnotesview records, including amounts and quantities, for the Accounts & Finance area.",
+  "table_type": "view",
+  "record_granularity": "One row represents one record returned by the creditnotesview view.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "customer",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Customer of the creditnotesview.",
+      "business_meaning": "Customer",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Branch",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Branch of the creditnotesview.",
+      "business_meaning": "Branch",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Address",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Address of the creditnotesview.",
+      "business_meaning": "Address",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "CNR_No",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "CNR no reference of the creditnotesview.",
+      "business_meaning": "CNR No",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "status",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Status of the creditnotesview.",
+      "business_meaning": "Status",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Total_credit_amount",
+      "data_type": "double",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total credit amount of the creditnotesview.",
+      "business_meaning": "Total Credit Amount",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "jv_or_creditnote",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Free-text jv or creditnote for the creditnotesview.",
+      "business_meaning": "Jv Or Creditnote",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "cms_code",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Cms code reference of the creditnotesview.",
+      "business_meaning": "Cms Code",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "dealer_name",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Name of the dealer.",
+      "business_meaning": "Dealer Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "createdBy",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Created by of the creditnotesview.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "varchar(26)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Created date of the creditnotesview.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "issued_date",
+      "data_type": "varchar(26)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Issued date of the creditnotesview.",
+      "business_meaning": "Issued Date",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "type",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Type of the creditnotesview.",
+      "business_meaning": "Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "Use Total_credit_amount for monetary or quantity totals.",
+    "Columns status, type classify the record; check the distinct values before filtering on them.",
+    "Vw_Creditnotesview is a database view: it is read-only and its rows are computed, so apply filters and a LIMIT when querying."
+  ],
+  "common_filters": [
+    "status",
+    "type",
+    "cms_code"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    },
+    {
+      "name": "Total Credit Amount",
+      "formula": "SUM(Total_credit_amount)"
+    }
+  ],
+  "common_queries": [
+    "List creditnotesview",
+    "Count of creditnotesview",
+    "Creditnotesview count by status"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [],
+    "known_issues": [
+      "Total_credit_amount is stored as floating point, so sums can carry small rounding differences.",
+      "Views expose no primary key or nullability guarantees; rows may repeat depending on the view definition."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "Total_credit_amount"
+    ],
+    "default_sort": "",
+    "avoid_columns": [
+      "Address"
+    ],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name Vw_Creditnotesview (identifiers can be case-sensitive).",
+      "Use SUM(Total_credit_amount) for totals of total credit amount.",
+      "This is a view; always apply filters and a LIMIT, as it may be expensive to scan.",
+      "Do not select Address; they are sensitive or may hold very large content."
+    ]
+  }
+}

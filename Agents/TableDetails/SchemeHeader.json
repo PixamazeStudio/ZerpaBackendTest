@@ -1,0 +1,357 @@
+{
+  "table_name": "SchemeHeader",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Scheme Header",
+  "description": "Holds scheme header records, linked to branch, scheme type.",
+  "business_domain": "Sales Planning & Performance",
+  "business_purpose": "Used to track and report scheme header records for the Sales Planning & Performance area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one scheme header.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the scheme header.",
+      "business_meaning": "Scheme Header identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Created_byId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the scheme header.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Created_date",
+      "data_type": "datetime",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Modified_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the scheme header.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Modified_date",
+      "data_type": "datetime",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "IsDeleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Title",
+      "data_type": "varchar(255)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Title of the scheme header.",
+      "business_meaning": "Title",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "No_of_slabs",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "No of slabs of the scheme header.",
+      "business_meaning": "No Of Slabs",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "SchemeTypeId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "SchemeType",
+        "column": "Id"
+      },
+      "description": "Reference to the scheme type linked to this scheme header.",
+      "business_meaning": "Scheme Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Image",
+      "data_type": "varchar(255)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Image of the scheme header.",
+      "business_meaning": "Image",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "type",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Type of the scheme header.",
+      "business_meaning": "Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Branchid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Branch",
+        "column": "id"
+      },
+      "description": "Reference to the branch linked to this scheme header.",
+      "business_meaning": "Branch",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "Created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the scheme header."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "Modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the scheme header."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "SchemeTypeId",
+      "to_table": "SchemeType",
+      "to_column": "Id",
+      "description": "Each scheme header references one scheme type (scheme type)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "Branchid",
+      "to_table": "Branch",
+      "to_column": "id",
+      "description": "Each scheme header references one branch (branch)."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "ERPSchemeRequestHeader",
+      "to_column": "schemeHeaderId",
+      "description": "Each scheme header can have many erp scheme request header records referencing it through schemeHeaderId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "SchemeDetails",
+      "to_column": "SchemeHeaderId",
+      "description": "Each scheme header can have many scheme details records referencing it through SchemeHeaderId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "SchemeMapping",
+      "to_column": "SchemeHeaderId",
+      "description": "Each scheme header can have many scheme mapping records referencing it through SchemeHeaderId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "SchemeProducts",
+      "to_column": "SchemeHeaderId",
+      "description": "Each scheme header can have many scheme products records referencing it through SchemeHeaderId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "SchemeRequest",
+      "to_column": "selected_schemeId",
+      "description": "Each scheme header can have many scheme request records referencing it through selected_schemeId."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "Created_byId",
+      "columns": [
+        "Created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "FK_SchemeHeader_Branch_Branchid",
+      "columns": [
+        "Branchid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "Modified_byId",
+      "columns": [
+        "Modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    },
+    {
+      "name": "SchemeTypeId",
+      "columns": [
+        "SchemeTypeId"
+      ],
+      "type": "non_clustered"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (IsDeleted = 1) should normally be excluded from reporting.",
+    "Created_date is the preferred date column for period-based reporting.",
+    "Columns type classify the record; check the distinct values before filtering on them.",
+    "Join to Branch, Scheme Type through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "Created_date",
+    "SchemeTypeId",
+    "Branchid",
+    "type",
+    "IsDeleted"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "Scheme Header by month",
+    "Recent scheme header",
+    "Scheme Header by scheme type",
+    "Scheme Header by branch",
+    "Scheme Header count by type"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "Modified_byId",
+      "Modified_date",
+      "Image",
+      "type",
+      "Branchid"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "Created_date",
+    "preferred_amount_columns": [],
+    "default_sort": "Created_date DESC",
+    "avoid_columns": [
+      "Image"
+    ],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name SchemeHeader (identifiers can be case-sensitive).",
+      "Always filter IsDeleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT Id) when counting scheme header records; joins can duplicate rows.",
+      "To resolve names, join on: SchemeTypeId = SchemeType.Id; Branchid = Branch.id.",
+      "Do not select Image; they are sensitive or may hold very large content."
+    ]
+  }
+}

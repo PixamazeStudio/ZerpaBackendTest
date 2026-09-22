@@ -1,0 +1,438 @@
+{
+  "table_name": "FactoryProducts",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Factory Products",
+  "description": "Holds factory products records (defined in the EF Core model), linked to factories, factory category, factory units.",
+  "business_domain": "Factory & Inventory",
+  "business_purpose": "Used to track and report factory products records, including amounts and quantities, for the Factory & Inventory area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one factory product.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the factory product.",
+      "business_meaning": "Factory Products identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "GST",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "GST of the factory product.",
+      "business_meaning": "GST",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "categoryid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "FactoryCategory",
+        "column": "id"
+      },
+      "description": "Reference to the factory category linked to this factory product.",
+      "business_meaning": "Factory Category",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the factory product.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "current_stock",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Current stock of the factory product.",
+      "business_meaning": "Current Stock",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "factoryid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Factories",
+        "column": "id"
+      },
+      "description": "Reference to the factories linked to this factory product.",
+      "business_meaning": "Factories",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the factory product.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "price",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Price of the factory product.",
+      "business_meaning": "Price",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "product_code",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Product code reference of the factory product.",
+      "business_meaning": "Product Code",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "product_description",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text product description for the factory product.",
+      "business_meaning": "Product Description",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "product_name",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Name of the product.",
+      "business_meaning": "Product Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "unitid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "FactoryUnits",
+        "column": "id"
+      },
+      "description": "Reference to the factory units linked to this factory product.",
+      "business_meaning": "Factory Units",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "categoryid",
+      "to_table": "FactoryCategory",
+      "to_column": "id",
+      "description": "Each factory product references one factory category (category)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the factory product."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "factoryid",
+      "to_table": "Factories",
+      "to_column": "id",
+      "description": "Each factory product references one factories (factory)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the factory product."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "unitid",
+      "to_table": "FactoryUnits",
+      "to_column": "id",
+      "description": "Each factory product references one factory units (unit)."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "FactoryProductRequisitionDetails",
+      "to_column": "productid",
+      "description": "Each factory product can have many factory product requisition details records referencing it through productid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "Stock",
+      "to_column": "factory_productsid",
+      "description": "Each factory product can have many stock records referencing it through factory_productsid."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "StoreRequisitionDetails",
+      "to_column": "productid",
+      "description": "Each factory product can have many store requisition details records referencing it through productid."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    },
+    {
+      "name": "IX_FactoryProducts_categoryid",
+      "columns": [
+        "categoryid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_FactoryProducts_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_FactoryProducts_factoryid",
+      "columns": [
+        "factoryid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_FactoryProducts_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_FactoryProducts_unitid",
+      "columns": [
+        "unitid"
+      ],
+      "type": "non_clustered"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Use GST / price for monetary or quantity totals.",
+    "Join to Factories, Factory Category, Factory Units through the foreign key columns to resolve names.",
+    "FactoryProducts is defined in the EF Core model but was not found in the connected database, so it may not be deployed there."
+  ],
+  "common_filters": [
+    "created_date",
+    "categoryid",
+    "factoryid",
+    "unitid",
+    "is_deleted",
+    "product_code"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total GST",
+      "formula": "SUM(GST)"
+    },
+    {
+      "name": "Average Price",
+      "formula": "AVG(price)"
+    },
+    {
+      "name": "Average GST per factory product",
+      "formula": "SUM(GST) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Factory Products by month",
+    "Recent factory products",
+    "Factory Products by factory category",
+    "Factory Products by factories",
+    "Factory Products by factory units",
+    "Total GST by month",
+    "Top factory category by GST"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "GST",
+      "categoryid",
+      "created_byId",
+      "current_stock",
+      "factoryid",
+      "modified_byId",
+      "modified_date",
+      "price",
+      "product_code",
+      "product_description",
+      "unitid"
+    ],
+    "known_issues": [
+      "GST, price are stored as floating point, so sums can carry small rounding differences.",
+      "GST, price are nullable; use COALESCE when summing or comparing."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [
+      "GST",
+      "price"
+    ],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against FactoryProducts: no table or view with this name exists in the connected database.",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting factory product records; joins can duplicate rows.",
+      "Use SUM(GST) for totals of GST.",
+      "To resolve names, join on: categoryid = FactoryCategory.id; factoryid = Factories.id; unitid = FactoryUnits.id.",
+      "Defined in the EF Core model but not found in the connected database; confirm it has been migrated before relying on it."
+    ]
+  }
+}

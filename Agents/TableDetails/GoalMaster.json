@@ -1,0 +1,302 @@
+{
+  "table_name": "GoalMaster",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Goal Master",
+  "description": "Holds goal master records, linked to user level.",
+  "business_domain": "Sales Planning & Performance",
+  "business_purpose": "Used to track and report goal master records, including amounts and quantities, for the Sales Planning & Performance area.",
+  "table_type": "master",
+  "record_granularity": "One row represents one goal master.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the goal master.",
+      "business_meaning": "Goal Master identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "GoalName",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Goal name of the goal master.",
+      "business_meaning": "Goal Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "GoalType",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Goal type of the goal master.",
+      "business_meaning": "Goal Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Weightage",
+      "data_type": "decimal(65,30)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Weightage of the goal master.",
+      "business_meaning": "Weightage",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "IsActive",
+      "data_type": "tinyint(1)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "True when the goal master is active.",
+      "business_meaning": "Is Active",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Created by id of the goal master.",
+      "business_meaning": "Created By Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Modified by id of the goal master.",
+      "business_meaning": "Modified By Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "role_levelid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "UserLevel",
+        "column": "id"
+      },
+      "description": "Reference to the user level linked to this goal master.",
+      "business_meaning": "User Level",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_capped",
+      "data_type": "tinyint(1)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "True when the goal master is capped.",
+      "business_meaning": "Is Capped",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "role_levelid",
+      "to_table": "UserLevel",
+      "to_column": "id",
+      "description": "Each goal master references one user level (role level)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "FK_GoalMaster_UserLevel_role_levelid",
+      "columns": [
+        "role_levelid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "Use IsActive = 1 to restrict results to active records.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Use Weightage for monetary or quantity totals.",
+    "Columns GoalType classify the record; check the distinct values before filtering on them.",
+    "Join to User Level through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "created_date",
+    "role_levelid",
+    "GoalType",
+    "IsActive",
+    "is_deleted",
+    "is_capped"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    },
+    {
+      "name": "Total Weightage",
+      "formula": "SUM(Weightage)"
+    },
+    {
+      "name": "Average Weightage per goal master",
+      "formula": "SUM(Weightage) / COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "Goal Master by month",
+    "Recent goal master",
+    "Goal Master by user level",
+    "Goal Master count by goal type",
+    "Total weightage by month",
+    "Top user level by weightage"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "GoalName",
+      "GoalType",
+      "Weightage",
+      "IsActive",
+      "created_date",
+      "created_byId",
+      "modified_date",
+      "modified_byId",
+      "is_deleted",
+      "role_levelid",
+      "is_capped"
+    ],
+    "known_issues": [
+      "Weightage is nullable; use COALESCE when summing or comparing."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [
+      "Weightage"
+    ],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name GoalMaster (identifiers can be case-sensitive).",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT Id) when counting goal master records; joins can duplicate rows.",
+      "Use SUM(Weightage) for totals of weightage.",
+      "To resolve names, join on: role_levelid = UserLevel.id."
+    ]
+  }
+}

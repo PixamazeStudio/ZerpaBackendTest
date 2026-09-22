@@ -1,0 +1,405 @@
+{
+  "table_name": "YardHeader",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Yard Header",
+  "description": "Holds yard header records (defined in the EF Core model), linked to department, lot space, parking space.",
+  "business_domain": "Factory & Inventory",
+  "business_purpose": "Used to track and report yard header records for the Factory & Inventory area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one yard header.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the yard header.",
+      "business_meaning": "Yard Header identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the yard header.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "departmentid",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Department",
+        "column": "id"
+      },
+      "description": "Reference to the department linked to this yard header.",
+      "business_meaning": "Department",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "lotspaceid",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "LotSpace",
+        "column": "id"
+      },
+      "description": "Reference to the lot space linked to this yard header.",
+      "business_meaning": "Lot Space",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the yard header.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "parkingspaceid",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "ParkingSpace",
+        "column": "id"
+      },
+      "description": "Reference to the parking space linked to this yard header.",
+      "business_meaning": "Parking Space",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "speciesid",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Species",
+        "column": "id"
+      },
+      "description": "Reference to the species linked to this yard header.",
+      "business_meaning": "Species",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "supplierid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Supplier",
+        "column": "id"
+      },
+      "description": "Reference to the supplier linked to this yard header.",
+      "business_meaning": "Supplier",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "trucksid",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Trucks",
+        "column": "id"
+      },
+      "description": "Reference to the trucks linked to this yard header.",
+      "business_meaning": "Trucks",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "yard_code",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Yard code reference of the yard header.",
+      "business_meaning": "Yard Code",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the yard header."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "departmentid",
+      "to_table": "Department",
+      "to_column": "id",
+      "description": "Each yard header references one department (department)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "lotspaceid",
+      "to_table": "LotSpace",
+      "to_column": "id",
+      "description": "Each yard header references one lot space (lotspace)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the yard header."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "parkingspaceid",
+      "to_table": "ParkingSpace",
+      "to_column": "id",
+      "description": "Each yard header references one parking space (parkingspace)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "speciesid",
+      "to_table": "Species",
+      "to_column": "id",
+      "description": "Each yard header references one species (species)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "supplierid",
+      "to_table": "Supplier",
+      "to_column": "id",
+      "description": "Each yard header references one supplier (supplier)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "trucksid",
+      "to_table": "Trucks",
+      "to_column": "id",
+      "description": "Each yard header references one trucks (trucks)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    },
+    {
+      "name": "IX_YardHeader_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_YardHeader_departmentid",
+      "columns": [
+        "departmentid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_YardHeader_lotspaceid",
+      "columns": [
+        "lotspaceid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_YardHeader_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_YardHeader_parkingspaceid",
+      "columns": [
+        "parkingspaceid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_YardHeader_speciesid",
+      "columns": [
+        "speciesid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_YardHeader_supplierid",
+      "columns": [
+        "supplierid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_YardHeader_trucksid",
+      "columns": [
+        "trucksid"
+      ],
+      "type": "non_clustered"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Join to Department, Lot Space, Parking Space, Species through the foreign key columns to resolve names.",
+    "YardHeader is defined in the EF Core model but was not found in the connected database, so it may not be deployed there."
+  ],
+  "common_filters": [
+    "created_date",
+    "departmentid",
+    "lotspaceid",
+    "parkingspaceid",
+    "speciesid",
+    "is_deleted",
+    "yard_code"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Yard Header by month",
+    "Recent yard header",
+    "Yard Header by department",
+    "Yard Header by lot space",
+    "Yard Header by parking space"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "modified_byId",
+      "modified_date",
+      "supplierid"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against YardHeader: no table or view with this name exists in the connected database.",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting yard header records; joins can duplicate rows.",
+      "To resolve names, join on: departmentid = Department.id; lotspaceid = LotSpace.id; parkingspaceid = ParkingSpace.id; speciesid = Species.id; supplierid = Supplier.id.",
+      "Defined in the EF Core model but not found in the connected database; confirm it has been migrated before relying on it."
+    ]
+  }
+}

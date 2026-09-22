@@ -1,0 +1,289 @@
+{
+  "table_name": "CrmClientType",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Crm Client Type",
+  "description": "Holds crm client type records.",
+  "business_domain": "Sales & CRM",
+  "business_purpose": "Used to track and report crm client type records for the Sales & CRM area.",
+  "table_type": "master",
+  "record_granularity": "One row represents one crm client type.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the crm client type.",
+      "business_meaning": "Crm Client Type identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "type_name",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Name of the type.",
+      "business_meaning": "Type Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "description",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text description for the crm client type.",
+      "business_meaning": "Description",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the crm client type.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the crm client type.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_default",
+      "data_type": "tinyint(1)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "True when the crm client type is default.",
+      "business_meaning": "Is Default",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the crm client type."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the crm client type."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "Client",
+      "to_column": "Client_typeId",
+      "description": "Each crm client type can have many client records referencing it through Client_typeId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "FocusList",
+      "to_column": "Client_TypeId",
+      "description": "Each crm client type can have many focus list records referencing it through Client_TypeId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "LinkedDealers",
+      "to_column": "client_typeId",
+      "description": "Each crm client type can have many linked dealers records referencing it through client_typeId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "LinkedProducts",
+      "to_column": "Client_TypeId",
+      "description": "Each crm client type can have many linked products records referencing it through Client_TypeId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "LinkedTeams",
+      "to_column": "client_typeId",
+      "description": "Each crm client type can have many linked teams records referencing it through client_typeId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "LinkedTeams",
+      "to_column": "related_typeId",
+      "description": "Each crm client type can have many linked teams records referencing it through related_typeId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "ProjectClient",
+      "to_column": "client_typeId",
+      "description": "Each crm client type can have many project client records referencing it through client_typeId."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_CrmClientType_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CrmClientType_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "created_date is the preferred date column for period-based reporting."
+  ],
+  "common_filters": [
+    "created_date",
+    "is_deleted",
+    "is_default",
+    "type_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "Crm Client Type by month",
+    "Recent crm client type"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "description",
+      "modified_date",
+      "modified_byId",
+      "is_default"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name CrmClientType (identifiers can be case-sensitive).",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT Id) when counting crm client type records; joins can duplicate rows."
+    ]
+  }
+}

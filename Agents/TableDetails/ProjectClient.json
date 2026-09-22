@@ -1,0 +1,296 @@
+{
+  "table_name": "ProjectClient",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Project Client",
+  "description": "Holds project client records, linked to client, crm client type, crm projects.",
+  "business_domain": "Sales & CRM",
+  "business_purpose": "Used to track and report project client records for the Sales & CRM area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one project client.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the project client.",
+      "business_meaning": "Project Client identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "projectId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "CRM_Projects",
+        "column": "Id"
+      },
+      "description": "Reference to the crm projects linked to this project client.",
+      "business_meaning": "CRM Projects",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "influencerId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Client",
+        "column": "Id"
+      },
+      "description": "Reference to the client linked to this project client.",
+      "business_meaning": "Client",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "client_typeId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "CrmClientType",
+        "column": "Id"
+      },
+      "description": "Reference to the crm client type linked to this project client.",
+      "business_meaning": "Crm Client Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Created_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the project client.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Created_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Modified_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the project client.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "projectId",
+      "to_table": "CRM_Projects",
+      "to_column": "Id",
+      "description": "Each project client references one crm projects (project)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "influencerId",
+      "to_table": "Client",
+      "to_column": "Id",
+      "description": "Each project client references one client (influencer)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "client_typeId",
+      "to_table": "CrmClientType",
+      "to_column": "Id",
+      "description": "Each project client references one crm client type (client type)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "Created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the project client."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "Modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the project client."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_ProjectClient_client_typeId",
+      "columns": [
+        "client_typeId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ProjectClient_Created_byId",
+      "columns": [
+        "Created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ProjectClient_influencerId",
+      "columns": [
+        "influencerId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ProjectClient_Modified_byId",
+      "columns": [
+        "Modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ProjectClient_projectId",
+      "columns": [
+        "projectId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "Created_date is the preferred date column for period-based reporting.",
+    "Join to CRM Projects, Client, Crm Client Type through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "Created_date",
+    "projectId",
+    "influencerId",
+    "client_typeId",
+    "is_deleted"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Project Client by month",
+    "Recent project client",
+    "Project Client by crm projects",
+    "Project Client by client",
+    "Project Client by crm client type"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "Created_byId",
+      "Created_date",
+      "Modified_date",
+      "Modified_byId"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "Created_date",
+    "preferred_amount_columns": [],
+    "default_sort": "Created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name ProjectClient (identifiers can be case-sensitive).",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting project client records; joins can duplicate rows.",
+      "To resolve names, join on: projectId = CRM_Projects.Id; influencerId = Client.Id; client_typeId = CrmClientType.Id."
+    ]
+  }
+}

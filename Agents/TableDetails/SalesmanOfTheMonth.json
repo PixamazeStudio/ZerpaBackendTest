@@ -1,0 +1,124 @@
+{
+  "table_name": "Vw_SalesmanOfTheMonth",
+  "schema": null,
+  "object_type": "view",
+  "view_name": "Vw_SalesmanOfTheMonth",
+  "exists_in_database": true,
+  "display_name": "Salesman Of The Month",
+  "description": "Database view exposing salesman of the month data.",
+  "business_domain": "Sales Planning & Performance",
+  "business_purpose": "Used to track and report salesman of the month records, including amounts and quantities, for the Sales Planning & Performance area.",
+  "table_type": "view",
+  "record_granularity": "One row represents one record returned by the salesman of the month view.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "userid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Userid of the salesman of the month.",
+      "business_meaning": "Userid",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "salesman_name",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Name of the salesman.",
+      "business_meaning": "Salesman Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "branch_id",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Branch id of the salesman of the month.",
+      "business_meaning": "Branch Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "total_sheets",
+      "data_type": "decimal(32,0)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Total sheets of the salesman of the month.",
+      "business_meaning": "Total Sheets",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "Use total_sheets for monetary or quantity totals.",
+    "Vw_SalesmanOfTheMonth is a database view: it is read-only and its rows are computed, so apply filters and a LIMIT when querying."
+  ],
+  "common_filters": [
+    "salesman_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    },
+    {
+      "name": "Total Sheets",
+      "formula": "SUM(total_sheets)"
+    }
+  ],
+  "common_queries": [
+    "List salesman of the month",
+    "Count of salesman of the month"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [],
+    "known_issues": [
+      "total_sheets is nullable; use COALESCE when summing or comparing.",
+      "Views expose no primary key or nullability guarantees; rows may repeat depending on the view definition."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "total_sheets"
+    ],
+    "default_sort": "",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name Vw_SalesmanOfTheMonth (identifiers can be case-sensitive).",
+      "Use SUM(total_sheets) for totals of total sheets.",
+      "This is a view; always apply filters and a LIMIT, as it may be expensive to scan."
+    ]
+  }
+}

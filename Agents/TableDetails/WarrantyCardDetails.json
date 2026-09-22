@@ -1,0 +1,175 @@
+{
+  "table_name": "WarrantyCardDetails",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Warranty Card Details",
+  "description": "Holds warranty card details records, linked to warranty card.",
+  "business_domain": "Warranty",
+  "business_purpose": "Used to track and report warranty card details records, including amounts and quantities, for the Warranty area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one warranty card detail.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the warranty card detail.",
+      "business_meaning": "Warranty Card Details identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "product_name",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Name of the product.",
+      "business_meaning": "Product Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "quantity",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Quantity of the warranty card detail.",
+      "business_meaning": "Quantity",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "WarrantyCardid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "WarrantyCard",
+        "column": "id"
+      },
+      "description": "Reference to the warranty card linked to this warranty card detail.",
+      "business_meaning": "Warranty Card",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "invoice_no",
+      "data_type": "varchar(100)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Invoice no reference of the warranty card detail.",
+      "business_meaning": "Invoice No",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "WarrantyCardid",
+      "to_table": "WarrantyCard",
+      "to_column": "id",
+      "description": "Each warranty card detail references one warranty card (warranty card)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_WarrantyCardDetails_WarrantyCardid",
+      "columns": [
+        "WarrantyCardid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Use quantity for monetary or quantity totals.",
+    "Join to Warranty Card through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "WarrantyCardid",
+    "product_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total Quantity",
+      "formula": "SUM(quantity)"
+    },
+    {
+      "name": "Average Quantity per warranty card detail",
+      "formula": "SUM(quantity) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Warranty Card Details by warranty card",
+    "Top warranty card by quantity"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "WarrantyCardid",
+      "invoice_no"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "quantity"
+    ],
+    "default_sort": "id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name WarrantyCardDetails (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT id) when counting warranty card detail records; joins can duplicate rows.",
+      "Use SUM(quantity) for totals of quantity.",
+      "To resolve names, join on: WarrantyCardid = WarrantyCard.id."
+    ]
+  }
+}

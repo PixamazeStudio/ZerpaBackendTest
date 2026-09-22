@@ -1,0 +1,334 @@
+{
+  "table_name": "InfluencerPlannerDetails",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Influencer Planner Details",
+  "description": "Holds influencer planner details records, linked to category, client, influencer planner header.",
+  "business_domain": "Sales Planning & Performance",
+  "business_purpose": "Used to track and report influencer planner details records, including amounts and quantities, for the Sales Planning & Performance area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one influencer planner detail.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the influencer planner detail.",
+      "business_meaning": "Influencer Planner Details identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "clientId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Client",
+        "column": "Id"
+      },
+      "description": "Reference to the client linked to this influencer planner detail.",
+      "business_meaning": "Client",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "categoryid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Category",
+        "column": "id"
+      },
+      "description": "Reference to the category linked to this influencer planner detail.",
+      "business_meaning": "Category",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "first_phase",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "First phase of the influencer planner detail.",
+      "business_meaning": "First Phase",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "second_phase",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Second phase of the influencer planner detail.",
+      "business_meaning": "Second Phase",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "third_phase",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Third phase of the influencer planner detail.",
+      "business_meaning": "Third Phase",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "total",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total of the influencer planner detail.",
+      "business_meaning": "Total",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "influencer_planning_header_by_id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Influencer planning header by id of the influencer planner detail.",
+      "business_meaning": "Influencer Planning Header By Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "InfluencerPlannerHeaderid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "InfluencerPlannerHeader",
+        "column": "id"
+      },
+      "description": "Reference to the influencer planner header linked to this influencer planner detail.",
+      "business_meaning": "Influencer Planner Header",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "pvc_planned",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Pvc planned of the influencer planner detail.",
+      "business_meaning": "Pvc Planned",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "ply_planned",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Ply planned of the influencer planner detail.",
+      "business_meaning": "Ply Planned",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "clientId",
+      "to_table": "Client",
+      "to_column": "Id",
+      "description": "Each influencer planner detail references one client (client)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "categoryid",
+      "to_table": "Category",
+      "to_column": "id",
+      "description": "Each influencer planner detail references one category (category)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "InfluencerPlannerHeaderid",
+      "to_table": "InfluencerPlannerHeader",
+      "to_column": "id",
+      "description": "Each influencer planner detail references one influencer planner header (influencer planner header)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_InfluencerPlannerDetails_categoryid",
+      "columns": [
+        "categoryid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_InfluencerPlannerDetails_clientId",
+      "columns": [
+        "clientId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_InfluencerPlannerDetails_InfluencerPlannerHeaderid",
+      "columns": [
+        "InfluencerPlannerHeaderid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Use total / first_phase for monetary or quantity totals.",
+    "Join to Category, Client, Influencer Planner Header through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "clientId",
+    "categoryid",
+    "InfluencerPlannerHeaderid"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total First Phase",
+      "formula": "SUM(first_phase)"
+    },
+    {
+      "name": "Total Second Phase",
+      "formula": "SUM(second_phase)"
+    },
+    {
+      "name": "Total Third Phase",
+      "formula": "SUM(third_phase)"
+    },
+    {
+      "name": "Average First Phase per influencer planner detail",
+      "formula": "SUM(first_phase) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Influencer Planner Details by client",
+    "Influencer Planner Details by category",
+    "Influencer Planner Details by influencer planner header",
+    "Top client by first phase"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "clientId",
+      "categoryid",
+      "InfluencerPlannerHeaderid"
+    ],
+    "known_issues": [
+      "first_phase, second_phase, third_phase, total are stored as floating point, so sums can carry small rounding differences."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "total",
+      "first_phase"
+    ],
+    "default_sort": "id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name InfluencerPlannerDetails (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT id) when counting influencer planner detail records; joins can duplicate rows.",
+      "Use SUM(total) for totals of total.",
+      "To resolve names, join on: clientId = Client.Id; categoryid = Category.id; InfluencerPlannerHeaderid = InfluencerPlannerHeader.id."
+    ]
+  }
+}

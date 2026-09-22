@@ -1,0 +1,1182 @@
+{
+  "table_name": "Client",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Client",
+  "description": "Holds client records, linked to area, region, sub area.",
+  "business_domain": "Sales & CRM",
+  "business_purpose": "Used to track and report client records, including approval status, for the Sales & CRM area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one client.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the client.",
+      "business_meaning": "Client identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Name",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Name of the client.",
+      "business_meaning": "Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Address",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Address of the client.",
+      "business_meaning": "Address",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Contact",
+      "data_type": "bigint(20)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Contact of the client.",
+      "business_meaning": "Contact",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "DOB",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of DOB.",
+      "business_meaning": "DOB",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Email",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Email of the client.",
+      "business_meaning": "Email",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Status",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Status of the client.",
+      "business_meaning": "Status",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Billing_Information",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Billing information of the client.",
+      "business_meaning": "Billing Information",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Social_Media_Links",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Social media links of the client.",
+      "business_meaning": "Social Media Links",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Anniversary_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of anniversary.",
+      "business_meaning": "Anniversary Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the client.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the client.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "areaid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Area",
+        "column": "id"
+      },
+      "description": "Reference to the area linked to this client.",
+      "business_meaning": "Area",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "regionid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Region",
+        "column": "id"
+      },
+      "description": "Reference to the region linked to this client.",
+      "business_meaning": "Region",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "subareaid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "SubArea",
+        "column": "id"
+      },
+      "description": "Reference to the sub area linked to this client.",
+      "business_meaning": "Sub Area",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Client_typeId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "CrmClientType",
+        "column": "Id"
+      },
+      "description": "Reference to the crm client type linked to this client.",
+      "business_meaning": "Crm Client Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "attachment",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Attachment of the client.",
+      "business_meaning": "Attachment",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Buying_Triggerid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "BuyingTriggerTypes",
+        "column": "id"
+      },
+      "description": "Reference to the buying trigger types linked to this client.",
+      "business_meaning": "Buying Trigger Types",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Class_type",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Class type of the client.",
+      "business_meaning": "Class Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Has_an_office_space",
+      "data_type": "tinyint(1)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "True when the client hass an office space.",
+      "business_meaning": "Has An Office Space",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Kind_of_projectsid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "ProjectTypes",
+        "column": "id"
+      },
+      "description": "Reference to the project types linked to this client.",
+      "business_meaning": "Project Types",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "No_of_projects_taken_in_year",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "No of projects taken in year of the client.",
+      "business_meaning": "No Of Projects Taken In Year",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Team_size",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Team size of the client.",
+      "business_meaning": "Team Size",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Work_typeid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "ClientWorkTypes",
+        "column": "id"
+      },
+      "description": "Reference to the client work types linked to this client.",
+      "business_meaning": "Client Work Types",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_approved",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the client is approved.",
+      "business_meaning": "Is Approved",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_rejected",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the client is rejected.",
+      "business_meaning": "Is Rejected",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "operated_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who approved or rejected the client.",
+      "business_meaning": "Operated By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "operated_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of operated.",
+      "business_meaning": "Operated Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "file_upload",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "File upload of the client.",
+      "business_meaning": "File Upload",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "firm_id",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Firm id of the client.",
+      "business_meaning": "Firm Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "gst_no",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Gst no reference of the client.",
+      "business_meaning": "Gst No",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "proposed_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this client.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "source_number",
+      "data_type": "varchar(250)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Source number reference of the client.",
+      "business_meaning": "Source Number",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "bank_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the bank.",
+      "business_meaning": "Bank Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "ifsc_code",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Ifsc code reference of the client.",
+      "business_meaning": "Ifsc Code",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "scheme_name",
+      "data_type": "varchar(45)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the scheme.",
+      "business_meaning": "Scheme Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "scheme_no",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Scheme no of the client.",
+      "business_meaning": "Scheme No",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "SchemeRequestid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "SchemeRequest",
+        "column": "id"
+      },
+      "description": "Reference to the scheme request linked to this client.",
+      "business_meaning": "Scheme Request",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "organizationid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Organizations",
+        "column": "id"
+      },
+      "description": "Reference to the organizations linked to this client.",
+      "business_meaning": "Organizations",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "influencer_sourceId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "InfluencerSource",
+        "column": "Id"
+      },
+      "description": "Reference to the influencer source linked to this client.",
+      "business_meaning": "Influencer Source",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Name_as_per_bank",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name as per bank of the client.",
+      "business_meaning": "Name As Per Bank",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "merged_from",
+      "data_type": "varchar(45)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Merged from of the client.",
+      "business_meaning": "Merged From",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "PAN_number",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "PAN number reference of the client.",
+      "business_meaning": "PAN Number",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "location",
+      "data_type": "varchar(255)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Location of the client.",
+      "business_meaning": "Location",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_scheme",
+      "data_type": "tinyint(1)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "True when the client is scheme.",
+      "business_meaning": "Is Scheme",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_fl",
+      "data_type": "tinyint(1)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "True when the client is fl.",
+      "business_meaning": "Is Fl",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "contact_person_mobile",
+      "data_type": "varchar(45)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Contact person mobile of the client.",
+      "business_meaning": "Contact Person Mobile",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "contact_person_name",
+      "data_type": "varchar(255)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the contact person.",
+      "business_meaning": "Contact Person Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "key_person_name",
+      "data_type": "varchar(255)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the key person.",
+      "business_meaning": "Key Person Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the client."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the client."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "areaid",
+      "to_table": "Area",
+      "to_column": "id",
+      "description": "Each client references one area (area)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "regionid",
+      "to_table": "Region",
+      "to_column": "id",
+      "description": "Each client references one region (region)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "subareaid",
+      "to_table": "SubArea",
+      "to_column": "id",
+      "description": "Each client references one sub area (subarea)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "Client_typeId",
+      "to_table": "CrmClientType",
+      "to_column": "Id",
+      "description": "Each client references one crm client type (client type)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "Buying_Triggerid",
+      "to_table": "BuyingTriggerTypes",
+      "to_column": "id",
+      "description": "Each client references one buying trigger types (buying trigger)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "Kind_of_projectsid",
+      "to_table": "ProjectTypes",
+      "to_column": "id",
+      "description": "Each client references one project types (kind of projects)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "Work_typeid",
+      "to_table": "ClientWorkTypes",
+      "to_column": "id",
+      "description": "Each client references one client work types (work type)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "operated_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who approved or rejected the client."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "proposed_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each client references one users (proposed by)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "SchemeRequestid",
+      "to_table": "SchemeRequest",
+      "to_column": "id",
+      "description": "Each client references one scheme request (scheme request)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "organizationid",
+      "to_table": "Organizations",
+      "to_column": "id",
+      "description": "Each client references one organizations (organization)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "influencer_sourceId",
+      "to_table": "InfluencerSource",
+      "to_column": "Id",
+      "description": "Each client references one influencer source (influencer source)."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "CRM_Projects",
+      "to_column": "architectId",
+      "description": "Each client can have many crm projects records referencing it through architectId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "CRM_Projects",
+      "to_column": "carpenterId",
+      "description": "Each client can have many crm projects records referencing it through carpenterId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "CRM_Projects",
+      "to_column": "contractorId",
+      "description": "Each client can have many crm projects records referencing it through contractorId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "CRM_SecondaryOrder",
+      "to_column": "primary_decision_makerId",
+      "description": "Each client can have many crm secondary order records referencing it through primary_decision_makerId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "CRM_Visit",
+      "to_column": "clientId",
+      "description": "Each client can have many crm visit records referencing it through clientId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "ClientBrandLinks",
+      "to_column": "ClientId",
+      "description": "Each client can have many client brand links records referencing it through ClientId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "ClientBuyingTriggers",
+      "to_column": "ClientId",
+      "description": "Each client can have many client buying triggers records referencing it through ClientId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "ClientOrganizations",
+      "to_column": "ClientId",
+      "description": "Each client can have many client organizations records referencing it through ClientId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "ClientPreferredDealerLinks",
+      "to_column": "ClientId",
+      "description": "Each client can have many client preferred dealer links records referencing it through ClientId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "ClientProjectTypes",
+      "to_column": "ClientId",
+      "description": "Each client can have many client project types records referencing it through ClientId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "ClientWorkTypeLinks",
+      "to_column": "ClientId",
+      "description": "Each client can have many client work type links records referencing it through ClientId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "ERPSchemeRequestDetails",
+      "to_column": "supplied_toId",
+      "description": "Each client can have many erp scheme request details records referencing it through supplied_toId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "(other tables)",
+      "to_column": "(various)",
+      "description": "11 more tables reference this table; only the first 12 are listed."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "FK_Client_InfluencerSource_influencer_sourceId",
+      "columns": [
+        "influencer_sourceId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "FK_Client_Organizations_organizationid",
+      "columns": [
+        "organizationid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "FK_Client_Users_proposed_byId",
+      "columns": [
+        "proposed_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Client_areaid",
+      "columns": [
+        "areaid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Client_Buying_Triggerid",
+      "columns": [
+        "Buying_Triggerid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Client_Client_typeId",
+      "columns": [
+        "Client_typeId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Client_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Client_Kind_of_projectsid",
+      "columns": [
+        "Kind_of_projectsid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Client_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Client_operated_byId",
+      "columns": [
+        "operated_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Client_regionid",
+      "columns": [
+        "regionid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Client_SchemeRequestid",
+      "columns": [
+        "SchemeRequestid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Client_subareaid",
+      "columns": [
+        "subareaid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Client_Work_typeid",
+      "columns": [
+        "Work_typeid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "Approval state is tracked with is_approved, is_rejected; a record with neither flag set is typically still pending.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Columns Status, Class_type classify the record; check the distinct values before filtering on them.",
+    "Join to Area, Crm Client Type, Region, Sub Area through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "created_date",
+    "areaid",
+    "regionid",
+    "subareaid",
+    "Client_typeId",
+    "Status",
+    "Class_type",
+    "is_deleted",
+    "Has_an_office_space",
+    "is_approved",
+    "Name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "Client by month",
+    "Recent client",
+    "Client by area",
+    "Client by region",
+    "Client by sub area",
+    "Client count by status"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "DOB",
+      "Email",
+      "Status",
+      "Billing_Information",
+      "Social_Media_Links",
+      "Anniversary_date",
+      "modified_byId",
+      "modified_date",
+      "subareaid",
+      "attachment",
+      "Buying_Triggerid",
+      "Class_type",
+      "Has_an_office_space",
+      "Kind_of_projectsid",
+      "No_of_projects_taken_in_year",
+      "Team_size",
+      "Work_typeid",
+      "operated_byId",
+      "operated_date",
+      "file_upload",
+      "firm_id",
+      "gst_no",
+      "proposed_byId",
+      "source_number",
+      "bank_name",
+      "ifsc_code",
+      "scheme_name",
+      "scheme_no",
+      "SchemeRequestid",
+      "organizationid",
+      "influencer_sourceId",
+      "Name_as_per_bank",
+      "merged_from",
+      "PAN_number",
+      "location",
+      "is_scheme",
+      "is_fl",
+      "contact_person_mobile",
+      "contact_person_name",
+      "key_person_name"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [
+      "Address",
+      "DOB",
+      "Email",
+      "file_upload",
+      "ifsc_code",
+      "PAN_number",
+      "contact_person_mobile"
+    ],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name Client (identifiers can be case-sensitive).",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT Id) when counting client records; joins can duplicate rows.",
+      "To resolve names, join on: areaid = Area.id; regionid = Region.id; subareaid = SubArea.id; Client_typeId = CrmClientType.Id; Buying_Triggerid = BuyingTriggerTypes.id.",
+      "Do not select Address, DOB, Email, file_upload, ifsc_code, PAN_number and others; they are sensitive or may hold very large content."
+    ]
+  }
+}

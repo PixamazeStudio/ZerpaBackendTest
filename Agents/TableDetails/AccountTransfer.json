@@ -1,0 +1,889 @@
+{
+  "table_name": "AccountTransfer",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Account Transfers",
+  "description": "Stores account transfer (bank/payment transfer) request header information, including the requested amount, approval workflow status, accounts confirmation, deductions and payment details.",
+  "business_domain": "Accounts",
+  "business_purpose": "Used to track account transfer requests raised by branches or users, their two-level approval (approver and accounts), confirmed and net payable amounts, hold/close status and payment date.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one account transfer request.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the account transfer.",
+      "business_meaning": "Account transfer record identifier",
+      "example_values": [
+        101,
+        102,
+        103
+      ],
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "code",
+      "data_type": "longtext",
+      "nullable": false,
+      "description": "Reference code of the account transfer.",
+      "business_meaning": "Account transfer number shown to users",
+      "example_values": [
+        "AT-0001",
+        "AT-0002"
+      ],
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "vendor_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "description": "Name of the vendor or payee the transfer is made to.",
+      "business_meaning": "Payee / vendor",
+      "example_values": [
+        "ABC Traders",
+        "XYZ Logistics"
+      ],
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "message",
+      "data_type": "longtext",
+      "nullable": true,
+      "description": "Free-text remark or purpose entered with the transfer request.",
+      "business_meaning": "Transfer description / remark",
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "description": "Date and time when the account transfer was created.",
+      "business_meaning": "Request date",
+      "example_values": [
+        "2026-09-01",
+        "2026-09-02"
+      ],
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the account transfer.",
+      "business_meaning": "Requester",
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "branchid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Branch",
+        "column": "id"
+      },
+      "description": "Branch the account transfer belongs to.",
+      "business_meaning": "Requesting branch",
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "creditnote_typeid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "CMS_CreditNoteTypes",
+        "column": "id"
+      },
+      "description": "Credit note type associated with the transfer.",
+      "business_meaning": "Credit note type",
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "main_headId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "AccountTransferMainHeader",
+        "column": "Id"
+      },
+      "description": "Main header (top-level category) the transfer is booked under.",
+      "business_meaning": "Transfer main category",
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "sub_headId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "AccountTransferSubHeader",
+        "column": "Id"
+      },
+      "description": "Sub header (second-level category) under the main header.",
+      "business_meaning": "Transfer sub category",
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "related_id",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Id of a related record in another section. Interpreted together with related_section; there is no database foreign key.",
+      "business_meaning": "Related record identifier",
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "related_section",
+      "data_type": "longtext",
+      "nullable": true,
+      "description": "Name of the section that related_id belongs to.",
+      "business_meaning": "Related record section",
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_approved",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "description": "True when the request has been approved at the first approval level.",
+      "business_meaning": "First-level approval flag",
+      "example_values": [
+        true,
+        false
+      ],
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_rejected",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "description": "True when the request has been rejected at the first approval level.",
+      "business_meaning": "First-level rejection flag",
+      "example_values": [
+        true,
+        false
+      ],
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "operated_byId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who approved or rejected the request at the first approval level.",
+      "business_meaning": "First-level approver",
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "operated_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "description": "Date and time of the first-level approval or rejection.",
+      "business_meaning": "First-level approval date",
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_account_approved",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "description": "True when the accounts team has approved the transfer.",
+      "business_meaning": "Accounts approval flag",
+      "example_values": [
+        true,
+        false
+      ],
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_account_rejected",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "description": "True when the accounts team has rejected the transfer.",
+      "business_meaning": "Accounts rejection flag",
+      "example_values": [
+        true,
+        false
+      ],
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "account_operated_byId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Accounts user who approved or rejected the transfer.",
+      "business_meaning": "Accounts approver",
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "account_operated_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "description": "Date and time of the accounts approval or rejection.",
+      "business_meaning": "Accounts approval date",
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "amount",
+      "data_type": "float",
+      "nullable": true,
+      "description": "Amount requested for the transfer.",
+      "business_meaning": "Requested transfer amount",
+      "example_values": [
+        125000,
+        48000.5
+      ],
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "confirmed_amount",
+      "data_type": "float",
+      "nullable": true,
+      "description": "Amount confirmed for the transfer. Set equal to amount when the amount is updated.",
+      "business_meaning": "Confirmed transfer amount",
+      "example_values": [
+        125000,
+        48000.5
+      ],
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "deductions_amount",
+      "data_type": "float",
+      "nullable": true,
+      "description": "Total amount deducted from the transfer.",
+      "business_meaning": "Total deductions",
+      "example_values": [
+        500,
+        1200
+      ],
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "deductions",
+      "data_type": "longtext",
+      "nullable": true,
+      "description": "Text description of the deductions applied.",
+      "business_meaning": "Deduction details",
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "net_amount",
+      "data_type": "float",
+      "nullable": true,
+      "description": "Net amount payable after deductions.",
+      "business_meaning": "Net payable amount",
+      "example_values": [
+        124500,
+        46800.5
+      ],
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "amount_changed_byId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last changed the amount.",
+      "business_meaning": "Amount changed by",
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "amount_changed_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "description": "Date and time when the amount was last changed.",
+      "business_meaning": "Amount changed date",
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "payment_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "description": "Date on which the payment was made.",
+      "business_meaning": "Payment date",
+      "example_values": [
+        "2026-09-05",
+        "2026-09-10"
+      ],
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "acknowledge_no",
+      "data_type": "longtext",
+      "nullable": true,
+      "description": "Acknowledgement / payment reference number recorded for the transfer.",
+      "business_meaning": "Payment acknowledgement number",
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_closed",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "description": "True when the account transfer has been closed.",
+      "business_meaning": "Closed flag",
+      "example_values": [
+        true,
+        false
+      ],
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "closed_byId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who closed the account transfer.",
+      "business_meaning": "Closed by",
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "closed_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "description": "Date and time when the account transfer was closed.",
+      "business_meaning": "Closed date",
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_hold",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "description": "True when the transfer is on hold.",
+      "business_meaning": "On-hold flag",
+      "example_values": [
+        true,
+        false
+      ],
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "hold_reason",
+      "data_type": "longtext",
+      "nullable": true,
+      "description": "Reason the transfer was put on hold.",
+      "business_meaning": "Hold reason",
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Deleted flag",
+      "example_values": [
+        true,
+        false
+      ],
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the record.",
+      "business_meaning": "Last modified by",
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Last modified date",
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "file",
+      "data_type": "longtext",
+      "nullable": true,
+      "description": "Name or path of the file attached to the transfer.",
+      "business_meaning": "Attached file reference",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "base64file",
+      "data_type": "longtext",
+      "nullable": true,
+      "description": "Base64-encoded content of the attached file. Can be very large.",
+      "business_meaning": "Attached file content",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each account transfer is created by one user."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "branchid",
+      "to_table": "Branch",
+      "to_column": "id",
+      "description": "Each account transfer belongs to one branch."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "creditnote_typeid",
+      "to_table": "CMS_CreditNoteTypes",
+      "to_column": "id",
+      "description": "Each account transfer can be linked to one credit note type."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "main_headId",
+      "to_table": "AccountTransferMainHeader",
+      "to_column": "Id",
+      "description": "Each account transfer can be booked under one main header."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "sub_headId",
+      "to_table": "AccountTransferSubHeader",
+      "to_column": "Id",
+      "description": "Each account transfer can be booked under one sub header, which itself belongs to a main header."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "operated_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "First-level approver or rejecter of the transfer."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "account_operated_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Accounts user who approved or rejected the transfer."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "closed_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who closed the transfer."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "amount_changed_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last changed the amount."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the record."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "SectionUsers",
+      "to_column": "related_id",
+      "description": "Users explicitly associated with a transfer. Join with SectionUsers.related_section = 'AccountTransfer'. Not a database foreign key."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "ERP_ChatEngine",
+      "to_column": "related_id",
+      "description": "Chat messages on a transfer. Join with ERP_ChatEngine.related_section = 'AccountTransfer'. Not a database foreign key."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "ComplaintsFile",
+      "to_column": "related_id",
+      "description": "Files uploaded against a transfer. Join with ComplaintsFile.related_section = 'AccountTransfer'. Not a database foreign key."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    },
+    {
+      "name": "IX_AccountTransfer_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_AccountTransfer_branchid",
+      "columns": [
+        "branchid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_AccountTransfer_creditnote_typeid",
+      "columns": [
+        "creditnote_typeid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_AccountTransfer_main_headId",
+      "columns": [
+        "main_headId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_AccountTransfer_sub_headId",
+      "columns": [
+        "sub_headId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_AccountTransfer_operated_byId",
+      "columns": [
+        "operated_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_AccountTransfer_account_operated_byId",
+      "columns": [
+        "account_operated_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_AccountTransfer_closed_byId",
+      "columns": [
+        "closed_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_AccountTransfer_amount_changed_byId",
+      "columns": [
+        "amount_changed_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_AccountTransfer_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should always be excluded from reporting.",
+    "Approval is two-level: is_approved / is_rejected (operated_by) is the first level, is_account_approved / is_account_rejected (account_operated_by) is the accounts level.",
+    "confirmed_amount is the accounts-confirmed value; amount is the originally requested value. When the amount is updated, confirmed_amount is set to the same value.",
+    "net_amount is the amount payable after deductions_amount; deductions holds the textual description of the deductions.",
+    "A transfer with is_hold = 1 is on hold and should not be treated as paid; hold_reason explains why.",
+    "A transfer with is_closed = 1 is closed; closed_by and closed_date record who closed it and when.",
+    "payment_date is the date the payment was made and is only populated once a transfer has been paid.",
+    "created_date is used for request-period reporting.",
+    "Row-level visibility: non-admin users can only see transfers they created or are explicitly associated with through SectionUsers (related_section = 'AccountTransfer')."
+  ],
+  "common_filters": [
+    "created_date",
+    "payment_date",
+    "main_headId",
+    "sub_headId",
+    "branchid",
+    "created_byId",
+    "is_approved",
+    "is_account_approved",
+    "is_closed",
+    "is_hold",
+    "vendor_name",
+    "code"
+  ],
+  "common_metrics": [
+    {
+      "name": "Total Requested Amount",
+      "formula": "SUM(amount)"
+    },
+    {
+      "name": "Total Confirmed Amount",
+      "formula": "SUM(confirmed_amount)"
+    },
+    {
+      "name": "Total Net Amount",
+      "formula": "SUM(net_amount)"
+    },
+    {
+      "name": "Total Deductions",
+      "formula": "SUM(deductions_amount)"
+    },
+    {
+      "name": "Transfer Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Average Transfer Amount",
+      "formula": "SUM(confirmed_amount) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Account transfers by month",
+    "Account transfers by main header",
+    "Account transfers by sub header",
+    "Account transfers by branch",
+    "Account transfers by vendor",
+    "Pending account transfers awaiting approval",
+    "Account transfers on hold",
+    "Closed account transfers",
+    "Total deductions by month",
+    "Top vendors by transfer amount"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "created_byId",
+      "branchid",
+      "creditnote_typeid",
+      "main_headId",
+      "sub_headId",
+      "related_id",
+      "related_section",
+      "vendor_name",
+      "message",
+      "file",
+      "base64file",
+      "operated_byId",
+      "operated_date",
+      "account_operated_byId",
+      "account_operated_date",
+      "amount",
+      "confirmed_amount",
+      "deductions_amount",
+      "deductions",
+      "net_amount",
+      "amount_changed_byId",
+      "amount_changed_date",
+      "payment_date",
+      "acknowledge_no",
+      "closed_byId",
+      "closed_date",
+      "hold_reason",
+      "modified_byId",
+      "modified_date"
+    ],
+    "known_issues": [
+      "Amount columns are stored as float, so sums can carry small rounding differences.",
+      "amount, confirmed_amount, deductions_amount and net_amount are nullable; use COALESCE when summing or comparing.",
+      "sub_headId is not enforced at the database level to belong to main_headId, so the two can be inconsistent."
+    ]
+  },
+  "sample_data": [
+    {
+      "id": 101,
+      "code": "AT-0001",
+      "vendor_name": "ABC Traders",
+      "message": "Vendor payment for August supplies",
+      "created_date": "2026-09-01",
+      "created_byId": 12,
+      "branchid": 4,
+      "main_headId": 2,
+      "sub_headId": 7,
+      "is_approved": true,
+      "is_account_approved": true,
+      "amount": 125000,
+      "confirmed_amount": 125000,
+      "deductions_amount": 500,
+      "net_amount": 124500,
+      "payment_date": "2026-09-05",
+      "is_closed": false,
+      "is_hold": false,
+      "is_deleted": false
+    }
+  ],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [
+      "confirmed_amount",
+      "net_amount"
+    ],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [
+      "base64file",
+      "file"
+    ],
+    "query_notes": [
+      "The database is MySQL; use MySQL syntax and the table name AccountTransfer.",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting transfers. Do not count rows as transfers if joins to SectionUsers, ERP_ChatEngine or ComplaintsFile may duplicate records.",
+      "Use SUM(confirmed_amount) for total transfer value, SUM(net_amount) for amount payable after deductions, and SUM(amount) only when the requested amount is asked for.",
+      "Foreign key columns are named created_byId, operated_byId, account_operated_byId, closed_byId, amount_changed_byId, modified_byId, branchid, creditnote_typeid, main_headId and sub_headId (note the mixed casing). Join to Users.Id, Branch.id, CMS_CreditNoteTypes.id, AccountTransferMainHeader.Id and AccountTransferSubHeader.Id to resolve names.",
+      "For resolved names (main header, sub header, closed by, operated by) and approval_status, prefer the AccountTransferView model instead of joining manually.",
+      "When joining to SectionUsers, ERP_ChatEngine or ComplaintsFile, always add related_section = 'AccountTransfer'.",
+      "Never select base64file; it can hold very large file contents."
+    ]
+  }
+}

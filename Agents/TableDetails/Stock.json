@@ -1,0 +1,349 @@
+{
+  "table_name": "Stock",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Stock",
+  "description": "Holds stock records (defined in the EF Core model), linked to factories, factory products, users.",
+  "business_domain": "Factory & Inventory",
+  "business_purpose": "Used to track and report stock records, including amounts and quantities, for the Factory & Inventory area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one stock.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the stock.",
+      "business_meaning": "Stock identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the stock.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "current_stock",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Current stock of the stock.",
+      "business_meaning": "Current Stock",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "factory_productsid",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "FactoryProducts",
+        "column": "id"
+      },
+      "description": "Reference to the factory products linked to this stock.",
+      "business_meaning": "Factory Products",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "factoryid",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Factories",
+        "column": "id"
+      },
+      "description": "Reference to the factories linked to this stock.",
+      "business_meaning": "Factories",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "last_updated_byId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this stock.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "last_updated_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of last updated.",
+      "business_meaning": "Last Updated Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "minimum_stock_level",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Minimum stock level of the stock.",
+      "business_meaning": "Minimum Stock Level",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "storeid",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Stores",
+        "column": "id"
+      },
+      "description": "Reference to the stores linked to this stock.",
+      "business_meaning": "Stores",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the stock."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "factory_productsid",
+      "to_table": "FactoryProducts",
+      "to_column": "id",
+      "description": "Each stock references one factory products (factory products)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "factoryid",
+      "to_table": "Factories",
+      "to_column": "id",
+      "description": "Each stock references one factories (factory)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "last_updated_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each stock references one users (last updated by)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "storeid",
+      "to_table": "Stores",
+      "to_column": "id",
+      "description": "Each stock references one stores (store)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    },
+    {
+      "name": "IX_Stock_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Stock_factory_productsid",
+      "columns": [
+        "factory_productsid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Stock_factoryid",
+      "columns": [
+        "factoryid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Stock_last_updated_byId",
+      "columns": [
+        "last_updated_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_Stock_storeid",
+      "columns": [
+        "storeid"
+      ],
+      "type": "non_clustered"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Use current_stock for monetary or quantity totals.",
+    "Columns minimum_stock_level classify the record; check the distinct values before filtering on them.",
+    "Join to Factories, Factory Products, Stores, Users through the foreign key columns to resolve names.",
+    "Stock is defined in the EF Core model but was not found in the connected database, so it may not be deployed there."
+  ],
+  "common_filters": [
+    "created_date",
+    "factory_productsid",
+    "factoryid",
+    "last_updated_byId",
+    "storeid",
+    "minimum_stock_level",
+    "is_deleted"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total Current Stock",
+      "formula": "SUM(current_stock)"
+    },
+    {
+      "name": "Average Current Stock per stock",
+      "formula": "SUM(current_stock) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Stock by month",
+    "Recent stock",
+    "Stock by factory products",
+    "Stock by factories",
+    "Stock by users",
+    "Stock count by minimum stock level",
+    "Total current stock by month",
+    "Top factory products by current stock"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "last_updated_byId",
+      "last_updated_date",
+      "minimum_stock_level"
+    ],
+    "known_issues": [
+      "current_stock is stored as floating point, so sums can carry small rounding differences."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [
+      "current_stock"
+    ],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against Stock: no table or view with this name exists in the connected database.",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting stock records; joins can duplicate rows.",
+      "Use SUM(current_stock) for totals of current stock.",
+      "To resolve names, join on: factory_productsid = FactoryProducts.id; factoryid = Factories.id; last_updated_byId = Users.Id; storeid = Stores.id.",
+      "Defined in the EF Core model but not found in the connected database; confirm it has been migrated before relying on it."
+    ]
+  }
+}

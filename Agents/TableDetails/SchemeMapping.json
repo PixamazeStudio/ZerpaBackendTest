@@ -1,0 +1,359 @@
+{
+  "table_name": "SchemeMapping",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Scheme Mapping",
+  "description": "Holds scheme mapping records, linked to client, dealer, scheme header.",
+  "business_domain": "Sales Planning & Performance",
+  "business_purpose": "Used to track and report scheme mapping records for the Sales Planning & Performance area.",
+  "table_type": "mapping",
+  "record_granularity": "One row represents one scheme mapping.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the scheme mapping.",
+      "business_meaning": "Scheme Mapping identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "SchemeHeaderId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "SchemeHeader",
+        "column": "Id"
+      },
+      "description": "Reference to the scheme header linked to this scheme mapping.",
+      "business_meaning": "Scheme Header",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Dealerid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Dealer",
+        "column": "id"
+      },
+      "description": "Reference to the dealer linked to this scheme mapping.",
+      "business_meaning": "Dealer",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "ClientId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Client",
+        "column": "Id"
+      },
+      "description": "Reference to the client linked to this scheme mapping.",
+      "business_meaning": "Client",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "CustomerId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Customer",
+        "column": "Id"
+      },
+      "description": "Reference to the customer linked to this scheme mapping.",
+      "business_meaning": "Customer",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Type",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Type of the scheme mapping.",
+      "business_meaning": "Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Created_byId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the scheme mapping.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Modified_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the scheme mapping.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Is_Deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "SchemeHeaderId",
+      "to_table": "SchemeHeader",
+      "to_column": "Id",
+      "description": "Each scheme mapping references one scheme header (scheme header)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "Dealerid",
+      "to_table": "Dealer",
+      "to_column": "id",
+      "description": "Each scheme mapping references one dealer (dealer)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "ClientId",
+      "to_table": "Client",
+      "to_column": "Id",
+      "description": "Each scheme mapping references one client (client)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "CustomerId",
+      "to_table": "Customer",
+      "to_column": "Id",
+      "description": "Each scheme mapping references one customer (customer)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "Created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the scheme mapping."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "Modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the scheme mapping."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "ERPSchemeRequestHeader",
+      "to_column": "schemeId",
+      "description": "Each scheme mapping can have many erp scheme request header records referencing it through schemeId."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "SchemeRequest",
+      "to_column": "schemeId",
+      "description": "Each scheme mapping can have many scheme request records referencing it through schemeId."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_SchemeMapping_ClientId",
+      "columns": [
+        "ClientId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_SchemeMapping_Created_byId",
+      "columns": [
+        "Created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_SchemeMapping_CustomerId",
+      "columns": [
+        "CustomerId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_SchemeMapping_Dealerid",
+      "columns": [
+        "Dealerid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_SchemeMapping_Modified_byId",
+      "columns": [
+        "Modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_SchemeMapping_SchemeHeaderId",
+      "columns": [
+        "SchemeHeaderId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (Is_Deleted = 1) should normally be excluded from reporting.",
+    "Created_date is the preferred date column for period-based reporting.",
+    "Columns Type classify the record; check the distinct values before filtering on them.",
+    "Join to Client, Customer, Dealer, Scheme Header through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "Created_date",
+    "SchemeHeaderId",
+    "Dealerid",
+    "ClientId",
+    "CustomerId",
+    "Type",
+    "Is_Deleted"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "Scheme Mapping by month",
+    "Recent scheme mapping",
+    "Scheme Mapping by scheme header",
+    "Scheme Mapping by dealer",
+    "Scheme Mapping by client",
+    "Scheme Mapping count by type"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "Dealerid",
+      "ClientId",
+      "CustomerId",
+      "Modified_byId",
+      "Modified_date"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "Created_date",
+    "preferred_amount_columns": [],
+    "default_sort": "Created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name SchemeMapping (identifiers can be case-sensitive).",
+      "Always filter Is_Deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT Id) when counting scheme mapping records; joins can duplicate rows.",
+      "To resolve names, join on: SchemeHeaderId = SchemeHeader.Id; Dealerid = Dealer.id; ClientId = Client.Id; CustomerId = Customer.Id."
+    ]
+  }
+}

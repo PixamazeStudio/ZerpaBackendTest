@@ -1,0 +1,213 @@
+{
+  "table_name": "FactoryTradeValueConfiguration",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Factory Trade Value Configuration",
+  "description": "Holds factory trade value configuration records.",
+  "business_domain": "Factory & Inventory",
+  "business_purpose": "Used to track and report factory trade value configuration records, including amounts and quantities, for the Factory & Inventory area.",
+  "table_type": "configuration",
+  "record_granularity": "One row represents one factory trade value configuration.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the factory trade value configuration.",
+      "business_meaning": "Factory Trade Value Configuration identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "BrandName",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Brand name of the factory trade value configuration.",
+      "business_meaning": "Brand Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "PercentageValue",
+      "data_type": "decimal(65,30)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Percentage value of the factory trade value configuration.",
+      "business_meaning": "Percentage Value",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "CreatedDate",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "ModifiedDate",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "CreatedById",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the factory trade value configuration.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "ModifiedById",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the factory trade value configuration.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "CreatedById",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the factory trade value configuration."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "ModifiedById",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the factory trade value configuration."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_FactoryTradeValueConfiguration_CreatedById",
+      "columns": [
+        "CreatedById"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_FactoryTradeValueConfiguration_ModifiedById",
+      "columns": [
+        "ModifiedById"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "CreatedDate is the preferred date column for period-based reporting.",
+    "Use PercentageValue for monetary or quantity totals."
+  ],
+  "common_filters": [
+    "CreatedDate"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    },
+    {
+      "name": "Average Percentage Value",
+      "formula": "AVG(PercentageValue)"
+    }
+  ],
+  "common_queries": [
+    "Factory Trade Value Configuration by month",
+    "Recent factory trade value configuration",
+    "Total percentage value by month"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "ModifiedDate",
+      "ModifiedById"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "CreatedDate",
+    "preferred_amount_columns": [
+      "PercentageValue"
+    ],
+    "default_sort": "CreatedDate DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name FactoryTradeValueConfiguration (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT Id) when counting factory trade value configuration records; joins can duplicate rows.",
+      "Use SUM(PercentageValue) for totals of percentage value."
+    ]
+  }
+}

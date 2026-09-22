@@ -1,0 +1,241 @@
+{
+  "table_name": "Vw_IbLostAndSold",
+  "schema": null,
+  "object_type": "view",
+  "view_name": "Vw_IbLostAndSold",
+  "exists_in_database": true,
+  "display_name": "Ib Lost And Sold",
+  "description": "Database view exposing ib lost and sold data.",
+  "business_domain": "General",
+  "business_purpose": "Used to track and report ib lost and sold records, including amounts and quantities, for the General area.",
+  "table_type": "view",
+  "record_granularity": "One row represents one record returned by the ib lost and sold view.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Id of the ib lost and sold.",
+      "business_meaning": "Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "FullName",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Full name of the ib lost and sold.",
+      "business_meaning": "Full Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "clientid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Clientid of the ib lost and sold.",
+      "business_meaning": "Clientid",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Influencer",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Influencer of the ib lost and sold.",
+      "business_meaning": "Influencer",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "project_id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Project id of the ib lost and sold.",
+      "business_meaning": "Project Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "no_of_crm_projects",
+      "data_type": "bigint(21)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "No of crm projects of the ib lost and sold.",
+      "business_meaning": "No Of Crm Projects",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "no_of_lost_projects",
+      "data_type": "bigint(21)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "No of lost projects of the ib lost and sold.",
+      "business_meaning": "No Of Lost Projects",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "no_of_running_projects",
+      "data_type": "bigint(21)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "No of running projects of the ib lost and sold.",
+      "business_meaning": "No Of Running Projects",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "upcoming_projects",
+      "data_type": "bigint(21)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Upcoming projects of the ib lost and sold.",
+      "business_meaning": "Upcoming Projects",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "total_supplied",
+      "data_type": "decimal(54,0)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Total supplied of the ib lost and sold.",
+      "business_meaning": "Total Supplied",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "pvc_quantity",
+      "data_type": "decimal(54,0)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Pvc quantity of the ib lost and sold.",
+      "business_meaning": "Pvc Quantity",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "created_date is the preferred date column for period-based reporting.",
+    "Use total_supplied / pvc_quantity for monetary or quantity totals.",
+    "Vw_IbLostAndSold is a database view: it is read-only and its rows are computed, so apply filters and a LIMIT when querying."
+  ],
+  "common_filters": [
+    "created_date"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    },
+    {
+      "name": "Total Supplied",
+      "formula": "SUM(total_supplied)"
+    },
+    {
+      "name": "Total Pvc Quantity",
+      "formula": "SUM(pvc_quantity)"
+    }
+  ],
+  "common_queries": [
+    "Ib Lost And Sold by month",
+    "Recent ib lost and sold",
+    "Total total supplied by month"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [],
+    "known_issues": [
+      "total_supplied, pvc_quantity are nullable; use COALESCE when summing or comparing.",
+      "Views expose no primary key or nullability guarantees; rows may repeat depending on the view definition."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [
+      "total_supplied",
+      "pvc_quantity"
+    ],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name Vw_IbLostAndSold (identifiers can be case-sensitive).",
+      "Use SUM(total_supplied) for totals of total supplied.",
+      "This is a view; always apply filters and a LIMIT, as it may be expensive to scan."
+    ]
+  }
+}

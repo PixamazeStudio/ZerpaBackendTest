@@ -1,0 +1,247 @@
+{
+  "table_name": "BranchReviewSecondaryContribution",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Branch Review Secondary Contribution",
+  "description": "Holds branch review secondary contribution records, linked to branch review header.",
+  "business_domain": "Sales Planning & Performance",
+  "business_purpose": "Used to track and report branch review secondary contribution records, including amounts and quantities, for the Sales Planning & Performance area.",
+  "table_type": "master",
+  "record_granularity": "One row represents one branch review secondary contribution.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the branch review secondary contribution.",
+      "business_meaning": "Branch Review Secondary Contribution identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "header_id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "BranchReviewHeader",
+        "column": "Id"
+      },
+      "description": "Reference to the branch review header linked to this branch review secondary contribution.",
+      "business_meaning": "Branch Review Header",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "ytd_primary_na",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Ytd primary na of the branch review secondary contribution.",
+      "business_meaning": "Ytd Primary Na",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "ytd_secondary_na",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Ytd secondary na of the branch review secondary contribution.",
+      "business_meaning": "Ytd Secondary Na",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "secondary_pct",
+      "data_type": "decimal(18,4)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Secondary pct of the branch review secondary contribution.",
+      "business_meaning": "Secondary Pct",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "last6_primary_na",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Last6 primary na of the branch review secondary contribution.",
+      "business_meaning": "Last6 Primary Na",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "last6_secondary_na",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Last6 secondary na of the branch review secondary contribution.",
+      "business_meaning": "Last6 Secondary Na",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "last6_secondary_pct",
+      "data_type": "decimal(18,4)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Last6 secondary pct of the branch review secondary contribution.",
+      "business_meaning": "Last6 Secondary Pct",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "header_id",
+      "to_table": "BranchReviewHeader",
+      "to_column": "Id",
+      "description": "Each branch review secondary contribution references one branch review header (header)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "header_id",
+      "columns": [
+        "header_id"
+      ],
+      "type": "unique"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Use ytd_primary_na / ytd_secondary_na for monetary or quantity totals.",
+    "Join to Branch Review Header through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "header_id"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    },
+    {
+      "name": "Total Ytd Primary Na",
+      "formula": "SUM(ytd_primary_na)"
+    },
+    {
+      "name": "Total Ytd Secondary Na",
+      "formula": "SUM(ytd_secondary_na)"
+    },
+    {
+      "name": "Average Secondary Pct",
+      "formula": "AVG(secondary_pct)"
+    },
+    {
+      "name": "Average Ytd Primary Na per branch review secondary contribution",
+      "formula": "SUM(ytd_primary_na) / COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "Branch Review Secondary Contribution by branch review header",
+    "Top branch review header by ytd primary na"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "ytd_primary_na",
+      "ytd_secondary_na"
+    ],
+    "default_sort": "Id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name BranchReviewSecondaryContribution (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT Id) when counting branch review secondary contribution records; joins can duplicate rows.",
+      "Use SUM(ytd_primary_na) for totals of ytd primary na.",
+      "To resolve names, join on: header_id = BranchReviewHeader.Id."
+    ]
+  }
+}

@@ -1,0 +1,254 @@
+{
+  "table_name": "Vw_ComplaintDashboardComplaintDetails",
+  "schema": null,
+  "object_type": "view",
+  "view_name": "Vw_ComplaintDashboardComplaintDetails",
+  "exists_in_database": true,
+  "display_name": "Complaint Dashboard Complaint Details",
+  "description": "Database view exposing complaint dashboard complaint details data.",
+  "business_domain": "Customer Support",
+  "business_purpose": "Used to track and report complaint dashboard complaint details records, including amounts and quantities, for the Customer Support area.",
+  "table_type": "view",
+  "record_granularity": "One row represents one record returned by the complaint dashboard complaint details view.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "regionid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Regionid of the complaint dashboard complaint details.",
+      "business_meaning": "Regionid",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "region_name",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Name of the region.",
+      "business_meaning": "Region Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "branch_name",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Name of the branch.",
+      "business_meaning": "Branch Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "areaid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Areaid of the complaint dashboard complaint details.",
+      "business_meaning": "Areaid",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "product_name_type",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Product name type of the complaint dashboard complaint details.",
+      "business_meaning": "Product Name Type",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "nature_of_complaint",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Nature of complaint of the complaint dashboard complaint details.",
+      "business_meaning": "Nature Of Complaint",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "qty_on_claim",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Qty on claim of the complaint dashboard complaint details.",
+      "business_meaning": "Qty On Claim",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "dealer_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the dealer.",
+      "business_meaning": "Dealer Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "dealerid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Dealerid of the complaint dashboard complaint details.",
+      "business_meaning": "Dealerid",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "dispatch_qty",
+      "data_type": "decimal(32,0)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Dispatch qty of the complaint dashboard complaint details.",
+      "business_meaning": "Dispatch Qty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "percentage",
+      "data_type": "decimal(16,2)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Percentage of the complaint dashboard complaint details.",
+      "business_meaning": "Percentage",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "created_date is the preferred date column for period-based reporting.",
+    "Use qty_on_claim / dispatch_qty for monetary or quantity totals.",
+    "Columns product_name_type classify the record; check the distinct values before filtering on them.",
+    "Vw_ComplaintDashboardComplaintDetails is a database view: it is read-only and its rows are computed, so apply filters and a LIMIT when querying."
+  ],
+  "common_filters": [
+    "created_date",
+    "product_name_type",
+    "region_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    },
+    {
+      "name": "Total Qty On Claim",
+      "formula": "SUM(qty_on_claim)"
+    },
+    {
+      "name": "Total Dispatch Qty",
+      "formula": "SUM(dispatch_qty)"
+    },
+    {
+      "name": "Average Percentage",
+      "formula": "AVG(percentage)"
+    }
+  ],
+  "common_queries": [
+    "Complaint Dashboard Complaint Details by month",
+    "Recent complaint dashboard complaint details",
+    "Complaint Dashboard Complaint Details count by product name type",
+    "Total qty on claim by month"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [],
+    "known_issues": [
+      "dispatch_qty, percentage are nullable; use COALESCE when summing or comparing.",
+      "Views expose no primary key or nullability guarantees; rows may repeat depending on the view definition."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [
+      "qty_on_claim",
+      "dispatch_qty"
+    ],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name Vw_ComplaintDashboardComplaintDetails (identifiers can be case-sensitive).",
+      "Use SUM(qty_on_claim) for totals of qty on claim.",
+      "This is a view; always apply filters and a LIMIT, as it may be expensive to scan."
+    ]
+  }
+}

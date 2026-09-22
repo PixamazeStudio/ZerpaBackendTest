@@ -1,0 +1,230 @@
+{
+  "table_name": "MPDSDetails",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "MPDS Details",
+  "description": "Holds mpds details records.",
+  "business_domain": "Sales Planning & Performance",
+  "business_purpose": "Used to track and report mpds details records, including amounts and quantities, for the Sales Planning & Performance area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one mpds detail.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the mpds detail.",
+      "business_meaning": "MPDS Details identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "goal_masterId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Goal master id of the mpds detail.",
+      "business_meaning": "Goal Master Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "target",
+      "data_type": "decimal(65,30)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Target of the mpds detail.",
+      "business_meaning": "Target",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "MPDSHeaderid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "MPDS headerid of the mpds detail.",
+      "business_meaning": "MPDS Headerid",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "target1",
+      "data_type": "decimal(65,30)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Target1 of the mpds detail.",
+      "business_meaning": "Target1",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "target2",
+      "data_type": "decimal(65,30)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Target2 of the mpds detail.",
+      "business_meaning": "Target2",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "target3",
+      "data_type": "decimal(65,30)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Target3 of the mpds detail.",
+      "business_meaning": "Target3",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "target4",
+      "data_type": "decimal(65,30)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Target4 of the mpds detail.",
+      "business_meaning": "Target4",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Use target / target1 for monetary or quantity totals."
+  ],
+  "common_filters": [],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total Target",
+      "formula": "SUM(target)"
+    },
+    {
+      "name": "Total Target1",
+      "formula": "SUM(target1)"
+    },
+    {
+      "name": "Total Target2",
+      "formula": "SUM(target2)"
+    },
+    {
+      "name": "Average Target per mpds detail",
+      "formula": "SUM(target) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "List mpds details",
+    "Count of mpds details"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "goal_masterId",
+      "target",
+      "MPDSHeaderid",
+      "target1",
+      "target2",
+      "target3",
+      "target4"
+    ],
+    "known_issues": [
+      "target, target1, target2, target3 are nullable; use COALESCE when summing or comparing."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "target",
+      "target1"
+    ],
+    "default_sort": "id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name MPDSDetails (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT id) when counting mpds detail records; joins can duplicate rows.",
+      "Use SUM(target) for totals of target."
+    ]
+  }
+}

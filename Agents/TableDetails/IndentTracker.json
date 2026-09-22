@@ -1,0 +1,166 @@
+{
+  "table_name": "IndentTracker",
+  "schema": null,
+  "object_type": "model",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Indent Tracker",
+  "description": "Application view model for indent tracker data (not stored as a database table), linked to indent header.",
+  "business_domain": "Factory & Inventory",
+  "business_purpose": "Used to track and report indent tracker records for the Factory & Inventory area.",
+  "table_type": "view_model",
+  "record_granularity": "One object represents one indent tracker result row.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "natural",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the indent tracker.",
+      "business_meaning": "Indent Tracker identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "type",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Type of the indent tracker.",
+      "business_meaning": "Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "value",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Value of the indent tracker.",
+      "business_meaning": "Value",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "indent_code",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Indent code reference of the indent tracker.",
+      "business_meaning": "Indent Code",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "indent_headerId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "IndentHeader",
+        "column": "id"
+      },
+      "description": "Reference to the indent header linked to this indent tracker.",
+      "business_meaning": "Indent Header",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "indent_headerId",
+      "to_table": "IndentHeader",
+      "to_column": "id",
+      "description": "Each indent tracker references one indent header (indent header)."
+    }
+  ],
+  "indexes": [],
+  "business_rules": [
+    "created_date is the preferred date column for period-based reporting.",
+    "Columns type classify the record; check the distinct values before filtering on them.",
+    "Join to Indent Header through the foreign key columns to resolve names.",
+    "IndentTracker is an application view model or report DTO populated in code, not a table stored in the database."
+  ],
+  "common_filters": [
+    "created_date",
+    "indent_headerId",
+    "type",
+    "indent_code"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Indent Tracker by month",
+    "Recent indent tracker",
+    "Indent Tracker by indent header",
+    "Indent Tracker count by type"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "type",
+      "value",
+      "created_date",
+      "indent_code",
+      "indent_headerId"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against IndentTracker: no table or view with this name exists in the connected database.",
+      "Use COUNT(DISTINCT id) when counting indent tracker records; joins can duplicate rows.",
+      "To resolve names, join on: indent_headerId = IndentHeader.id.",
+      "Populated in application code (for example from a stored procedure or joined query); query the underlying tables instead."
+    ]
+  }
+}

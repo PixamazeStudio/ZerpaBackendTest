@@ -1,0 +1,248 @@
+{
+  "table_name": "VisitView",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Visit View",
+  "description": "Holds visit view records (defined in the EF Core model).",
+  "business_domain": "Sales & CRM",
+  "business_purpose": "Used to track and report visit view records for the Sales & CRM area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one visit view.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "natural",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the visit view.",
+      "business_meaning": "Visit View identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "activityTypeId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Activity type id of the visit view.",
+      "business_meaning": "Activity Type Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Activity_type",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Activity type of the visit view.",
+      "business_meaning": "Activity Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "createdById",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Created by id of the visit view.",
+      "business_meaning": "Created By Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "createdName",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Created name of the visit view.",
+      "business_meaning": "Created Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "roleLevel",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Role level of the visit view.",
+      "business_meaning": "Role Level",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "metPersonType",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Met person type of the visit view.",
+      "business_meaning": "Met Person Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "personName",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Person name of the visit view.",
+      "business_meaning": "Person Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "personAreaId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Person area id of the visit view.",
+      "business_meaning": "Person Area Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "meetingDate",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of meeting.",
+      "business_meaning": "Meeting Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "nextMeetingDate",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of next meeting.",
+      "business_meaning": "Next Meeting Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "objective_of_meeting",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Objective of meeting of the visit view.",
+      "business_meaning": "Objective Of Meeting",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "leads",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Leads of the visit view.",
+      "business_meaning": "Leads",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "meetingDate is the preferred date column for period-based reporting.",
+    "Columns Activity_type, roleLevel, metPersonType classify the record; check the distinct values before filtering on them.",
+    "VisitView is defined in the EF Core model but was not found in the connected database, so it may not be deployed there."
+  ],
+  "common_filters": [
+    "meetingDate",
+    "Activity_type",
+    "roleLevel"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Visit View by month",
+    "Recent visit view",
+    "Visit View count by activity type"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "activityTypeId",
+      "Activity_type",
+      "createdById",
+      "createdName",
+      "roleLevel",
+      "metPersonType",
+      "personName",
+      "personAreaId",
+      "meetingDate",
+      "nextMeetingDate",
+      "objective_of_meeting",
+      "leads"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": "meetingDate",
+    "preferred_amount_columns": [],
+    "default_sort": "meetingDate DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against VisitView: no table or view with this name exists in the connected database.",
+      "Use COUNT(DISTINCT id) when counting visit view records; joins can duplicate rows.",
+      "Defined in the EF Core model but not found in the connected database; confirm it has been migrated before relying on it."
+    ]
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "table_name": "DealerMapping",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Dealer Mapping",
+  "description": "Holds dealer mapping records, linked to category, dealer.",
+  "business_domain": "Sales & CRM",
+  "business_purpose": "Used to track and report dealer mapping records for the Sales & CRM area.",
+  "table_type": "mapping",
+  "record_granularity": "One row represents one dealer mapping.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the dealer mapping.",
+      "business_meaning": "Dealer Mapping identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Dealerid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Dealer",
+        "column": "id"
+      },
+      "description": "Reference to the dealer linked to this dealer mapping.",
+      "business_meaning": "Dealer",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Categoryid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Category",
+        "column": "id"
+      },
+      "description": "Reference to the category linked to this dealer mapping.",
+      "business_meaning": "Category",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "Dealerid",
+      "to_table": "Dealer",
+      "to_column": "id",
+      "description": "Each dealer mapping references one dealer (dealer)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "Categoryid",
+      "to_table": "Category",
+      "to_column": "id",
+      "description": "Each dealer mapping references one category (category)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_DealerMapping_Categoryid",
+      "columns": [
+        "Categoryid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_DealerMapping_Dealerid",
+      "columns": [
+        "Dealerid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Join to Category, Dealer through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "Dealerid",
+    "Categoryid"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "Dealer Mapping by dealer",
+    "Dealer Mapping by category"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "Dealerid",
+      "Categoryid"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [],
+    "default_sort": "Id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name DealerMapping (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT Id) when counting dealer mapping records; joins can duplicate rows.",
+      "To resolve names, join on: Dealerid = Dealer.id; Categoryid = Category.id."
+    ]
+  }
+}

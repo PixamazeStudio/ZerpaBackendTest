@@ -1,0 +1,203 @@
+{
+  "table_name": "YardDetails",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Yard Details",
+  "description": "Holds yard details records (defined in the EF Core model), linked to raw material dimensions.",
+  "business_domain": "Factory & Inventory",
+  "business_purpose": "Used to track and report yard details records, including amounts and quantities, for the Factory & Inventory area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one yard detail.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the yard detail.",
+      "business_meaning": "Yard Details identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "YardHeaderid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Yard headerid of the yard detail.",
+      "business_meaning": "Yard Headerid",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "count",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Count of the yard detail.",
+      "business_meaning": "Count",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "diamension",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Diamension of the yard detail.",
+      "business_meaning": "Diamension",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "rawmaterialdimensionsid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "RawMaterialDimensions",
+        "column": "id"
+      },
+      "description": "Reference to the raw material dimensions linked to this yard detail.",
+      "business_meaning": "Raw Material Dimensions",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "rawmaterialdimensionsid",
+      "to_table": "RawMaterialDimensions",
+      "to_column": "id",
+      "description": "Each yard detail references one raw material dimensions (rawmaterialdimensions)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    },
+    {
+      "name": "IX_YardDetails_YardHeaderid",
+      "columns": [
+        "YardHeaderid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_YardDetails_rawmaterialdimensionsid",
+      "columns": [
+        "rawmaterialdimensionsid"
+      ],
+      "type": "non_clustered"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "Use count for monetary or quantity totals.",
+    "Join to Raw Material Dimensions through the foreign key columns to resolve names.",
+    "YardDetails is defined in the EF Core model but was not found in the connected database, so it may not be deployed there."
+  ],
+  "common_filters": [
+    "rawmaterialdimensionsid",
+    "is_deleted"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total Count",
+      "formula": "SUM(count)"
+    },
+    {
+      "name": "Average Count per yard detail",
+      "formula": "SUM(count) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Yard Details by raw material dimensions",
+    "Top raw material dimensions by count"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "YardHeaderid",
+      "rawmaterialdimensionsid"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "count"
+    ],
+    "default_sort": "id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against YardDetails: no table or view with this name exists in the connected database.",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting yard detail records; joins can duplicate rows.",
+      "Use SUM(count) for totals of count.",
+      "To resolve names, join on: rawmaterialdimensionsid = RawMaterialDimensions.id.",
+      "Defined in the EF Core model but not found in the connected database; confirm it has been migrated before relying on it."
+    ]
+  }
+}

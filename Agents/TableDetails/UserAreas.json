@@ -1,0 +1,129 @@
+{
+  "table_name": "UserAreas",
+  "schema": null,
+  "object_type": "model",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "User Areas",
+  "description": "Application view model for user areas data (not stored as a database table), linked to area, users.",
+  "business_domain": "Branch & Geography",
+  "business_purpose": "Used to track and report user areas records for the Branch & Geography area.",
+  "table_type": "view_model",
+  "record_granularity": "One object represents one user area result row.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "natural",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the user area.",
+      "business_meaning": "User Areas identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "userId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this user area.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "areaId",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Area",
+        "column": "id"
+      },
+      "description": "Reference to the area linked to this user area.",
+      "business_meaning": "Area",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "userId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each user area references one users (user)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "areaId",
+      "to_table": "Area",
+      "to_column": "id",
+      "description": "Each user area references one area (area)."
+    }
+  ],
+  "indexes": [],
+  "business_rules": [
+    "Join to Area, Users through the foreign key columns to resolve names.",
+    "UserAreas is an application view model or report DTO populated in code, not a table stored in the database."
+  ],
+  "common_filters": [
+    "userId",
+    "areaId"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "User Areas by users",
+    "User Areas by area"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "userId",
+      "areaId"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [],
+    "default_sort": "id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against UserAreas: no table or view with this name exists in the connected database.",
+      "Use COUNT(DISTINCT id) when counting user area records; joins can duplicate rows.",
+      "To resolve names, join on: userId = Users.Id; areaId = Area.id.",
+      "Populated in application code (for example from a stored procedure or joined query); query the underlying tables instead."
+    ]
+  }
+}

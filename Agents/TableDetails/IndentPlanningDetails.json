@@ -1,0 +1,276 @@
+{
+  "table_name": "IndentPlanningDetails",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Indent Planning Details",
+  "description": "Holds indent planning details records, linked to dealer, indent planning header.",
+  "business_domain": "Factory & Inventory",
+  "business_purpose": "Used to track and report indent planning details records, including amounts and quantities, for the Factory & Inventory area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one indent planning detail.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the indent planning detail.",
+      "business_meaning": "Indent Planning Details identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "dealerid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Dealer",
+        "column": "id"
+      },
+      "description": "Reference to the dealer linked to this indent planning detail.",
+      "business_meaning": "Dealer",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "first_phase",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "First phase of the indent planning detail.",
+      "business_meaning": "First Phase",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "second_phase",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Second phase of the indent planning detail.",
+      "business_meaning": "Second Phase",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "third_phase",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Third phase of the indent planning detail.",
+      "business_meaning": "Third Phase",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "indent_planning_header_by_id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Indent planning header by id of the indent planning detail.",
+      "business_meaning": "Indent Planning Header By Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "IndentPlanningHeaderid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "IndentPlanningHeader",
+        "column": "id"
+      },
+      "description": "Reference to the indent planning header linked to this indent planning detail.",
+      "business_meaning": "Indent Planning Header",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "total",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total of the indent planning detail.",
+      "business_meaning": "Total",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "categoryid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Categoryid of the indent planning detail.",
+      "business_meaning": "Categoryid",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "dealerid",
+      "to_table": "Dealer",
+      "to_column": "id",
+      "description": "Each indent planning detail references one dealer (dealer)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "IndentPlanningHeaderid",
+      "to_table": "IndentPlanningHeader",
+      "to_column": "id",
+      "description": "Each indent planning detail references one indent planning header (indent planning header)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_IndentPlanningDetails_dealerid",
+      "columns": [
+        "dealerid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_IndentPlanningDetails_IndentPlanningHeaderid",
+      "columns": [
+        "IndentPlanningHeaderid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Use total / first_phase for monetary or quantity totals.",
+    "Join to Dealer, Indent Planning Header through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "dealerid",
+    "IndentPlanningHeaderid"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total First Phase",
+      "formula": "SUM(first_phase)"
+    },
+    {
+      "name": "Total Second Phase",
+      "formula": "SUM(second_phase)"
+    },
+    {
+      "name": "Total Third Phase",
+      "formula": "SUM(third_phase)"
+    },
+    {
+      "name": "Average First Phase per indent planning detail",
+      "formula": "SUM(first_phase) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Indent Planning Details by dealer",
+    "Indent Planning Details by indent planning header",
+    "Top dealer by first phase"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "dealerid",
+      "IndentPlanningHeaderid",
+      "categoryid"
+    ],
+    "known_issues": [
+      "first_phase, second_phase, third_phase, total are stored as floating point, so sums can carry small rounding differences."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "total",
+      "first_phase"
+    ],
+    "default_sort": "id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name IndentPlanningDetails (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT id) when counting indent planning detail records; joins can duplicate rows.",
+      "Use SUM(total) for totals of total.",
+      "To resolve names, join on: dealerid = Dealer.id; IndentPlanningHeaderid = IndentPlanningHeader.id."
+    ]
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "table_name": "Vw_DensityCalcMeasurements",
+  "schema": null,
+  "object_type": "view",
+  "view_name": "Vw_DensityCalcMeasurements",
+  "exists_in_database": true,
+  "display_name": "Density Calc Measurements",
+  "description": "Database view exposing density calc measurements data.",
+  "business_domain": "General",
+  "business_purpose": "Used to track and report density calc measurements records, including amounts and quantities, for the General area.",
+  "table_type": "view",
+  "record_granularity": "One row represents one record returned by the density calc measurements view.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "length",
+      "data_type": "decimal(5,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Length of the density calc measurements.",
+      "business_meaning": "Length",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "width",
+      "data_type": "decimal(5,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Width of the density calc measurements.",
+      "business_meaning": "Width",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "Use length / width for monetary or quantity totals.",
+    "Vw_DensityCalcMeasurements is a database view: it is read-only and its rows are computed, so apply filters and a LIMIT when querying."
+  ],
+  "common_filters": [],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    },
+    {
+      "name": "Total Length",
+      "formula": "SUM(length)"
+    },
+    {
+      "name": "Total Width",
+      "formula": "SUM(width)"
+    }
+  ],
+  "common_queries": [
+    "List density calc measurements",
+    "Count of density calc measurements"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [],
+    "known_issues": [
+      "Views expose no primary key or nullability guarantees; rows may repeat depending on the view definition."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "length",
+      "width"
+    ],
+    "default_sort": "",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name Vw_DensityCalcMeasurements (identifiers can be case-sensitive).",
+      "Use SUM(length) for totals of length.",
+      "This is a view; always apply filters and a LIMIT, as it may be expensive to scan."
+    ]
+  }
+}

@@ -1,0 +1,265 @@
+{
+  "table_name": "ExpenseDetails",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Expense Details",
+  "description": "Holds expense details records (defined in the EF Core model), linked to expense category, expense sub category.",
+  "business_domain": "Accounts & Finance",
+  "business_purpose": "Used to track and report expense details records, including amounts and quantities, for the Accounts & Finance area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one expense detail.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the expense detail.",
+      "business_meaning": "Expense Details identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "ExpenseHeaderid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Expense headerid of the expense detail.",
+      "business_meaning": "Expense Headerid",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "amount",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Amount of the expense detail.",
+      "business_meaning": "Amount",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "confirmed_amount",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Confirmed amount of the expense detail.",
+      "business_meaning": "Confirmed Amount",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of the record.",
+      "business_meaning": "Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "expense_categoryid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "ExpenseCategory",
+        "column": "id"
+      },
+      "description": "Reference to the expense category linked to this expense detail.",
+      "business_meaning": "Expense Category",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "expense_sub_categoryid",
+      "data_type": "int",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "ExpenseSubCategory",
+        "column": "id"
+      },
+      "description": "Reference to the expense sub category linked to this expense detail.",
+      "business_meaning": "Expense Sub Category",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "remarks",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text remarks for the expense detail.",
+      "business_meaning": "Remarks",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "expense_categoryid",
+      "to_table": "ExpenseCategory",
+      "to_column": "id",
+      "description": "Each expense detail references one expense category (expense category)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "expense_sub_categoryid",
+      "to_table": "ExpenseSubCategory",
+      "to_column": "id",
+      "description": "Each expense detail references one expense sub category (expense sub category)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    },
+    {
+      "name": "IX_ExpenseDetails_ExpenseHeaderid",
+      "columns": [
+        "ExpenseHeaderid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ExpenseDetails_expense_categoryid",
+      "columns": [
+        "expense_categoryid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ExpenseDetails_expense_sub_categoryid",
+      "columns": [
+        "expense_sub_categoryid"
+      ],
+      "type": "non_clustered"
+    }
+  ],
+  "business_rules": [
+    "date is the preferred date column for period-based reporting.",
+    "Use confirmed_amount / amount for monetary or quantity totals.",
+    "Join to Expense Category, Expense Sub Category through the foreign key columns to resolve names.",
+    "ExpenseDetails is defined in the EF Core model but was not found in the connected database, so it may not be deployed there."
+  ],
+  "common_filters": [
+    "date",
+    "expense_categoryid",
+    "expense_sub_categoryid"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total Amount",
+      "formula": "SUM(amount)"
+    },
+    {
+      "name": "Total Confirmed Amount",
+      "formula": "SUM(confirmed_amount)"
+    },
+    {
+      "name": "Average Amount per expense detail",
+      "formula": "SUM(amount) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Expense Details by month",
+    "Recent expense details",
+    "Expense Details by expense category",
+    "Expense Details by expense sub category",
+    "Total amount by month",
+    "Top expense category by amount"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "ExpenseHeaderid",
+      "confirmed_amount",
+      "date",
+      "expense_categoryid",
+      "expense_sub_categoryid",
+      "remarks"
+    ],
+    "known_issues": [
+      "amount, confirmed_amount are stored as floating point, so sums can carry small rounding differences.",
+      "confirmed_amount is nullable; use COALESCE when summing or comparing."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": "date",
+    "preferred_amount_columns": [
+      "confirmed_amount",
+      "amount"
+    ],
+    "default_sort": "date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against ExpenseDetails: no table or view with this name exists in the connected database.",
+      "Use COUNT(DISTINCT id) when counting expense detail records; joins can duplicate rows.",
+      "Use SUM(confirmed_amount) for totals of confirmed amount.",
+      "To resolve names, join on: expense_categoryid = ExpenseCategory.id; expense_sub_categoryid = ExpenseSubCategory.id.",
+      "Defined in the EF Core model but not found in the connected database; confirm it has been migrated before relying on it."
+    ]
+  }
+}

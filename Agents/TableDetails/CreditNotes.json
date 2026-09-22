@@ -1,0 +1,269 @@
+{
+  "table_name": "CreditNotes",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Credit Notes",
+  "description": "Holds credit notes records, linked to dealer.",
+  "business_domain": "Accounts & Finance",
+  "business_purpose": "Used to track and report credit notes records, including amounts and quantities, for the Accounts & Finance area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one credit note.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the credit note.",
+      "business_meaning": "Credit Notes identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of the record.",
+      "business_meaning": "Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "dealer_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the dealer.",
+      "business_meaning": "Dealer Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "voucher_type",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Voucher type of the credit note.",
+      "business_meaning": "Voucher Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "voucher_no",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Voucher no reference of the credit note.",
+      "business_meaning": "Voucher No",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "credit",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Credit of the credit note.",
+      "business_meaning": "Credit",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "debit",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Debit of the credit note.",
+      "business_meaning": "Debit",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "uploaded_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of uploaded.",
+      "business_meaning": "Uploaded Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "factory_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the factory.",
+      "business_meaning": "Factory Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "dealerid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Dealer",
+        "column": "id"
+      },
+      "description": "Reference to the dealer linked to this credit note.",
+      "business_meaning": "Dealer",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "dealerid",
+      "to_table": "Dealer",
+      "to_column": "id",
+      "description": "Each credit note references one dealer (dealer)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_CreditNotes_dealerid",
+      "columns": [
+        "dealerid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "date is the preferred date column for period-based reporting.",
+    "Use credit / debit for monetary or quantity totals.",
+    "Columns voucher_type classify the record; check the distinct values before filtering on them.",
+    "Join to Dealer through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "date",
+    "dealerid",
+    "voucher_type",
+    "dealer_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total Credit",
+      "formula": "SUM(credit)"
+    },
+    {
+      "name": "Total Debit",
+      "formula": "SUM(debit)"
+    },
+    {
+      "name": "Average Credit per credit note",
+      "formula": "SUM(credit) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Credit Notes by month",
+    "Recent credit notes",
+    "Credit Notes by dealer",
+    "Credit Notes count by voucher type",
+    "Total credit by month",
+    "Top dealer by credit"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "date",
+      "dealer_name",
+      "voucher_type",
+      "voucher_no",
+      "credit",
+      "debit",
+      "uploaded_date",
+      "factory_name",
+      "dealerid"
+    ],
+    "known_issues": [
+      "credit, debit are stored as floating point, so sums can carry small rounding differences.",
+      "credit, debit are nullable; use COALESCE when summing or comparing."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "date",
+    "preferred_amount_columns": [
+      "credit",
+      "debit"
+    ],
+    "default_sort": "date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name CreditNotes (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT id) when counting credit note records; joins can duplicate rows.",
+      "Use SUM(credit) for totals of credit.",
+      "To resolve names, join on: dealerid = Dealer.id."
+    ]
+  }
+}

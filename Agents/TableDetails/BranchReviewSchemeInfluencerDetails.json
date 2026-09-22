@@ -1,0 +1,290 @@
+{
+  "table_name": "BranchReviewSchemeInfluencerDetails",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Branch Review Scheme Influencer Details",
+  "description": "Holds branch review scheme influencer details records, linked to branch review header.",
+  "business_domain": "Sales Planning & Performance",
+  "business_purpose": "Used to track and report branch review scheme influencer details records, including amounts and quantities, for the Sales Planning & Performance area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one branch review scheme influencer detail.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the branch review scheme influencer detail.",
+      "business_meaning": "Branch Review Scheme Influencer Details identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "header_id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "BranchReviewHeader",
+        "column": "Id"
+      },
+      "description": "Reference to the branch review header linked to this branch review scheme influencer detail.",
+      "business_meaning": "Branch Review Header",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "section_type",
+      "data_type": "varchar(10)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Section type of the branch review scheme influencer detail.",
+      "business_meaning": "Section Type",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "client_id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Client id of the branch review scheme influencer detail.",
+      "business_meaning": "Client Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "influencer_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the influencer.",
+      "business_meaning": "Influencer Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "team_member_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the team member.",
+      "business_meaning": "Team Member Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_fl",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the branch review scheme influencer detail is fl.",
+      "business_meaning": "Is Fl",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_scheme",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the branch review scheme influencer detail is scheme.",
+      "business_meaning": "Is Scheme",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "total_visits",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total visits of the branch review scheme influencer detail.",
+      "business_meaning": "Total Visits",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "total_sales_qty",
+      "data_type": "decimal(65,30)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total sales qty of the branch review scheme influencer detail.",
+      "business_meaning": "Total Sales Qty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "pending_payout_count",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Pending payout count of the branch review scheme influencer detail.",
+      "business_meaning": "Pending Payout Count",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "header_id",
+      "to_table": "BranchReviewHeader",
+      "to_column": "Id",
+      "description": "Each branch review scheme influencer detail references one branch review header (header)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "FK_BranchReviewSchemeInfluencerDetails_BranchReviewHeader_header",
+      "columns": [
+        "header_id"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Use total_visits / total_sales_qty for monetary or quantity totals.",
+    "Columns section_type classify the record; check the distinct values before filtering on them.",
+    "Join to Branch Review Header through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "header_id",
+    "section_type",
+    "is_fl",
+    "is_scheme",
+    "influencer_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    },
+    {
+      "name": "Total Visits",
+      "formula": "SUM(total_visits)"
+    },
+    {
+      "name": "Total Sales Qty",
+      "formula": "SUM(total_sales_qty)"
+    },
+    {
+      "name": "Total Pending Payout Count",
+      "formula": "SUM(pending_payout_count)"
+    },
+    {
+      "name": "Average Total Visits per branch review scheme influencer detail",
+      "formula": "SUM(total_visits) / COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "Branch Review Scheme Influencer Details by branch review header",
+    "Branch Review Scheme Influencer Details count by section type",
+    "Top branch review header by total visits"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "influencer_name",
+      "team_member_name",
+      "pending_payout_count"
+    ],
+    "known_issues": [
+      "pending_payout_count is nullable; use COALESCE when summing or comparing."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "total_visits",
+      "total_sales_qty"
+    ],
+    "default_sort": "Id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name BranchReviewSchemeInfluencerDetails (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT Id) when counting branch review scheme influencer detail records; joins can duplicate rows.",
+      "Use SUM(total_visits) for totals of total visits.",
+      "To resolve names, join on: header_id = BranchReviewHeader.Id."
+    ]
+  }
+}

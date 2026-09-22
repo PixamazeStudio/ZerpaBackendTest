@@ -1,0 +1,149 @@
+{
+  "table_name": "FactoryMapping",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Factory Mapping",
+  "description": "Holds factory mapping records, linked to factories, users.",
+  "business_domain": "Factory & Inventory",
+  "business_purpose": "Used to track and report factory mapping records for the Factory & Inventory area.",
+  "table_type": "mapping",
+  "record_granularity": "One row represents one factory mapping.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the factory mapping.",
+      "business_meaning": "Factory Mapping identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "userId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this factory mapping.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "factoryid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Factories",
+        "column": "id"
+      },
+      "description": "Reference to the factories linked to this factory mapping.",
+      "business_meaning": "Factories",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "userId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each factory mapping references one users (user)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "factoryid",
+      "to_table": "Factories",
+      "to_column": "id",
+      "description": "Each factory mapping references one factories (factory)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_FactoryMapping_factoryid",
+      "columns": [
+        "factoryid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_FactoryMapping_userId",
+      "columns": [
+        "userId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Join to Factories, Users through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "userId",
+    "factoryid"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Factory Mapping by users",
+    "Factory Mapping by factories"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "userId",
+      "factoryid"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [],
+    "default_sort": "id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name FactoryMapping (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT id) when counting factory mapping records; joins can duplicate rows.",
+      "To resolve names, join on: userId = Users.Id; factoryid = Factories.id."
+    ]
+  }
+}

@@ -1,0 +1,230 @@
+{
+  "table_name": "InfluencerSource",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Influencer Source",
+  "description": "Holds influencer source records.",
+  "business_domain": "Sales & CRM",
+  "business_purpose": "Used to track and report influencer source records for the Sales & CRM area.",
+  "table_type": "master",
+  "record_granularity": "One row represents one influencer source.",
+  "primary_key": {
+    "columns": [
+      "Id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "Id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the influencer source.",
+      "business_meaning": "Influencer Source identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Source_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the source.",
+      "business_meaning": "Source Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Description",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text description for the influencer source.",
+      "business_meaning": "Description",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Is_Deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Created_ById",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the influencer source.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Created_Date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Modified_ById",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the influencer source.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Modified_Date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "Created_ById",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the influencer source."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "Modified_ById",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the influencer source."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "Id",
+      "to_table": "Client",
+      "to_column": "influencer_sourceId",
+      "description": "Each influencer source can have many client records referencing it through influencer_sourceId."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_InfluencerSource_Created_ById",
+      "columns": [
+        "Created_ById"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_InfluencerSource_Modified_ById",
+      "columns": [
+        "Modified_ById"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "Id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (Is_Deleted = 1) should normally be excluded from reporting.",
+    "Created_Date is the preferred date column for period-based reporting."
+  ],
+  "common_filters": [
+    "Created_Date",
+    "Is_Deleted",
+    "Source_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT Id)"
+    }
+  ],
+  "common_queries": [
+    "Influencer Source by month",
+    "Recent influencer source"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "Id"
+    ],
+    "nullable_columns": [
+      "Source_name",
+      "Description",
+      "Created_ById",
+      "Modified_ById",
+      "Modified_Date"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "Created_Date",
+    "preferred_amount_columns": [],
+    "default_sort": "Created_Date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name InfluencerSource (identifiers can be case-sensitive).",
+      "Always filter Is_Deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT Id) when counting influencer source records; joins can duplicate rows."
+    ]
+  }
+}

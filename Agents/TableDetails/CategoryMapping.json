@@ -1,0 +1,149 @@
+{
+  "table_name": "CategoryMapping",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Category Mapping",
+  "description": "Holds category mapping records, linked to category, users.",
+  "business_domain": "General",
+  "business_purpose": "Used to track and report category mapping records for the General area.",
+  "table_type": "mapping",
+  "record_granularity": "One row represents one category mapping.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the category mapping.",
+      "business_meaning": "Category Mapping identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "userId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this category mapping.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "categoryid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Category",
+        "column": "id"
+      },
+      "description": "Reference to the category linked to this category mapping.",
+      "business_meaning": "Category",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "userId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each category mapping references one users (user)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "categoryid",
+      "to_table": "Category",
+      "to_column": "id",
+      "description": "Each category mapping references one category (category)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_CategoryMapping_categoryid",
+      "columns": [
+        "categoryid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_CategoryMapping_userId",
+      "columns": [
+        "userId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Join to Category, Users through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "userId",
+    "categoryid"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Category Mapping by users",
+    "Category Mapping by category"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "userId",
+      "categoryid"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [],
+    "default_sort": "id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name CategoryMapping (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT id) when counting category mapping records; joins can duplicate rows.",
+      "To resolve names, join on: userId = Users.Id; categoryid = Category.id."
+    ]
+  }
+}

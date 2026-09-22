@@ -1,0 +1,149 @@
+{
+  "table_name": "ComplaintMonthlyAgingRow",
+  "schema": null,
+  "object_type": "model",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Complaint Monthly Aging Row",
+  "description": "Application view model for complaint monthly aging row data (not stored as a database table).",
+  "business_domain": "Customer Support",
+  "business_purpose": "Used to track and report complaint monthly aging row records, including amounts and quantities, for the Customer Support area.",
+  "table_type": "view_model",
+  "record_granularity": "One object represents one complaint monthly aging row result row.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "dealer_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the dealer.",
+      "business_meaning": "Dealer Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "days_0_3",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Days 0 3 of the complaint monthly aging row.",
+      "business_meaning": "Days 0 3",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "days_4_7",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Days 4 7 of the complaint monthly aging row.",
+      "business_meaning": "Days 4 7",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "days_8_10",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Days 8 10 of the complaint monthly aging row.",
+      "business_meaning": "Days 8 10",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "days_10_plus",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Days 10 plus of the complaint monthly aging row.",
+      "business_meaning": "Days 10 Plus",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "total_complaints",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total complaints of the complaint monthly aging row.",
+      "business_meaning": "Total Complaints",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "Use total_complaints for monetary or quantity totals.",
+    "ComplaintMonthlyAgingRow is an application view model or report DTO populated in code, not a table stored in the database."
+  ],
+  "common_filters": [
+    "dealer_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    },
+    {
+      "name": "Total Complaints",
+      "formula": "SUM(total_complaints)"
+    }
+  ],
+  "common_queries": [
+    "List complaint monthly aging row",
+    "Count of complaint monthly aging row"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [
+      "dealer_name"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "total_complaints"
+    ],
+    "default_sort": "",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against ComplaintMonthlyAgingRow: no table or view with this name exists in the connected database.",
+      "Use SUM(total_complaints) for totals of total complaints.",
+      "Populated in application code (for example from a stored procedure or joined query); query the underlying tables instead."
+    ]
+  }
+}

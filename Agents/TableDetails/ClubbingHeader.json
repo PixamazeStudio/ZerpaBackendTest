@@ -1,0 +1,729 @@
+{
+  "table_name": "ClubbingHeader",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Clubbing Header",
+  "description": "Holds clubbing header records, linked to area, region, users.",
+  "business_domain": "General",
+  "business_purpose": "Used to track and report clubbing header records, including approval status, amounts and quantities, for the General area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one clubbing header.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the clubbing header.",
+      "business_meaning": "Clubbing Header identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "clubbing_code",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Clubbing code reference of the clubbing header.",
+      "business_meaning": "Clubbing Code",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "no_of_intends",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "No of intends of the clubbing header.",
+      "business_meaning": "No Of Intends",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "total_price",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total price of the clubbing header.",
+      "business_meaning": "Total Price",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "total_weight",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total weight of the clubbing header.",
+      "business_meaning": "Total Weight",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "is_dispatched",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "True when the clubbing header is dispatched.",
+      "business_meaning": "Is Dispatched",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "dispatch_planning_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of dispatch planning.",
+      "business_meaning": "Dispatch Planning Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "dispatched_confirmed_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this clubbing header.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "dispatched_confirmed_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of dispatched confirmed.",
+      "business_meaning": "Dispatched Confirmed Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "regionid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Region",
+        "column": "id"
+      },
+      "description": "Reference to the region linked to this clubbing header.",
+      "business_meaning": "Region",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "areaid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Area",
+        "column": "id"
+      },
+      "description": "Reference to the area linked to this clubbing header.",
+      "business_meaning": "Area",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the clubbing header.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "FactoryApprovedDate",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of factory approved.",
+      "business_meaning": "Factory Approved Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "FactoryApprovedById",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this clubbing header.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_editable",
+      "data_type": "tinyint(1)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "True when the clubbing header is editable.",
+      "business_meaning": "Is Editable",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "truckid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Trucks",
+        "column": "id"
+      },
+      "description": "Reference to the trucks linked to this clubbing header.",
+      "business_meaning": "Trucks",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "delivery_order",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Delivery order of the clubbing header.",
+      "business_meaning": "Delivery Order",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_approved",
+      "data_type": "tinyint(1)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "True when the clubbing header is approved.",
+      "business_meaning": "Is Approved",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "priority",
+      "data_type": "float",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Priority of the clubbing header.",
+      "business_meaning": "Priority",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the clubbing header.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "approved_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who approved the clubbing header.",
+      "business_meaning": "Approved By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "approved_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of approved.",
+      "business_meaning": "Approved Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_rejected",
+      "data_type": "tinyint(1)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "True when the clubbing header is rejected.",
+      "business_meaning": "Is Rejected",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "rejected_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who rejected the clubbing header.",
+      "business_meaning": "Rejected By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "rejected_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of rejected.",
+      "business_meaning": "Rejected Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "rejected_notes",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text rejected notes for the clubbing header.",
+      "business_meaning": "Rejected Notes",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "factory_status",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Factory status of the clubbing header.",
+      "business_meaning": "Factory Status",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "notes",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Free-text notes for the clubbing header.",
+      "business_meaning": "Notes",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "dispatched_confirmed_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each clubbing header references one users (dispatched confirmed by)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "regionid",
+      "to_table": "Region",
+      "to_column": "id",
+      "description": "Each clubbing header references one region (region)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "areaid",
+      "to_table": "Area",
+      "to_column": "id",
+      "description": "Each clubbing header references one area (area)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the clubbing header."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "FactoryApprovedById",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each clubbing header references one users (factory approved by)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "truckid",
+      "to_table": "Trucks",
+      "to_column": "id",
+      "description": "Each clubbing header references one trucks (truck)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the clubbing header."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "approved_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who approved the clubbing header."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "rejected_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who rejected the clubbing header."
+    },
+    {
+      "type": "one_to_many",
+      "from_column": "id",
+      "to_table": "ClubbingDetails",
+      "to_column": "clubheaderid",
+      "description": "Each clubbing header can have many clubbing details records referencing it through clubheaderid."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_ClubbingHeader_approved_byId",
+      "columns": [
+        "approved_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ClubbingHeader_areaid",
+      "columns": [
+        "areaid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ClubbingHeader_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ClubbingHeader_dispatched_confirmed_byId",
+      "columns": [
+        "dispatched_confirmed_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ClubbingHeader_FactoryApprovedById",
+      "columns": [
+        "FactoryApprovedById"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ClubbingHeader_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ClubbingHeader_regionid",
+      "columns": [
+        "regionid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ClubbingHeader_rejected_byId",
+      "columns": [
+        "rejected_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_ClubbingHeader_truckid",
+      "columns": [
+        "truckid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "Approval state is tracked with is_approved, is_rejected; a record with neither flag set is typically still pending.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Use total_price / total_weight for monetary or quantity totals.",
+    "Columns priority, factory_status classify the record; check the distinct values before filtering on them.",
+    "Join to Area, Region, Users through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "created_date",
+    "dispatched_confirmed_byId",
+    "regionid",
+    "areaid",
+    "FactoryApprovedById",
+    "priority",
+    "factory_status",
+    "is_dispatched",
+    "is_editable",
+    "is_approved",
+    "clubbing_code"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Average Total Price",
+      "formula": "AVG(total_price)"
+    },
+    {
+      "name": "Total Weight",
+      "formula": "SUM(total_weight)"
+    }
+  ],
+  "common_queries": [
+    "Clubbing Header by month",
+    "Recent clubbing header",
+    "Clubbing Header by users",
+    "Clubbing Header by region",
+    "Clubbing Header by area",
+    "Clubbing Header count by priority",
+    "Total total price by month",
+    "Top users by total price"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "dispatch_planning_date",
+      "dispatched_confirmed_byId",
+      "dispatched_confirmed_date",
+      "FactoryApprovedDate",
+      "FactoryApprovedById",
+      "is_editable",
+      "truckid",
+      "is_approved",
+      "is_deleted",
+      "modified_byId",
+      "modified_date",
+      "approved_byId",
+      "approved_date",
+      "is_rejected",
+      "rejected_byId",
+      "rejected_date",
+      "rejected_notes",
+      "factory_status",
+      "notes"
+    ],
+    "known_issues": [
+      "total_price, total_weight are stored as floating point, so sums can carry small rounding differences."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [
+      "total_price",
+      "total_weight"
+    ],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name ClubbingHeader (identifiers can be case-sensitive).",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting clubbing header records; joins can duplicate rows.",
+      "Use SUM(total_price) for totals of total price.",
+      "To resolve names, join on: dispatched_confirmed_byId = Users.Id; regionid = Region.id; areaid = Area.id; FactoryApprovedById = Users.Id; truckid = Trucks.id."
+    ]
+  }
+}

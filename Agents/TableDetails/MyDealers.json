@@ -1,0 +1,183 @@
+{
+  "table_name": "MyDealers",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "My Dealers",
+  "description": "Holds my dealers records, linked to dealer, sales head, users.",
+  "business_domain": "Sales & CRM",
+  "business_purpose": "Used to track and report my dealers records for the Sales & CRM area.",
+  "table_type": "master",
+  "record_granularity": "One row represents one my dealer.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the my dealer.",
+      "business_meaning": "My Dealers identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "dealerid",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Dealer",
+        "column": "id"
+      },
+      "description": "Reference to the dealer linked to this my dealer.",
+      "business_meaning": "Dealer",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "usersId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "Reference to the users linked to this my dealer.",
+      "business_meaning": "Users",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "salesheadid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "SalesHead",
+        "column": "id"
+      },
+      "description": "Reference to the sales head linked to this my dealer.",
+      "business_meaning": "Sales Head",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "dealerid",
+      "to_table": "Dealer",
+      "to_column": "id",
+      "description": "Each my dealer references one dealer (dealer)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "usersId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "Each my dealer references one users (users)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "salesheadid",
+      "to_table": "SalesHead",
+      "to_column": "id",
+      "description": "Each my dealer references one sales head (saleshead)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_MyDealers_dealerid",
+      "columns": [
+        "dealerid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_MyDealers_salesheadid",
+      "columns": [
+        "salesheadid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_MyDealers_usersId",
+      "columns": [
+        "usersId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Join to Dealer, Sales Head, Users through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "dealerid",
+    "usersId",
+    "salesheadid"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "My Dealers by dealer",
+    "My Dealers by users",
+    "My Dealers by sales head"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "salesheadid"
+    ],
+    "known_issues": [
+      "The table appeared empty (estimated 0 rows) when the metadata was last read."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [],
+    "default_sort": "id DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name MyDealers (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT id) when counting my dealer records; joins can duplicate rows.",
+      "To resolve names, join on: dealerid = Dealer.id; usersId = Users.Id; salesheadid = SalesHead.id."
+    ]
+  }
+}

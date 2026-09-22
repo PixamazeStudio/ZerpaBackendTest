@@ -1,0 +1,230 @@
+{
+  "table_name": "ComplaintsFile",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Complaints File",
+  "description": "Holds complaints file records, linked to complaints header.",
+  "business_domain": "Customer Support",
+  "business_purpose": "Used to track and report complaints file records for the Customer Support area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one complaints file.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the complaints file.",
+      "business_meaning": "Complaints File identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "cms_headerid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "ComplaintsHeader",
+        "column": "id"
+      },
+      "description": "Reference to the complaints header linked to this complaints file.",
+      "business_meaning": "Complaints Header",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "file_type",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "File type of the complaints file.",
+      "business_meaning": "File Type",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "file_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the file.",
+      "business_meaning": "File Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "file_path",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "File path (file or link reference) for the complaints file.",
+      "business_meaning": "File Path",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "base64_image",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Base64 image of the complaints file.",
+      "business_meaning": "Base64 Image",
+      "sensitive": true,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "related_id",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Related id of the complaints file.",
+      "business_meaning": "Related Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "related_section",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Related section of the complaints file.",
+      "business_meaning": "Related Section",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "cms_headerid",
+      "to_table": "ComplaintsHeader",
+      "to_column": "id",
+      "description": "Each complaints file references one complaints header (cms header)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_ComplaintsFile_cms_headerid",
+      "columns": [
+        "cms_headerid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "Columns file_type classify the record; check the distinct values before filtering on them.",
+    "Join to Complaints Header through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "cms_headerid",
+    "file_type",
+    "is_deleted",
+    "file_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Complaints File by complaints header",
+    "Complaints File count by file type"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "cms_headerid",
+      "file_type",
+      "file_name",
+      "file_path",
+      "base64_image",
+      "related_id",
+      "related_section",
+      "is_deleted"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [],
+    "default_sort": "id DESC",
+    "avoid_columns": [
+      "file_type",
+      "file_name",
+      "file_path",
+      "base64_image"
+    ],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name ComplaintsFile (identifiers can be case-sensitive).",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting complaints file records; joins can duplicate rows.",
+      "To resolve names, join on: cms_headerid = ComplaintsHeader.id.",
+      "Do not select file_type, file_name, file_path, base64_image; they are sensitive or may hold very large content."
+    ]
+  }
+}

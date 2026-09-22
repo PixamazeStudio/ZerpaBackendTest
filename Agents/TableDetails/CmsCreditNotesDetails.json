@@ -1,0 +1,289 @@
+{
+  "table_name": "Cms_CreditNotesDetails",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Cms Credit Notes Details",
+  "description": "Holds cms credit notes details records, linked to cms credit notes header.",
+  "business_domain": "Accounts & Finance",
+  "business_purpose": "Used to track and report cms credit notes details records, including amounts and quantities, for the Accounts & Finance area.",
+  "table_type": "transactional",
+  "record_granularity": "One row represents one cms credit notes detail.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the cms credit notes detail.",
+      "business_meaning": "Cms Credit Notes Details identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Sr_No",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Sr no of the cms credit notes detail.",
+      "business_meaning": "Sr No",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Inv_No",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Inv no reference of the cms credit notes detail.",
+      "business_meaning": "Inv No",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Inv_Date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of inv.",
+      "business_meaning": "Inv Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Amount",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Amount of the cms credit notes detail.",
+      "business_meaning": "Amount",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "Credit_Amount",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Credit amount of the cms credit notes detail.",
+      "business_meaning": "Credit Amount",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "Details_of_Credit",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Details of credit of the cms credit notes detail.",
+      "business_meaning": "Details Of Credit",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": false,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "ReceiptDetails_Ch_No",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Receipt details ch no reference of the cms credit notes detail.",
+      "business_meaning": "Receipt Details Ch No",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "ReceiptDetails_Date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of receipt details.",
+      "business_meaning": "Receipt Details Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "ReceiptDetails_Amount",
+      "data_type": "float",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Receipt details amount of the cms credit notes detail.",
+      "business_meaning": "Receipt Details Amount",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "CMS_CreditNotesHeaderid",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Cms_CreditNotesHeader",
+        "column": "id"
+      },
+      "description": "Reference to the cms credit notes header linked to this cms credit notes detail.",
+      "business_meaning": "Cms Credit Notes Header",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "CMS_CreditNotesHeaderid",
+      "to_table": "Cms_CreditNotesHeader",
+      "to_column": "id",
+      "description": "Each cms credit notes detail references one cms credit notes header (CMS credit notes header)."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_Cms_CreditNotesDetails_CMS_CreditNotesHeaderid",
+      "columns": [
+        "CMS_CreditNotesHeaderid"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Inv_Date is the preferred date column for period-based reporting.",
+    "Use Amount / Credit_Amount for monetary or quantity totals.",
+    "Join to Cms Credit Notes Header through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "Inv_Date",
+    "CMS_CreditNotesHeaderid"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total Amount",
+      "formula": "SUM(Amount)"
+    },
+    {
+      "name": "Total Credit Amount",
+      "formula": "SUM(Credit_Amount)"
+    },
+    {
+      "name": "Total Receipt Details Amount",
+      "formula": "SUM(ReceiptDetails_Amount)"
+    },
+    {
+      "name": "Average Amount per cms credit notes detail",
+      "formula": "SUM(Amount) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Cms Credit Notes Details by month",
+    "Recent cms credit notes details",
+    "Cms Credit Notes Details by cms credit notes header",
+    "Total amount by month",
+    "Top cms credit notes header by amount"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "Sr_No",
+      "Inv_No",
+      "Inv_Date",
+      "Amount",
+      "Credit_Amount",
+      "Details_of_Credit",
+      "ReceiptDetails_Ch_No",
+      "ReceiptDetails_Date",
+      "ReceiptDetails_Amount",
+      "CMS_CreditNotesHeaderid"
+    ],
+    "known_issues": [
+      "Amount, Credit_Amount, ReceiptDetails_Amount are stored as floating point, so sums can carry small rounding differences.",
+      "Amount, Credit_Amount, ReceiptDetails_Amount are nullable; use COALESCE when summing or comparing."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "Inv_Date",
+    "preferred_amount_columns": [
+      "Amount",
+      "Credit_Amount"
+    ],
+    "default_sort": "Inv_Date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name Cms_CreditNotesDetails (identifiers can be case-sensitive).",
+      "Use COUNT(DISTINCT id) when counting cms credit notes detail records; joins can duplicate rows.",
+      "Use SUM(Amount) for totals of amount.",
+      "To resolve names, join on: CMS_CreditNotesHeaderid = Cms_CreditNotesHeader.id."
+    ]
+  }
+}

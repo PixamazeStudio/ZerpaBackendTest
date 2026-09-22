@@ -1,0 +1,297 @@
+{
+  "table_name": "AreaCategoryPricing",
+  "schema": null,
+  "object_type": "table",
+  "view_name": null,
+  "exists_in_database": true,
+  "display_name": "Area Category Pricing",
+  "description": "Holds area category pricing records, linked to area category, job grade.",
+  "business_domain": "Sales & CRM",
+  "business_purpose": "Used to track and report area category pricing records, including amounts and quantities, for the Sales & CRM area.",
+  "table_type": "master",
+  "record_granularity": "One row represents one area category pricing.",
+  "primary_key": {
+    "columns": [
+      "id"
+    ],
+    "type": "identity",
+    "unique": true
+  },
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_primary_key": true,
+      "is_foreign_key": false,
+      "description": "Unique identifier of the area category pricing.",
+      "business_meaning": "Area Category Pricing identifier",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "gradeId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "JobGrade",
+        "column": "Id"
+      },
+      "description": "Reference to the job grade linked to this area category pricing.",
+      "business_meaning": "Job Grade",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "area_categoryId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": true,
+      "references": {
+        "table": "AreaCategory",
+        "column": "Id"
+      },
+      "description": "Reference to the area category linked to this area category pricing.",
+      "business_meaning": "Area Category",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "amount",
+      "data_type": "decimal(65,30)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Amount of the area category pricing.",
+      "business_meaning": "Amount",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "created_date",
+      "data_type": "datetime(6)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was created.",
+      "business_meaning": "Created Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "created_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who created the area category pricing.",
+      "business_meaning": "Created By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_date",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time when the record was last modified.",
+      "business_meaning": "Modified Date",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "modified_byId",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": true,
+      "references": {
+        "table": "Users",
+        "column": "Id"
+      },
+      "description": "User who last modified the area category pricing.",
+      "business_meaning": "Modified By",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "is_deleted",
+      "data_type": "tinyint(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Soft-delete flag. True when the record has been deleted.",
+      "business_meaning": "Is Deleted",
+      "example_values": [
+        true,
+        false
+      ],
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [
+    {
+      "type": "many_to_one",
+      "from_column": "gradeId",
+      "to_table": "JobGrade",
+      "to_column": "Id",
+      "description": "Each area category pricing references one job grade (grade)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "area_categoryId",
+      "to_table": "AreaCategory",
+      "to_column": "Id",
+      "description": "Each area category pricing references one area category (area category)."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "created_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who created the area category pricing."
+    },
+    {
+      "type": "many_to_one",
+      "from_column": "modified_byId",
+      "to_table": "Users",
+      "to_column": "Id",
+      "description": "User who last modified the area category pricing."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "IX_AreaCategoryPricing_area_categoryId",
+      "columns": [
+        "area_categoryId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_AreaCategoryPricing_created_byId",
+      "columns": [
+        "created_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_AreaCategoryPricing_gradeId",
+      "columns": [
+        "gradeId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "IX_AreaCategoryPricing_modified_byId",
+      "columns": [
+        "modified_byId"
+      ],
+      "type": "non_clustered"
+    },
+    {
+      "name": "PRIMARY",
+      "columns": [
+        "id"
+      ],
+      "type": "primary"
+    }
+  ],
+  "business_rules": [
+    "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
+    "created_date is the preferred date column for period-based reporting.",
+    "Use amount for monetary or quantity totals.",
+    "Join to Area Category, Job Grade through the foreign key columns to resolve names."
+  ],
+  "common_filters": [
+    "created_date",
+    "gradeId",
+    "area_categoryId",
+    "is_deleted"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(DISTINCT id)"
+    },
+    {
+      "name": "Total Amount",
+      "formula": "SUM(amount)"
+    },
+    {
+      "name": "Average Amount per area category pricing",
+      "formula": "SUM(amount) / COUNT(DISTINCT id)"
+    }
+  ],
+  "common_queries": [
+    "Area Category Pricing by month",
+    "Recent area category pricing",
+    "Area Category Pricing by job grade",
+    "Area Category Pricing by area category",
+    "Total amount by month",
+    "Top job grade by amount"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [
+      "id"
+    ],
+    "nullable_columns": [
+      "created_byId",
+      "modified_date",
+      "modified_byId"
+    ],
+    "known_issues": [
+      "The table appeared empty (estimated 0 rows) when the metadata was last read."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": "created_date",
+    "preferred_amount_columns": [
+      "amount"
+    ],
+    "default_sort": "created_date DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name AreaCategoryPricing (identifiers can be case-sensitive).",
+      "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Use COUNT(DISTINCT id) when counting area category pricing records; joins can duplicate rows.",
+      "Use SUM(amount) for totals of amount.",
+      "To resolve names, join on: gradeId = JobGrade.Id; area_categoryId = AreaCategory.Id."
+    ]
+  }
+}

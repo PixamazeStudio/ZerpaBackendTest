@@ -1,0 +1,186 @@
+{
+  "table_name": "InfluencerSupplySummary",
+  "schema": null,
+  "object_type": "model",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Influencer Supply Summary",
+  "description": "Application view model for influencer supply summary data (not stored as a database table).",
+  "business_domain": "Sales & CRM",
+  "business_purpose": "Used to track and report influencer supply summary records, including amounts and quantities, for the Sales & CRM area.",
+  "table_type": "view_model",
+  "record_granularity": "One object represents one influencer supply summary result row.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "userId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "User id of the influencer supply summary.",
+      "business_meaning": "User Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "clientId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Client id of the influencer supply summary.",
+      "business_meaning": "Client Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "influencerName",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Influencer name of the influencer supply summary.",
+      "business_meaning": "Influencer Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "supplied_on",
+      "data_type": "datetime(6)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Date and time of supplied.",
+      "business_meaning": "Supplied On",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "totalQty",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Total qty of the influencer supply summary.",
+      "business_meaning": "Total Qty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "plyQty",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Ply qty of the influencer supply summary.",
+      "business_meaning": "Ply Qty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "pvcQty",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Pvc qty of the influencer supply summary.",
+      "business_meaning": "Pvc Qty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "supplied_on is the preferred date column for period-based reporting.",
+    "Use totalQty / plyQty for monetary or quantity totals.",
+    "InfluencerSupplySummary is an application view model or report DTO populated in code, not a table stored in the database."
+  ],
+  "common_filters": [
+    "supplied_on"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    },
+    {
+      "name": "Total Qty",
+      "formula": "SUM(totalQty)"
+    },
+    {
+      "name": "Total Ply Qty",
+      "formula": "SUM(plyQty)"
+    },
+    {
+      "name": "Total Pvc Qty",
+      "formula": "SUM(pvcQty)"
+    }
+  ],
+  "common_queries": [
+    "Influencer Supply Summary by month",
+    "Recent influencer supply summary",
+    "Total total qty by month"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [
+      "influencerName",
+      "supplied_on"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": "supplied_on",
+    "preferred_amount_columns": [
+      "totalQty",
+      "plyQty"
+    ],
+    "default_sort": "supplied_on DESC",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against InfluencerSupplySummary: no table or view with this name exists in the connected database.",
+      "Use SUM(totalQty) for totals of total qty.",
+      "Populated in application code (for example from a stored procedure or joined query); query the underlying tables instead."
+    ]
+  }
+}

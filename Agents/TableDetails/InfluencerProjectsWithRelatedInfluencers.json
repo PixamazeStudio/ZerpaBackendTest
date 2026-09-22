@@ -1,0 +1,189 @@
+{
+  "table_name": "Vw_InfluencerProjectsWithRelatedinfluencers",
+  "schema": null,
+  "object_type": "view",
+  "view_name": "Vw_InfluencerProjectsWithRelatedinfluencers",
+  "exists_in_database": true,
+  "display_name": "Influencer Projects With Relatedinfluencers",
+  "description": "Database view exposing influencer projects with relatedinfluencers data.",
+  "business_domain": "Sales & CRM",
+  "business_purpose": "Used to track and report influencer projects with relatedinfluencers records, including amounts and quantities, for the Sales & CRM area.",
+  "table_type": "view",
+  "record_granularity": "One row represents one record returned by the influencer projects with relatedinfluencers view.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "influencer_id",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Influencer id of the influencer projects with relatedinfluencers.",
+      "business_meaning": "Influencer Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "influencer_name",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Name of the influencer.",
+      "business_meaning": "Influencer Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "related_influencer_id",
+      "data_type": "int(11)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Related influencer id of the influencer projects with relatedinfluencers.",
+      "business_meaning": "Related Influencer Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "related_influencer_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the related influencer.",
+      "business_meaning": "Related Influencer Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "type_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the type.",
+      "business_meaning": "Type Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "no_of_projects",
+      "data_type": "bigint(21)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "No of projects of the influencer projects with relatedinfluencers.",
+      "business_meaning": "No Of Projects",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "no_of_sheets",
+      "data_type": "decimal(32,0)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "No of sheets of the influencer projects with relatedinfluencers.",
+      "business_meaning": "No Of Sheets",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "project_id",
+      "data_type": "int(1)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Project id of the influencer projects with relatedinfluencers.",
+      "business_meaning": "Project Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "project_name",
+      "data_type": "char(0)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Name of the project.",
+      "business_meaning": "Project Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "Use no_of_sheets for monetary or quantity totals.",
+    "Vw_InfluencerProjectsWithRelatedinfluencers is a database view: it is read-only and its rows are computed, so apply filters and a LIMIT when querying."
+  ],
+  "common_filters": [
+    "influencer_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    },
+    {
+      "name": "Total No Of Sheets",
+      "formula": "SUM(no_of_sheets)"
+    }
+  ],
+  "common_queries": [
+    "List influencer projects with relatedinfluencers",
+    "Count of influencer projects with relatedinfluencers"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [],
+    "known_issues": [
+      "no_of_sheets is nullable; use COALESCE when summing or comparing.",
+      "Views expose no primary key or nullability guarantees; rows may repeat depending on the view definition."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "no_of_sheets"
+    ],
+    "default_sort": "",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name Vw_InfluencerProjectsWithRelatedinfluencers (identifiers can be case-sensitive).",
+      "Use SUM(no_of_sheets) for totals of no of sheets.",
+      "This is a view; always apply filters and a LIMIT, as it may be expensive to scan."
+    ]
+  }
+}

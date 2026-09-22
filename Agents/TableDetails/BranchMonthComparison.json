@@ -1,0 +1,252 @@
+{
+  "table_name": "BranchMonthComparison",
+  "schema": null,
+  "object_type": "model",
+  "view_name": null,
+  "exists_in_database": false,
+  "display_name": "Branch Month Comparison",
+  "description": "Application view model for branch month comparison data (not stored as a database table).",
+  "business_domain": "Branch & Geography",
+  "business_purpose": "Used to track and report branch month comparison records, including amounts and quantities, for the Branch & Geography area.",
+  "table_type": "view_model",
+  "record_granularity": "One object represents one branch month comparison result row.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "BranchId",
+      "data_type": "int",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Branch id of the branch month comparison.",
+      "business_meaning": "Branch Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "branch_name",
+      "data_type": "longtext",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Name of the branch.",
+      "business_meaning": "Branch Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "mtd_ly_qty",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Mtd ly qty of the branch month comparison.",
+      "business_meaning": "Mtd Ly Qty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "mtd_ly_na",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Mtd ly na of the branch month comparison.",
+      "business_meaning": "Mtd Ly Na",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "mtd_ly_truck",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Mtd ly truck of the branch month comparison.",
+      "business_meaning": "Mtd Ly Truck",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "mtd_ty_qty",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Mtd ty qty of the branch month comparison.",
+      "business_meaning": "Mtd Ty Qty",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "mtd_ty_na",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Mtd ty na of the branch month comparison.",
+      "business_meaning": "Mtd Ty Na",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "mtd_ty_truck",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Mtd ty truck of the branch month comparison.",
+      "business_meaning": "Mtd Ty Truck",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "goly_na",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Goly na of the branch month comparison.",
+      "business_meaning": "Goly Na",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "goly_truck",
+      "data_type": "decimal(18,2)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Goly truck of the branch month comparison.",
+      "business_meaning": "Goly Truck",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "Use mtd_ly_qty / mtd_ty_qty for monetary or quantity totals.",
+    "BranchMonthComparison is an application view model or report DTO populated in code, not a table stored in the database."
+  ],
+  "common_filters": [
+    "branch_name"
+  ],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    },
+    {
+      "name": "Total Mtd Ly Qty",
+      "formula": "SUM(mtd_ly_qty)"
+    },
+    {
+      "name": "Total Mtd Ly Na",
+      "formula": "SUM(mtd_ly_na)"
+    },
+    {
+      "name": "Total Mtd Ly Truck",
+      "formula": "SUM(mtd_ly_truck)"
+    }
+  ],
+  "common_queries": [
+    "List branch month comparison",
+    "Count of branch month comparison"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [
+      "branch_name"
+    ],
+    "known_issues": []
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": false,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "mtd_ly_qty",
+      "mtd_ty_qty"
+    ],
+    "default_sort": "",
+    "avoid_columns": [],
+    "query_notes": [
+      "Do not generate SQL against BranchMonthComparison: no table or view with this name exists in the connected database.",
+      "Use SUM(mtd_ly_qty) for totals of mtd ly qty.",
+      "Populated in application code (for example from a stored procedure or joined query); query the underlying tables instead."
+    ]
+  }
+}

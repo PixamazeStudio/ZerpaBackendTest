@@ -1,0 +1,234 @@
+{
+  "table_name": "DealerWiseReport",
+  "schema": null,
+  "object_type": "view",
+  "view_name": "DealerWiseReport",
+  "exists_in_database": true,
+  "display_name": "Dealer Wise Report",
+  "description": "Database view exposing dealer wise report data.",
+  "business_domain": "Sales & CRM",
+  "business_purpose": "Used to track and report dealer wise report records, including amounts and quantities, for the Sales & CRM area.",
+  "table_type": "view",
+  "record_granularity": "One row represents one record returned by the dealer wise report view.",
+  "primary_key": {
+    "columns": [],
+    "type": "none",
+    "unique": false
+  },
+  "columns": [
+    {
+      "name": "DealerId",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Dealer id of the dealer wise report.",
+      "business_meaning": "Dealer Id",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "DealerName",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Dealer name of the dealer wise report.",
+      "business_meaning": "Dealer Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Month",
+      "data_type": "varchar(9)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Month of the dealer wise report.",
+      "business_meaning": "Month",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "Year",
+      "data_type": "int(11)",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Year of the dealer wise report.",
+      "business_meaning": "Year",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": false
+    },
+    {
+      "name": "BranchName",
+      "data_type": "longtext",
+      "nullable": false,
+      "is_foreign_key": false,
+      "description": "Branch name of the dealer wise report.",
+      "business_meaning": "Branch Name",
+      "sensitive": false,
+      "searchable": true,
+      "filterable": true,
+      "sortable": false,
+      "aggregatable": false
+    },
+    {
+      "name": "Target",
+      "data_type": "double(19,2)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Target of the dealer wise report.",
+      "business_meaning": "Target",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "Dispatched",
+      "data_type": "double(20,3)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Dispatched of the dealer wise report.",
+      "business_meaning": "Dispatched",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "Cleared",
+      "data_type": "double(19,2)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Cleared of the dealer wise report.",
+      "business_meaning": "Cleared",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "Pending",
+      "data_type": "double(19,2)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Pending of the dealer wise report.",
+      "business_meaning": "Pending",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    },
+    {
+      "name": "Total",
+      "data_type": "double(20,3)",
+      "nullable": true,
+      "is_foreign_key": false,
+      "description": "Total of the dealer wise report.",
+      "business_meaning": "Total",
+      "sensitive": false,
+      "searchable": false,
+      "filterable": true,
+      "sortable": true,
+      "aggregatable": true,
+      "aggregation": [
+        "SUM",
+        "AVG",
+        "MIN",
+        "MAX"
+      ]
+    }
+  ],
+  "relationships": [],
+  "indexes": [],
+  "business_rules": [
+    "Use Total / Target for monetary or quantity totals.",
+    "DealerWiseReport is a database view: it is read-only and its rows are computed, so apply filters and a LIMIT when querying."
+  ],
+  "common_filters": [],
+  "common_metrics": [
+    {
+      "name": "Record Count",
+      "formula": "COUNT(*)"
+    },
+    {
+      "name": "Total Target",
+      "formula": "SUM(Target)"
+    },
+    {
+      "name": "Total Dispatched",
+      "formula": "SUM(Dispatched)"
+    },
+    {
+      "name": "Total Cleared",
+      "formula": "SUM(Cleared)"
+    }
+  ],
+  "common_queries": [
+    "List dealer wise report",
+    "Count of dealer wise report"
+  ],
+  "data_quality": {
+    "expected_unique_columns": [],
+    "nullable_columns": [],
+    "known_issues": [
+      "Target, Dispatched, Cleared, Pending are stored as floating point, so sums can carry small rounding differences.",
+      "Target, Dispatched, Cleared, Pending are nullable; use COALESCE when summing or comparing.",
+      "Views expose no primary key or nullability guarantees; rows may repeat depending on the view definition."
+    ]
+  },
+  "sample_data": [],
+  "llm_instructions": {
+    "can_query": true,
+    "preferred_date_column": null,
+    "preferred_amount_columns": [
+      "Total",
+      "Target"
+    ],
+    "default_sort": "",
+    "avoid_columns": [],
+    "query_notes": [
+      "The database is MySQL/MariaDB; use MySQL syntax and the exact name DealerWiseReport (identifiers can be case-sensitive).",
+      "Use SUM(Total) for totals of total.",
+      "This is a view; always apply filters and a LIMIT, as it may be expensive to scan."
+    ]
+  }
+}
