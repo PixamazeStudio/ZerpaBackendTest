@@ -7,6 +7,9 @@
   "display_name": "Focus List",
   "description": "Holds focus list records, linked to client, crm client type, users.",
   "business_domain": "General",
+  "authorized_modules": [
+    "Customer Relationship Management"
+  ],
   "business_purpose": "Used to track and report focus list records, including approval status, for the General area.",
   "table_type": "transactional",
   "record_granularity": "One row represents one focus list.",
@@ -424,8 +427,10 @@
   "business_rules": [
     "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
     "Approval state is tracked with is_approved; a record with neither flag set is typically still pending.",
+    "Focus list reporting defaults to approved clients only (is_approved = 1) — canceled (is_canceled = 1) and pending (neither flag set) records should be excluded unless the user explicitly asks for canceled, pending, or all focus list clients.",
     "created_date is the preferred date column for period-based reporting.",
-    "Join to Client, Crm Client Type, Users through the foreign key columns to resolve names."
+    "Join to Client, Crm Client Type, Users through the foreign key columns to resolve names.",
+    "This table has no visit records of its own — for how often a focus list client has been visited, join ClientId to CRM_Visit.clientId (call search_tables for CRM_Visit if it isn't already loaded) and count visits within the requested period using CRM_Visit.date."
   ],
   "common_filters": [
     "created_date",
@@ -477,6 +482,7 @@
     "query_notes": [
       "The database is MySQL/MariaDB; use MySQL syntax and the exact name FocusList (identifiers can be case-sensitive).",
       "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
+      "Default to WHERE is_approved = 1 for focus list questions ('focus list clients', 'my focus list', ...) unless the user explicitly asks to include canceled, pending, or all records regardless of status.",
       "Use COUNT(DISTINCT Id) when counting focus list records; joins can duplicate rows.",
       "To resolve names, join on: assigned_toId = Users.Id; ClientId = Client.Id; Client_TypeId = CrmClientType.Id."
     ]

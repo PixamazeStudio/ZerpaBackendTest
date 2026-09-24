@@ -7,6 +7,9 @@
   "display_name": "CRM Visit",
   "description": "Holds crm visit records, linked to client, dealer, vist activity type.",
   "business_domain": "Sales & CRM",
+  "authorized_modules": [
+    "Customer Relationship Management"
+  ],
   "business_purpose": "Used to track and report crm visit records for the Sales & CRM area.",
   "table_type": "transactional",
   "record_granularity": "One row represents one crm visit.",
@@ -54,8 +57,8 @@
       "data_type": "datetime(6)",
       "nullable": false,
       "is_foreign_key": false,
-      "description": "Date and time of the record.",
-      "business_meaning": "Date",
+      "description": "The actual date the visit took place (set from the visit/meeting date at creation, per Controllers/VisitController.cs) — this is the correct column for \"visited in the last N months\"/date-range visit questions, not created_date (record insert time), meeting_date, or next_meeting_date.",
+      "business_meaning": "Visit Date",
       "sensitive": false,
       "searchable": false,
       "filterable": true,
@@ -421,12 +424,13 @@
   ],
   "business_rules": [
     "Deleted records (is_deleted = 1) should normally be excluded from reporting.",
-    "created_date is the preferred date column for period-based reporting.",
+    "date is the actual visit date and the preferred column for period-based reporting (e.g. \"visited in the last 3 months\") — not created_date, which is only when the record was saved.",
     "Columns met_person_type classify the record; check the distinct values before filtering on them.",
-    "Join to Client, Customer, Dealer, Vist Activity Type through the foreign key columns to resolve names."
+    "Join to Client, Customer, Dealer, Vist Activity Type through the foreign key columns to resolve names.",
+    "To count visits per focus list client (FocusList.ClientId), join FocusList.ClientId = CRM_Visit.clientId and filter CRM_Visit.date to the requested period; use a LEFT JOIN so clients with zero visits in the period still appear with a count of 0."
   ],
   "common_filters": [
-    "created_date",
+    "date",
     "dealerid",
     "visit_activity_typeId",
     "clientId",
@@ -447,7 +451,9 @@
     "CRM Visit by dealer",
     "CRM Visit by vist activity type",
     "CRM Visit by client",
-    "CRM Visit count by met person type"
+    "CRM Visit count by met person type",
+    "Visit count per client in the last N months",
+    "Clients not visited in the last N months"
   ],
   "data_quality": {
     "expected_unique_columns": [
@@ -474,15 +480,17 @@
   "sample_data": [],
   "llm_instructions": {
     "can_query": true,
-    "preferred_date_column": "created_date",
+    "preferred_date_column": "date",
     "preferred_amount_columns": [],
-    "default_sort": "created_date DESC",
+    "default_sort": "date DESC",
     "avoid_columns": [],
     "query_notes": [
       "The database is MySQL/MariaDB; use MySQL syntax and the exact name CRM_Visit (identifiers can be case-sensitive).",
       "Always filter is_deleted = 0 unless deleted records are explicitly requested.",
       "Use COUNT(DISTINCT id) when counting crm visit records; joins can duplicate rows.",
-      "To resolve names, join on: dealerid = Dealer.id; visit_activity_typeId = VistActivityType.Id; clientId = Client.Id; customerId = Customer.Id; related_projectId = CRM_Projects.Id."
+      "date is the visit date; use it for any \"visited in the last N months\"/date-range visit question. created_date is only the record's save time, not the visit date.",
+      "To resolve names, join on: dealerid = Dealer.id; visit_activity_typeId = VistActivityType.Id; clientId = Client.Id; customerId = Customer.Id; related_projectId = CRM_Projects.Id.",
+      "For a per-client visit count over a period: LEFT JOIN CRM_Visit ON CRM_Visit.clientId = <client's id> AND CRM_Visit.is_deleted = 0 AND CRM_Visit.date >= <period start>, then COUNT(DISTINCT CRM_Visit.id) — use LEFT JOIN, not INNER JOIN, so clients with no visits in the period still show a count of 0 rather than being dropped."
     ]
   }
 }
