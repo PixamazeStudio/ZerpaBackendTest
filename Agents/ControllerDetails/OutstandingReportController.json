@@ -1,0 +1,921 @@
+{
+  "controller": "OutstandingReportController",
+  "file": "Controllers/OutstandingReportController.cs",
+  "module": "Outstanding Management",
+  "base_route": "api/OutstandingReport",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles outstanding report: get outstanding report, get dealer bills, get outstanding report by id, get overdue reasons, get sub overdue reasons, update outstanding excel data",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "rpt/accounts-reports/outstanding-reports",
+        "module_code": "rpt",
+        "section": "accounts-reports",
+        "sub_section": "outstanding-reports",
+        "frontend_routes": [
+          "/rpt/accounts-reports/outstanding-reports"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "also_called_from_menus": [
+      "planner/monthly-branch-review"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "outstanding_report_get_outstanding_report",
+      "name": "Get Outstanding Report",
+      "action_method": "GetOutstandingReport",
+      "http_method": "GET",
+      "route": "api/OutstandingReport",
+      "business_purpose": "Retrieve outstanding report",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "asOnDate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "regionId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "dealerId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "factory",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "gst",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "Outstanding[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/accounts-reports/outstanding-reports:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve outstanding report",
+      "detailed_description": "Retrieve outstanding report. It calls ICommon.getUserByToken, IOutstandingReport.GetOutstandingReportData. Data access uses stored procedure(s): GetOutstandingSummaryReport. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve outstanding report",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/OutstandingReport",
+          "GET api/OutstandingReport/dealer-bills",
+          "GET api/OutstandingReport/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "outstanding_report_get_outstanding_report",
+        "description": "Retrieve outstanding report",
+        "http_method": "GET",
+        "endpoint": "api/OutstandingReport",
+        "parameters": {
+          "asOnDate": {
+            "type": "datetime",
+            "required": false,
+            "description": "as On Date (query)"
+          },
+          "regionId": {
+            "type": "int",
+            "required": false,
+            "description": "region Id (query)"
+          },
+          "branchId": {
+            "type": "int",
+            "required": false,
+            "description": "branch Id (query)"
+          },
+          "dealerId": {
+            "type": "int",
+            "required": false,
+            "description": "dealer Id (query)"
+          },
+          "factory": {
+            "type": "string",
+            "required": false,
+            "description": "factory (query)"
+          },
+          "gst": {
+            "type": "string",
+            "required": false,
+            "description": "gst (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/OutstandingReportController.cs",
+        "action_method": "GetOutstandingReport",
+        "related_dto_files": [
+          "Models/Outstanding.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/OutstandingReport_repo.cs",
+          "Interfaces/IOutstandingReport.cs"
+        ]
+      },
+      "module": "Outstanding Management",
+      "business_logic": {
+        "operation_summary": "Retrieve outstanding report — calls ICommon.getUserByToken, IOutstandingReport.GetOutstandingReportData",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IOutstandingReport.GetOutstandingReportData"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "OutstandingReport_repo (Repositories/OutstandingReport_repo.cs) via IOutstandingReport"
+        ],
+        "stored_procedures": [
+          "GetOutstandingSummaryReport"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "outstanding_report_get_dealer_bills",
+      "name": "Get Dealer Bills",
+      "action_method": "GetDealerBills",
+      "http_method": "GET",
+      "route": "api/OutstandingReport/dealer-bills",
+      "business_purpose": "Retrieve dealer bills",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "dealerName",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "factory",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "gst",
+          "type": "string",
+          "required": false,
+          "default": "\"After GST\""
+        },
+        {
+          "name": "asOnDate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/accounts-reports/outstanding-reports:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "planner/monthly-branch-review"
+      ],
+      "short_description": "Retrieve dealer bills",
+      "detailed_description": "Retrieve dealer bills. It validates the request, then calls ICommon.getUserByToken, IOutstandingReport.GetDealerBills. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: dealerName is required [when string.IsNullOrWhiteSpace(dealerName)]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve dealer bills",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "dealerName (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/OutstandingReport",
+          "GET api/OutstandingReport/dealer-bills",
+          "GET api/OutstandingReport/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "outstanding_report_get_dealer_bills",
+        "description": "Retrieve dealer bills",
+        "http_method": "GET",
+        "endpoint": "api/OutstandingReport/dealer-bills",
+        "parameters": {
+          "dealerName": {
+            "type": "string",
+            "required": true,
+            "description": "dealer Name (query)"
+          },
+          "factory": {
+            "type": "string",
+            "required": false,
+            "description": "factory (query)"
+          },
+          "gst": {
+            "type": "string",
+            "required": false,
+            "description": "gst (query)"
+          },
+          "asOnDate": {
+            "type": "datetime",
+            "required": false,
+            "description": "as On Date (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/OutstandingReportController.cs",
+        "action_method": "GetDealerBills",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/OutstandingReport_repo.cs",
+          "Interfaces/IOutstandingReport.cs"
+        ]
+      },
+      "module": "Outstanding Management",
+      "business_logic": {
+        "operation_summary": "Retrieve dealer bills — validates the request, calls ICommon.getUserByToken, IOutstandingReport.GetDealerBills",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): dealerName; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "dealerName is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IOutstandingReport.GetDealerBills"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "OutstandingReport_repo (Repositories/OutstandingReport_repo.cs) via IOutstandingReport"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "dealerName is required",
+            "when": "string.IsNullOrWhiteSpace(dealerName)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "outstanding_report_get_outstanding_report_by_id",
+      "name": "Get Outstanding Report By Id",
+      "action_method": "GetOutstandingReportById",
+      "http_method": "GET",
+      "route": "api/OutstandingReport/{id}",
+      "business_purpose": "Retrieve outstanding report by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ],
+        "dto_name": "OutstandingExcelData"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/accounts-reports/outstanding-reports:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "planner/monthly-branch-review"
+      ],
+      "short_description": "Retrieve outstanding report by ID",
+      "detailed_description": "Retrieve outstanding report by ID. It validates the request, then calls ICommon.getUserByToken, IOutstandingReport.GetOutstandingReportById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid Outstanding report ID is required [when id <= 0]",
+        "not_found": "404: Outstanding Report not found [when outsatndingReport == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve outstanding report by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/OutstandingReport",
+          "GET api/OutstandingReport/dealer-bills",
+          "GET api/OutstandingReport/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "outstanding_report_get_outstanding_report_by_id",
+        "description": "Retrieve outstanding report by ID",
+        "http_method": "GET",
+        "endpoint": "api/OutstandingReport/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/OutstandingReportController.cs",
+        "action_method": "GetOutstandingReportById",
+        "related_dto_files": [
+          "Models/OutstandingExcelData.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/OutstandingReport_repo.cs",
+          "Interfaces/IOutstandingReport.cs"
+        ]
+      },
+      "module": "Outstanding Management",
+      "business_logic": {
+        "operation_summary": "Retrieve outstanding report by ID — validates the request, calls ICommon.getUserByToken, IOutstandingReport.GetOutstandingReportById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid Outstanding report ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IOutstandingReport.GetOutstandingReportById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "OutstandingReport_repo (Repositories/OutstandingReport_repo.cs) via IOutstandingReport"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Outstanding report ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Outstanding Report not found",
+            "when": "outsatndingReport == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "outstanding_report_get_overdue_reasons",
+      "name": "Get Overdue Reasons",
+      "action_method": "GetOverdueReasons",
+      "http_method": "GET",
+      "route": "api/OutstandingReport/OverdueReason",
+      "business_purpose": "Retrieve overdue reasons",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "Outstanding[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/accounts-reports/outstanding-reports:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve overdue reasons",
+      "detailed_description": "Retrieve overdue reasons. It calls ICommon.getUserByToken, IOverdueReasonsRepository.GetOverdueReasons. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve overdue reasons",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/OutstandingReport",
+          "GET api/OutstandingReport/dealer-bills",
+          "GET api/OutstandingReport/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "outstanding_report_get_overdue_reasons",
+        "description": "Retrieve overdue reasons",
+        "http_method": "GET",
+        "endpoint": "api/OutstandingReport/OverdueReason",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/OutstandingReportController.cs",
+        "action_method": "GetOverdueReasons",
+        "related_dto_files": [
+          "Models/Outstanding.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/OverdueReasonsRepository.cs",
+          "Interfaces/IOverdueReasonsRepository.cs"
+        ]
+      },
+      "module": "Outstanding Management",
+      "business_logic": {
+        "operation_summary": "Retrieve overdue reasons — calls ICommon.getUserByToken, IOverdueReasonsRepository.GetOverdueReasons",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IOverdueReasonsRepository.GetOverdueReasons"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "OverdueReasonsRepository (Repositories/OverdueReasonsRepository.cs) via IOverdueReasonsRepository"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "outstanding_report_get_sub_overdue_reasons",
+      "name": "Get Sub Overdue Reasons",
+      "action_method": "GetSubOverdueReasons",
+      "http_method": "GET",
+      "route": "api/OutstandingReport/SubOverdueReason/{id}",
+      "business_purpose": "Retrieve sub overdue reasons",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "Outstanding[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/accounts-reports/outstanding-reports:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve sub overdue reasons",
+      "detailed_description": "Retrieve sub overdue reasons. It calls ICommon.getUserByToken, IOverdueReasonsRepository.GetSubOverDueReasons. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve sub overdue reasons",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/OutstandingReport",
+          "GET api/OutstandingReport/dealer-bills",
+          "GET api/OutstandingReport/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "outstanding_report_get_sub_overdue_reasons",
+        "description": "Retrieve sub overdue reasons",
+        "http_method": "GET",
+        "endpoint": "api/OutstandingReport/SubOverdueReason/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/OutstandingReportController.cs",
+        "action_method": "GetSubOverdueReasons",
+        "related_dto_files": [
+          "Models/Outstanding.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/OverdueReasonsRepository.cs",
+          "Interfaces/IOverdueReasonsRepository.cs"
+        ]
+      },
+      "module": "Outstanding Management",
+      "business_logic": {
+        "operation_summary": "Retrieve sub overdue reasons — calls ICommon.getUserByToken, IOverdueReasonsRepository.GetSubOverDueReasons",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IOverdueReasonsRepository.GetSubOverDueReasons"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "OverdueReasonsRepository (Repositories/OverdueReasonsRepository.cs) via IOverdueReasonsRepository"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "outstanding_report_update_outstanding_excel_data",
+      "name": "Update Outstanding Excel Data",
+      "action_method": "UpdateOutstandingExcelData",
+      "http_method": "PUT",
+      "route": "api/OutstandingReport/{id}",
+      "business_purpose": "Update outstanding excel data",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateOutstandingExcelDataRequest (inline)",
+        "properties": [
+          {
+            "name": "overdue_reason",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "overdue_reason2",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "closing_date",
+            "type": "datetime",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "rpt/accounts-reports/outstanding-reports:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update outstanding excel data",
+      "detailed_description": "Update outstanding excel data. It validates the request, then calls ICommon.getUserByToken. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data received [when request == null]; Valid id is required [when id <= 0]",
+        "not_found": "404: Outstanding record not found [when outstandingData == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update outstanding excel data",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "request body UpdateOutstandingExcelDataRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/OutstandingReport/{id}",
+          "GET api/OutstandingReport/SubOverdueReason/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "outstanding_report_update_outstanding_excel_data",
+        "description": "Update outstanding excel data",
+        "http_method": "PUT",
+        "endpoint": "api/OutstandingReport/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "overdue_reason": {
+            "type": "string",
+            "required": false,
+            "description": "overdue reason (body)"
+          },
+          "overdue_reason2": {
+            "type": "string",
+            "required": false,
+            "description": "overdue reason2 (body)"
+          },
+          "closing_date": {
+            "type": "datetime",
+            "required": false,
+            "description": "closing date (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/OutstandingReportController.cs",
+        "action_method": "UpdateOutstandingExcelData",
+        "related_dto_files": [
+          "Controllers/OutstandingReportController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Outstanding Management",
+      "business_logic": {
+        "operation_summary": "Update outstanding excel data — validates the request, calls ICommon.getUserByToken",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); request body of type UpdateOutstandingExcelDataRequest (inline); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets outstandingData.overdue_reason, outstandingData.overdue_reason2, outstandingData.closing_date and saves changes",
+        "validations": "Invalid data received; Valid id is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid data received",
+            "when": "request == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid id is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Outstanding record not found",
+            "when": "outstandingData == null"
+          }
+        ]
+      }
+    }
+  ]
+}

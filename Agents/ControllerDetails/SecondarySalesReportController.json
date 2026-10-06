@@ -1,0 +1,266 @@
+{
+  "controller": "SecondarySalesReportController",
+  "file": "Controllers/SecondarySalesReportController.cs",
+  "module": "Reporting",
+  "base_route": "api/SecondarySalesReport",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles secondary sales report: get all secondary sales report",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "rpt/crm-reports/secondary-sales-report",
+        "module_code": "rpt",
+        "section": "crm-reports",
+        "sub_section": "secondary-sales-report",
+        "frontend_routes": [
+          "/rpt/crm-reports/secondary-sales-report"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "secondary_sales_report_get_all_secondary_sales_report",
+      "name": "Get All Secondary Sales Report",
+      "action_method": "GetAllSecondarySalesReport",
+      "http_method": "GET",
+      "route": "api/SecondarySalesReport",
+      "business_purpose": "Retrieve all secondary sales report",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "\"this_month\""
+        },
+        {
+          "name": "regionId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "sCategory",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "sProduct",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "flstatus",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "sUser",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "20"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/crm-reports/secondary-sales-report:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all secondary sales report",
+      "detailed_description": "Retrieve all secondary sales report. It calls ICommon.getUserByToken, ICommon.GetBranchesByRegionIdAsync, ISecondarySales.GetSecondarySalesReportPaginated. Data access uses stored procedure(s): GetSecondarySalesReport_API. Possible responses: 200, 401.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all secondary sales report",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/SecondarySalesReport"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "secondary_sales_report_get_all_secondary_sales_report",
+        "description": "Retrieve all secondary sales report",
+        "http_method": "GET",
+        "endpoint": "api/SecondarySalesReport",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "date range (query)"
+          },
+          "regionId": {
+            "type": "int",
+            "required": false,
+            "description": "region Id (query)"
+          },
+          "branchId": {
+            "type": "int",
+            "required": false,
+            "description": "branch Id (query)"
+          },
+          "sCategory": {
+            "type": "string",
+            "required": false,
+            "description": "s Category (query)"
+          },
+          "sProduct": {
+            "type": "string",
+            "required": false,
+            "description": "s Product (query)"
+          },
+          "flstatus": {
+            "type": "string",
+            "required": false,
+            "description": "flstatus (query)"
+          },
+          "sUser": {
+            "type": "string",
+            "required": false,
+            "description": "s User (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SecondarySalesReportController.cs",
+        "action_method": "GetAllSecondarySalesReport",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/SecondarySalesRepo.cs",
+          "Interfaces/ISecondarySales.cs"
+        ]
+      },
+      "module": "Reporting",
+      "business_logic": {
+        "operation_summary": "Retrieve all secondary sales report — calls ICommon.getUserByToken, ICommon.GetBranchesByRegionIdAsync, ISecondarySales.GetSecondarySalesReportPaginated",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.GetBranchesByRegionIdAsync",
+          "ISecondarySales.GetSecondarySalesReportPaginated",
+          "ISecondarySales.GetAllCategories",
+          "ISecondarySales.GetAllProducts",
+          "ISecondarySales.GetAllUsers"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SecondarySalesRepo (Repository/SecondarySalesRepo.cs) via ISecondarySales"
+        ],
+        "stored_procedures": [
+          "GetSecondarySalesReport_API"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    }
+  ]
+}

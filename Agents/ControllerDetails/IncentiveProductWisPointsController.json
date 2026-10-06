@@ -1,0 +1,822 @@
+{
+  "controller": "IncentiveProductWisPointsController",
+  "file": "Controllers/IncentiveProductWisPointsController.cs",
+  "module": "Incentive Management",
+  "base_route": "api/IncentiveProductWisPoints",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages incentive product wis points records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/incentive-settings/incentive-product-wise-points",
+        "module_code": "settings",
+        "section": "incentive-settings",
+        "sub_section": "incentive-product-wise-points",
+        "frontend_routes": [
+          "/settings/incentive-settings/incentive-product-wise-points"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "settings/incentive-settings/incentive-product-points",
+        "module_code": "settings",
+        "section": "incentive-settings",
+        "sub_section": "incentive-product-points",
+        "frontend_routes": [
+          "/settings/incentive-settings/incentive-product-points"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "IncentiveProductWisPoints"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "incentive_product_wis_points_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/IncentiveProductWisPoints",
+      "business_purpose": "Retrieve all incentive product wis points records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/incentive-settings/incentive-product-wise-points:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "settings/incentive-settings/incentive-product-points"
+      ],
+      "short_description": "Retrieve all incentive product wis points records",
+      "detailed_description": "Retrieve all incentive product wis points records. It calls ICommon.getUserByToken, IIncentiveProductWisPoints.GetAllAsync, IIncentiveProductWisPoints.GetActionsAsync. Data access uses stored procedure(s): GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all incentive product wis points records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveProductWisPoints",
+          "GET api/IncentiveProductWisPoints/products",
+          "GET api/IncentiveProductWisPoints/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_product_wis_points_get_all",
+        "description": "Retrieve all incentive product wis points records",
+        "http_method": "GET",
+        "endpoint": "api/IncentiveProductWisPoints",
+        "parameters": {
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveProductWisPointsController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/IncentiveProductWisPoints_repo.cs",
+          "Interfaces/IIncentiveProductWisPoints.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all incentive product wis points records — calls ICommon.getUserByToken, IIncentiveProductWisPoints.GetAllAsync, IIncentiveProductWisPoints.GetActionsAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIncentiveProductWisPoints.GetAllAsync",
+          "IIncentiveProductWisPoints.GetActionsAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IncentiveProductWisPoints_repo (Repository/IncentiveProductWisPoints_repo.cs) via IIncentiveProductWisPoints"
+        ],
+        "stored_procedures": [
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "incentive_product_wis_points_get_products",
+      "name": "Get Products",
+      "action_method": "GetProducts",
+      "http_method": "GET",
+      "route": "api/IncentiveProductWisPoints/products",
+      "business_purpose": "Retrieve products",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/incentive-settings/incentive-product-wise-points:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "settings/incentive-settings/incentive-product-points"
+      ],
+      "short_description": "Retrieve products",
+      "detailed_description": "Retrieve products. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve products",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveProductWisPoints",
+          "GET api/IncentiveProductWisPoints/products",
+          "GET api/IncentiveProductWisPoints/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_product_wis_points_get_products",
+        "description": "Retrieve products",
+        "http_method": "GET",
+        "endpoint": "api/IncentiveProductWisPoints/products",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveProductWisPointsController.cs",
+        "action_method": "GetProducts",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": []
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Retrieve products",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [],
+        "calls_repositories": [],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "incentive_product_wis_points_get_by_id",
+      "name": "Get By Id",
+      "action_method": "GetById",
+      "http_method": "GET",
+      "route": "api/IncentiveProductWisPoints/{id}",
+      "business_purpose": "Retrieve a incentive product wis points record by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/incentive-settings/incentive-product-wise-points:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "settings/incentive-settings/incentive-product-points"
+      ],
+      "short_description": "Retrieve a incentive product wis points record by ID",
+      "detailed_description": "Retrieve a incentive product wis points record by ID. It validates the request, then calls IIncentiveProductWisPoints.GetByIdAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid id is required. [when id <= 0]",
+        "not_found": "404: Product point not found. [when entity == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve a incentive product wis points record by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveProductWisPoints",
+          "GET api/IncentiveProductWisPoints/products",
+          "GET api/IncentiveProductWisPoints/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_product_wis_points_get_by_id",
+        "description": "Retrieve a incentive product wis points record by ID",
+        "http_method": "GET",
+        "endpoint": "api/IncentiveProductWisPoints/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveProductWisPointsController.cs",
+        "action_method": "GetById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/IncentiveProductWisPoints_repo.cs",
+          "Interfaces/IIncentiveProductWisPoints.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Retrieve a incentive product wis points record by ID — validates the request, calls IIncentiveProductWisPoints.GetByIdAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid id is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IIncentiveProductWisPoints.GetByIdAsync"
+        ],
+        "calls_repositories": [
+          "IncentiveProductWisPoints_repo (Repository/IncentiveProductWisPoints_repo.cs) via IIncentiveProductWisPoints"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid id is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Product point not found.",
+            "when": "entity == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "incentive_product_wis_points_create",
+      "name": "Create",
+      "action_method": "Create",
+      "http_method": "POST",
+      "route": "api/IncentiveProductWisPoints",
+      "business_purpose": "Create a new incentive product wis points record",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateIncentiveProductWisPointsRequest (inline)",
+        "properties": [
+          {
+            "name": "name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "point_per_na",
+            "type": "decimal",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "settings/incentive-settings/incentive-product-wise-points:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "settings/incentive-settings/incentive-product-points"
+      ],
+      "short_description": "Create a new incentive product wis points record",
+      "detailed_description": "Create a new incentive product wis points record. It validates the request, then calls IIncentiveProductWisPoints.CreateAsync. Persists changes to: IncentiveProductWisPoints: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Product name is required. [when string.IsNullOrWhiteSpace(request.name)]; Product name is required. [when string.IsNullOrWhiteSpace(productname)]; message built at runtime [when !result.Success]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create a new incentive product wis points record",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateIncentiveProductWisPointsRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveProductWisPoints",
+          "GET api/IncentiveProductWisPoints/products"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_product_wis_points_create",
+        "description": "Create a new incentive product wis points record",
+        "http_method": "POST",
+        "endpoint": "api/IncentiveProductWisPoints",
+        "parameters": {
+          "name": {
+            "type": "string",
+            "required": false,
+            "description": "name (body)"
+          },
+          "point_per_na": {
+            "type": "decimal",
+            "required": false,
+            "description": "point per na (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveProductWisPointsController.cs",
+        "action_method": "Create",
+        "related_dto_files": [
+          "Controllers/IncentiveProductWisPointsController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/IncentiveProductWisPoints_repo.cs",
+          "Interfaces/IIncentiveProductWisPoints.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Create a new incentive product wis points record — validates the request, calls IIncentiveProductWisPoints.CreateAsync",
+        "preconditions": "Valid Bearer JWT; request body of type CreateIncentiveProductWisPointsRequest (inline); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "IncentiveProductWisPoints: INSERT",
+        "validations": "Product name is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IIncentiveProductWisPoints.CreateAsync"
+        ],
+        "calls_repositories": [
+          "IncentiveProductWisPoints_repo (Repository/IncentiveProductWisPoints_repo.cs) via IIncentiveProductWisPoints"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Product name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.name)"
+          },
+          {
+            "returns": 400,
+            "message": "Product name is required.",
+            "when": "string.IsNullOrWhiteSpace(productname)"
+          },
+          {
+            "returns": 400,
+            "message": "message built at runtime",
+            "when": "!result.Success"
+          }
+        ]
+      }
+    },
+    {
+      "id": "incentive_product_wis_points_update",
+      "name": "Update",
+      "action_method": "Update",
+      "http_method": "PUT",
+      "route": "api/IncentiveProductWisPoints/{id}",
+      "business_purpose": "Update an existing incentive product wis points record",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateIncentiveProductWisPointsRequest (inline)",
+        "properties": [
+          {
+            "name": "name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "point_per_na",
+            "type": "decimal",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "settings/incentive-settings/incentive-product-wise-points:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "settings/incentive-settings/incentive-product-points"
+      ],
+      "short_description": "Update an existing incentive product wis points record",
+      "detailed_description": "Update an existing incentive product wis points record. It validates the request, then calls IIncentiveProductWisPoints.UpdateAsync. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid id is required. [when id <= 0]; message built at runtime [when !result.Success]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update an existing incentive product wis points record",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "request body UpdateIncentiveProductWisPointsRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveProductWisPoints/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_product_wis_points_update",
+        "description": "Update an existing incentive product wis points record",
+        "http_method": "PUT",
+        "endpoint": "api/IncentiveProductWisPoints/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "name": {
+            "type": "string",
+            "required": false,
+            "description": "name (body)"
+          },
+          "point_per_na": {
+            "type": "decimal",
+            "required": false,
+            "description": "point per na (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveProductWisPointsController.cs",
+        "action_method": "Update",
+        "related_dto_files": [
+          "Controllers/IncentiveProductWisPointsController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/IncentiveProductWisPoints_repo.cs",
+          "Interfaces/IIncentiveProductWisPoints.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Update an existing incentive product wis points record — validates the request, calls IIncentiveProductWisPoints.UpdateAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; request body of type UpdateIncentiveProductWisPointsRequest (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "validations": "Valid id is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IIncentiveProductWisPoints.UpdateAsync"
+        ],
+        "calls_repositories": [
+          "IncentiveProductWisPoints_repo (Repository/IncentiveProductWisPoints_repo.cs) via IIncentiveProductWisPoints"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid id is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "message built at runtime",
+            "when": "!result.Success"
+          }
+        ]
+      }
+    },
+    {
+      "id": "incentive_product_wis_points_delete",
+      "name": "Delete",
+      "action_method": "Delete",
+      "http_method": "DELETE",
+      "route": "api/IncentiveProductWisPoints/{id}",
+      "business_purpose": "Delete a incentive product wis points record",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "settings/incentive-settings/incentive-product-wise-points:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "settings/incentive-settings/incentive-product-points"
+      ],
+      "short_description": "Delete a incentive product wis points record",
+      "detailed_description": "Delete a incentive product wis points record. It validates the request, then calls IIncentiveProductWisPoints.DeleteAsync. Persists changes to: soft delete (is_deleted flag). Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid id is required. [when id <= 0]; message built at runtime [when !result.Success]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete a incentive product wis points record",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveProductWisPoints/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_product_wis_points_delete",
+        "description": "Delete a incentive product wis points record",
+        "http_method": "DELETE",
+        "endpoint": "api/IncentiveProductWisPoints/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveProductWisPointsController.cs",
+        "action_method": "Delete",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/IncentiveProductWisPoints_repo.cs",
+          "Interfaces/IIncentiveProductWisPoints.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Delete a incentive product wis points record — validates the request, calls IIncentiveProductWisPoints.DeleteAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "soft delete (is_deleted flag)",
+        "validations": "Valid id is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IIncentiveProductWisPoints.DeleteAsync"
+        ],
+        "calls_repositories": [
+          "IncentiveProductWisPoints_repo (Repository/IncentiveProductWisPoints_repo.cs) via IIncentiveProductWisPoints"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid id is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "message built at runtime",
+            "when": "!result.Success"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,775 @@
+{
+  "controller": "InfluencerIncentiveRangeController",
+  "file": "Controllers/InfluencerIncentiveRangeController.cs",
+  "module": "Incentive Management",
+  "base_route": "api/InfluencerIncentiveRange",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages influencer incentive range records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/incentive-settings/influencer-incentive-range",
+        "module_code": "settings",
+        "section": "incentive-settings",
+        "sub_section": "influencer-incentive-range",
+        "frontend_routes": [
+          "/settings/incentive-settings/influencer-incentive-range"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "InfluencerIncentiveRange"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Settings",
+        "section": "Incentive Settings",
+        "sub_section": "Influencer Incetive Range"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "influencer_incentive_range_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/InfluencerIncentiveRange",
+      "business_purpose": "Retrieve all influencer incentive range records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "GST[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/incentive-settings/influencer-incentive-range:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all influencer incentive range records",
+      "detailed_description": "Retrieve all influencer incentive range records. It calls ICommon.getUserByToken, IInfluencerIncentiveRange.GetInfluencerIncentiveRangeData, IInfluencerIncentiveRange.GetInfluencerIncentiveRangeActions. Data access uses stored procedure(s): GetInfluencerIncentiveRange, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all influencer incentive range records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerIncentiveRange",
+          "GET api/InfluencerIncentiveRange/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_incentive_range_get_all",
+        "description": "Retrieve all influencer incentive range records",
+        "http_method": "GET",
+        "endpoint": "api/InfluencerIncentiveRange",
+        "parameters": {
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerIncentiveRangeController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [
+          "Models/GST.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/InfluencerIncentiveRange_repo.cs",
+          "Interfaces/IInfluencerIncentiveRange.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all influencer incentive range records — calls ICommon.getUserByToken, IInfluencerIncentiveRange.GetInfluencerIncentiveRangeData, IInfluencerIncentiveRange.GetInfluencerIncentiveRangeActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IInfluencerIncentiveRange.GetInfluencerIncentiveRangeData",
+          "IInfluencerIncentiveRange.GetInfluencerIncentiveRangeActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "InfluencerIncentiveRange_repo (Repositories/InfluencerIncentiveRange_repo.cs) via IInfluencerIncentiveRange"
+        ],
+        "stored_procedures": [
+          "GetInfluencerIncentiveRange",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "influencer_incentive_range_get_influencer_incentive_range_by_id",
+      "name": "Get Influencer Incentive Range By Id",
+      "action_method": "GetInfluencerIncentiveRangeById",
+      "http_method": "GET",
+      "route": "api/InfluencerIncentiveRange/{id}",
+      "business_purpose": "Retrieve influencer incentive range by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/incentive-settings/influencer-incentive-range:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve influencer incentive range by ID",
+      "detailed_description": "Retrieve influencer incentive range by ID. It validates the request, then calls IInfluencerIncentiveRange.GetInfluencerIncentiveRangeById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid Incentive Range ID is required. [when id <= 0]",
+        "not_found": "404: Incentive range not found. [when range == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve influencer incentive range by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerIncentiveRange",
+          "GET api/InfluencerIncentiveRange/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_incentive_range_get_influencer_incentive_range_by_id",
+        "description": "Retrieve influencer incentive range by ID",
+        "http_method": "GET",
+        "endpoint": "api/InfluencerIncentiveRange/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerIncentiveRangeController.cs",
+        "action_method": "GetInfluencerIncentiveRangeById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/InfluencerIncentiveRange_repo.cs",
+          "Interfaces/IInfluencerIncentiveRange.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Retrieve influencer incentive range by ID — validates the request, calls IInfluencerIncentiveRange.GetInfluencerIncentiveRangeById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid Incentive Range ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IInfluencerIncentiveRange.GetInfluencerIncentiveRangeById"
+        ],
+        "calls_repositories": [
+          "InfluencerIncentiveRange_repo (Repositories/InfluencerIncentiveRange_repo.cs) via IInfluencerIncentiveRange"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid Incentive Range ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Incentive range not found.",
+            "when": "range == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "influencer_incentive_range_create_influencer_incentive_range",
+      "name": "Create Influencer Incentive Range",
+      "action_method": "CreateInfluencerIncentiveRange",
+      "http_method": "POST",
+      "route": "api/InfluencerIncentiveRange",
+      "business_purpose": "Create influencer incentive range",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateInfluencerIncentiveRangeRequest (inline)",
+        "properties": [
+          {
+            "name": "MinimumTarget",
+            "type": "int",
+            "required": true
+          },
+          {
+            "name": "MaximumTarget",
+            "type": "int",
+            "required": true
+          },
+          {
+            "name": "ExtraIncentive",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; a duplicate check exists so repeating usually fails with a conflict/validation message"
+      },
+      "required_permission": "settings/incentive-settings/influencer-incentive-range:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create influencer incentive range",
+      "detailed_description": "Create influencer incentive range. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IInfluencerIncentiveRange.IsInfluencerIncentiveRangeDuplicateAsync, IInfluencerIncentiveRange.CreateInfluencerIncentiveRangeAsync, then writes an audit log entry. Persists changes to: InfluencerIncentiveRange: INSERT, AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; Minimum and Maximum Targets are required. [when !request.MinimumTarget.HasValue || !request.MaximumTarget.HasValue]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "Incentive range with these targets already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create influencer incentive range",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateInfluencerIncentiveRangeRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerIncentiveRange"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_incentive_range_create_influencer_incentive_range",
+        "description": "Create influencer incentive range",
+        "http_method": "POST",
+        "endpoint": "api/InfluencerIncentiveRange",
+        "parameters": {
+          "MinimumTarget": {
+            "type": "int",
+            "required": true,
+            "description": "Minimum Target (body)"
+          },
+          "MaximumTarget": {
+            "type": "int",
+            "required": true,
+            "description": "Maximum Target (body)"
+          },
+          "ExtraIncentive": {
+            "type": "int",
+            "required": false,
+            "description": "Extra Incentive (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerIncentiveRangeController.cs",
+        "action_method": "CreateInfluencerIncentiveRange",
+        "related_dto_files": [
+          "Controllers/InfluencerIncentiveRangeController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/InfluencerIncentiveRange_repo.cs",
+          "Interfaces/IInfluencerIncentiveRange.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Create influencer incentive range — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, IInfluencerIncentiveRange.IsInfluencerIncentiveRangeDuplicateAsync, IInfluencerIncentiveRange.CreateInfluencerIncentiveRangeAsync, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; request body of type CreateInfluencerIncentiveRangeRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "InfluencerIncentiveRange: INSERT; AuditLog: INSERT",
+        "validations": "ModelState (DTO data-annotation) validation; Invalid data provided.; Minimum and Maximum Targets are required.",
+        "side_effects": "AuditLog CREATE (Settings > Incentive Settings > Influencer Incetive Range)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IInfluencerIncentiveRange.IsInfluencerIncentiveRangeDuplicateAsync",
+          "IInfluencerIncentiveRange.CreateInfluencerIncentiveRangeAsync",
+          "ICommon.ToJsonString",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "InfluencerIncentiveRange_repo (Repositories/InfluencerIncentiveRange_repo.cs) via IInfluencerIncentiveRange"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "Minimum and Maximum Targets are required.",
+            "when": "!request.MinimumTarget.HasValue || !request.MaximumTarget.HasValue"
+          },
+          {
+            "returns": 400,
+            "message": "Incentive range with these targets already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "influencer_incentive_range_update_influencer_incentive_range",
+      "name": "Update Influencer Incentive Range",
+      "action_method": "UpdateInfluencerIncentiveRange",
+      "http_method": "PUT",
+      "route": "api/InfluencerIncentiveRange/{rangeId}",
+      "business_purpose": "Update influencer incentive range",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "rangeId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateInfluencerIncentiveRangeRequest (inline)",
+        "properties": [
+          {
+            "name": "MinimumTarget",
+            "type": "int",
+            "required": true
+          },
+          {
+            "name": "MaximumTarget",
+            "type": "int",
+            "required": true
+          },
+          {
+            "name": "ExtraIncentive",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values; each call writes another audit log entry"
+      },
+      "required_permission": "settings/incentive-settings/influencer-incentive-range:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update influencer incentive range",
+      "detailed_description": "Update influencer incentive range. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IInfluencerIncentiveRange.GetInfluencerIncentiveRangeById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: InfluencerIncentiveRange: UPDATE, AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid Incentive Range ID is required. [when rangeId <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Influencer Incentive Range not found. [when existingInfluencerIncentiveRange == null]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "Incentive range with these targets already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update influencer incentive range",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "rangeId (route)",
+          "request body UpdateInfluencerIncentiveRangeRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerIncentiveRange/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_incentive_range_update_influencer_incentive_range",
+        "description": "Update influencer incentive range",
+        "http_method": "PUT",
+        "endpoint": "api/InfluencerIncentiveRange/{rangeId}",
+        "parameters": {
+          "rangeId": {
+            "type": "int",
+            "required": true,
+            "description": "range Id (route)"
+          },
+          "MinimumTarget": {
+            "type": "int",
+            "required": true,
+            "description": "Minimum Target (body)"
+          },
+          "MaximumTarget": {
+            "type": "int",
+            "required": true,
+            "description": "Maximum Target (body)"
+          },
+          "ExtraIncentive": {
+            "type": "int",
+            "required": false,
+            "description": "Extra Incentive (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerIncentiveRangeController.cs",
+        "action_method": "UpdateInfluencerIncentiveRange",
+        "related_dto_files": [
+          "Controllers/InfluencerIncentiveRangeController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/InfluencerIncentiveRange_repo.cs",
+          "Interfaces/IInfluencerIncentiveRange.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Update influencer incentive range — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, IInfluencerIncentiveRange.GetInfluencerIncentiveRangeById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) rangeId must reference existing record(s); request body of type UpdateInfluencerIncentiveRangeRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "InfluencerIncentiveRange: UPDATE; AuditLog: INSERT",
+        "validations": "Valid Incentive Range ID is required.",
+        "side_effects": "AuditLog UPDATE (Settings > Incentive Settings > Influencer Incetive Range)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IInfluencerIncentiveRange.GetInfluencerIncentiveRangeById",
+          "ICommon.ToJsonString",
+          "IInfluencerIncentiveRange.IsInfluencerIncentiveRangeDuplicateAsync",
+          "IInfluencerIncentiveRange.UpdateInfluencerIncentiveRangeAsync",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "InfluencerIncentiveRange_repo (Repositories/InfluencerIncentiveRange_repo.cs) via IInfluencerIncentiveRange"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Incentive Range ID is required.",
+            "when": "rangeId <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Influencer Incentive Range not found.",
+            "when": "existingInfluencerIncentiveRange == null"
+          },
+          {
+            "returns": 400,
+            "message": "Incentive range with these targets already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "influencer_incentive_range_delete",
+      "name": "Delete",
+      "action_method": "Delete",
+      "http_method": "DELETE",
+      "route": "api/InfluencerIncentiveRange/{id}",
+      "business_purpose": "Delete a influencer incentive range record",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "settings/incentive-settings/influencer-incentive-range:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete a influencer incentive range record",
+      "detailed_description": "Delete a influencer incentive range record. It validates the request, then calls ICommon.getUserByToken, IInfluencerIncentiveRange.GetInfluencerIncentiveRangeById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: InfluencerIncentiveRange: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid Incentive Range ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Influencer Incentive Range not found. [when existingInfluencerIncentiveRange == null]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete a influencer incentive range record",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerIncentiveRange/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_incentive_range_delete",
+        "description": "Delete a influencer incentive range record",
+        "http_method": "DELETE",
+        "endpoint": "api/InfluencerIncentiveRange/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerIncentiveRangeController.cs",
+        "action_method": "Delete",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/InfluencerIncentiveRange_repo.cs",
+          "Interfaces/IInfluencerIncentiveRange.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Delete a influencer incentive range record — validates the request, calls ICommon.getUserByToken, IInfluencerIncentiveRange.GetInfluencerIncentiveRangeById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "InfluencerIncentiveRange: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "validations": "Valid Incentive Range ID is required.",
+        "side_effects": "AuditLog DELETE (Settings > Incentive Settings > Influencer Incetive Range)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IInfluencerIncentiveRange.GetInfluencerIncentiveRangeById",
+          "ICommon.ToJsonString",
+          "IInfluencerIncentiveRange.DeleteInfluencerIncentiveRange",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "InfluencerIncentiveRange_repo (Repositories/InfluencerIncentiveRange_repo.cs) via IInfluencerIncentiveRange"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Incentive Range ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Influencer Incentive Range not found.",
+            "when": "existingInfluencerIncentiveRange == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    }
+  ]
+}

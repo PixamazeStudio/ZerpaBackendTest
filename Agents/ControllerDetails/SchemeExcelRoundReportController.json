@@ -1,0 +1,213 @@
+{
+  "controller": "SchemeExcelRoundReportController",
+  "file": "Controllers/SchemeExcelRoundReportController.cs",
+  "module": "Reporting",
+  "base_route": "api/SchemeExcelRoundReport",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles scheme excel round report: get all",
+  "menu_permission": {
+    "status": "not referenced by frontend",
+    "menu_keys": [],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "scheme_excel_round_report_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/SchemeExcelRoundReport",
+      "business_purpose": "Retrieve all scheme excel round report records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "scheme",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "region",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "branch",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "user",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "influencer",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve all scheme excel round report records",
+      "detailed_description": "Retrieve all scheme excel round report records. It calls ICommon.getUserByToken, ISchemeExcelRoundReport.GetSchemeRoundReport, ISchemeExcelRoundReport.GetDistinctSchemes. Data access uses stored procedure(s): GetSchemeRoundReport. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all scheme excel round report records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/SchemeExcelRoundReport"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "scheme_excel_round_report_get_all",
+        "description": "Retrieve all scheme excel round report records",
+        "http_method": "GET",
+        "endpoint": "api/SchemeExcelRoundReport",
+        "parameters": {
+          "scheme": {
+            "type": "string",
+            "required": false,
+            "description": "scheme (query)"
+          },
+          "region": {
+            "type": "string",
+            "required": false,
+            "description": "region (query)"
+          },
+          "branch": {
+            "type": "string",
+            "required": false,
+            "description": "branch (query)"
+          },
+          "user": {
+            "type": "string",
+            "required": false,
+            "description": "user (query)"
+          },
+          "influencer": {
+            "type": "string",
+            "required": false,
+            "description": "influencer (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SchemeExcelRoundReportController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/SchemeExcelRoundReport_repo.cs",
+          "Interfaces/ISchemeExcelRoundReport.cs"
+        ]
+      },
+      "module": "Reporting",
+      "business_logic": {
+        "operation_summary": "Retrieve all scheme excel round report records — calls ICommon.getUserByToken, ISchemeExcelRoundReport.GetSchemeRoundReport, ISchemeExcelRoundReport.GetDistinctSchemes",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISchemeExcelRoundReport.GetSchemeRoundReport",
+          "ISchemeExcelRoundReport.GetDistinctSchemes",
+          "ISchemeExcelRoundReport.GetDistinctRegions",
+          "ISchemeExcelRoundReport.GetDistinctBranches",
+          "ISchemeExcelRoundReport.GetDistinctSalesStaff",
+          "ISchemeExcelRoundReport.GetDistinctInfluencers"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SchemeExcelRoundReport_repo (Repositories/SchemeExcelRoundReport_repo.cs) via ISchemeExcelRoundReport"
+        ],
+        "stored_procedures": [
+          "GetSchemeRoundReport"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    }
+  ]
+}

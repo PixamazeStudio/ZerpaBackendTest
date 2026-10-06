@@ -1,0 +1,734 @@
+{
+  "controller": "SocialMediaPlatformController",
+  "file": "Controllers/SocialMediaPlatformController.cs",
+  "module": "Lead and Client Management",
+  "base_route": "api/SocialMediaPlatform",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages social media platform records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "not referenced by frontend",
+    "menu_keys": [],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "social_media_platform_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/SocialMediaPlatform",
+      "business_purpose": "Retrieve all social media platform records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "SocialMediaPlatform[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve all social media platform records",
+      "detailed_description": "Retrieve all social media platform records. It calls ISocialMediaPlatformRepository.GetSocialMediaPlatformData, ISocialMediaPlatformRepository.GetSocialMediaPlatformActions, ICommon.GetPagination. Data access uses stored procedure(s): GetSocialMediaPlatform, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all social media platform records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/SocialMediaPlatform",
+          "GET api/SocialMediaPlatform/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "social_media_platform_get_all",
+        "description": "Retrieve all social media platform records",
+        "http_method": "GET",
+        "endpoint": "api/SocialMediaPlatform",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SocialMediaPlatformController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [
+          "Models/SocialMediaPlatform.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/SocialMediaPlatformRepository.cs",
+          "Interfaces/ISocialMediaPlatformRepository.cs",
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all social media platform records — calls ISocialMediaPlatformRepository.GetSocialMediaPlatformData, ISocialMediaPlatformRepository.GetSocialMediaPlatformActions, ICommon.GetPagination",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ISocialMediaPlatformRepository.GetSocialMediaPlatformData",
+          "ISocialMediaPlatformRepository.GetSocialMediaPlatformActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "SocialMediaPlatformRepository (Repositories/SocialMediaPlatformRepository.cs) via ISocialMediaPlatformRepository",
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [
+          "GetSocialMediaPlatform",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "social_media_platform_get_social_media_platform_by_id",
+      "name": "Get Social Media Platform By Id",
+      "action_method": "GetSocialMediaPlatformById",
+      "http_method": "GET",
+      "route": "api/SocialMediaPlatform/{id}",
+      "business_purpose": "Retrieve social media platform by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve social media platform by ID",
+      "detailed_description": "Retrieve social media platform by ID. It validates the request, then calls ISocialMediaPlatformRepository.GetSocialMediaPlatformById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid social media platform ID is required. [when id <= 0]",
+        "not_found": "404: Social media platform not found. [when platform == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve social media platform by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/SocialMediaPlatform",
+          "GET api/SocialMediaPlatform/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "social_media_platform_get_social_media_platform_by_id",
+        "description": "Retrieve social media platform by ID",
+        "http_method": "GET",
+        "endpoint": "api/SocialMediaPlatform/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SocialMediaPlatformController.cs",
+        "action_method": "GetSocialMediaPlatformById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/SocialMediaPlatformRepository.cs",
+          "Interfaces/ISocialMediaPlatformRepository.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Retrieve social media platform by ID — validates the request, calls ISocialMediaPlatformRepository.GetSocialMediaPlatformById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid social media platform ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ISocialMediaPlatformRepository.GetSocialMediaPlatformById"
+        ],
+        "calls_repositories": [
+          "SocialMediaPlatformRepository (Repositories/SocialMediaPlatformRepository.cs) via ISocialMediaPlatformRepository"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid social media platform ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Social media platform not found.",
+            "when": "platform == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "social_media_platform_create",
+      "name": "Create",
+      "action_method": "Create",
+      "http_method": "POST",
+      "route": "api/SocialMediaPlatform",
+      "business_purpose": "Create a new social media platform record",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateSocialMediaPlatformRequest (inline)",
+        "properties": [
+          {
+            "name": "platform_name",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "userid",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; a duplicate check exists so repeating usually fails with a conflict/validation message"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Create a new social media platform record",
+      "detailed_description": "Create a new social media platform record. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, ISocialMediaPlatformRepository.IsSocialMediaPlatformDuplicateAsync, ISocialMediaPlatformRepository.CreateSocialMediaPlatformAsync. Persists changes to: SocialMediaPlatform: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; Platform name is required. [when string.IsNullOrWhiteSpace(request.platform_name)]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "Social media platform with this name already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create a new social media platform record",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateSocialMediaPlatformRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/SocialMediaPlatform"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "social_media_platform_create",
+        "description": "Create a new social media platform record",
+        "http_method": "POST",
+        "endpoint": "api/SocialMediaPlatform",
+        "parameters": {
+          "platform_name": {
+            "type": "string",
+            "required": true,
+            "description": "platform name (body)"
+          },
+          "userid": {
+            "type": "int",
+            "required": false,
+            "description": "userid (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/SocialMediaPlatformController.cs",
+        "action_method": "Create",
+        "related_dto_files": [
+          "Controllers/SocialMediaPlatformController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/SocialMediaPlatformRepository.cs",
+          "Interfaces/ISocialMediaPlatformRepository.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Create a new social media platform record — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, ISocialMediaPlatformRepository.IsSocialMediaPlatformDuplicateAsync, ISocialMediaPlatformRepository.CreateSocialMediaPlatformAsync",
+        "preconditions": "Valid Bearer JWT; request body of type CreateSocialMediaPlatformRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "SocialMediaPlatform: INSERT",
+        "validations": "ModelState (DTO data-annotation) validation; Invalid data provided.; Platform name is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISocialMediaPlatformRepository.IsSocialMediaPlatformDuplicateAsync",
+          "ISocialMediaPlatformRepository.CreateSocialMediaPlatformAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SocialMediaPlatformRepository (Repositories/SocialMediaPlatformRepository.cs) via ISocialMediaPlatformRepository"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "Platform name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.platform_name)"
+          },
+          {
+            "returns": 400,
+            "message": "Social media platform with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "social_media_platform_update",
+      "name": "Update",
+      "action_method": "Update",
+      "http_method": "PUT",
+      "route": "api/SocialMediaPlatform/{socialMediaPlatformId}",
+      "business_purpose": "Update an existing social media platform record",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "socialMediaPlatformId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateSocialMediaPlatformRequest (inline)",
+        "properties": [
+          {
+            "name": "platform_name",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "userid",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Update an existing social media platform record",
+      "detailed_description": "Update an existing social media platform record. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, ISocialMediaPlatformRepository.IsSocialMediaPlatformDuplicateAsync, ISocialMediaPlatformRepository.UpdateSocialMediaPlatformAsync. Persists changes to: SocialMediaPlatform: UPDATE. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid social media platform ID is required. [when socialMediaPlatformId <= 0]; Platform name is required for update. [when string.IsNullOrWhiteSpace(request.platform_name)]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "Social media platform with this name already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update an existing social media platform record",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "socialMediaPlatformId (route)",
+          "request body UpdateSocialMediaPlatformRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/SocialMediaPlatform/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "social_media_platform_update",
+        "description": "Update an existing social media platform record",
+        "http_method": "PUT",
+        "endpoint": "api/SocialMediaPlatform/{socialMediaPlatformId}",
+        "parameters": {
+          "socialMediaPlatformId": {
+            "type": "int",
+            "required": true,
+            "description": "social Media Platform Id (route)"
+          },
+          "platform_name": {
+            "type": "string",
+            "required": true,
+            "description": "platform name (body)"
+          },
+          "userid": {
+            "type": "int",
+            "required": false,
+            "description": "userid (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/SocialMediaPlatformController.cs",
+        "action_method": "Update",
+        "related_dto_files": [
+          "Controllers/SocialMediaPlatformController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/SocialMediaPlatformRepository.cs",
+          "Interfaces/ISocialMediaPlatformRepository.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Update an existing social media platform record — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, ISocialMediaPlatformRepository.IsSocialMediaPlatformDuplicateAsync, ISocialMediaPlatformRepository.UpdateSocialMediaPlatformAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) socialMediaPlatformId; request body of type UpdateSocialMediaPlatformRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "SocialMediaPlatform: UPDATE",
+        "validations": "Valid social media platform ID is required.; Platform name is required for update.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISocialMediaPlatformRepository.IsSocialMediaPlatformDuplicateAsync",
+          "ISocialMediaPlatformRepository.UpdateSocialMediaPlatformAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SocialMediaPlatformRepository (Repositories/SocialMediaPlatformRepository.cs) via ISocialMediaPlatformRepository"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid social media platform ID is required.",
+            "when": "socialMediaPlatformId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Platform name is required for update.",
+            "when": "string.IsNullOrWhiteSpace(request.platform_name)"
+          },
+          {
+            "returns": 400,
+            "message": "Social media platform with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "social_media_platform_delete",
+      "name": "Delete",
+      "action_method": "Delete",
+      "http_method": "DELETE",
+      "route": "api/SocialMediaPlatform/{id}",
+      "business_purpose": "Delete a social media platform record",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Delete a social media platform record",
+      "detailed_description": "Delete a social media platform record. It validates the request, then calls ICommon.getUserByToken, ISocialMediaPlatformRepository.DeleteSocialMediaPlatform. Persists changes to: SocialMediaPlatform: UPDATE, soft delete (is_deleted flag). Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid social media platform ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete a social media platform record",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/SocialMediaPlatform/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "social_media_platform_delete",
+        "description": "Delete a social media platform record",
+        "http_method": "DELETE",
+        "endpoint": "api/SocialMediaPlatform/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/SocialMediaPlatformController.cs",
+        "action_method": "Delete",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/SocialMediaPlatformRepository.cs",
+          "Interfaces/ISocialMediaPlatformRepository.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Delete a social media platform record — validates the request, calls ICommon.getUserByToken, ISocialMediaPlatformRepository.DeleteSocialMediaPlatform",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "SocialMediaPlatform: UPDATE; soft delete (is_deleted flag)",
+        "validations": "Valid social media platform ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISocialMediaPlatformRepository.DeleteSocialMediaPlatform"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SocialMediaPlatformRepository (Repositories/SocialMediaPlatformRepository.cs) via ISocialMediaPlatformRepository"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid social media platform ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    }
+  ]
+}

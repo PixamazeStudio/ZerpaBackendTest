@@ -1,0 +1,252 @@
+{
+  "controller": "RejectedIndentsController",
+  "file": "Controllers/RejectedIndentsController.cs",
+  "module": "Indent Management",
+  "base_route": "api/RejectedIndents",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles rejected indents: get all rejected indents",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "ims/control-center/rejected-indents",
+        "module_code": "ims",
+        "section": "control-center",
+        "sub_section": "rejected-indents",
+        "frontend_routes": [
+          "/ims/control-center/rejected-indents"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "rejected_indents_get_all_rejected_indents",
+      "name": "Get All Rejected Indents",
+      "action_method": "GetAllRejectedIndents",
+      "http_method": "GET",
+      "route": "api/RejectedIndents",
+      "business_purpose": "Retrieve all rejected indents",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "\"last_30_days\""
+        },
+        {
+          "name": "regionId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "areaId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "categoryId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "IMSDetails[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ims/control-center/rejected-indents:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all rejected indents",
+      "detailed_description": "Retrieve all rejected indents. It calls ICommon.getUserByToken, IIndent.BuildFilterContext, IRejectedIndents.GetRejectedIndentsData. Data access uses stored procedure(s): GetRejectedIndents, GetRejectedIndentsCards. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all rejected indents",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/RejectedIndents"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "rejected_indents_get_all_rejected_indents",
+        "description": "Retrieve all rejected indents",
+        "http_method": "GET",
+        "endpoint": "api/RejectedIndents",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "date range (query)"
+          },
+          "regionId": {
+            "type": "int",
+            "required": false,
+            "description": "region Id (query)"
+          },
+          "branchId": {
+            "type": "int",
+            "required": false,
+            "description": "branch Id (query)"
+          },
+          "areaId": {
+            "type": "int",
+            "required": false,
+            "description": "area Id (query)"
+          },
+          "categoryId": {
+            "type": "int",
+            "required": false,
+            "description": "category Id (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/RejectedIndentsController.cs",
+        "action_method": "GetAllRejectedIndents",
+        "related_dto_files": [
+          "Models/IMSDetails.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs",
+          "Repository/RejectedIndents_repo.cs",
+          "Interfaces/IRejectedIndents.cs"
+        ]
+      },
+      "module": "Indent Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all rejected indents — calls ICommon.getUserByToken, IIndent.BuildFilterContext, IRejectedIndents.GetRejectedIndentsData",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndent.BuildFilterContext",
+          "IRejectedIndents.GetRejectedIndentsData",
+          "IRejectedIndents.GetRejectedIndentsCards",
+          "IIndent.GetAllBranches",
+          "IRejectedIndents.GetRejectedIndentActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent",
+          "RejectedIndents_repo (Repository/RejectedIndents_repo.cs) via IRejectedIndents"
+        ],
+        "stored_procedures": [
+          "GetRejectedIndents",
+          "GetRejectedIndentsCards"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    }
+  ]
+}

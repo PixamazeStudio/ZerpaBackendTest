@@ -1,0 +1,1722 @@
+{
+  "controller": "CMSCreditNotesHeaderController",
+  "file": "Controllers/CMSCreditNotesHeaderController.cs",
+  "module": "Credit Note Management",
+  "base_route": "api/CMSCreditNotesHeader",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages CMS credit notes header records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "cms/credit-notes",
+        "module_code": "cms",
+        "section": "credit-notes",
+        "sub_section": null,
+        "frontend_routes": [
+          "/cms/credit-notes",
+          "/cms/credit-notes/create-credit-notes/:cmsid?",
+          "/cms/credit-notes/edit-credit-notes",
+          "/cms/credit-notes/view-credit-notes",
+          "/cms/credit-notes/view-credit-notes/:id"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "CMSCreditNotesHeader"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "cms_credit_notes_header_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/CMSCreditNotesHeader",
+      "business_purpose": "Retrieve all CMS credit notes header records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "\"last_30_days\""
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "categoryId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "cnTypeId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        },
+        {
+          "name": "sortField",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "sortDirection",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "CMS_CreditNotesHeader[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "cms/credit-notes:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all CMS credit notes header records",
+      "detailed_description": "Retrieve all CMS credit notes header records. It calls ICommon.getUserByToken, IIndent.BuildFilterContext, ICMSCreditNotesHeader.GetCMSCreditNotesHeaderData. Data access uses stored procedure(s): GetCMSCreditNotesHeader, GetCMSCreditNotesCards. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all CMS credit notes header records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/CMSCreditNotesHeader",
+          "GET api/CMSCreditNotesHeader/creditnotetypes",
+          "GET api/CMSCreditNotesHeader/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "cms_credit_notes_header_get_all",
+        "description": "Retrieve all CMS credit notes header records",
+        "http_method": "GET",
+        "endpoint": "api/CMSCreditNotesHeader",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "date range (query)"
+          },
+          "status": {
+            "type": "string",
+            "required": false,
+            "description": "status (query)"
+          },
+          "categoryId": {
+            "type": "int",
+            "required": false,
+            "description": "category Id (query)"
+          },
+          "cnTypeId": {
+            "type": "int",
+            "required": false,
+            "description": "cn Type Id (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          },
+          "sortField": {
+            "type": "string",
+            "required": false,
+            "description": "sort Field (query)"
+          },
+          "sortDirection": {
+            "type": "string",
+            "required": false,
+            "description": "sort Direction (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CMSCreditNotesHeaderController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [
+          "Models/CMS_CreditNotesHeader.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs",
+          "Repository/CreditNotesHeader_repo.cs",
+          "Interfaces/ICMSCreditNotesHeader.cs"
+        ]
+      },
+      "module": "Credit Note Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all CMS credit notes header records — calls ICommon.getUserByToken, IIndent.BuildFilterContext, ICMSCreditNotesHeader.GetCMSCreditNotesHeaderData",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndent.BuildFilterContext",
+          "ICMSCreditNotesHeader.GetCMSCreditNotesHeaderData",
+          "ICMSCreditNotesHeader.GetCMSCreditNotesCards",
+          "ICMSCreditNotesHeader.GetAllCreditnoteTypes",
+          "ICMSCreditNotesHeader.GetCMSCreditNotesHeaderActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent",
+          "CreditNotesHeader_repo (Repository/CreditNotesHeader_repo.cs) via ICMSCreditNotesHeader"
+        ],
+        "stored_procedures": [
+          "GetCMSCreditNotesHeader",
+          "GetCMSCreditNotesCards"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cms_credit_notes_header_get_cms_credit_notes",
+      "name": "Get CMS Credit Notes",
+      "action_method": "GetCMSCreditNotes",
+      "http_method": "GET",
+      "route": "api/CMSCreditNotesHeader/creditnotetypes",
+      "business_purpose": "Retrieve CMS credit notes",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "cms/credit-notes:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve CMS credit notes",
+      "detailed_description": "Retrieve CMS credit notes. It calls ICMSCreditNotesHeader.GetCreditNoteType. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Credit note not found [when creditnote == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve CMS credit notes",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/CMSCreditNotesHeader",
+          "GET api/CMSCreditNotesHeader/creditnotetypes",
+          "GET api/CMSCreditNotesHeader/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "cms_credit_notes_header_get_cms_credit_notes",
+        "description": "Retrieve CMS credit notes",
+        "http_method": "GET",
+        "endpoint": "api/CMSCreditNotesHeader/creditnotetypes",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CMSCreditNotesHeaderController.cs",
+        "action_method": "GetCMSCreditNotes",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/CreditNotesHeader_repo.cs",
+          "Interfaces/ICMSCreditNotesHeader.cs"
+        ]
+      },
+      "module": "Credit Note Management",
+      "business_logic": {
+        "operation_summary": "Retrieve CMS credit notes — calls ICMSCreditNotesHeader.GetCreditNoteType",
+        "preconditions": "Valid Bearer JWT; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICMSCreditNotesHeader.GetCreditNoteType"
+        ],
+        "calls_repositories": [
+          "CreditNotesHeader_repo (Repository/CreditNotesHeader_repo.cs) via ICMSCreditNotesHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 404,
+            "message": "Credit note not found",
+            "when": "creditnote == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cms_credit_notes_header_create_credit_notes",
+      "name": "Create Credit Notes",
+      "action_method": "CreateCreditNotes",
+      "http_method": "POST",
+      "route": "api/CMSCreditNotesHeader/create",
+      "business_purpose": "Create credit notes",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreditNoteCreteData (inline)",
+        "content_type": "multipart/form-data",
+        "properties": [
+          {
+            "name": "cred_data",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "file",
+            "type": "IFormFile",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "cms/credit-notes:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create credit notes",
+      "detailed_description": "Create credit notes. It validates the request, then calls ICommon.getUserByToken, ICMSCreditNotesHeader.GetUserById, ICMSCreditNotesHeader.GetCMSCreditNotedById, then processes uploaded files. Persists changes to: Cms_CreditNotesHeader: INSERT, ComplaintsFile: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: User not found [when createdByUser == null]",
+        "not_found": "404: Credit note not found [when creditnotes == null]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create credit notes",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreditNoteCreteData (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/CMSCreditNotesHeader",
+          "GET api/CMSCreditNotesHeader/creditnotetypes",
+          "GET api/CMSCreditNotesHeader/dealers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "cms_credit_notes_header_create_credit_notes",
+        "description": "Create credit notes",
+        "http_method": "POST",
+        "endpoint": "api/CMSCreditNotesHeader/create",
+        "parameters": {
+          "cred_data": {
+            "type": "string",
+            "required": false,
+            "description": "cred data (body)"
+          },
+          "file": {
+            "type": "IFormFile",
+            "required": false,
+            "description": "file (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/CMSCreditNotesHeaderController.cs",
+        "action_method": "CreateCreditNotes",
+        "related_dto_files": [
+          "Controllers/CMSCreditNotesHeaderController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/CreditNotesHeader_repo.cs",
+          "Interfaces/ICMSCreditNotesHeader.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs"
+        ]
+      },
+      "module": "Credit Note Management",
+      "business_logic": {
+        "operation_summary": "Create credit notes — validates the request, calls ICommon.getUserByToken, ICMSCreditNotesHeader.GetUserById, ICMSCreditNotesHeader.GetCMSCreditNotedById, processes uploaded files",
+        "preconditions": "Valid Bearer JWT; request body of type CreditNoteCreteData (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Cms_CreditNotesHeader: INSERT; ComplaintsFile: INSERT",
+        "validations": "User not found",
+        "side_effects": "Handles file upload/storage",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMSCreditNotesHeader.GetUserById",
+          "ICMSCreditNotesHeader.GetCMSCreditNotedById",
+          "ICMSCreditNotesHeader.GetComplaintsHeaderById",
+          "ICMSCreditNotesHeader.GetDealerById",
+          "ICMSCreditNotesHeader.GetCreditNoteTypeById",
+          "ICMSCreditNotesHeader.CreateCurrentFinYearCNRCode",
+          "ICMSCreditNotesHeader.CreateCMSCreditNotes",
+          "ICMSCreditNotesHeader.SaveChanges",
+          "ICMSCreditNotesHeader.GetBranchByDealer",
+          "ICMSCreditNotesHeader.GetMaxNumber",
+          "IIndent.CreateIndentFile"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "CreditNotesHeader_repo (Repository/CreditNotesHeader_repo.cs) via ICMSCreditNotesHeader",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "User not found",
+            "when": "createdByUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Credit note not found",
+            "when": "creditnotes == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cms_credit_notes_header_get_cms_credit_note_by_id",
+      "name": "Get CMS Credit Note By Id",
+      "action_method": "GetCMSCreditNoteById",
+      "http_method": "GET",
+      "route": "api/CMSCreditNotesHeader/{id}",
+      "business_purpose": "Retrieve CMS credit note by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "cms/credit-notes:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve CMS credit note by ID",
+      "detailed_description": "Retrieve CMS credit note by ID. It validates the request, then calls ICMSCreditNotesHeader.GetCMSCreditNotesHeaderActions, ICMSCreditNotesHeader.GetCMSCreditNotedById, ICMSCreditNotesHeader.GetComplaintDetailsComplaintsHeader. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid observation report ID is required. [when id <= 0]",
+        "not_found": "404: Credit note not found. [when creditNote == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve CMS credit note by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/CMSCreditNotesHeader",
+          "GET api/CMSCreditNotesHeader/creditnotetypes",
+          "GET api/CMSCreditNotesHeader/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "cms_credit_notes_header_get_cms_credit_note_by_id",
+        "description": "Retrieve CMS credit note by ID",
+        "http_method": "GET",
+        "endpoint": "api/CMSCreditNotesHeader/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CMSCreditNotesHeaderController.cs",
+        "action_method": "GetCMSCreditNoteById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/CreditNotesHeader_repo.cs",
+          "Interfaces/ICMSCreditNotesHeader.cs",
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Credit Note Management",
+      "business_logic": {
+        "operation_summary": "Retrieve CMS credit note by ID — validates the request, calls ICMSCreditNotesHeader.GetCMSCreditNotesHeaderActions, ICMSCreditNotesHeader.GetCMSCreditNotedById, ICMSCreditNotesHeader.GetComplaintDetailsComplaintsHeader",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid observation report ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICMSCreditNotesHeader.GetCMSCreditNotesHeaderActions",
+          "ICMSCreditNotesHeader.GetCMSCreditNotedById",
+          "ICMSCreditNotesHeader.GetComplaintDetailsComplaintsHeader",
+          "ICommon.GetComplaintFilesById",
+          "ICommon.GetFilesById"
+        ],
+        "calls_repositories": [
+          "CreditNotesHeader_repo (Repository/CreditNotesHeader_repo.cs) via ICMSCreditNotesHeader",
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid observation report ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Credit note not found.",
+            "when": "creditNote == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cms_credit_notes_header_cms_director_approval",
+      "name": "CMS Director Approval",
+      "action_method": "CMSDirectorApproval",
+      "http_method": "POST",
+      "route": "api/CMSCreditNotesHeader/director-approval",
+      "business_purpose": "Handle CMS director approval",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CMSDirectorApprovalRequest (inline)",
+        "properties": [
+          {
+            "name": "id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_director_approved",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "cms/credit-notes:approve",
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Handle CMS director approval",
+      "detailed_description": "Handle CMS director approval. It validates the request, then calls ICommon.getUserByToken, ICMSCreditNotesHeader.GetCMSCreditNotedById, ICMSCreditNotesHeader.GetUserById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data received [when request == null]; Valid credit note ID is required [when request.id <= 0]; User not found [when userById == null]; message built at runtime",
+        "not_found": "404: Credit note not found [when credit_note == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle CMS director approval",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CMSDirectorApprovalRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/CMSCreditNotesHeader",
+          "GET api/CMSCreditNotesHeader/creditnotetypes",
+          "GET api/CMSCreditNotesHeader/dealers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "cms_credit_notes_header_cms_director_approval",
+        "description": "Handle CMS director approval",
+        "http_method": "POST",
+        "endpoint": "api/CMSCreditNotesHeader/director-approval",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": false,
+            "description": "id (body)"
+          },
+          "is_director_approved": {
+            "type": "bool",
+            "required": false,
+            "description": "is director approved (body)"
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Approves the record and advances its workflow"
+      },
+      "source": {
+        "controller_file": "Controllers/CMSCreditNotesHeaderController.cs",
+        "action_method": "CMSDirectorApproval",
+        "related_dto_files": [
+          "Controllers/CMSCreditNotesHeaderController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/CreditNotesHeader_repo.cs",
+          "Interfaces/ICMSCreditNotesHeader.cs"
+        ]
+      },
+      "module": "Credit Note Management",
+      "business_logic": {
+        "operation_summary": "Handle CMS director approval — validates the request, calls ICommon.getUserByToken, ICMSCreditNotesHeader.GetCMSCreditNotedById, ICMSCreditNotesHeader.GetUserById",
+        "preconditions": "Valid Bearer JWT; request body of type CMSDirectorApprovalRequest (inline); passes 5 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets credit_note.is_director_approved, credit_note.director_operated_date, credit_note.director_operated_by, credit_note.status, credit_note.is_completed, credit_note.modified_by and saves changes",
+        "validations": "Invalid data received; Valid credit note ID is required; User not found",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMSCreditNotesHeader.GetCMSCreditNotedById",
+          "ICMSCreditNotesHeader.GetUserById",
+          "ICMSCreditNotesHeader.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "CreditNotesHeader_repo (Repository/CreditNotesHeader_repo.cs) via ICMSCreditNotesHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid data received",
+            "when": "request == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid credit note ID is required",
+            "when": "request.id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Credit note not found",
+            "when": "credit_note == null"
+          },
+          {
+            "returns": 400,
+            "message": "User not found",
+            "when": "userById == null"
+          },
+          {
+            "returns": 400,
+            "message": "message built at runtime",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "cms_credit_notes_header_cms_director_reject",
+      "name": "CMS Director Reject",
+      "action_method": "CMSDirectorReject",
+      "http_method": "POST",
+      "route": "api/CMSCreditNotesHeader/director-reject",
+      "business_purpose": "Handle CMS director reject",
+      "data_effect": "REJECTION",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CMSDirectorRejectRequest (inline)",
+        "properties": [
+          {
+            "name": "id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_director_rejected",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "REJECTION",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "cms/credit-notes:reject",
+      "permission_flags": [
+        "reject"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Handle CMS director reject",
+      "detailed_description": "Handle CMS director reject. It validates the request, then calls ICommon.getUserByToken, ICMSCreditNotesHeader.GetCMSCreditNotedById, ICMSCreditNotesHeader.SaveChanges. Possible responses: 200, 400, 401, 404.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data received [when request == null]; Valid credit note ID is required [when request.id <= 0]; message built at runtime",
+        "not_found": "404: Credit note not found [when credit_note == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle CMS director reject",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CMSDirectorRejectRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/CMSCreditNotesHeader",
+          "GET api/CMSCreditNotesHeader/creditnotetypes",
+          "GET api/CMSCreditNotesHeader/dealers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "cms_credit_notes_header_cms_director_reject",
+        "description": "Handle CMS director reject",
+        "http_method": "POST",
+        "endpoint": "api/CMSCreditNotesHeader/director-reject",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": false,
+            "description": "id (body)"
+          },
+          "is_director_rejected": {
+            "type": "bool",
+            "required": false,
+            "description": "is director rejected (body)"
+          }
+        },
+        "operation_type": "REJECTION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Rejects the record"
+      },
+      "source": {
+        "controller_file": "Controllers/CMSCreditNotesHeaderController.cs",
+        "action_method": "CMSDirectorReject",
+        "related_dto_files": [
+          "Controllers/CMSCreditNotesHeaderController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/CreditNotesHeader_repo.cs",
+          "Interfaces/ICMSCreditNotesHeader.cs"
+        ]
+      },
+      "module": "Credit Note Management",
+      "business_logic": {
+        "operation_summary": "Handle CMS director reject — validates the request, calls ICommon.getUserByToken, ICMSCreditNotesHeader.GetCMSCreditNotedById, ICMSCreditNotesHeader.SaveChanges",
+        "preconditions": "Valid Bearer JWT; request body of type CMSDirectorRejectRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets credit_note.is_director_rejected, credit_note.credit_operated_by, credit_note.credit_operated_date, credit_note.status, credit_note.modified_by, credit_note.modified_date and saves changes",
+        "validations": "Invalid data received; Valid credit note ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMSCreditNotesHeader.GetCMSCreditNotedById",
+          "ICMSCreditNotesHeader.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "CreditNotesHeader_repo (Repository/CreditNotesHeader_repo.cs) via ICMSCreditNotesHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid data received",
+            "when": "request == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid credit note ID is required",
+            "when": "request.id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Credit note not found",
+            "when": "credit_note == null"
+          },
+          {
+            "returns": 400,
+            "message": "message built at runtime",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "cms_credit_notes_header_get_dealers_by_name",
+      "name": "Get Dealers By Name",
+      "action_method": "GetDealersByName",
+      "http_method": "GET",
+      "route": "api/CMSCreditNotesHeader/dealers",
+      "business_purpose": "Retrieve dealers by name",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "searchText",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "cms/credit-notes:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve dealers by name",
+      "detailed_description": "Retrieve dealers by name. It validates the request, then calls ICommon.getUserByToken, ICMSCreditNotesHeader.GetDealerByName. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Search text is required [when string.IsNullOrWhiteSpace(searchText)]",
+        "not_found": "404: No dealers found [when dealers == null || !dealers.Any()]",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve dealers by name",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "searchText (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/CMSCreditNotesHeader",
+          "GET api/CMSCreditNotesHeader/creditnotetypes",
+          "GET api/CMSCreditNotesHeader/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "cms_credit_notes_header_get_dealers_by_name",
+        "description": "Retrieve dealers by name",
+        "http_method": "GET",
+        "endpoint": "api/CMSCreditNotesHeader/dealers",
+        "parameters": {
+          "searchText": {
+            "type": "string",
+            "required": true,
+            "description": "search Text (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CMSCreditNotesHeaderController.cs",
+        "action_method": "GetDealersByName",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/CreditNotesHeader_repo.cs",
+          "Interfaces/ICMSCreditNotesHeader.cs"
+        ]
+      },
+      "module": "Credit Note Management",
+      "business_logic": {
+        "operation_summary": "Retrieve dealers by name — validates the request, calls ICommon.getUserByToken, ICMSCreditNotesHeader.GetDealerByName",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): searchText; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Search text is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMSCreditNotesHeader.GetDealerByName"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "CreditNotesHeader_repo (Repository/CreditNotesHeader_repo.cs) via ICMSCreditNotesHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Search text is required",
+            "when": "string.IsNullOrWhiteSpace(searchText)"
+          },
+          {
+            "returns": 404,
+            "message": "No dealers found",
+            "when": "dealers == null || !dealers.Any()"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cms_credit_notes_header_get_dealer_address_by_id",
+      "name": "Get Dealer Address By Id",
+      "action_method": "GetDealerAddressById",
+      "http_method": "GET",
+      "route": "api/CMSCreditNotesHeader/dealer/{id}/address",
+      "business_purpose": "Retrieve dealer address by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "cms/credit-notes:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve dealer address by ID",
+      "detailed_description": "Retrieve dealer address by ID. It validates the request, then calls ICommon.getUserByToken, ICMSCreditNotesHeader.GetDealerById. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid dealer ID is required [when id <= 0]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve dealer address by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/CMSCreditNotesHeader",
+          "GET api/CMSCreditNotesHeader/creditnotetypes",
+          "GET api/CMSCreditNotesHeader/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "cms_credit_notes_header_get_dealer_address_by_id",
+        "description": "Retrieve dealer address by ID",
+        "http_method": "GET",
+        "endpoint": "api/CMSCreditNotesHeader/dealer/{id}/address",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CMSCreditNotesHeaderController.cs",
+        "action_method": "GetDealerAddressById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/CreditNotesHeader_repo.cs",
+          "Interfaces/ICMSCreditNotesHeader.cs"
+        ]
+      },
+      "module": "Credit Note Management",
+      "business_logic": {
+        "operation_summary": "Retrieve dealer address by ID — validates the request, calls ICommon.getUserByToken, ICMSCreditNotesHeader.GetDealerById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid dealer ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMSCreditNotesHeader.GetDealerById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "CreditNotesHeader_repo (Repository/CreditNotesHeader_repo.cs) via ICMSCreditNotesHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid dealer ID is required",
+            "when": "id <= 0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cms_credit_notes_header_get_category",
+      "name": "Get Category",
+      "action_method": "GetCategory",
+      "http_method": "GET",
+      "route": "api/CMSCreditNotesHeader/getCategory",
+      "business_purpose": "Retrieve category",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "cms/credit-notes:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve category",
+      "detailed_description": "Retrieve category. It calls ICommon.getUserByToken, ICMSCreditNotesHeader.GetCategory. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve category",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/CMSCreditNotesHeader",
+          "GET api/CMSCreditNotesHeader/creditnotetypes",
+          "GET api/CMSCreditNotesHeader/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "cms_credit_notes_header_get_category",
+        "description": "Retrieve category",
+        "http_method": "GET",
+        "endpoint": "api/CMSCreditNotesHeader/getCategory",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CMSCreditNotesHeaderController.cs",
+        "action_method": "GetCategory",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/CreditNotesHeader_repo.cs",
+          "Interfaces/ICMSCreditNotesHeader.cs"
+        ]
+      },
+      "module": "Credit Note Management",
+      "business_logic": {
+        "operation_summary": "Retrieve category — calls ICommon.getUserByToken, ICMSCreditNotesHeader.GetCategory",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMSCreditNotesHeader.GetCategory"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "CreditNotesHeader_repo (Repository/CreditNotesHeader_repo.cs) via ICMSCreditNotesHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cms_credit_notes_header_get_credit_note_type",
+      "name": "Get Credit Note Type",
+      "action_method": "GetCreditNoteType",
+      "http_method": "GET",
+      "route": "api/CMSCreditNotesHeader/getCreditNoteType",
+      "business_purpose": "Retrieve credit note type",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "cms/credit-notes:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve credit note type",
+      "detailed_description": "Retrieve credit note type. It calls ICommon.getUserByToken, ICMSCreditNotesHeader.GetCreditNoteType. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve credit note type",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/CMSCreditNotesHeader",
+          "GET api/CMSCreditNotesHeader/creditnotetypes",
+          "GET api/CMSCreditNotesHeader/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "cms_credit_notes_header_get_credit_note_type",
+        "description": "Retrieve credit note type",
+        "http_method": "GET",
+        "endpoint": "api/CMSCreditNotesHeader/getCreditNoteType",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CMSCreditNotesHeaderController.cs",
+        "action_method": "GetCreditNoteType",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/CreditNotesHeader_repo.cs",
+          "Interfaces/ICMSCreditNotesHeader.cs"
+        ]
+      },
+      "module": "Credit Note Management",
+      "business_logic": {
+        "operation_summary": "Retrieve credit note type — calls ICommon.getUserByToken, ICMSCreditNotesHeader.GetCreditNoteType",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMSCreditNotesHeader.GetCreditNoteType"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "CreditNotesHeader_repo (Repository/CreditNotesHeader_repo.cs) via ICMSCreditNotesHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cms_credit_notes_header_update_credit_note",
+      "name": "Update Credit Note",
+      "action_method": "UpdateCreditNote",
+      "http_method": "PUT",
+      "route": "api/CMSCreditNotesHeader/{creditNoteId}",
+      "business_purpose": "Update credit note",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "creditNoteId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateCreditNoteRequest (inline)",
+        "content_type": "multipart/form-data",
+        "properties": [
+          {
+            "name": "creditUpdate",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "file",
+            "type": "IFormFile",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "cms/credit-notes:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update credit note",
+      "detailed_description": "Update credit note. It validates the request, then calls ICommon.getUserByToken, ICMSCreditNotesHeader.UpdateCreditNoteAsync, IIndent.CreateIndentFile, then processes uploaded files. Persists changes to: Cms_CreditNotesDetails: DELETE, Cms_CreditNotesHeader: UPDATE, Cms_CreditNotesDetails: INSERT, ComplaintsFile: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid Credit Note ID is required. [when creditNoteId <= 0]; At least one field must be provided for update.; message returned by the called service/repository (result.Message) [when !result.Success]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]; Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update credit note",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "creditNoteId (route)",
+          "request body UpdateCreditNoteRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/CMSCreditNotesHeader/{id}",
+          "GET api/CMSCreditNotesHeader/dealer/{id}/address"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "cms_credit_notes_header_update_credit_note",
+        "description": "Update credit note",
+        "http_method": "PUT",
+        "endpoint": "api/CMSCreditNotesHeader/{creditNoteId}",
+        "parameters": {
+          "creditNoteId": {
+            "type": "int",
+            "required": true,
+            "description": "credit Note Id (route)"
+          },
+          "creditUpdate": {
+            "type": "string",
+            "required": false,
+            "description": "credit Update (body)"
+          },
+          "file": {
+            "type": "IFormFile",
+            "required": false,
+            "description": "file (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/CMSCreditNotesHeaderController.cs",
+        "action_method": "UpdateCreditNote",
+        "related_dto_files": [
+          "Controllers/CMSCreditNotesHeaderController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/CreditNotesHeader_repo.cs",
+          "Interfaces/ICMSCreditNotesHeader.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs"
+        ]
+      },
+      "module": "Credit Note Management",
+      "business_logic": {
+        "operation_summary": "Update credit note — validates the request, calls ICommon.getUserByToken, ICMSCreditNotesHeader.UpdateCreditNoteAsync, IIndent.CreateIndentFile, processes uploaded files",
+        "preconditions": "Valid Bearer JWT; route parameter(s) creditNoteId; request body of type UpdateCreditNoteRequest (inline); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Cms_CreditNotesDetails: DELETE; Cms_CreditNotesHeader: UPDATE; Cms_CreditNotesDetails: INSERT; ComplaintsFile: INSERT",
+        "validations": "Valid Credit Note ID is required.; At least one field must be provided for update.",
+        "side_effects": "Handles file upload/storage",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMSCreditNotesHeader.UpdateCreditNoteAsync",
+          "IIndent.CreateIndentFile"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "CreditNotesHeader_repo (Repository/CreditNotesHeader_repo.cs) via ICMSCreditNotesHeader",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Credit Note ID is required.",
+            "when": "creditNoteId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field must be provided for update.",
+            "when": null
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": "!result.Success"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cms_credit_notes_header_delete_creditnotes",
+      "name": "Delete Creditnotes",
+      "action_method": "DeleteCreditnotes",
+      "http_method": "DELETE",
+      "route": "api/CMSCreditNotesHeader/{id}",
+      "business_purpose": "Delete creditnotes",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "cms/credit-notes:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete creditnotes",
+      "detailed_description": "Delete creditnotes. It validates the request, then calls ICommon.getUserByToken, ICMSCreditNotesHeader.DeleteCreditnotes. Persists changes to: Cms_CreditNotesHeader: UPDATE, soft delete (is_deleted flag). Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid lead ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete creditnotes",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/CMSCreditNotesHeader/{id}",
+          "GET api/CMSCreditNotesHeader/dealer/{id}/address"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "cms_credit_notes_header_delete_creditnotes",
+        "description": "Delete creditnotes",
+        "http_method": "DELETE",
+        "endpoint": "api/CMSCreditNotesHeader/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/CMSCreditNotesHeaderController.cs",
+        "action_method": "DeleteCreditnotes",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/CreditNotesHeader_repo.cs",
+          "Interfaces/ICMSCreditNotesHeader.cs"
+        ]
+      },
+      "module": "Credit Note Management",
+      "business_logic": {
+        "operation_summary": "Delete creditnotes — validates the request, calls ICommon.getUserByToken, ICMSCreditNotesHeader.DeleteCreditnotes",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Cms_CreditNotesHeader: UPDATE; soft delete (is_deleted flag)",
+        "validations": "Valid lead ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMSCreditNotesHeader.DeleteCreditnotes"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "CreditNotesHeader_repo (Repository/CreditNotesHeader_repo.cs) via ICMSCreditNotesHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid lead ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    }
+  ]
+}

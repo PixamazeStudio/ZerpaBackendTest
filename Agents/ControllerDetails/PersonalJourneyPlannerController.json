@@ -1,0 +1,1315 @@
+{
+  "controller": "PersonalJourneyPlannerController",
+  "file": "Controllers/PersonalJourneyPlannerController.cs",
+  "module": "Planning and Visit Management",
+  "base_route": "api/PersonalJourneyPlanner",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages personal journey planner records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "planner/permanent-journey-planner",
+        "module_code": "planner",
+        "section": "permanent-journey-planner",
+        "sub_section": null,
+        "frontend_routes": [
+          "/planner/permanent-journey-planner",
+          "/planner/permanent-journey-planner/create-permanent-journey-planner",
+          "/planner/permanent-journey-planner/edit-permanent-journey-planner/:id",
+          "/planner/permanent-journey-planner/view-permanent-journey-planner/:id"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Planner",
+        "section": "",
+        "sub_section": "Personal Journey Planner"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "personal_journey_planner_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/PersonalJourneyPlanner",
+      "business_purpose": "Retrieve all personal journey planner records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "month",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/permanent-journey-planner:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all personal journey planner records",
+      "detailed_description": "Retrieve all personal journey planner records. It calls ICommon.getUserByToken, IPersonalJourneyPlanner.GetPJPData, IPersonalJourneyPlanner.GetPJPActions. Data access uses stored procedure(s): GetPJP. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all personal journey planner records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/PersonalJourneyPlanner",
+          "GET api/PersonalJourneyPlanner/months",
+          "GET api/PersonalJourneyPlanner/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "personal_journey_planner_get_all",
+        "description": "Retrieve all personal journey planner records",
+        "http_method": "GET",
+        "endpoint": "api/PersonalJourneyPlanner",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "month": {
+            "type": "string",
+            "required": false,
+            "description": "month (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/PersonalJourneyPlannerController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/PersonalJourneyPlanner_repo.cs",
+          "Interfaces/IPersonalJourneyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all personal journey planner records — calls ICommon.getUserByToken, IPersonalJourneyPlanner.GetPJPData, IPersonalJourneyPlanner.GetPJPActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IPersonalJourneyPlanner.GetPJPData",
+          "IPersonalJourneyPlanner.GetPJPActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "PersonalJourneyPlanner_repo (Repositories/PersonalJourneyPlanner_repo.cs) via IPersonalJourneyPlanner"
+        ],
+        "stored_procedures": [
+          "GetPJP"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "personal_journey_planner_get_months",
+      "name": "Get Months",
+      "action_method": "GetMonths",
+      "http_method": "GET",
+      "route": "api/PersonalJourneyPlanner/months",
+      "business_purpose": "Retrieve months",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/permanent-journey-planner:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve months",
+      "detailed_description": "Retrieve months. It calls ICommon.getUserByToken, IPersonalJourneyPlanner.GetMonths. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve months",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/PersonalJourneyPlanner",
+          "GET api/PersonalJourneyPlanner/months",
+          "GET api/PersonalJourneyPlanner/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "personal_journey_planner_get_months",
+        "description": "Retrieve months",
+        "http_method": "GET",
+        "endpoint": "api/PersonalJourneyPlanner/months",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/PersonalJourneyPlannerController.cs",
+        "action_method": "GetMonths",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/PersonalJourneyPlanner_repo.cs",
+          "Interfaces/IPersonalJourneyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve months — calls ICommon.getUserByToken, IPersonalJourneyPlanner.GetMonths",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IPersonalJourneyPlanner.GetMonths"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "PersonalJourneyPlanner_repo (Repositories/PersonalJourneyPlanner_repo.cs) via IPersonalJourneyPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "personal_journey_planner_delete_personal_journey_planner",
+      "name": "Delete Personal Journey Planner",
+      "action_method": "DeletePersonalJourneyPlanner",
+      "http_method": "DELETE",
+      "route": "api/PersonalJourneyPlanner/{id}",
+      "business_purpose": "Delete personal journey planner",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "planner/permanent-journey-planner:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete personal journey planner",
+      "detailed_description": "Delete personal journey planner. It validates the request, then calls ICommon.getUserByToken, IPersonalJourneyPlanner.GetPlannersByHeaderId, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: PersonalJourneyPlannerHeader: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid monthly planner ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Personal Journey Planner not found. [when existingPersonalJourneyPlanner == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete personal journey planner",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/PersonalJourneyPlanner/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "personal_journey_planner_delete_personal_journey_planner",
+        "description": "Delete personal journey planner",
+        "http_method": "DELETE",
+        "endpoint": "api/PersonalJourneyPlanner/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/PersonalJourneyPlannerController.cs",
+        "action_method": "DeletePersonalJourneyPlanner",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/PersonalJourneyPlanner_repo.cs",
+          "Interfaces/IPersonalJourneyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Delete personal journey planner — validates the request, calls ICommon.getUserByToken, IPersonalJourneyPlanner.GetPlannersByHeaderId, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "PersonalJourneyPlannerHeader: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "validations": "Valid monthly planner ID is required.",
+        "side_effects": "AuditLog DELETE (Planner > Personal Journey Planner)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IPersonalJourneyPlanner.GetPlannersByHeaderId",
+          "ICommon.ToJsonString",
+          "IPersonalJourneyPlanner.DeletePersonalJourneyPlanner",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "PersonalJourneyPlanner_repo (Repositories/PersonalJourneyPlanner_repo.cs) via IPersonalJourneyPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid monthly planner ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Personal Journey Planner not found.",
+            "when": "existingPersonalJourneyPlanner == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "personal_journey_planner_get_personal_journey_planner_by_id",
+      "name": "Get Personal Journey Planner By Id",
+      "action_method": "GetPersonalJourneyPlannerById",
+      "http_method": "GET",
+      "route": "api/PersonalJourneyPlanner/{id}",
+      "business_purpose": "Retrieve personal journey planner by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/permanent-journey-planner:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve personal journey planner by ID",
+      "detailed_description": "Retrieve personal journey planner by ID. It validates the request, then calls ICommon.getUserByToken, IPersonalJourneyPlanner.GetPJPById, IPersonalJourneyPlanner.GetPlannersByHeaderId. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid pjp ID is required [when id <= 0]",
+        "not_found": "404: pjp not found [when header == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve personal journey planner by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/PersonalJourneyPlanner",
+          "GET api/PersonalJourneyPlanner/months",
+          "GET api/PersonalJourneyPlanner/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "personal_journey_planner_get_personal_journey_planner_by_id",
+        "description": "Retrieve personal journey planner by ID",
+        "http_method": "GET",
+        "endpoint": "api/PersonalJourneyPlanner/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/PersonalJourneyPlannerController.cs",
+        "action_method": "GetPersonalJourneyPlannerById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/PersonalJourneyPlanner_repo.cs",
+          "Interfaces/IPersonalJourneyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve personal journey planner by ID — validates the request, calls ICommon.getUserByToken, IPersonalJourneyPlanner.GetPJPById, IPersonalJourneyPlanner.GetPlannersByHeaderId",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid pjp ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IPersonalJourneyPlanner.GetPJPById",
+          "IPersonalJourneyPlanner.GetPlannersByHeaderId",
+          "IPersonalJourneyPlanner.GetPJPActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "PersonalJourneyPlanner_repo (Repositories/PersonalJourneyPlanner_repo.cs) via IPersonalJourneyPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid pjp ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "pjp not found",
+            "when": "header == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "personal_journey_planner_create_pjp",
+      "name": "Create PJP",
+      "action_method": "CreatePJP",
+      "http_method": "POST",
+      "route": "api/PersonalJourneyPlanner/create",
+      "business_purpose": "Create PJP",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreatePJPDto (inline)",
+        "properties": [
+          {
+            "name": "Month",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Year",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Plans",
+            "type": "List<PJPPlanDto>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "planner/permanent-journey-planner:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create PJP",
+      "detailed_description": "Create PJP. It calls ICommon.getUserByToken, IPersonalJourneyPlanner.CreateHeaderAsync, IPersonalJourneyPlanner.CreatePlannersAsync. Persists changes to: PersonalJourneyPlannerHeader: INSERT, PersonalJourneyPlanner: INSERT. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create PJP",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreatePJPDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/PersonalJourneyPlanner",
+          "GET api/PersonalJourneyPlanner/months",
+          "GET api/PersonalJourneyPlanner/load"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "personal_journey_planner_create_pjp",
+        "description": "Create PJP",
+        "http_method": "POST",
+        "endpoint": "api/PersonalJourneyPlanner/create",
+        "parameters": {
+          "Month": {
+            "type": "string",
+            "required": false,
+            "description": "Month (body)"
+          },
+          "Year": {
+            "type": "int",
+            "required": false,
+            "description": "Year (body)"
+          },
+          "Plans": {
+            "type": "List<PJPPlanDto>",
+            "required": false,
+            "description": "Plans (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/PersonalJourneyPlannerController.cs",
+        "action_method": "CreatePJP",
+        "related_dto_files": [
+          "Controllers/PersonalJourneyPlannerController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/PersonalJourneyPlanner_repo.cs",
+          "Interfaces/IPersonalJourneyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Create PJP — calls ICommon.getUserByToken, IPersonalJourneyPlanner.CreateHeaderAsync, IPersonalJourneyPlanner.CreatePlannersAsync",
+        "preconditions": "Valid Bearer JWT; request body of type CreatePJPDto (inline)",
+        "state_changes": "PersonalJourneyPlannerHeader: INSERT; PersonalJourneyPlanner: INSERT",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IPersonalJourneyPlanner.CreateHeaderAsync",
+          "IPersonalJourneyPlanner.CreatePlannersAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "PersonalJourneyPlanner_repo (Repositories/PersonalJourneyPlanner_repo.cs) via IPersonalJourneyPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "personal_journey_planner_pjp_approval",
+      "name": "PJP Approval",
+      "action_method": "PJPApproval",
+      "http_method": "POST",
+      "route": "api/PersonalJourneyPlanner/approval",
+      "business_purpose": "Handle PJP approval",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "PJPApprovalDto (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "IsApproved",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "planner/permanent-journey-planner:approve",
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Handle PJP approval",
+      "detailed_description": "Handle PJP approval. It validates the request, then calls ICommon.getUserByToken, IPersonalJourneyPlanner.GetPJPById, IPersonalJourneyPlanner.SaveChangesAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid PJP ID is required. [when request.Id <= 0]",
+        "not_found": "404: PJP not found. [when pjp == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle PJP approval",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body PJPApprovalDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/PersonalJourneyPlanner",
+          "GET api/PersonalJourneyPlanner/months",
+          "GET api/PersonalJourneyPlanner/load"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "personal_journey_planner_pjp_approval",
+        "description": "Handle PJP approval",
+        "http_method": "POST",
+        "endpoint": "api/PersonalJourneyPlanner/approval",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "IsApproved": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Approved (body)"
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Approves the record and advances its workflow"
+      },
+      "source": {
+        "controller_file": "Controllers/PersonalJourneyPlannerController.cs",
+        "action_method": "PJPApproval",
+        "related_dto_files": [
+          "Controllers/PersonalJourneyPlannerController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/PersonalJourneyPlanner_repo.cs",
+          "Interfaces/IPersonalJourneyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Handle PJP approval — validates the request, calls ICommon.getUserByToken, IPersonalJourneyPlanner.GetPJPById, IPersonalJourneyPlanner.SaveChangesAsync",
+        "preconditions": "Valid Bearer JWT; request body of type PJPApprovalDto (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets pjp.is_approved, pjp.operated_by, pjp.operated_date, pjp.modified_by, pjp.modified_date and saves changes",
+        "validations": "Valid PJP ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IPersonalJourneyPlanner.GetPJPById",
+          "IPersonalJourneyPlanner.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "PersonalJourneyPlanner_repo (Repositories/PersonalJourneyPlanner_repo.cs) via IPersonalJourneyPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid PJP ID is required.",
+            "when": "request.Id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "PJP not found.",
+            "when": "pjp == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "personal_journey_planner_pjp_reject",
+      "name": "PJP Reject",
+      "action_method": "PJPReject",
+      "http_method": "POST",
+      "route": "api/PersonalJourneyPlanner/reject",
+      "business_purpose": "Handle PJP reject",
+      "data_effect": "REJECTION",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "PJPRejectDto (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "IsRejected",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "REJECTION",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "planner/permanent-journey-planner:reject",
+      "permission_flags": [
+        "reject"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Handle PJP reject",
+      "detailed_description": "Handle PJP reject. It validates the request, then calls ICommon.getUserByToken, IPersonalJourneyPlanner.GetPJPById, IPersonalJourneyPlanner.SaveChangesAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid PJP ID is required. [when request.Id <= 0]",
+        "not_found": "404: PJP not found. [when pjp == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle PJP reject",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body PJPRejectDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/PersonalJourneyPlanner",
+          "GET api/PersonalJourneyPlanner/months",
+          "GET api/PersonalJourneyPlanner/load"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "personal_journey_planner_pjp_reject",
+        "description": "Handle PJP reject",
+        "http_method": "POST",
+        "endpoint": "api/PersonalJourneyPlanner/reject",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "IsRejected": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Rejected (body)"
+          }
+        },
+        "operation_type": "REJECTION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Rejects the record"
+      },
+      "source": {
+        "controller_file": "Controllers/PersonalJourneyPlannerController.cs",
+        "action_method": "PJPReject",
+        "related_dto_files": [
+          "Controllers/PersonalJourneyPlannerController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/PersonalJourneyPlanner_repo.cs",
+          "Interfaces/IPersonalJourneyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Handle PJP reject — validates the request, calls ICommon.getUserByToken, IPersonalJourneyPlanner.GetPJPById, IPersonalJourneyPlanner.SaveChangesAsync",
+        "preconditions": "Valid Bearer JWT; request body of type PJPRejectDto (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets pjp.is_rejected, pjp.operated_by, pjp.operated_date, pjp.modified_by, pjp.modified_date and saves changes",
+        "validations": "Valid PJP ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IPersonalJourneyPlanner.GetPJPById",
+          "IPersonalJourneyPlanner.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "PersonalJourneyPlanner_repo (Repositories/PersonalJourneyPlanner_repo.cs) via IPersonalJourneyPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid PJP ID is required.",
+            "when": "request.Id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "PJP not found.",
+            "when": "pjp == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "personal_journey_planner_load_pjp",
+      "name": "Load PJP",
+      "action_method": "LoadPJP",
+      "http_method": "GET",
+      "route": "api/PersonalJourneyPlanner/load",
+      "business_purpose": "Load PJP",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "month",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "year",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/permanent-journey-planner:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Load PJP",
+      "detailed_description": "Load PJP. It validates the request, then calls ICommon.getUserByToken, IPersonalJourneyPlanner.GetPJPByMonthandYear. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Month is required [when string.IsNullOrWhiteSpace(month)]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to load PJP",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/PersonalJourneyPlanner",
+          "GET api/PersonalJourneyPlanner/months",
+          "GET api/PersonalJourneyPlanner/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "personal_journey_planner_load_pjp",
+        "description": "Load PJP",
+        "http_method": "GET",
+        "endpoint": "api/PersonalJourneyPlanner/load",
+        "parameters": {
+          "month": {
+            "type": "string",
+            "required": false,
+            "description": "month (query)"
+          },
+          "year": {
+            "type": "int",
+            "required": false,
+            "description": "year (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/PersonalJourneyPlannerController.cs",
+        "action_method": "LoadPJP",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/PersonalJourneyPlanner_repo.cs",
+          "Interfaces/IPersonalJourneyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Load PJP — validates the request, calls ICommon.getUserByToken, IPersonalJourneyPlanner.GetPJPByMonthandYear",
+        "preconditions": "Valid Bearer JWT; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Month is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IPersonalJourneyPlanner.GetPJPByMonthandYear"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "PersonalJourneyPlanner_repo (Repositories/PersonalJourneyPlanner_repo.cs) via IPersonalJourneyPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Month is required",
+            "when": "string.IsNullOrWhiteSpace(month)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "personal_journey_planner_update_pjp",
+      "name": "Update PJP",
+      "action_method": "UpdatePJP",
+      "http_method": "PUT",
+      "route": "api/PersonalJourneyPlanner/{id}",
+      "business_purpose": "Update PJP",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdatePJPDto (inline)",
+        "properties": [
+          {
+            "name": "Month",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Year",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Plans",
+            "type": "List<PJPPlanDto>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "planner/permanent-journey-planner:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update PJP",
+      "detailed_description": "Update PJP. It validates the request, then calls ICommon.getUserByToken, IPersonalJourneyPlanner.GetPJPById, IPersonalJourneyPlanner.RemovePlannerRangeAsync. Persists changes to: PersonalJourneyPlanner: DELETE. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid PJP Id is required. [when id <= 0]; At least one field must be provided for update. [when string.IsNullOrWhiteSpace(request.Month) && request.Year <= 0 && (request.Plans == null ||]",
+        "not_found": "404: PJP not found. [when pjpHeader == null]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update PJP",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "request body UpdatePJPDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/PersonalJourneyPlanner/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "personal_journey_planner_update_pjp",
+        "description": "Update PJP",
+        "http_method": "PUT",
+        "endpoint": "api/PersonalJourneyPlanner/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "Month": {
+            "type": "string",
+            "required": false,
+            "description": "Month (body)"
+          },
+          "Year": {
+            "type": "int",
+            "required": false,
+            "description": "Year (body)"
+          },
+          "Plans": {
+            "type": "List<PJPPlanDto>",
+            "required": false,
+            "description": "Plans (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/PersonalJourneyPlannerController.cs",
+        "action_method": "UpdatePJP",
+        "related_dto_files": [
+          "Controllers/PersonalJourneyPlannerController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/PersonalJourneyPlanner_repo.cs",
+          "Interfaces/IPersonalJourneyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Update PJP — validates the request, calls ICommon.getUserByToken, IPersonalJourneyPlanner.GetPJPById, IPersonalJourneyPlanner.RemovePlannerRangeAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); request body of type UpdatePJPDto (inline); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "PersonalJourneyPlanner: DELETE; sets pjpHeader.month, pjpHeader.year, pjpHeader.planners, pjpHeader.modified_by, pjpHeader.modified_date and saves changes",
+        "validations": "Valid PJP Id is required.; At least one field must be provided for update.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IPersonalJourneyPlanner.GetPJPById",
+          "IPersonalJourneyPlanner.RemovePlannerRangeAsync",
+          "IPersonalJourneyPlanner.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "PersonalJourneyPlanner_repo (Repositories/PersonalJourneyPlanner_repo.cs) via IPersonalJourneyPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid PJP Id is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field must be provided for update.",
+            "when": "string.IsNullOrWhiteSpace(request.Month) && request.Year <= 0 && (request.Plans == null || !request.Plans.Any())"
+          },
+          {
+            "returns": 404,
+            "message": "PJP not found.",
+            "when": "pjpHeader == null"
+          }
+        ]
+      }
+    }
+  ]
+}

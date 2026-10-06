@@ -1,0 +1,243 @@
+{
+  "controller": "PartialReportController",
+  "file": "Controllers/PartialReportController.cs",
+  "module": "Reporting",
+  "base_route": "api/PartialReport",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles partial report: get all loss reports",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "rpt/indents-reports/partial-dispatch-report",
+        "module_code": "rpt",
+        "section": "indents-reports",
+        "sub_section": "partial-dispatch-report",
+        "frontend_routes": [
+          "/rpt/indents-reports/partial-dispatch-report"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "partial_report_get_all_loss_reports",
+      "name": "Get All Loss Reports",
+      "action_method": "GetAllLossReports",
+      "http_method": "GET",
+      "route": "api/PartialReport",
+      "business_purpose": "Retrieve all loss reports",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "\"this_month\""
+        },
+        {
+          "name": "dRegion",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        },
+        {
+          "name": "dBranch",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "dealer",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "dCategory",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/indents-reports/partial-dispatch-report:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all loss reports",
+      "detailed_description": "Retrieve all loss reports. It calls ICommon.getUserByToken, IPartialReport.GetLossReportsPaginated, ICommon.GetBranchesByRegionIdAsync. Data access uses stored procedure(s): GetIMS_LossReports_API, GetSectionActions. Possible responses: 200, 401.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all loss reports",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/PartialReport"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "partial_report_get_all_loss_reports",
+        "description": "Retrieve all loss reports",
+        "http_method": "GET",
+        "endpoint": "api/PartialReport",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "date range (query)"
+          },
+          "dRegion": {
+            "type": "int",
+            "required": false,
+            "description": "d Region (query)"
+          },
+          "dBranch": {
+            "type": "int",
+            "required": false,
+            "description": "d Branch (query)"
+          },
+          "dealer": {
+            "type": "string",
+            "required": false,
+            "description": "dealer (query)"
+          },
+          "dCategory": {
+            "type": "string",
+            "required": false,
+            "description": "d Category (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/PartialReportController.cs",
+        "action_method": "GetAllLossReports",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/PartialReportRepo.cs",
+          "Interfaces/IPartialReport.cs"
+        ]
+      },
+      "module": "Reporting",
+      "business_logic": {
+        "operation_summary": "Retrieve all loss reports — calls ICommon.getUserByToken, IPartialReport.GetLossReportsPaginated, ICommon.GetBranchesByRegionIdAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IPartialReport.GetLossReportsPaginated",
+          "ICommon.GetBranchesByRegionIdAsync",
+          "IPartialReport.GetActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "PartialReportRepo (Repository/PartialReportRepo.cs) via IPartialReport"
+        ],
+        "stored_procedures": [
+          "GetIMS_LossReports_API",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,264 @@
+{
+  "controller": "ComplaintReportController",
+  "file": "Controllers/ComplaintReportController.cs",
+  "module": "Reporting",
+  "base_route": "api/ComplaintReport",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles complaint report: get all",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "rpt/complaints-reports/complaints--report",
+        "module_code": "rpt",
+        "section": "complaints-reports",
+        "sub_section": "complaints--report",
+        "frontend_routes": [
+          "/rpt/complaints-reports/complaints--report"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "complaint_report_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/ComplaintReport",
+      "business_purpose": "Retrieve all complaint report records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "regionId",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "productId",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "natureId",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "dealerId",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "\"this_month\""
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/complaints-reports/complaints--report:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all complaint report records",
+      "detailed_description": "Retrieve all complaint report records. It validates the request, then calls ICommon.getUserByToken, IComplaintReport.GetComplaintReport, IComplaintReportRepository.GetComplaintReportActionsAsync. Data access uses stored procedure(s): GetComplaintReport, GetSectionActions. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: From date and To date are required for custom range [when !fromdate.HasValue || !todate.HasValue]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: (no message) [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all complaint report records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/ComplaintReport"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaint_report_get_all",
+        "description": "Retrieve all complaint report records",
+        "http_method": "GET",
+        "endpoint": "api/ComplaintReport",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "status": {
+            "type": "string",
+            "required": false,
+            "description": "status (query)"
+          },
+          "regionId": {
+            "type": "string",
+            "required": false,
+            "description": "region Id (query)"
+          },
+          "productId": {
+            "type": "string",
+            "required": false,
+            "description": "product Id (query)"
+          },
+          "natureId": {
+            "type": "string",
+            "required": false,
+            "description": "nature Id (query)"
+          },
+          "dealerId": {
+            "type": "string",
+            "required": false,
+            "description": "dealer Id (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "date range (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintReportController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ComplaintReport_repo.cs",
+          "Interfaces/IComplaintReport.cs",
+          "Repositories/ComplaintReportRepository.cs",
+          "Interfaces/IComplaintReportRepository.cs"
+        ]
+      },
+      "module": "Reporting",
+      "business_logic": {
+        "operation_summary": "Retrieve all complaint report records — validates the request, calls ICommon.getUserByToken, IComplaintReport.GetComplaintReport, IComplaintReportRepository.GetComplaintReportActionsAsync",
+        "preconditions": "Valid Bearer JWT; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "From date and To date are required for custom range",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IComplaintReport.GetComplaintReport",
+          "IComplaintReportRepository.GetComplaintReportActionsAsync",
+          "IComplaintReport.GetAllStatuses"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ComplaintReport_repo (Repositories/ComplaintReport_repo.cs) via IComplaintReport",
+          "ComplaintReportRepository (Repositories/ComplaintReportRepository.cs) via IComplaintReportRepository"
+        ],
+        "stored_procedures": [
+          "GetComplaintReport",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": null,
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "From date and To date are required for custom range",
+            "when": "!fromdate.HasValue || !todate.HasValue"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,313 @@
+{
+  "controller": "ComplaintsDashboardController",
+  "file": "Controllers/ComplaintsDashboardController.cs",
+  "module": "Dashboards",
+  "base_route": "api/ComplaintsDashboard",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles complaints dashboard: get complaints dashboard overview, get branches by region",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "analysis/complaint-dashboard",
+        "module_code": "analysis",
+        "section": "complaint-dashboard",
+        "sub_section": null,
+        "frontend_routes": [
+          "/analysis/complaint-dashboard"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "also_called_from_menus": [
+      "analysis/projects-dashboard"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "complaints_dashboard_get_complaints_dashboard_overview",
+      "name": "Get Complaints Dashboard Overview",
+      "action_method": "GetComplaintsDashboardOverview",
+      "http_method": "GET",
+      "route": "api/ComplaintsDashboard/overview",
+      "business_purpose": "Retrieve complaints dashboard overview",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "period",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "categoryId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "region",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "branch",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "fromDate",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "toDate",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "analysis/complaint-dashboard:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve complaints dashboard overview",
+      "detailed_description": "Retrieve complaints dashboard overview. It calls ICommon.getUserByToken, IComplaintDashboard.GetRegionsByUserId, IComplaintDashboard.GetCategories. Data access uses stored procedure(s): GetComplaintDispatchReport. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve complaints dashboard overview",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/ComplaintsDashboard/overview",
+          "GET api/ComplaintsDashboard/branch/{region}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaints_dashboard_get_complaints_dashboard_overview",
+        "description": "Retrieve complaints dashboard overview",
+        "http_method": "GET",
+        "endpoint": "api/ComplaintsDashboard/overview",
+        "parameters": {
+          "period": {
+            "type": "string",
+            "required": false,
+            "description": "period (query)"
+          },
+          "categoryId": {
+            "type": "int",
+            "required": false,
+            "description": "category Id (query)"
+          },
+          "region": {
+            "type": "string",
+            "required": false,
+            "description": "region (query)"
+          },
+          "branch": {
+            "type": "string",
+            "required": false,
+            "description": "branch (query)"
+          },
+          "fromDate": {
+            "type": "string",
+            "required": false,
+            "description": "from Date (query)"
+          },
+          "toDate": {
+            "type": "string",
+            "required": false,
+            "description": "to Date (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintsDashboardController.cs",
+        "action_method": "GetComplaintsDashboardOverview",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/ComplaintDashboardRepo.cs",
+          "Interfaces/IComplaintDashboard.cs"
+        ]
+      },
+      "module": "Dashboards",
+      "business_logic": {
+        "operation_summary": "Retrieve complaints dashboard overview — calls ICommon.getUserByToken, IComplaintDashboard.GetRegionsByUserId, IComplaintDashboard.GetCategories",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IComplaintDashboard.GetRegionsByUserId",
+          "IComplaintDashboard.GetCategories",
+          "IComplaintDashboard.GetComplaintReports",
+          "IComplaintDashboard.GetCreditNoteReports",
+          "IComplaintDashboard.GetDispatchedReports",
+          "IComplaintDashboard.GetLastSixMonthsData"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ComplaintDashboardRepo (Repository/ComplaintDashboardRepo.cs) via IComplaintDashboard"
+        ],
+        "stored_procedures": [
+          "GetComplaintDispatchReport"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaints_dashboard_get_branches_by_region",
+      "name": "Get Branches By Region",
+      "action_method": "GetBranchesByRegion",
+      "http_method": "GET",
+      "route": "api/ComplaintsDashboard/branch/{region}",
+      "business_purpose": "Retrieve branches by region",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "region",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "analysis/complaint-dashboard:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "analysis/projects-dashboard"
+      ],
+      "short_description": "Retrieve branches by region",
+      "detailed_description": "Retrieve branches by region. It calls IComplaintDashboard.GetBranches. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve branches by region",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "region (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/ComplaintsDashboard/overview",
+          "GET api/ComplaintsDashboard/branch/{region}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaints_dashboard_get_branches_by_region",
+        "description": "Retrieve branches by region",
+        "http_method": "GET",
+        "endpoint": "api/ComplaintsDashboard/branch/{region}",
+        "parameters": {
+          "region": {
+            "type": "string",
+            "required": true,
+            "description": "region (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintsDashboardController.cs",
+        "action_method": "GetBranchesByRegion",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/ComplaintDashboardRepo.cs",
+          "Interfaces/IComplaintDashboard.cs"
+        ]
+      },
+      "module": "Dashboards",
+      "business_logic": {
+        "operation_summary": "Retrieve branches by region — calls IComplaintDashboard.GetBranches",
+        "preconditions": "Valid Bearer JWT; route parameter(s) region",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IComplaintDashboard.GetBranches"
+        ],
+        "calls_repositories": [
+          "ComplaintDashboardRepo (Repository/ComplaintDashboardRepo.cs) via IComplaintDashboard"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    }
+  ]
+}

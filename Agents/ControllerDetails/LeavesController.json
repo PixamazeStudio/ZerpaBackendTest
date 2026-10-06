@@ -1,0 +1,345 @@
+{
+  "controller": "LeavesController",
+  "file": "Controllers/LeavesController.cs",
+  "module": "Attendance and Leave Management",
+  "base_route": "api/Leaves",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles leaves: get, delete attendance header",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "crm/leaves",
+        "module_code": "crm",
+        "section": "leaves",
+        "sub_section": null,
+        "frontend_routes": [
+          "/crm/leaves"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "Leaves"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "leaves_get",
+      "name": "Get",
+      "action_method": "Get",
+      "http_method": "GET",
+      "route": "api/Leaves",
+      "business_purpose": "Retrieve leaves data",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "lType",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        },
+        {
+          "name": "lsType",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        },
+        {
+          "name": "userid",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/leaves:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve leaves data",
+      "detailed_description": "Retrieve leaves data. It calls ICommon.getUserByToken, ICommon.GetDateRange, IAttendanceHeader.GetAttendanceHeaderActions. Possible responses: 200, 401.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve leaves data",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Leaves"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "leaves_get",
+        "description": "Retrieve leaves data",
+        "http_method": "GET",
+        "endpoint": "api/Leaves",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "lType": {
+            "type": "int",
+            "required": false,
+            "description": "l Type (query)"
+          },
+          "lsType": {
+            "type": "int",
+            "required": false,
+            "description": "ls Type (query)"
+          },
+          "userid": {
+            "type": "int",
+            "required": false,
+            "description": "userid (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/LeavesController.cs",
+        "action_method": "Get",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/AttendanceHeaderRepo.cs",
+          "Interfaces/IAttendanceHeader.cs"
+        ]
+      },
+      "module": "Attendance and Leave Management",
+      "business_logic": {
+        "operation_summary": "Retrieve leaves data — calls ICommon.getUserByToken, ICommon.GetDateRange, IAttendanceHeader.GetAttendanceHeaderActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.GetDateRange",
+          "IAttendanceHeader.GetAttendanceHeaderActions",
+          "ICommon.GetPagination",
+          "IAttendanceHeader.GetLeaves"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AttendanceHeaderRepo (Repositories/AttendanceHeaderRepo.cs) via IAttendanceHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "leaves_delete_attendance_header",
+      "name": "Delete Attendance Header",
+      "action_method": "DeleteAttendanceHeader",
+      "http_method": "DELETE",
+      "route": "api/Leaves/{id}",
+      "business_purpose": "Delete attendance header",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "crm/leaves:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete attendance header",
+      "detailed_description": "Delete attendance header. It validates the request, then calls ICommon.getUserByToken, IAttendanceHeader.DeleteAttendanceHeader. Persists changes to: AttendanceHeaders: UPDATE, soft delete (is_deleted flag). Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid lead ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete attendance header",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": []
+      },
+      "llm_tool_definition": {
+        "name": "leaves_delete_attendance_header",
+        "description": "Delete attendance header",
+        "http_method": "DELETE",
+        "endpoint": "api/Leaves/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/LeavesController.cs",
+        "action_method": "DeleteAttendanceHeader",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/AttendanceHeaderRepo.cs",
+          "Interfaces/IAttendanceHeader.cs"
+        ]
+      },
+      "module": "Attendance and Leave Management",
+      "business_logic": {
+        "operation_summary": "Delete attendance header — validates the request, calls ICommon.getUserByToken, IAttendanceHeader.DeleteAttendanceHeader",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "AttendanceHeaders: UPDATE; soft delete (is_deleted flag)",
+        "validations": "Valid lead ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAttendanceHeader.DeleteAttendanceHeader"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AttendanceHeaderRepo (Repositories/AttendanceHeaderRepo.cs) via IAttendanceHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid lead ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    }
+  ]
+}

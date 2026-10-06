@@ -1,0 +1,746 @@
+{
+  "controller": "CrmClientTypeController",
+  "file": "Controllers/CrmClientTypeController.cs",
+  "module": "CRM Settings",
+  "base_route": "api/CrmClientType",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages CRM client type master data (create, read, update, delete) with duplicate detection and user audit trails",
+  "notes": null,
+  "menu_permission": {
+    "status": "not referenced by frontend",
+    "menu_keys": [],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "crm_get_all",
+      "name": "Get All CRM Client Types",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/CrmClientType",
+      "module": "CRM Settings",
+      "business_purpose": "Retrieve paginated list of CRM client types with date range and search filtering",
+      "short_description": "Fetches all CRM client type records with pagination and filtering",
+      "detailed_description": "Calls repository GetCrmClientTypeData with date range, search text, limit, and offset; converts DataTable to list; returns results wrapped in OK response",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ],
+        "roles_or_policy": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_claims": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_headers": [
+          "Authorization: Bearer <token>"
+        ],
+        "notes": null
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": null,
+          "description": "Start date filter",
+          "example": "2026-01-01"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": null,
+          "description": "End date filter",
+          "example": "2026-12-31"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": null,
+          "description": "Search text",
+          "example": "Retail"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "100",
+          "description": "Records per page",
+          "example": 50
+        },
+        {
+          "name": "offset",
+          "type": "int",
+          "required": false,
+          "default": "0",
+          "description": "Pagination offset",
+          "example": 100
+        }
+      ],
+      "request_body": null,
+      "response": {
+        "status_codes": [
+          200,
+          500
+        ],
+        "dto_name": "List<Dictionary<string, object>>",
+        "properties": [],
+        "success_example": null,
+        "error_example": null,
+        "notes": "Raw DataTable converted to dictionary list"
+      },
+      "business_logic": {
+        "operation_summary": "Simple data retrieval with filtering",
+        "preconditions": "None explicit",
+        "state_changes": "None",
+        "validations": "None visible",
+        "side_effects": "None",
+        "calls_services": [
+          "ICrmClientTypeRepository"
+        ],
+        "calls_repositories": [
+          "ICrmClientTypeRepository"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "validation_rules": []
+      },
+      "ai_agent_guidance": {
+        "use_when": "Retrieve CRM client type list",
+        "do_not_use_when": "Getting single record - use by ID",
+        "preconditions_needed": [
+          "Bearer token"
+        ],
+        "follow_up_apis": [
+          "CreateCrmClientType",
+          "UpdateCrmClientType"
+        ]
+      },
+      "error_handling": {
+        "validation_errors": "None visible",
+        "not_found": "No error - returns empty list",
+        "unauthorized": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "business_rule_errors": "None visible",
+        "exceptions": "Returns 500 with ex.Message"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Pure read operation"
+      },
+      "llm_tool_definition": {
+        "name": "get_crm_client_types",
+        "description": "Retrieve list of CRM client types",
+        "http_method": "GET",
+        "endpoint": "api/CrmClientType",
+        "parameters": {
+          "limit": {
+            "type": "integer",
+            "required": false
+          },
+          "offset": {
+            "type": "integer",
+            "required": false
+          },
+          "inputText": {
+            "type": "string",
+            "required": false
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": null
+      },
+      "source": {
+        "controller_file": "Controllers/CrmClientTypeController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "ICrmClientTypeRepository"
+        ]
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend"
+    },
+    {
+      "id": "crm_create",
+      "name": "Create CRM Client Type",
+      "action_method": "CreateCrmClientType",
+      "http_method": "POST",
+      "route": "api/CrmClientType",
+      "module": "CRM Settings",
+      "business_purpose": "Create new CRM client type with duplicate detection",
+      "short_description": "Creates new CRM client type record with validation and duplicate check",
+      "detailed_description": "Validates ModelState, userid > 0, type_name not empty; retrieves user; creates CrmClientType entity; checks duplicate; calls repository CreateCrmClientTypeAsync",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ],
+        "roles_or_policy": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_claims": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_headers": [
+          "Authorization: Bearer <token>"
+        ],
+        "notes": null
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateCrmClientTypeRequest",
+        "source_file": "Controllers/CrmClientTypeController.cs (inline)",
+        "properties": [
+          {
+            "name": "type_name",
+            "type": "string",
+            "required": true,
+            "nullable": false,
+            "validation": "not empty",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "Client type name",
+            "example": "Retail"
+          },
+          {
+            "name": "userid",
+            "type": "int",
+            "required": true,
+            "nullable": false,
+            "validation": "> 0",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "Creating user ID",
+            "example": 1
+          }
+        ],
+        "example_json": {
+          "type_name": "Retail",
+          "userid": 1
+        }
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          500
+        ],
+        "dto_name": "Anonymous object",
+        "properties": [
+          {
+            "name": "Success",
+            "type": "bool",
+            "nullable": false,
+            "description": "Operation result"
+          },
+          {
+            "name": "Message",
+            "type": "string",
+            "nullable": false,
+            "description": "Result message"
+          }
+        ],
+        "success_example": {
+          "Success": true,
+          "Message": "CRM client type created successfully"
+        },
+        "error_example": {
+          "Success": false,
+          "Message": "CRM client type with this name already exists."
+        },
+        "notes": null
+      },
+      "business_logic": {
+        "operation_summary": "Creates CRM client type with duplicate prevention",
+        "preconditions": "User must exist, type_name must be unique",
+        "state_changes": "Inserts new CrmClientType row",
+        "validations": "userid > 0, type_name not empty, duplicate check",
+        "side_effects": "None beyond database insert",
+        "calls_services": [],
+        "calls_repositories": [
+          "ICrmClientTypeRepository"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "INFERRED FROM CODE: User ID required as parameter",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "Valid user ID is required.",
+            "when": "request.userid <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "CRM client type name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.type_name)"
+          },
+          {
+            "returns": 400,
+            "message": "User not found.",
+            "when": "user == null"
+          },
+          {
+            "returns": 400,
+            "message": "CRM client type with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      },
+      "ai_agent_guidance": {
+        "use_when": "Add new CRM client type to system",
+        "do_not_use_when": "Type name already exists",
+        "preconditions_needed": [
+          "Valid user ID",
+          "Unique type name",
+          "Bearer token"
+        ],
+        "follow_up_apis": [
+          "GetAll"
+        ]
+      },
+      "error_handling": {
+        "validation_errors": "userid <= 0, type_name empty",
+        "not_found": "User not found returns 400",
+        "unauthorized": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "business_rule_errors": "Duplicate name returns 400",
+        "exceptions": "Returns 500 with ex.Message"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "CREATE",
+        "notes": "Duplicate check prevents unintended duplicates"
+      },
+      "llm_tool_definition": {
+        "name": "create_crm_client_type",
+        "description": "Create new CRM client type",
+        "http_method": "POST",
+        "endpoint": "api/CrmClientType",
+        "parameters": {
+          "type_name": {
+            "type": "string",
+            "required": true
+          },
+          "userid": {
+            "type": "integer",
+            "required": true
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates permanent record"
+      },
+      "source": {
+        "controller_file": "Controllers/CrmClientTypeController.cs",
+        "action_method": "CreateCrmClientType",
+        "related_dto_files": [
+          "Controllers/CrmClientTypeController.cs (inline: CreateCrmClientTypeRequest)"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "ICrmClientTypeRepository"
+        ]
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "not referenced by the frontend"
+    },
+    {
+      "id": "crm_update",
+      "name": "Update CRM Client Type",
+      "action_method": "UpdateCrmClientType",
+      "http_method": "PUT",
+      "route": "api/CrmClientType/{crmClientTypeId}",
+      "module": "CRM Settings",
+      "business_purpose": "Update existing CRM client type with duplicate detection",
+      "short_description": "Updates CRM client type record with validation and duplicate check",
+      "detailed_description": "Validates crmClientTypeId > 0, type_name not empty, userid > 0; checks duplicate (excluding current ID); calls repository UpdateCrmClientTypeAsync",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ],
+        "roles_or_policy": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_claims": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_headers": [
+          "Authorization: Bearer <token>"
+        ],
+        "notes": null
+      },
+      "route_parameters": [
+        {
+          "name": "crmClientTypeId",
+          "type": "int",
+          "required": true,
+          "description": "Client type ID to update",
+          "example": 5
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateCrmClientTypeRequest",
+        "source_file": "Controllers/CrmClientTypeController.cs (inline)",
+        "properties": [
+          {
+            "name": "type_name",
+            "type": "string",
+            "required": true,
+            "nullable": false,
+            "validation": "not empty",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "Updated type name",
+            "example": "Wholesale"
+          },
+          {
+            "name": "userid",
+            "type": "int",
+            "required": true,
+            "nullable": false,
+            "validation": "> 0",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "Updating user ID",
+            "example": 1
+          }
+        ],
+        "example_json": {
+          "type_name": "Wholesale",
+          "userid": 1
+        }
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          500
+        ],
+        "dto_name": "Anonymous object",
+        "properties": [
+          {
+            "name": "Success",
+            "type": "bool",
+            "nullable": false,
+            "description": "Operation result"
+          },
+          {
+            "name": "Message",
+            "type": "string",
+            "nullable": false,
+            "description": "Result message"
+          }
+        ],
+        "success_example": {
+          "Success": true,
+          "Message": "CRM client type updated successfully"
+        },
+        "error_example": {
+          "Success": false,
+          "Message": "CRM client type with this name already exists."
+        },
+        "notes": null
+      },
+      "business_logic": {
+        "operation_summary": "Updates CRM client type with duplicate prevention",
+        "preconditions": "Record must exist, new name must be unique (excluding current record)",
+        "state_changes": "Updates CrmClientType row",
+        "validations": "crmClientTypeId > 0, type_name not empty, userid > 0, duplicate check with exclusion",
+        "side_effects": "None beyond database update",
+        "calls_services": [],
+        "calls_repositories": [
+          "ICrmClientTypeRepository"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "INFERRED FROM CODE: User ID required as parameter",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid CRM client type ID is required.",
+            "when": "crmClientTypeId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "CRM client type name is required for update.",
+            "when": "string.IsNullOrWhiteSpace(request.type_name)"
+          },
+          {
+            "returns": 400,
+            "message": "Valid User ID is required.",
+            "when": "request.userid <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "CRM client type with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      },
+      "ai_agent_guidance": {
+        "use_when": "Modify existing CRM client type",
+        "do_not_use_when": "Type does not exist or new name already in use",
+        "preconditions_needed": [
+          "Valid type ID",
+          "Valid user ID",
+          "Unique new type name",
+          "Bearer token"
+        ],
+        "follow_up_apis": [
+          "GetAll"
+        ]
+      },
+      "error_handling": {
+        "validation_errors": "crmClientTypeId <= 0, type_name empty, userid <= 0",
+        "not_found": "User not found returns 400",
+        "unauthorized": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "business_rule_errors": "Duplicate name returns 400",
+        "exceptions": "Returns 500 with ex.Message"
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Repeated calls with same values are safe"
+      },
+      "llm_tool_definition": {
+        "name": "update_crm_client_type",
+        "description": "Update existing CRM client type",
+        "http_method": "PUT",
+        "endpoint": "api/CrmClientType/{crmClientTypeId}",
+        "parameters": {
+          "crmClientTypeId": {
+            "type": "integer",
+            "required": true
+          },
+          "type_name": {
+            "type": "string",
+            "required": true
+          },
+          "userid": {
+            "type": "integer",
+            "required": true
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/CrmClientTypeController.cs",
+        "action_method": "UpdateCrmClientType",
+        "related_dto_files": [
+          "Controllers/CrmClientTypeController.cs (inline: UpdateCrmClientTypeRequest)"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "ICrmClientTypeRepository"
+        ]
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "not referenced by the frontend"
+    },
+    {
+      "id": "crm_delete",
+      "name": "Delete CRM Client Type",
+      "action_method": "Delete",
+      "http_method": "DELETE",
+      "route": "api/CrmClientType/{id}",
+      "module": "CRM Settings",
+      "business_purpose": "Soft delete CRM client type record",
+      "short_description": "Marks CRM client type as deleted",
+      "detailed_description": "Validates id > 0, userId > 0; calls repository DeleteCrmClientType; returns success/failure",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ],
+        "roles_or_policy": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_claims": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_headers": [
+          "Authorization: Bearer <token>"
+        ],
+        "notes": null
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true,
+          "description": "Client type ID to delete",
+          "example": 5
+        }
+      ],
+      "query_parameters": [
+        {
+          "name": "userId",
+          "type": "int",
+          "required": true,
+          "description": "Deleting user ID",
+          "example": 1
+        }
+      ],
+      "request_body": null,
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          500
+        ],
+        "dto_name": "Anonymous object",
+        "properties": [
+          {
+            "name": "Success",
+            "type": "bool",
+            "nullable": false,
+            "description": "Operation result"
+          },
+          {
+            "name": "Message",
+            "type": "string",
+            "nullable": false,
+            "description": "Result message"
+          }
+        ],
+        "success_example": {
+          "Success": true,
+          "Message": "CRM client type deleted successfully"
+        },
+        "error_example": {
+          "Success": false,
+          "Message": "Valid CRM client type ID is required."
+        },
+        "notes": null
+      },
+      "business_logic": {
+        "operation_summary": "Soft deletes CRM client type",
+        "preconditions": "Record must exist, user must be valid",
+        "state_changes": "Marks is_deleted flag or removes record",
+        "validations": "id > 0, userId > 0",
+        "side_effects": "None beyond database soft delete",
+        "calls_services": [],
+        "calls_repositories": [
+          "ICrmClientTypeRepository"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "INFERRED FROM CODE: User ID required",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid CRM client type ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Valid user ID is required.",
+            "when": "userId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      },
+      "ai_agent_guidance": {
+        "use_when": "Remove CRM client type from system",
+        "do_not_use_when": "Type does not exist",
+        "preconditions_needed": [
+          "Valid type ID",
+          "Valid user ID",
+          "Bearer token"
+        ],
+        "follow_up_apis": [
+          "GetAll"
+        ]
+      },
+      "error_handling": {
+        "validation_errors": "id <= 0, userId <= 0",
+        "not_found": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "unauthorized": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "business_rule_errors": "Repository deletion failure returns error message",
+        "exceptions": "Returns 500 with ex.Message"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "DELETE",
+        "notes": "Soft delete should be idempotent if already deleted"
+      },
+      "llm_tool_definition": {
+        "name": "delete_crm_client_type",
+        "description": "Delete CRM client type",
+        "http_method": "DELETE",
+        "endpoint": "api/CrmClientType/{id}",
+        "parameters": {
+          "id": {
+            "type": "integer",
+            "required": true
+          },
+          "userId": {
+            "type": "integer",
+            "required": true
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Permanently removes record"
+      },
+      "source": {
+        "controller_file": "Controllers/CrmClientTypeController.cs",
+        "action_method": "Delete",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "ICrmClientTypeRepository"
+        ]
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "not referenced by the frontend"
+    }
+  ]
+}

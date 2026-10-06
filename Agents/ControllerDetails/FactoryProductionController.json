@@ -1,0 +1,283 @@
+{
+  "controller": "FactoryProductionController",
+  "file": "Controllers/FactoryProductionController.cs",
+  "base_route": "api/FactoryProduction",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "ims/factory/factory-production",
+        "module_code": "ims",
+        "section": "factory",
+        "sub_section": "factory-production",
+        "frontend_routes": [
+          "/ims/factory/factory-production",
+          "/ims/factory/factory-production/print"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "fp_001",
+      "name": "GetAll",
+      "http_method": "GET",
+      "route": "api/FactoryProduction",
+      "business_purpose": "Retrieve factory production data with summary cards (total indents, dealers, areas) and pagination.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "DateTime?",
+          "required": false
+        },
+        {
+          "name": "todate",
+          "type": "DateTime?",
+          "required": false
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": 10
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": 1
+        }
+      ],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "FactoryProductionResponse"
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "Retrieves production data with summary metrics (total indents, distinct dealers, distinct areas). Returns paginated results with cards.",
+        "preconditions": "Valid token. User exists.",
+        "validations": "Token validation. page_no >= 1.",
+        "side_effects": "Fetches actions and pagination info.",
+        "calls_services": [
+          "IFactoryProduction",
+          "ICommon"
+        ],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [
+          "GetFactoryProduction"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "notes": "Read-only operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FactoryProductionController.cs",
+        "action_method": "GetAll"
+      },
+      "required_permission": "ims/factory/factory-production:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve factory production data with summary cards (total indents, dealers, areas) and pagination.",
+      "detailed_description": "Retrieve factory production data with summary cards (total indents, dealers, areas) and pagination. It calls ICommon.getUserByToken, IFactoryProduction.GetFactoryProductionData, IFactoryProduction.GetFactoryIndentSummary. Data access uses stored procedure(s): GetFactoryProduction. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve factory production data with summary cards (total indents, dealers, areas) and pagination.",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/FactoryProduction"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "factory_production_get_all",
+        "description": "Retrieve factory production data with summary cards (total indents, dealers, areas) and pagination.",
+        "http_method": "GET",
+        "endpoint": "api/FactoryProduction",
+        "parameters": {
+          "fromdate": {
+            "type": "DateTime?",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "DateTime?",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "fp_002",
+      "name": "PrintAction",
+      "http_method": "POST",
+      "route": "api/FactoryProduction",
+      "business_purpose": "Retrieve indent records for printing with consent/consolidated form flags.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "printedDto",
+        "properties": [
+          "Ids (List<int>)",
+          "Consent (bool)",
+          "Consolidated (bool)"
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          404,
+          500
+        ],
+        "dto_name": "PrintActionResponse"
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "Retrieves indents by IDs with product details and approval info for printing.",
+        "preconditions": "Indent IDs provided. Indents must exist.",
+        "validations": "Indent IDs must exist.",
+        "side_effects": "None",
+        "calls_services": [
+          "IFactoryProduction"
+        ],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 404,
+            "message": "No indents found for the provided IDs.",
+            "when": "indents == null || !indents.Any()"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "notes": "Read-only operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FactoryProductionController.cs",
+        "action_method": "PrintAction"
+      },
+      "required_permission": "ims/factory/factory-production:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve indent records for printing with consent/consolidated form flags.",
+      "detailed_description": "Retrieve indent records for printing with consent/consolidated form flags. It calls IFactoryProduction.GetIndentsByIds. Possible responses: 200, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No indents found for the provided IDs. [when indents == null || !indents.Any()]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve indent records for printing with consent/consolidated form flags.",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body printedDto"
+        ],
+        "follow_up_apis": [
+          "GET api/FactoryProduction"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "factory_production_print_action",
+        "description": "Retrieve indent records for printing with consent/consolidated form flags.",
+        "http_method": "POST",
+        "endpoint": "api/FactoryProduction",
+        "parameters": {
+          "Ids (List<int>)": {
+            "type": "string",
+            "required": false,
+            "description": "Ids (List<int>) (body)"
+          },
+          "Consent (bool)": {
+            "type": "string",
+            "required": false,
+            "description": "Consent (bool) (body)"
+          },
+          "Consolidated (bool)": {
+            "type": "string",
+            "required": false,
+            "description": "Consolidated (bool) (body)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    }
+  ]
+}

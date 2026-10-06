@@ -1,0 +1,861 @@
+{
+  "controller": "SubBranchController",
+  "file": "Controllers/SubBranchController.cs",
+  "module": "Branch Management",
+  "base_route": "api/SubBranch",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages sub branch records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/location-settings/sub-branch",
+        "module_code": "settings",
+        "section": "location-settings",
+        "sub_section": "sub-branch",
+        "frontend_routes": [
+          "/settings/location-settings/sub-branch"
+        ],
+        "menu_route_confirmed": true,
+        "display_names": {
+          "module": "Settings",
+          "section": "Location Settings",
+          "sub_section": "Sub Branch"
+        }
+      }
+    ],
+    "section_configuration_keys": [
+      "subBranch"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Settings",
+        "section": "Location Settings",
+        "sub_section": "Sub Branch"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "sub_branch_get_all_sub_branches",
+      "name": "Get All Sub Branches",
+      "action_method": "GetAllSubBranches",
+      "http_method": "GET",
+      "route": "api/SubBranch",
+      "business_purpose": "Retrieve all sub branches",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/location-settings/sub-branch:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all sub branches",
+      "detailed_description": "Retrieve all sub branches. It calls ISubBranch.GetSubBranchData, ISubBranch.GetSubBranchActions, ICommon.GetPagination. Data access uses stored procedure(s): GetSubBranch, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all sub branches",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/SubBranch",
+          "GET api/SubBranch/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "sub_branch_get_all_sub_branches",
+        "description": "Retrieve all sub branches",
+        "http_method": "GET",
+        "endpoint": "api/SubBranch",
+        "parameters": {
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SubBranchController.cs",
+        "action_method": "GetAllSubBranches",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/SubBranch_repo.cs",
+          "Interfaces/ISubBranch.cs",
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all sub branches — calls ISubBranch.GetSubBranchData, ISubBranch.GetSubBranchActions, ICommon.GetPagination",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ISubBranch.GetSubBranchData",
+          "ISubBranch.GetSubBranchActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "SubBranch_repo (Repositories/SubBranch_repo.cs) via ISubBranch",
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [
+          "GetSubBranch",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "sub_branch_get_sub_branch_by_id",
+      "name": "Get Sub Branch By Id",
+      "action_method": "GetSubBranchById",
+      "http_method": "GET",
+      "route": "api/SubBranch/{id}",
+      "business_purpose": "Retrieve sub branch by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/location-settings/sub-branch:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve sub branch by ID",
+      "detailed_description": "Retrieve sub branch by ID. It validates the request, then calls ISubBranch.GetSubBranchById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid sub branch ID is required. [when id <= 0]",
+        "not_found": "404: Sub branch not found. [when subBranch == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve sub branch by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/SubBranch",
+          "GET api/SubBranch/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "sub_branch_get_sub_branch_by_id",
+        "description": "Retrieve sub branch by ID",
+        "http_method": "GET",
+        "endpoint": "api/SubBranch/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SubBranchController.cs",
+        "action_method": "GetSubBranchById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/SubBranch_repo.cs",
+          "Interfaces/ISubBranch.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Retrieve sub branch by ID — validates the request, calls ISubBranch.GetSubBranchById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid sub branch ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ISubBranch.GetSubBranchById"
+        ],
+        "calls_repositories": [
+          "SubBranch_repo (Repositories/SubBranch_repo.cs) via ISubBranch"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid sub branch ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Sub branch not found.",
+            "when": "subBranch == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "sub_branch_create_sub_branch",
+      "name": "Create Sub Branch",
+      "action_method": "CreateSubBranch",
+      "http_method": "POST",
+      "route": "api/SubBranch",
+      "business_purpose": "Create sub branch",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateSubBranchRequest (inline)",
+        "properties": [
+          {
+            "name": "userid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "branchid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "subbranchname",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "subbranchcode",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Description",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; a duplicate check exists so repeating usually fails with a conflict/validation message"
+      },
+      "required_permission": "settings/location-settings/sub-branch:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create sub branch",
+      "detailed_description": "Create sub branch. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, ISubBranch.GetUserById, ISubBranch.GetBranchById, then writes an audit log entry. Persists changes to: SubBranch: INSERT, AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; Sub branch name is required. [when string.IsNullOrWhiteSpace(request.subbranchname)]; Sub branch code is required. [when string.IsNullOrWhiteSpace(request.subbranchcode)]; User not found or inactive. [when user == null]; Branch not found or inactive. [when branch == null]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "Sub branch with this name or code already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create sub branch",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateSubBranchRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/SubBranch"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "sub_branch_create_sub_branch",
+        "description": "Create sub branch",
+        "http_method": "POST",
+        "endpoint": "api/SubBranch",
+        "parameters": {
+          "userid": {
+            "type": "int",
+            "required": false,
+            "description": "userid (body)"
+          },
+          "branchid": {
+            "type": "int",
+            "required": false,
+            "description": "branchid (body)"
+          },
+          "subbranchname": {
+            "type": "string",
+            "required": false,
+            "description": "subbranchname (body)"
+          },
+          "subbranchcode": {
+            "type": "string",
+            "required": false,
+            "description": "subbranchcode (body)"
+          },
+          "Description": {
+            "type": "string",
+            "required": false,
+            "description": "Description (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/SubBranchController.cs",
+        "action_method": "CreateSubBranch",
+        "related_dto_files": [
+          "Controllers/SubBranchController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/SubBranch_repo.cs",
+          "Interfaces/ISubBranch.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Create sub branch — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, ISubBranch.GetUserById, ISubBranch.GetBranchById, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; request body of type CreateSubBranchRequest (inline); passes 7 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "SubBranch: INSERT; AuditLog: INSERT",
+        "validations": "ModelState (DTO data-annotation) validation; Invalid data provided.; Sub branch name is required.; Sub branch code is required.; User not found or inactive.; Branch not found or inactive.",
+        "side_effects": "AuditLog CREATE (Settings > Location Settings > Sub Branch)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISubBranch.GetUserById",
+          "ISubBranch.GetBranchById",
+          "ISubBranch.IsSubBranchDuplicateAsync",
+          "ISubBranch.CreateSubBranchAsync",
+          "ICommon.ToJsonString",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SubBranch_repo (Repositories/SubBranch_repo.cs) via ISubBranch"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "Sub branch name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.subbranchname)"
+          },
+          {
+            "returns": 400,
+            "message": "Sub branch code is required.",
+            "when": "string.IsNullOrWhiteSpace(request.subbranchcode)"
+          },
+          {
+            "returns": 400,
+            "message": "User not found or inactive.",
+            "when": "user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Branch not found or inactive.",
+            "when": "branch == null"
+          },
+          {
+            "returns": 400,
+            "message": "Sub branch with this name or code already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "sub_branch_update_sub_branch",
+      "name": "Update Sub Branch",
+      "action_method": "UpdateSubBranch",
+      "http_method": "PUT",
+      "route": "api/SubBranch/{subBranchId}",
+      "business_purpose": "Update sub branch",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "subBranchId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateSubBranchRequest (inline)",
+        "properties": [
+          {
+            "name": "userid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "branchid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "subbranchname",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "subbranchcode",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Description",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values; each call writes another audit log entry"
+      },
+      "required_permission": "settings/location-settings/sub-branch:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update sub branch",
+      "detailed_description": "Update sub branch. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, ISubBranch.GetSubBranchById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: SubBranch: UPDATE, AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid sub branch ID is required. [when subBranchId <= 0]; Valid user ID is required. [when request.userid <= 0]; At least one field (subbranchname or subbranchcode) must be provided for update. [when string.IsNullOrWhiteSpace(request.subbranchname) && string.IsNullOrWhiteSpace(request.subb]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Sub branch not found. [when existingSubBranch == null]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "Sub branch with this name or code already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update sub branch",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "subBranchId (route)",
+          "request body UpdateSubBranchRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/SubBranch/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "sub_branch_update_sub_branch",
+        "description": "Update sub branch",
+        "http_method": "PUT",
+        "endpoint": "api/SubBranch/{subBranchId}",
+        "parameters": {
+          "subBranchId": {
+            "type": "int",
+            "required": true,
+            "description": "sub Branch Id (route)"
+          },
+          "userid": {
+            "type": "int",
+            "required": false,
+            "description": "userid (body)"
+          },
+          "branchid": {
+            "type": "int",
+            "required": false,
+            "description": "branchid (body)"
+          },
+          "subbranchname": {
+            "type": "string",
+            "required": false,
+            "description": "subbranchname (body)"
+          },
+          "subbranchcode": {
+            "type": "string",
+            "required": false,
+            "description": "subbranchcode (body)"
+          },
+          "Description": {
+            "type": "string",
+            "required": false,
+            "description": "Description (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/SubBranchController.cs",
+        "action_method": "UpdateSubBranch",
+        "related_dto_files": [
+          "Controllers/SubBranchController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/SubBranch_repo.cs",
+          "Interfaces/ISubBranch.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Update sub branch — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, ISubBranch.GetSubBranchById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) subBranchId must reference existing record(s); request body of type UpdateSubBranchRequest (inline); passes 6 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "SubBranch: UPDATE; AuditLog: INSERT",
+        "validations": "Valid sub branch ID is required.; Valid user ID is required.; At least one field (subbranchname or subbranchcode) must be provided for update.",
+        "side_effects": "AuditLog UPDATE (Settings > Location Settings > Sub Branch)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISubBranch.GetSubBranchById",
+          "ICommon.ToJsonString",
+          "ISubBranch.GetUserById",
+          "ISubBranch.IsSubBranchDuplicateAsync",
+          "ISubBranch.UpdateSubBranchAsync",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SubBranch_repo (Repositories/SubBranch_repo.cs) via ISubBranch"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid sub branch ID is required.",
+            "when": "subBranchId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Valid user ID is required.",
+            "when": "request.userid <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field (subbranchname or subbranchcode) must be provided for update.",
+            "when": "string.IsNullOrWhiteSpace(request.subbranchname) && string.IsNullOrWhiteSpace(request.subbranchcode)"
+          },
+          {
+            "returns": 404,
+            "message": "Sub branch not found.",
+            "when": "existingSubBranch == null"
+          },
+          {
+            "returns": 400,
+            "message": "Sub branch with this name or code already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "sub_branch_delete_sub_branch",
+      "name": "Delete Sub Branch",
+      "action_method": "DeleteSubBranch",
+      "http_method": "DELETE",
+      "route": "api/SubBranch/{subBranchId}",
+      "business_purpose": "Delete sub branch",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "subBranchId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [
+        {
+          "name": "userId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "settings/location-settings/sub-branch:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete sub branch",
+      "detailed_description": "Delete sub branch. It validates the request, then calls ICommon.getUserByToken, ISubBranch.GetUserById, ISubBranch.GetSubBranchById, then writes an audit log entry. Persists changes to: SubBranch: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid sub branch ID is required. [when subBranchId <= 0]; Valid user ID is required. [when userId <= 0]; User not found or inactive. [when user == null]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Sub branch not found. [when existingSubBranch == null]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete sub branch",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "subBranchId (route)",
+          "userId (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/SubBranch/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "sub_branch_delete_sub_branch",
+        "description": "Delete sub branch",
+        "http_method": "DELETE",
+        "endpoint": "api/SubBranch/{subBranchId}",
+        "parameters": {
+          "subBranchId": {
+            "type": "int",
+            "required": true,
+            "description": "sub Branch Id (route)"
+          },
+          "userId": {
+            "type": "int",
+            "required": true,
+            "description": "user Id (query)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/SubBranchController.cs",
+        "action_method": "DeleteSubBranch",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/SubBranch_repo.cs",
+          "Interfaces/ISubBranch.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Delete sub branch — validates the request, calls ICommon.getUserByToken, ISubBranch.GetUserById, ISubBranch.GetSubBranchById, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) subBranchId must reference existing record(s); required query parameter(s): userId; passes 5 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "SubBranch: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "validations": "Valid sub branch ID is required.; Valid user ID is required.; User not found or inactive.",
+        "side_effects": "AuditLog DELETE (Settings > Location Settings > Sub Branch)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISubBranch.GetUserById",
+          "ISubBranch.GetSubBranchById",
+          "ICommon.ToJsonString",
+          "ISubBranch.DeleteSubBranch",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SubBranch_repo (Repositories/SubBranch_repo.cs) via ISubBranch"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid sub branch ID is required.",
+            "when": "subBranchId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Valid user ID is required.",
+            "when": "userId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "User not found or inactive.",
+            "when": "user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Sub branch not found.",
+            "when": "existingSubBranch == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    }
+  ]
+}

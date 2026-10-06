@@ -1,0 +1,620 @@
+{
+  "controller": "FactoryDirectDispatchController",
+  "file": "Controllers/FactoryDirectDispatchController.cs",
+  "base_route": "api/FactoryDirectDispatch",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "ims/indents/factory-direct-dispatch",
+        "module_code": "ims",
+        "section": "indents",
+        "sub_section": "factory-direct-dispatch",
+        "frontend_routes": [
+          "/ims/indents/factory-direct-dispatch",
+          "/ims/indents/factory-direct-dispatch/create-factory-direct-dispatch"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "ims/factory/factory-direct-dispatch",
+        "module_code": "ims",
+        "section": "factory",
+        "sub_section": "factory-direct-dispatch",
+        "frontend_routes": [
+          "/ims/factory/factory-direct-dispatch"
+        ],
+        "menu_route_confirmed": true,
+        "display_names": {
+          "module": "Indent Management System",
+          "section": "Factory",
+          "sub_section": "Factory Direct Dispatch"
+        }
+      }
+    ],
+    "section_configuration_keys": [
+      "FactoryDirectDispatch"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Indent Management System",
+        "section": "Factory",
+        "sub_section": "Factory Direct Dispatch"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "fdd_001",
+      "name": "GetAll",
+      "http_method": "GET",
+      "route": "api/FactoryDirectDispatch",
+      "business_purpose": "Retrieve paginated list of factory direct dispatch records (indent orders).",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": 10
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": 1
+        }
+      ],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "FactoryDirectDispatchListResponse"
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "Fetches direct dispatch records filtered by search text with pagination.",
+        "preconditions": "Valid token. User must exist.",
+        "validations": "Token validation. page_no >= 1.",
+        "side_effects": "None",
+        "calls_services": [
+          "IFactoryDirectDispatch",
+          "ICommon"
+        ],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [
+          "GetFactoryDirectDispatch"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "notes": "Read-only operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FactoryDirectDispatchController.cs",
+        "action_method": "GetAll"
+      },
+      "required_permission": "ims/indents/factory-direct-dispatch:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "ims/factory/factory-direct-dispatch"
+      ],
+      "short_description": "Retrieve paginated list of factory direct dispatch records (indent orders).",
+      "detailed_description": "Retrieve paginated list of factory direct dispatch records (indent orders). It calls ICommon.getUserByToken, IFactoryDirectDispatch.GetFactoryDirectDispatchData, IFactoryDirectDispatch.GetFactoryDirectDispatchActions. Data access uses stored procedure(s): GetFactoryDirectDispatch. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve paginated list of factory direct dispatch records (indent orders).",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/FactoryDirectDispatch",
+          "GET api/FactoryDirectDispatch/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "factory_direct_dispatch_get_all",
+        "description": "Retrieve paginated list of factory direct dispatch records (indent orders).",
+        "http_method": "GET",
+        "endpoint": "api/FactoryDirectDispatch",
+        "parameters": {
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "fdd_002",
+      "name": "GetFactoryDirectDispatchById",
+      "http_method": "GET",
+      "route": "api/FactoryDirectDispatch/{id}",
+      "business_purpose": "Retrieve detailed direct dispatch record (indent) by ID with product and item details.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ],
+        "dto_name": "IndentDetailResponse"
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "Retrieves indent header with product-wise and item-wise details.",
+        "preconditions": "Valid token. User exists. Indent ID > 0. Indent must exist.",
+        "validations": "Token validation. Indent ID > 0.",
+        "side_effects": "Maps indent to DTO. Fetches actions.",
+        "calls_services": [
+          "IIndent",
+          "ICommon"
+        ],
+        "calls_repositories": [
+          "IndentHeader",
+          "IndentDetails"
+        ],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid indent ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Indent not found.",
+            "when": "indent == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "notes": "Read-only operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FactoryDirectDispatchController.cs",
+        "action_method": "GetFactoryDirectDispatchById"
+      },
+      "required_permission": "ims/indents/factory-direct-dispatch:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "ims/factory/factory-direct-dispatch"
+      ],
+      "short_description": "Retrieve detailed direct dispatch record (indent) by ID with product and item details.",
+      "detailed_description": "Retrieve detailed direct dispatch record (indent) by ID with product and item details. It validates the request, then calls ICommon.getUserByToken, IIndent.GetIndentActions, IIndent.GetIndentHeaderByIdAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid indent ID is required. [when id <= 0]",
+        "not_found": "404: Indent not found. [when indent == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve detailed direct dispatch record (indent) by ID with product and item details.",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/FactoryDirectDispatch",
+          "GET api/FactoryDirectDispatch/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "factory_direct_dispatch_get_factory_direct_dispatch_by_id",
+        "description": "Retrieve detailed direct dispatch record (indent) by ID with product and item details.",
+        "http_method": "GET",
+        "endpoint": "api/FactoryDirectDispatch/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "fdd_003",
+      "name": "CreateIndent",
+      "http_method": "POST",
+      "route": "api/FactoryDirectDispatch",
+      "business_purpose": "Create direct dispatch indent with products, auto-approve, auto-dispatch, update stock.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "IndentPostDto",
+        "properties": [
+          "DealerId",
+          "IndentDetails",
+          "DispatchInstructions",
+          "DispatchAddress",
+          "ShippingAddress",
+          "ShippingInstruction",
+          "FactoryOrder",
+          "PriorityOrder",
+          "InvoiceNo",
+          "InvoiceDate",
+          "factoryid"
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ],
+        "dto_name": "IndentCreateResponse"
+      },
+      "data_effect": "CREATE/INVENTORY_OPERATION",
+      "business_logic": {
+        "operation_summary": "Creates indent, auto-approves by branch and credit, marks dispatched, updates product stock for each line item.",
+        "preconditions": "Valid token. User exists. Dealer exists. Products exist with valid grade/thickness/size. Branch exists for dealer area.",
+        "validations": "Token validation. Dealer valid. Product details valid. Quantity/Weight > 0.",
+        "side_effects": "Inventory stock updated. Indent marked dispatched. Multiple DB writes.",
+        "calls_services": [
+          "IIndent",
+          "ICommon",
+          "IDispatch"
+        ],
+        "calls_repositories": [
+          "IndentHeader",
+          "IndentDetails",
+          "Dealer",
+          "Area",
+          "Branch",
+          "Products"
+        ],
+        "state_changes": "IndentHeader: INSERT",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid dealer ID",
+            "when": "dealer == null"
+          },
+          {
+            "returns": 400,
+            "message": "Quantity and Weight must be greater than zero for all indent details.",
+            "when": "detail.Quantity <= 0 || detail.Weight <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid product details for product: {detail.ProductName}, Grade: {detail.Grade}, Thickness: {detail.Thickness}, Size: {detail.Size}",
+            "when": "product == null"
+          },
+          {
+            "returns": 400,
+            "message": "No branch found for the selected area.",
+            "when": "branch == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "HIGH",
+        "notes": "Stock updates non-idempotent. Multiple calls decrement stock multiple times."
+      },
+      "source": {
+        "controller_file": "Controllers/FactoryDirectDispatchController.cs",
+        "action_method": "CreateIndent"
+      },
+      "required_permission": "ims/indents/factory-direct-dispatch:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "ims/factory/factory-direct-dispatch"
+      ],
+      "short_description": "Create direct dispatch indent with products, auto-approve, auto-dispatch, update stock.",
+      "detailed_description": "Create direct dispatch indent with products, auto-approve, auto-dispatch, update stock. It validates the request, then calls ICommon.getUserByToken, IIndent.GetDealerById, IIndent.GetFactoryByIdAsync. Persists changes to: IndentHeader: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid dealer ID [when dealer == null]; Quantity and Weight must be greater than zero for all indent details. [when detail.Quantity <= 0 || detail.Weight <= 0]; Invalid product details for product: {detail.ProductName}, Grade: {detail.Grade}, Thickness: {detail.Thickness}, Size: {detail.Size} [when product == null]; No branch found for the selected area. [when branch == null]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create direct dispatch indent with products, auto-approve, auto-dispatch, update stock.",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body IndentPostDto"
+        ],
+        "follow_up_apis": [
+          "GET api/FactoryDirectDispatch"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "factory_direct_dispatch_create_indent",
+        "description": "Create direct dispatch indent with products, auto-approve, auto-dispatch, update stock.",
+        "http_method": "POST",
+        "endpoint": "api/FactoryDirectDispatch",
+        "parameters": {
+          "DealerId": {
+            "type": "string",
+            "required": false,
+            "description": "Dealer Id (body)"
+          },
+          "IndentDetails": {
+            "type": "string",
+            "required": false,
+            "description": "Indent Details (body)"
+          },
+          "DispatchInstructions": {
+            "type": "string",
+            "required": false,
+            "description": "Dispatch Instructions (body)"
+          },
+          "DispatchAddress": {
+            "type": "string",
+            "required": false,
+            "description": "Dispatch Address (body)"
+          },
+          "ShippingAddress": {
+            "type": "string",
+            "required": false,
+            "description": "Shipping Address (body)"
+          },
+          "ShippingInstruction": {
+            "type": "string",
+            "required": false,
+            "description": "Shipping Instruction (body)"
+          },
+          "FactoryOrder": {
+            "type": "string",
+            "required": false,
+            "description": "Factory Order (body)"
+          },
+          "PriorityOrder": {
+            "type": "string",
+            "required": false,
+            "description": "Priority Order (body)"
+          },
+          "InvoiceNo": {
+            "type": "string",
+            "required": false,
+            "description": "Invoice No (body)"
+          },
+          "InvoiceDate": {
+            "type": "string",
+            "required": false,
+            "description": "Invoice Date (body)"
+          },
+          "factoryid": {
+            "type": "string",
+            "required": false,
+            "description": "factoryid (body)"
+          }
+        },
+        "operation_type": "CREATE/INVENTORY_OPERATION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "fdd_004",
+      "name": "DeleteIndent",
+      "http_method": "DELETE",
+      "route": "api/FactoryDirectDispatch/{id}",
+      "business_purpose": "Delete (soft delete) direct dispatch indent record.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ],
+        "dto_name": "IndentDeleteResponse"
+      },
+      "data_effect": "DELETE",
+      "business_logic": {
+        "operation_summary": "Soft deletes indent record. Creates audit log.",
+        "preconditions": "Valid token. User exists. Indent ID > 0. Indent must exist.",
+        "validations": "Indent ID > 0. Indent exists.",
+        "side_effects": "Audit log created.",
+        "calls_services": [
+          "IFactoryDirectDispatch",
+          "IIndent",
+          "ICommon"
+        ],
+        "calls_repositories": [
+          "IndentHeader"
+        ],
+        "state_changes": "IndentHeader: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid indent ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Factory Direct Dispatch not found.",
+            "when": "existingFactoryDirectDispatch == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "HIGH",
+        "notes": "Repeated DELETE fails once deleted."
+      },
+      "source": {
+        "controller_file": "Controllers/FactoryDirectDispatchController.cs",
+        "action_method": "DeleteIndent"
+      },
+      "required_permission": "ims/indents/factory-direct-dispatch:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "ims/factory/factory-direct-dispatch"
+      ],
+      "short_description": "Delete (soft delete) direct dispatch indent record.",
+      "detailed_description": "Delete (soft delete) direct dispatch indent record. It validates the request, then calls ICommon.getUserByToken, IFactoryDirectDispatch.GetFactoryDirectDispatchById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: IndentHeader: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid indent ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Factory Direct Dispatch not found. [when existingFactoryDirectDispatch == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete (soft delete) direct dispatch indent record.",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/FactoryDirectDispatch/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "factory_direct_dispatch_delete_indent",
+        "description": "Delete (soft delete) direct dispatch indent record.",
+        "http_method": "DELETE",
+        "endpoint": "api/FactoryDirectDispatch/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "module": "General"
+    }
+  ]
+}

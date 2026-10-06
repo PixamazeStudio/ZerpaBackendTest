@@ -1,0 +1,1092 @@
+{
+  "controller": "StockRequestController",
+  "file": "Controllers/StockRequestController.cs",
+  "module": "Stock and Logistics Management",
+  "base_route": "api/StockRequest",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages stock request records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "sms/stock-requests",
+        "module_code": "sms",
+        "section": "stock-requests",
+        "sub_section": null,
+        "frontend_routes": [
+          "/sms/stock-requests",
+          "/sms/stock-requests/create-stock-requests",
+          "/sms/stock-requests/edit-stock-requests/:id",
+          "/sms/stock-requests/view-stock-requests/:id"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Stock Management System",
+        "section": "Stock Requests",
+        "sub_section": "Stock Request"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "stock_request_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/StockRequest",
+      "business_purpose": "Retrieve all stock request records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "sms/stock-requests:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all stock request records",
+      "detailed_description": "Retrieve all stock request records. It calls ICommon.getUserByToken, IIndent.BuildFilterContext, IStockRequest.GetStockRequestData. Data access uses stored procedure(s): GetStockRequest. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all stock request records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/StockRequest",
+          "GET api/StockRequest/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "stock_request_get_all",
+        "description": "Retrieve all stock request records",
+        "http_method": "GET",
+        "endpoint": "api/StockRequest",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "status": {
+            "type": "string",
+            "required": false,
+            "description": "status (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/StockRequestController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs",
+          "Repositories/StockRequest_repo.cs",
+          "Interfaces/IStockRequest.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all stock request records — calls ICommon.getUserByToken, IIndent.BuildFilterContext, IStockRequest.GetStockRequestData",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndent.BuildFilterContext",
+          "IStockRequest.GetStockRequestData",
+          "IStockRequest.GetStockRequestActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent",
+          "StockRequest_repo (Repositories/StockRequest_repo.cs) via IStockRequest"
+        ],
+        "stored_procedures": [
+          "GetStockRequest"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "stock_request_get_stock_request_by_id",
+      "name": "Get Stock Request By Id",
+      "action_method": "GetStockRequestById",
+      "http_method": "GET",
+      "route": "api/StockRequest/{id}",
+      "business_purpose": "Retrieve stock request by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "sms/stock-requests:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve stock request by ID",
+      "detailed_description": "Retrieve stock request by ID. It validates the request, then calls ICommon.getUserByToken, IStockRequest.GetStockRequestById, IStockRequest.GetStockRequestActions. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid Stock Request ID is required [when id <= 0]",
+        "not_found": "404: Stock request not found [when stock == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve stock request by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/StockRequest",
+          "GET api/StockRequest/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "stock_request_get_stock_request_by_id",
+        "description": "Retrieve stock request by ID",
+        "http_method": "GET",
+        "endpoint": "api/StockRequest/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/StockRequestController.cs",
+        "action_method": "GetStockRequestById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/StockRequest_repo.cs",
+          "Interfaces/IStockRequest.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Retrieve stock request by ID — validates the request, calls ICommon.getUserByToken, IStockRequest.GetStockRequestById, IStockRequest.GetStockRequestActions",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid Stock Request ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IStockRequest.GetStockRequestById",
+          "IStockRequest.GetStockRequestActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "StockRequest_repo (Repositories/StockRequest_repo.cs) via IStockRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Stock Request ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Stock request not found",
+            "when": "stock == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "stock_request_create_stock_request",
+      "name": "Create Stock Request",
+      "action_method": "CreateStockRequest",
+      "http_method": "POST",
+      "route": "api/StockRequest/create",
+      "business_purpose": "Create stock request",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateStockRequestDto (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "ProductionDate",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "Details",
+            "type": "List<StockRequestDetailDto>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "sms/stock-requests:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create stock request",
+      "detailed_description": "Create stock request. It validates the request, then calls ICommon.getUserByToken, IStockRequest.GetProductByPrimitives, IStockRequest.GetDefaultStockByProduct. Persists changes to: StockRequestHeader: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: At least one product detail is required. [when request.Details == null || !request.Details.Any()]; No valid product details found. [when !dets.Any()]",
+        "not_found": "404: Stock request not found. [when data == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create stock request",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateStockRequestDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/StockRequest"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "stock_request_create_stock_request",
+        "description": "Create stock request",
+        "http_method": "POST",
+        "endpoint": "api/StockRequest/create",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "ProductionDate": {
+            "type": "datetime",
+            "required": false,
+            "description": "Production Date (body)"
+          },
+          "Details": {
+            "type": "List<StockRequestDetailDto>",
+            "required": false,
+            "description": "Details (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/StockRequestController.cs",
+        "action_method": "CreateStockRequest",
+        "related_dto_files": [
+          "Controllers/StockRequestController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/StockRequest_repo.cs",
+          "Interfaces/IStockRequest.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Create stock request — validates the request, calls ICommon.getUserByToken, IStockRequest.GetProductByPrimitives, IStockRequest.GetDefaultStockByProduct",
+        "preconditions": "Valid Bearer JWT; request body of type CreateStockRequestDto (inline); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "StockRequestHeader: INSERT",
+        "validations": "At least one product detail is required.; No valid product details found.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IStockRequest.GetProductByPrimitives",
+          "IStockRequest.GetDefaultStockByProduct",
+          "IStockRequest.GetStockRequestById",
+          "IStockRequest.GetMaxNumber",
+          "IStockRequest.CreateStockRequestHeader",
+          "IStockRequest.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "StockRequest_repo (Repositories/StockRequest_repo.cs) via IStockRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "At least one product detail is required.",
+            "when": "request.Details == null || !request.Details.Any()"
+          },
+          {
+            "returns": 400,
+            "message": "No valid product details found.",
+            "when": "!dets.Any()"
+          },
+          {
+            "returns": 404,
+            "message": "Stock request not found.",
+            "when": "data == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "stock_request_delete_stock_request",
+      "name": "Delete Stock Request",
+      "action_method": "DeleteStockRequest",
+      "http_method": "DELETE",
+      "route": "api/StockRequest/{id}",
+      "business_purpose": "Delete stock request",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "sms/stock-requests:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete stock request",
+      "detailed_description": "Delete stock request. It validates the request, then calls ICommon.getUserByToken, IStockRequest.GetStockRequestById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: StockRequestHeader: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid Stock Request ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Stock request not found. [when existingStockRequest == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete stock request",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/StockRequest/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "stock_request_delete_stock_request",
+        "description": "Delete stock request",
+        "http_method": "DELETE",
+        "endpoint": "api/StockRequest/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/StockRequestController.cs",
+        "action_method": "DeleteStockRequest",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/StockRequest_repo.cs",
+          "Interfaces/IStockRequest.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Delete stock request — validates the request, calls ICommon.getUserByToken, IStockRequest.GetStockRequestById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "StockRequestHeader: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "validations": "Valid Stock Request ID is required.",
+        "side_effects": "AuditLog DELETE (Stock Management System > Stock Requests > Stock Request)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IStockRequest.GetStockRequestById",
+          "ICommon.ToJsonString",
+          "IStockRequest.DeleteStockRequest",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "StockRequest_repo (Repositories/StockRequest_repo.cs) via IStockRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid Stock Request ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Stock request not found.",
+            "when": "existingStockRequest == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "stock_request_stock_request_approval",
+      "name": "Stock Request Approval",
+      "action_method": "StockRequestApproval",
+      "http_method": "POST",
+      "route": "api/StockRequest/approval",
+      "business_purpose": "Handle stock request approval",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "StockRequestApprovalRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_approved",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "sms/stock-requests:approve",
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Handle stock request approval",
+      "detailed_description": "Handle stock request approval. It calls ICommon.getUserByToken, IStockRequest.GetStockRequestById, IStockRequest.GetStockRequestDetailsAsync. Persists changes to: DefaultStock: INSERT. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Stock request not found [when stockRequest == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle stock request approval",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body StockRequestApprovalRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/StockRequest"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "stock_request_stock_request_approval",
+        "description": "Handle stock request approval",
+        "http_method": "POST",
+        "endpoint": "api/StockRequest/approval",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "is_approved": {
+            "type": "bool",
+            "required": false,
+            "description": "is approved (body)"
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Approves the record and advances its workflow"
+      },
+      "source": {
+        "controller_file": "Controllers/StockRequestController.cs",
+        "action_method": "StockRequestApproval",
+        "related_dto_files": [
+          "Controllers/StockRequestController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/StockRequest_repo.cs",
+          "Interfaces/IStockRequest.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Handle stock request approval — calls ICommon.getUserByToken, IStockRequest.GetStockRequestById, IStockRequest.GetStockRequestDetailsAsync",
+        "preconditions": "Valid Bearer JWT; request body of type StockRequestApprovalRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "DefaultStock: INSERT; sets stockRequest.is_approved, stockRequest.operated_by, stockRequest.operated_date, stockRequest.status, stockRequest.modified_by, stockRequest.modified_date and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IStockRequest.GetStockRequestById",
+          "IStockRequest.GetStockRequestDetailsAsync",
+          "IStockRequest.GetDefaultStockByProduct",
+          "IStockRequest.CreateDefaultStockSingle",
+          "IStockRequest.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "StockRequest_repo (Repositories/StockRequest_repo.cs) via IStockRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Stock request not found",
+            "when": "stockRequest == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "stock_request_stock_request_reject",
+      "name": "Stock Request Reject",
+      "action_method": "StockRequestReject",
+      "http_method": "POST",
+      "route": "api/StockRequest/reject",
+      "business_purpose": "Handle stock request reject",
+      "data_effect": "REJECTION",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "StockRequestRejectRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_rejected",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "REJECTION",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "sms/stock-requests:reject",
+      "permission_flags": [
+        "reject"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Handle stock request reject",
+      "detailed_description": "Handle stock request reject. It calls ICommon.getUserByToken, IStockRequest.GetStockRequestById, IStockRequest.SaveChangesAsync. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Stock request not found [when stockRequest == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle stock request reject",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body StockRequestRejectRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/StockRequest"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "stock_request_stock_request_reject",
+        "description": "Handle stock request reject",
+        "http_method": "POST",
+        "endpoint": "api/StockRequest/reject",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "is_rejected": {
+            "type": "bool",
+            "required": false,
+            "description": "is rejected (body)"
+          }
+        },
+        "operation_type": "REJECTION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Rejects the record"
+      },
+      "source": {
+        "controller_file": "Controllers/StockRequestController.cs",
+        "action_method": "StockRequestReject",
+        "related_dto_files": [
+          "Controllers/StockRequestController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/StockRequest_repo.cs",
+          "Interfaces/IStockRequest.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Handle stock request reject — calls ICommon.getUserByToken, IStockRequest.GetStockRequestById, IStockRequest.SaveChangesAsync",
+        "preconditions": "Valid Bearer JWT; request body of type StockRequestRejectRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets stockRequest.is_rejected, stockRequest.is_approved, stockRequest.operated_by, stockRequest.operated_date, stockRequest.status, stockRequest.modified_by and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IStockRequest.GetStockRequestById",
+          "IStockRequest.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "StockRequest_repo (Repositories/StockRequest_repo.cs) via IStockRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Stock request not found",
+            "when": "stockRequest == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "stock_request_update_stock_request",
+      "name": "Update Stock Request",
+      "action_method": "UpdateStockRequest",
+      "http_method": "PUT",
+      "route": "api/StockRequest/{id}",
+      "business_purpose": "Update stock request",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateStockRequestDto (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "ProductionDate",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "Details",
+            "type": "List<StockRequestDetailDto>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "sms/stock-requests:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update stock request",
+      "detailed_description": "Update stock request. It validates the request, then calls ICommon.getUserByToken, IStockRequest.GetStockRequestById, IStockRequest.GetProductByPrimitives. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid stock request ID is required [when id <= 0]; At least one product detail is required [when request.Details == null || !request.Details.Any()]; No valid product details found [when !newDetails.Any()]",
+        "not_found": "404: Stock request not found [when stockRequest == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update stock request",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "request body CreateStockRequestDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/StockRequest/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "stock_request_update_stock_request",
+        "description": "Update stock request",
+        "http_method": "PUT",
+        "endpoint": "api/StockRequest/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "ProductionDate": {
+            "type": "datetime",
+            "required": false,
+            "description": "Production Date (body)"
+          },
+          "Details": {
+            "type": "List<StockRequestDetailDto>",
+            "required": false,
+            "description": "Details (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/StockRequestController.cs",
+        "action_method": "UpdateStockRequest",
+        "related_dto_files": [
+          "Controllers/StockRequestController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/StockRequest_repo.cs",
+          "Interfaces/IStockRequest.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Update stock request — validates the request, calls ICommon.getUserByToken, IStockRequest.GetStockRequestById, IStockRequest.GetProductByPrimitives",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); request body of type CreateStockRequestDto (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets stockRequest.stockRequestDetails, stockRequest.production_date, stockRequest.status, stockRequest.modified_by, stockRequest.modified_date, stockRequest.is_approved and saves changes",
+        "validations": "Valid stock request ID is required; At least one product detail is required; No valid product details found",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IStockRequest.GetStockRequestById",
+          "IStockRequest.GetProductByPrimitives",
+          "IStockRequest.GetDefaultStockByProduct",
+          "IStockRequest.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "StockRequest_repo (Repositories/StockRequest_repo.cs) via IStockRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid stock request ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one product detail is required",
+            "when": "request.Details == null || !request.Details.Any()"
+          },
+          {
+            "returns": 404,
+            "message": "Stock request not found",
+            "when": "stockRequest == null"
+          },
+          {
+            "returns": 400,
+            "message": "No valid product details found",
+            "when": "!newDetails.Any()"
+          }
+        ]
+      }
+    }
+  ]
+}

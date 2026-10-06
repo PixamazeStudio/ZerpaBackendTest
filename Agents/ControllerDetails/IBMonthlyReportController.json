@@ -1,0 +1,299 @@
+{
+  "controller": "IBMonthlyReportController",
+  "file": "Controllers/IBMonthlyReportController.cs",
+  "module": "Reporting",
+  "base_route": "api/IBMonthlyReport",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles IB monthly report: get IB monthly report, get areas",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "rpt/ib-reports/ib-monthly-report",
+        "module_code": "rpt",
+        "section": "ib-reports",
+        "sub_section": "ib-monthly-report",
+        "frontend_routes": [
+          "/rpt/ib-reports/ib-monthly-report"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "IbMonthlyReport"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "ib_monthly_report_get_ib_monthly_report",
+      "name": "Get IB Monthly Report",
+      "action_method": "GetIBMonthlyReport",
+      "http_method": "GET",
+      "route": "api/IBMonthlyReport",
+      "business_purpose": "Retrieve IB monthly report",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "financial_year_id",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "regionId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "areaId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "userId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/ib-reports/ib-monthly-report:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve IB monthly report",
+      "detailed_description": "Retrieve IB monthly report. It validates the request, then calls ICommon.getUserByToken, IIBMonthlyReport.GetIBMonthlyReportData, ICommon.GetAllArea. Data access uses stored procedure(s): IBMonthlyReport. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Financial year not found [when selectedFinancialYear == null]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid user [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve IB monthly report",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/IBMonthlyReport",
+          "GET api/IBMonthlyReport/GetAreas/{regionId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "ib_monthly_report_get_ib_monthly_report",
+        "description": "Retrieve IB monthly report",
+        "http_method": "GET",
+        "endpoint": "api/IBMonthlyReport",
+        "parameters": {
+          "financial_year_id": {
+            "type": "int",
+            "required": false,
+            "description": "financial year id (query)"
+          },
+          "regionId": {
+            "type": "int",
+            "required": false,
+            "description": "region Id (query)"
+          },
+          "areaId": {
+            "type": "int",
+            "required": false,
+            "description": "area Id (query)"
+          },
+          "userId": {
+            "type": "int",
+            "required": false,
+            "description": "user Id (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IBMonthlyReportController.cs",
+        "action_method": "GetIBMonthlyReport",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/IBMonthlyReport_repo.cs",
+          "Interfaces/IIBMonthlyReport.cs"
+        ]
+      },
+      "module": "Reporting",
+      "business_logic": {
+        "operation_summary": "Retrieve IB monthly report — validates the request, calls ICommon.getUserByToken, IIBMonthlyReport.GetIBMonthlyReportData, ICommon.GetAllArea",
+        "preconditions": "Valid Bearer JWT; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Financial year not found",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIBMonthlyReport.GetIBMonthlyReportData",
+          "ICommon.GetAllArea",
+          "ICommon.GetAllIBUsers"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IBMonthlyReport_repo (Repositories/IBMonthlyReport_repo.cs) via IIBMonthlyReport"
+        ],
+        "stored_procedures": [
+          "IBMonthlyReport"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid user",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Financial year not found",
+            "when": "selectedFinancialYear == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "ib_monthly_report_get_areas",
+      "name": "Get Areas",
+      "action_method": "GetAreas",
+      "http_method": "GET",
+      "route": "api/IBMonthlyReport/GetAreas/{regionId}",
+      "business_purpose": "Retrieve areas",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "regionId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/ib-reports/ib-monthly-report:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve areas",
+      "detailed_description": "Retrieve areas. It calls ICommon.getUserByToken, ICommon.GetAllArea. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid user [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve areas",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "regionId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/IBMonthlyReport",
+          "GET api/IBMonthlyReport/GetAreas/{regionId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "ib_monthly_report_get_areas",
+        "description": "Retrieve areas",
+        "http_method": "GET",
+        "endpoint": "api/IBMonthlyReport/GetAreas/{regionId}",
+        "parameters": {
+          "regionId": {
+            "type": "int",
+            "required": true,
+            "description": "region Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IBMonthlyReportController.cs",
+        "action_method": "GetAreas",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Reporting",
+      "business_logic": {
+        "operation_summary": "Retrieve areas — calls ICommon.getUserByToken, ICommon.GetAllArea",
+        "preconditions": "Valid Bearer JWT; route parameter(s) regionId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.GetAllArea"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid user",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    }
+  ]
+}

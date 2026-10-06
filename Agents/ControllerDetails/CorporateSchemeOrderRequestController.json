@@ -1,0 +1,1662 @@
+{
+  "controller": "CorporateSchemeOrderRequestController",
+  "file": "Controllers/CorporateSchemeOrderRequestController.cs",
+  "module": "Scheme Management",
+  "base_route": "api/CorporateSchemeOrderRequest",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles corporate scheme order request: get all, get corporate scheme request by order, get corporate scheme order by id, get corporate scheme request order by id, branch approval, branch reject and 3 more",
+  "menu_permission": {
+    "status": "not referenced by frontend",
+    "menu_keys": [],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "corporate_scheme_order_request_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/CorporateSchemeOrderRequest",
+      "business_purpose": "Retrieve all corporate scheme order request records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "\"this_month\""
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "userId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "schemeId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve all corporate scheme order request records",
+      "detailed_description": "Retrieve all corporate scheme order request records. It validates the request, then calls ICommon.getUserByToken, ICorporateSchemeOrderRequest.GetCorporateSchemeOrderRequestData, ISchemewiseOrder.GetAllSchemeHeadersAsync. Data access uses stored procedure(s): GetCorporateSchemeOrderRequest. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: From date and To date are required for custom range [when !fromdate.HasValue || !todate.HasValue]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all corporate scheme order request records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/CorporateSchemeOrderRequest",
+          "GET api/CorporateSchemeOrderRequest/requestbyorder",
+          "GET api/CorporateSchemeOrderRequest/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "corporate_scheme_order_request_get_all",
+        "description": "Retrieve all corporate scheme order request records",
+        "http_method": "GET",
+        "endpoint": "api/CorporateSchemeOrderRequest",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "date range (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "branchId": {
+            "type": "int",
+            "required": false,
+            "description": "branch Id (query)"
+          },
+          "userId": {
+            "type": "int",
+            "required": false,
+            "description": "user Id (query)"
+          },
+          "schemeId": {
+            "type": "int",
+            "required": false,
+            "description": "scheme Id (query)"
+          },
+          "status": {
+            "type": "string",
+            "required": false,
+            "description": "status (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CorporateSchemeOrderRequestController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/CorporateSchemeOrderRequest_repo.cs",
+          "Interfaces/ICorporateSchemeOrderRequest.cs",
+          "Repositories/SchemewiseOrders_repo.cs",
+          "Interfaces/ISchemwiseOrder.cs"
+        ]
+      },
+      "module": "Scheme Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all corporate scheme order request records — validates the request, calls ICommon.getUserByToken, ICorporateSchemeOrderRequest.GetCorporateSchemeOrderRequestData, ISchemewiseOrder.GetAllSchemeHeadersAsync",
+        "preconditions": "Valid Bearer JWT; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "From date and To date are required for custom range",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICorporateSchemeOrderRequest.GetCorporateSchemeOrderRequestData",
+          "ISchemewiseOrder.GetAllSchemeHeadersAsync",
+          "ICorporateSchemeOrderRequest.GetCorporateSchemeOrderRequestActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "CorporateSchemeOrderRequest_repo (Repositories/CorporateSchemeOrderRequest_repo.cs) via ICorporateSchemeOrderRequest",
+          "SchemwiseOrders_repo (Repositories/SchemewiseOrders_repo.cs) via ISchemewiseOrder"
+        ],
+        "stored_procedures": [
+          "GetCorporateSchemeOrderRequest"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "From date and To date are required for custom range",
+            "when": "!fromdate.HasValue || !todate.HasValue"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corporate_scheme_order_request_get_corporate_scheme_request_by_order",
+      "name": "Get Corporate Scheme Request By Order",
+      "action_method": "GetCorporateSchemeRequestByOrder",
+      "http_method": "GET",
+      "route": "api/CorporateSchemeOrderRequest/requestbyorder",
+      "business_purpose": "Retrieve corporate scheme request by order",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "\"all\""
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "userId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "schemeId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        },
+        {
+          "name": "InvoiceNo",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "RoundReport",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "Influencer",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "BranchApprove",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "Verification",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "HeadApprove",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "CreatedBy",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve corporate scheme request by order",
+      "detailed_description": "Retrieve corporate scheme request by order. It validates the request, then calls ICommon.getUserByToken, ICorporateSchemeOrderRequest.GetCorporateSchemeRequestByOrderActions, ICorporateSchemeOrderRequest.GetCorporateSchemeRequestByOrderData. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: From date and To date are required for custom range [when !fromdate.HasValue || !todate.HasValue]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve corporate scheme request by order",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/CorporateSchemeOrderRequest",
+          "GET api/CorporateSchemeOrderRequest/requestbyorder",
+          "GET api/CorporateSchemeOrderRequest/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "corporate_scheme_order_request_get_corporate_scheme_request_by_order",
+        "description": "Retrieve corporate scheme request by order",
+        "http_method": "GET",
+        "endpoint": "api/CorporateSchemeOrderRequest/requestbyorder",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "date range (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "branchId": {
+            "type": "int",
+            "required": false,
+            "description": "branch Id (query)"
+          },
+          "userId": {
+            "type": "int",
+            "required": false,
+            "description": "user Id (query)"
+          },
+          "schemeId": {
+            "type": "int",
+            "required": false,
+            "description": "scheme Id (query)"
+          },
+          "status": {
+            "type": "string",
+            "required": false,
+            "description": "status (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          },
+          "InvoiceNo": {
+            "type": "string",
+            "required": false,
+            "description": "Invoice No (query)"
+          },
+          "RoundReport": {
+            "type": "string",
+            "required": false,
+            "description": "Round Report (query)"
+          },
+          "Influencer": {
+            "type": "string",
+            "required": false,
+            "description": "Influencer (query)"
+          },
+          "BranchApprove": {
+            "type": "string",
+            "required": false,
+            "description": "Branch Approve (query)"
+          },
+          "Verification": {
+            "type": "string",
+            "required": false,
+            "description": "Verification (query)"
+          },
+          "HeadApprove": {
+            "type": "string",
+            "required": false,
+            "description": "Head Approve (query)"
+          },
+          "CreatedBy": {
+            "type": "string",
+            "required": false,
+            "description": "Created By (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CorporateSchemeOrderRequestController.cs",
+        "action_method": "GetCorporateSchemeRequestByOrder",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/CorporateSchemeOrderRequest_repo.cs",
+          "Interfaces/ICorporateSchemeOrderRequest.cs"
+        ]
+      },
+      "module": "Scheme Management",
+      "business_logic": {
+        "operation_summary": "Retrieve corporate scheme request by order — validates the request, calls ICommon.getUserByToken, ICorporateSchemeOrderRequest.GetCorporateSchemeRequestByOrderActions, ICorporateSchemeOrderRequest.GetCorporateSchemeRequestByOrderData",
+        "preconditions": "Valid Bearer JWT; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "From date and To date are required for custom range",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICorporateSchemeOrderRequest.GetCorporateSchemeRequestByOrderActions",
+          "ICorporateSchemeOrderRequest.GetCorporateSchemeRequestByOrderData"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "CorporateSchemeOrderRequest_repo (Repositories/CorporateSchemeOrderRequest_repo.cs) via ICorporateSchemeOrderRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "From date and To date are required for custom range",
+            "when": "!fromdate.HasValue || !todate.HasValue"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corporate_scheme_order_request_get_corporate_scheme_order_by_id",
+      "name": "Get Corporate Scheme Order By Id",
+      "action_method": "GetCorporateSchemeOrderById",
+      "http_method": "GET",
+      "route": "api/CorporateSchemeOrderRequest/{id}",
+      "business_purpose": "Retrieve corporate scheme order by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [
+        {
+          "name": "secId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve corporate scheme order by ID",
+      "detailed_description": "Retrieve corporate scheme order by ID. It validates the request, then calls ICommon.getUserByToken, IVerifiedSchemeOrders.GetERPSchemeWiseOrderByHeaderAndSecOrderId, ICorporateSchemeOrderRequest.GetERPSchemeWiseOrderById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required [when id <= 0]",
+        "not_found": "404: Request details not found [when data == null]; Request details not found [when data == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve corporate scheme order by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/CorporateSchemeOrderRequest",
+          "GET api/CorporateSchemeOrderRequest/requestbyorder",
+          "GET api/CorporateSchemeOrderRequest/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "corporate_scheme_order_request_get_corporate_scheme_order_by_id",
+        "description": "Retrieve corporate scheme order by ID",
+        "http_method": "GET",
+        "endpoint": "api/CorporateSchemeOrderRequest/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "secId": {
+            "type": "int",
+            "required": false,
+            "description": "sec Id (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CorporateSchemeOrderRequestController.cs",
+        "action_method": "GetCorporateSchemeOrderById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/VerifiedSchemeOrders_repo.cs",
+          "Interfaces/IVerifiedSchemeOrders.cs",
+          "Repositories/CorporateSchemeOrderRequest_repo.cs",
+          "Interfaces/ICorporateSchemeOrderRequest.cs",
+          "Repositories/SchemewiseOrders_repo.cs",
+          "Interfaces/ISchemwiseOrder.cs"
+        ]
+      },
+      "module": "Scheme Management",
+      "business_logic": {
+        "operation_summary": "Retrieve corporate scheme order by ID — validates the request, calls ICommon.getUserByToken, IVerifiedSchemeOrders.GetERPSchemeWiseOrderByHeaderAndSecOrderId, ICorporateSchemeOrderRequest.GetERPSchemeWiseOrderById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IVerifiedSchemeOrders.GetERPSchemeWiseOrderByHeaderAndSecOrderId",
+          "ICorporateSchemeOrderRequest.GetERPSchemeWiseOrderById",
+          "ISchemewiseOrder.GetSchemeRequestById",
+          "ICorporateSchemeOrderRequest.GetCorporateSchemeRequestByOrderActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "VerifiedSchemeOrders_repo (Repositories/VerifiedSchemeOrders_repo.cs) via IVerifiedSchemeOrders",
+          "CorporateSchemeOrderRequest_repo (Repositories/CorporateSchemeOrderRequest_repo.cs) via ICorporateSchemeOrderRequest",
+          "SchemwiseOrders_repo (Repositories/SchemewiseOrders_repo.cs) via ISchemewiseOrder"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Request details not found",
+            "when": "data == null"
+          },
+          {
+            "returns": 404,
+            "message": "Request details not found",
+            "when": "data == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corporate_scheme_order_request_get_corporate_scheme_request_order_by_id",
+      "name": "Get Corporate Scheme Request Order By Id",
+      "action_method": "GetCorporateSchemeRequestOrderById",
+      "http_method": "GET",
+      "route": "api/CorporateSchemeOrderRequest/requestbyorder/{id:int}",
+      "business_purpose": "Retrieve corporate scheme request order by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve corporate scheme request order by ID",
+      "detailed_description": "Retrieve corporate scheme request order by ID. It validates the request, then calls ICommon.getUserByToken, ICorporateSchemeOrderRequest.GetERPSchemeWiseOrderById, ISchemewiseOrder.GetSchemeRequestById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required [when id <= 0]",
+        "not_found": "404: Request details not found [when data == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve corporate scheme request order by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/CorporateSchemeOrderRequest",
+          "GET api/CorporateSchemeOrderRequest/requestbyorder",
+          "GET api/CorporateSchemeOrderRequest/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "corporate_scheme_order_request_get_corporate_scheme_request_order_by_id",
+        "description": "Retrieve corporate scheme request order by ID",
+        "http_method": "GET",
+        "endpoint": "api/CorporateSchemeOrderRequest/requestbyorder/{id:int}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CorporateSchemeOrderRequestController.cs",
+        "action_method": "GetCorporateSchemeRequestOrderById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/CorporateSchemeOrderRequest_repo.cs",
+          "Interfaces/ICorporateSchemeOrderRequest.cs",
+          "Repositories/SchemewiseOrders_repo.cs",
+          "Interfaces/ISchemwiseOrder.cs"
+        ]
+      },
+      "module": "Scheme Management",
+      "business_logic": {
+        "operation_summary": "Retrieve corporate scheme request order by ID — validates the request, calls ICommon.getUserByToken, ICorporateSchemeOrderRequest.GetERPSchemeWiseOrderById, ISchemewiseOrder.GetSchemeRequestById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICorporateSchemeOrderRequest.GetERPSchemeWiseOrderById",
+          "ISchemewiseOrder.GetSchemeRequestById",
+          "ICorporateSchemeOrderRequest.GetCorporateSchemeRequestByOrderActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "CorporateSchemeOrderRequest_repo (Repositories/CorporateSchemeOrderRequest_repo.cs) via ICorporateSchemeOrderRequest",
+          "SchemwiseOrders_repo (Repositories/SchemewiseOrders_repo.cs) via ISchemewiseOrder"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Request details not found",
+            "when": "data == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corporate_scheme_order_request_branch_approval",
+      "name": "Branch Approval",
+      "action_method": "BranchApproval",
+      "http_method": "POST",
+      "route": "api/CorporateSchemeOrderRequest/approval",
+      "business_purpose": "Handle branch approval",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "BranchApprovalRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "secId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "erp_det_id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "IsApproved",
+            "type": "bool",
+            "required": false
+          },
+          {
+            "name": "reportName",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "round_report",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Handle branch approval",
+      "detailed_description": "Handle branch approval. It calls ICommon.getUserByToken, ICorporateSchemeOrderRequest.GetSchemeRequestDetailsByERPIDandSecId, IVerifiedSchemeOrders.GetERPSchemeDetailsOrderById. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Request not found [when schemeDetails.Count == 0]; Request not found [when schemeHeader == null]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle branch approval",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body BranchApprovalRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/CorporateSchemeOrderRequest",
+          "GET api/CorporateSchemeOrderRequest/requestbyorder"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "corporate_scheme_order_request_branch_approval",
+        "description": "Handle branch approval",
+        "http_method": "POST",
+        "endpoint": "api/CorporateSchemeOrderRequest/approval",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "secId": {
+            "type": "int",
+            "required": false,
+            "description": "sec Id (body)"
+          },
+          "erp_det_id": {
+            "type": "int",
+            "required": false,
+            "description": "erp det id (body)"
+          },
+          "IsApproved": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Approved (body)"
+          },
+          "reportName": {
+            "type": "string",
+            "required": false,
+            "description": "report Name (body)"
+          },
+          "round_report": {
+            "type": "string",
+            "required": false,
+            "description": "round report (body)"
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Approves the record and advances its workflow"
+      },
+      "source": {
+        "controller_file": "Controllers/CorporateSchemeOrderRequestController.cs",
+        "action_method": "BranchApproval",
+        "related_dto_files": [
+          "Controllers/SchemewiseOrdersController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/CorporateSchemeOrderRequest_repo.cs",
+          "Interfaces/ICorporateSchemeOrderRequest.cs",
+          "Repositories/VerifiedSchemeOrders_repo.cs",
+          "Interfaces/IVerifiedSchemeOrders.cs",
+          "Repositories/SchemewiseOrders_repo.cs",
+          "Interfaces/ISchemwiseOrder.cs"
+        ]
+      },
+      "module": "Scheme Management",
+      "business_logic": {
+        "operation_summary": "Handle branch approval — calls ICommon.getUserByToken, ICorporateSchemeOrderRequest.GetSchemeRequestDetailsByERPIDandSecId, IVerifiedSchemeOrders.GetERPSchemeDetailsOrderById",
+        "preconditions": "Valid Bearer JWT; request body of type BranchApprovalRequest (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets schemeHeader.status and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICorporateSchemeOrderRequest.GetSchemeRequestDetailsByERPIDandSecId",
+          "IVerifiedSchemeOrders.GetERPSchemeDetailsOrderById",
+          "ISchemewiseOrder.GetSchemeRequestById",
+          "ISchemewiseOrder.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "CorporateSchemeOrderRequest_repo (Repositories/CorporateSchemeOrderRequest_repo.cs) via ICorporateSchemeOrderRequest",
+          "VerifiedSchemeOrders_repo (Repositories/VerifiedSchemeOrders_repo.cs) via IVerifiedSchemeOrders",
+          "SchemwiseOrders_repo (Repositories/SchemewiseOrders_repo.cs) via ISchemewiseOrder"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Request not found",
+            "when": "schemeDetails.Count == 0"
+          },
+          {
+            "returns": 404,
+            "message": "Request not found",
+            "when": "schemeHeader == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corporate_scheme_order_request_branch_reject",
+      "name": "Branch Reject",
+      "action_method": "BranchReject",
+      "http_method": "POST",
+      "route": "api/CorporateSchemeOrderRequest/Reject",
+      "business_purpose": "Handle branch reject",
+      "data_effect": "REJECTION",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "BranchRejectRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "secId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "erp_det_id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "IsRejected",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "REJECTION",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "reject"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Handle branch reject",
+      "detailed_description": "Handle branch reject. It calls ICommon.getUserByToken, ICorporateSchemeOrderRequest.GetSchemeRequestDetailsByERPIDandSecId, IVerifiedSchemeOrders.GetERPSchemeDetailsOrderById. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Request not found [when schemeDetails.Count == 0]; Request not found [when schemeHeader == null]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle branch reject",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body BranchRejectRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/CorporateSchemeOrderRequest",
+          "GET api/CorporateSchemeOrderRequest/requestbyorder"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "corporate_scheme_order_request_branch_reject",
+        "description": "Handle branch reject",
+        "http_method": "POST",
+        "endpoint": "api/CorporateSchemeOrderRequest/Reject",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "secId": {
+            "type": "int",
+            "required": false,
+            "description": "sec Id (body)"
+          },
+          "erp_det_id": {
+            "type": "int",
+            "required": false,
+            "description": "erp det id (body)"
+          },
+          "IsRejected": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Rejected (body)"
+          }
+        },
+        "operation_type": "REJECTION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Rejects the record"
+      },
+      "source": {
+        "controller_file": "Controllers/CorporateSchemeOrderRequestController.cs",
+        "action_method": "BranchReject",
+        "related_dto_files": [
+          "Controllers/SchemewiseOrdersController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/CorporateSchemeOrderRequest_repo.cs",
+          "Interfaces/ICorporateSchemeOrderRequest.cs",
+          "Repositories/VerifiedSchemeOrders_repo.cs",
+          "Interfaces/IVerifiedSchemeOrders.cs",
+          "Repositories/SchemewiseOrders_repo.cs",
+          "Interfaces/ISchemwiseOrder.cs"
+        ]
+      },
+      "module": "Scheme Management",
+      "business_logic": {
+        "operation_summary": "Handle branch reject — calls ICommon.getUserByToken, ICorporateSchemeOrderRequest.GetSchemeRequestDetailsByERPIDandSecId, IVerifiedSchemeOrders.GetERPSchemeDetailsOrderById",
+        "preconditions": "Valid Bearer JWT; request body of type BranchRejectRequest (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets schemeHeader.status and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICorporateSchemeOrderRequest.GetSchemeRequestDetailsByERPIDandSecId",
+          "IVerifiedSchemeOrders.GetERPSchemeDetailsOrderById",
+          "ISchemewiseOrder.GetSchemeRequestById",
+          "ISchemewiseOrder.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "CorporateSchemeOrderRequest_repo (Repositories/CorporateSchemeOrderRequest_repo.cs) via ICorporateSchemeOrderRequest",
+          "VerifiedSchemeOrders_repo (Repositories/VerifiedSchemeOrders_repo.cs) via IVerifiedSchemeOrders",
+          "SchemwiseOrders_repo (Repositories/SchemewiseOrders_repo.cs) via ISchemewiseOrder"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Request not found",
+            "when": "schemeDetails.Count == 0"
+          },
+          {
+            "returns": 404,
+            "message": "Request not found",
+            "when": "schemeHeader == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corporate_scheme_order_request_mark_as_paid",
+      "name": "Mark As Paid",
+      "action_method": "MarkAsPaid",
+      "http_method": "POST",
+      "route": "api/CorporateSchemeOrderRequest/MarkAsPaid",
+      "business_purpose": "Mark as paid",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "MarkAsPaidRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "secId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "IsPaid",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Mark as paid",
+      "detailed_description": "Mark as paid. It validates the request, then calls ICommon.getUserByToken, IVerifiedSchemeOrders.GetERPSchemeDetailsOrderById, ISchemewiseOrder.SaveChangesAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Request must be head approved before marking as paid [when !scheme.is_head_approved]",
+        "not_found": "404: Request not found [when scheme == null]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to mark as paid",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body MarkAsPaidRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/CorporateSchemeOrderRequest",
+          "GET api/CorporateSchemeOrderRequest/requestbyorder"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "corporate_scheme_order_request_mark_as_paid",
+        "description": "Mark as paid",
+        "http_method": "POST",
+        "endpoint": "api/CorporateSchemeOrderRequest/MarkAsPaid",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "secId": {
+            "type": "int",
+            "required": false,
+            "description": "sec Id (body)"
+          },
+          "IsPaid": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Paid (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/CorporateSchemeOrderRequestController.cs",
+        "action_method": "MarkAsPaid",
+        "related_dto_files": [
+          "Controllers/SchemewiseOrdersController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/VerifiedSchemeOrders_repo.cs",
+          "Interfaces/IVerifiedSchemeOrders.cs",
+          "Repositories/SchemewiseOrders_repo.cs",
+          "Interfaces/ISchemwiseOrder.cs"
+        ]
+      },
+      "module": "Scheme Management",
+      "business_logic": {
+        "operation_summary": "Mark as paid — validates the request, calls ICommon.getUserByToken, IVerifiedSchemeOrders.GetERPSchemeDetailsOrderById, ISchemewiseOrder.SaveChangesAsync",
+        "preconditions": "Valid Bearer JWT; request body of type MarkAsPaidRequest (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "validations": "Request must be head approved before marking as paid",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IVerifiedSchemeOrders.GetERPSchemeDetailsOrderById",
+          "ISchemewiseOrder.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "VerifiedSchemeOrders_repo (Repositories/VerifiedSchemeOrders_repo.cs) via IVerifiedSchemeOrders",
+          "SchemwiseOrders_repo (Repositories/SchemewiseOrders_repo.cs) via ISchemewiseOrder"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Request not found",
+            "when": "scheme == null"
+          },
+          {
+            "returns": 400,
+            "message": "Request must be head approved before marking as paid",
+            "when": "!scheme.is_head_approved"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corporate_scheme_order_request_order_approval",
+      "name": "Order Approval",
+      "action_method": "OrderApproval",
+      "http_method": "POST",
+      "route": "api/CorporateSchemeOrderRequest/head-approval",
+      "business_purpose": "Handle order approval",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "HeadApprovaldto (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "sec_id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_approved",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Handle order approval",
+      "detailed_description": "Handle order approval. It calls ICommon.getUserByToken, ISchemewiseOrder.GetSchemeRequestById, ICorporateSchemeOrderRequest.SaveChangesAsync. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Request not found [when scheme == null]; Order details not found [when details == null || !details.Any()]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle order approval",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body HeadApprovaldto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/CorporateSchemeOrderRequest",
+          "GET api/CorporateSchemeOrderRequest/requestbyorder"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "corporate_scheme_order_request_order_approval",
+        "description": "Handle order approval",
+        "http_method": "POST",
+        "endpoint": "api/CorporateSchemeOrderRequest/head-approval",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "sec_id": {
+            "type": "int",
+            "required": false,
+            "description": "sec id (body)"
+          },
+          "is_approved": {
+            "type": "bool",
+            "required": false,
+            "description": "is approved (body)"
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Approves the record and advances its workflow"
+      },
+      "source": {
+        "controller_file": "Controllers/CorporateSchemeOrderRequestController.cs",
+        "action_method": "OrderApproval",
+        "related_dto_files": [
+          "Controllers/CorporateSchemeOrderRequestController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/SchemewiseOrders_repo.cs",
+          "Interfaces/ISchemwiseOrder.cs",
+          "Repositories/CorporateSchemeOrderRequest_repo.cs",
+          "Interfaces/ICorporateSchemeOrderRequest.cs"
+        ]
+      },
+      "module": "Scheme Management",
+      "business_logic": {
+        "operation_summary": "Handle order approval — calls ICommon.getUserByToken, ISchemewiseOrder.GetSchemeRequestById, ICorporateSchemeOrderRequest.SaveChangesAsync",
+        "preconditions": "Valid Bearer JWT; request body of type HeadApprovaldto (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets scheme.head_operated_by, scheme.head_operated_date, scheme.status, scheme.is_head_approved and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISchemewiseOrder.GetSchemeRequestById",
+          "ICorporateSchemeOrderRequest.SaveChangesAsync",
+          "ISchemewiseOrder.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SchemwiseOrders_repo (Repositories/SchemewiseOrders_repo.cs) via ISchemewiseOrder",
+          "CorporateSchemeOrderRequest_repo (Repositories/CorporateSchemeOrderRequest_repo.cs) via ICorporateSchemeOrderRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Request not found",
+            "when": "scheme == null"
+          },
+          {
+            "returns": 404,
+            "message": "Order details not found",
+            "when": "details == null || !details.Any()"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corporate_scheme_order_request_order_reject",
+      "name": "Order Reject",
+      "action_method": "OrderReject",
+      "http_method": "POST",
+      "route": "api/CorporateSchemeOrderRequest/head-reject",
+      "business_purpose": "Handle order reject",
+      "data_effect": "REJECTION",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "HeadRejectdto (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "sec_id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_rejected",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "REJECTION",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "reject"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Handle order reject",
+      "detailed_description": "Handle order reject. It calls ICommon.getUserByToken, ISchemewiseOrder.GetSchemeRequestById, ICorporateSchemeOrderRequest.SaveChangesAsync. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Order details not found [when details == null || !details.Any()]; Request not found [when scheme == null]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle order reject",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body HeadRejectdto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/CorporateSchemeOrderRequest",
+          "GET api/CorporateSchemeOrderRequest/requestbyorder"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "corporate_scheme_order_request_order_reject",
+        "description": "Handle order reject",
+        "http_method": "POST",
+        "endpoint": "api/CorporateSchemeOrderRequest/head-reject",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "sec_id": {
+            "type": "int",
+            "required": false,
+            "description": "sec id (body)"
+          },
+          "is_rejected": {
+            "type": "bool",
+            "required": false,
+            "description": "is rejected (body)"
+          }
+        },
+        "operation_type": "REJECTION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Rejects the record"
+      },
+      "source": {
+        "controller_file": "Controllers/CorporateSchemeOrderRequestController.cs",
+        "action_method": "OrderReject",
+        "related_dto_files": [
+          "Controllers/CorporateSchemeOrderRequestController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/SchemewiseOrders_repo.cs",
+          "Interfaces/ISchemwiseOrder.cs",
+          "Repositories/CorporateSchemeOrderRequest_repo.cs",
+          "Interfaces/ICorporateSchemeOrderRequest.cs"
+        ]
+      },
+      "module": "Scheme Management",
+      "business_logic": {
+        "operation_summary": "Handle order reject — calls ICommon.getUserByToken, ISchemewiseOrder.GetSchemeRequestById, ICorporateSchemeOrderRequest.SaveChangesAsync",
+        "preconditions": "Valid Bearer JWT; request body of type HeadRejectdto (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets scheme.status and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISchemewiseOrder.GetSchemeRequestById",
+          "ICorporateSchemeOrderRequest.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SchemwiseOrders_repo (Repositories/SchemewiseOrders_repo.cs) via ISchemewiseOrder",
+          "CorporateSchemeOrderRequest_repo (Repositories/CorporateSchemeOrderRequest_repo.cs) via ICorporateSchemeOrderRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Order details not found",
+            "when": "details == null || !details.Any()"
+          },
+          {
+            "returns": 404,
+            "message": "Request not found",
+            "when": "scheme == null"
+          }
+        ]
+      }
+    }
+  ]
+}

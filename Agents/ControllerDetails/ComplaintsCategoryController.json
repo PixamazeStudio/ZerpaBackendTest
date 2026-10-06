@@ -1,0 +1,650 @@
+{
+  "controller": "ComplaintsCategoryController",
+  "file": "Controllers/ComplaintsCategoryController.cs",
+  "module": "Complaints Management",
+  "base_route": "api/ComplaintsCategory",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles complaints category: get all, create, update, delete",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/company-settings/complaints-category",
+        "module_code": "settings",
+        "section": "company-settings",
+        "sub_section": "complaints-category",
+        "frontend_routes": [
+          "/settings/company-settings/complaints-category"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "complaintsCategory"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "complaints_category_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/ComplaintsCategory",
+      "business_purpose": "Retrieve all complaints category records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/company-settings/complaints-category:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all complaints category records",
+      "detailed_description": "Retrieve all complaints category records. It calls IComplaintsCategoryRepository.GetComplaintsCategoryData, IComplaintsCategoryRepository.GetComplaintsCategoryActions, ICommon.GetPagination. Data access uses stored procedure(s): GetComplaintsCategory, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all complaints category records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/ComplaintsCategory"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaints_category_get_all",
+        "description": "Retrieve all complaints category records",
+        "http_method": "GET",
+        "endpoint": "api/ComplaintsCategory",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintsCategoryController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/ComplaintsCategoryRepository.cs",
+          "Interfaces/IComplaintsCategoryRepository.cs",
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all complaints category records — calls IComplaintsCategoryRepository.GetComplaintsCategoryData, IComplaintsCategoryRepository.GetComplaintsCategoryActions, ICommon.GetPagination",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IComplaintsCategoryRepository.GetComplaintsCategoryData",
+          "IComplaintsCategoryRepository.GetComplaintsCategoryActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "ComplaintsCategoryRepository (Repositories/ComplaintsCategoryRepository.cs) via IComplaintsCategoryRepository",
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [
+          "GetComplaintsCategory",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "complaints_category_create",
+      "name": "Create",
+      "action_method": "Create",
+      "http_method": "POST",
+      "route": "api/ComplaintsCategory",
+      "business_purpose": "Create a new complaints category record",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateComplaintsCategoryRequest (inline)",
+        "properties": [
+          {
+            "name": "complaintscategory_name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "userid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Description",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; a duplicate check exists so repeating usually fails with a conflict/validation message"
+      },
+      "required_permission": "settings/company-settings/complaints-category:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create a new complaints category record",
+      "detailed_description": "Create a new complaints category record. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IComplaintsCategoryRepository.IsComplaintsCategoryDuplicateAsync, IComplaintsCategoryRepository.CreateComplaintsCategoryAsync. Persists changes to: ComplaintsCategory: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; Complaints category name is required. [when string.IsNullOrWhiteSpace(request.complaintscategory_name)]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "Complaints category with this name already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create a new complaints category record",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateComplaintsCategoryRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/ComplaintsCategory"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "complaints_category_create",
+        "description": "Create a new complaints category record",
+        "http_method": "POST",
+        "endpoint": "api/ComplaintsCategory",
+        "parameters": {
+          "complaintscategory_name": {
+            "type": "string",
+            "required": false,
+            "description": "complaintscategory name (body)"
+          },
+          "userid": {
+            "type": "int",
+            "required": false,
+            "description": "userid (body)"
+          },
+          "Description": {
+            "type": "string",
+            "required": false,
+            "description": "Description (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintsCategoryController.cs",
+        "action_method": "Create",
+        "related_dto_files": [
+          "Controllers/ComplaintsCategoryController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ComplaintsCategoryRepository.cs",
+          "Interfaces/IComplaintsCategoryRepository.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Create a new complaints category record — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, IComplaintsCategoryRepository.IsComplaintsCategoryDuplicateAsync, IComplaintsCategoryRepository.CreateComplaintsCategoryAsync",
+        "preconditions": "Valid Bearer JWT; request body of type CreateComplaintsCategoryRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "ComplaintsCategory: INSERT",
+        "validations": "ModelState (DTO data-annotation) validation; Invalid data provided.; Complaints category name is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IComplaintsCategoryRepository.IsComplaintsCategoryDuplicateAsync",
+          "IComplaintsCategoryRepository.CreateComplaintsCategoryAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ComplaintsCategoryRepository (Repositories/ComplaintsCategoryRepository.cs) via IComplaintsCategoryRepository"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "Complaints category name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.complaintscategory_name)"
+          },
+          {
+            "returns": 400,
+            "message": "Complaints category with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaints_category_update",
+      "name": "Update",
+      "action_method": "Update",
+      "http_method": "PUT",
+      "route": "api/ComplaintsCategory/{id}",
+      "business_purpose": "Update an existing complaints category record",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateComplaintsCategoryRequest (inline)",
+        "properties": [
+          {
+            "name": "complaintscategory_name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "userid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Description",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "settings/company-settings/complaints-category:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update an existing complaints category record",
+      "detailed_description": "Update an existing complaints category record. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IComplaintsCategoryRepository.IsComplaintsCategoryDuplicateAsync, IComplaintsCategoryRepository.UpdateComplaintsCategoryAsync. Persists changes to: ComplaintsCategory: UPDATE. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required. [when id <= 0]; Complaints category name is required for update. [when string.IsNullOrWhiteSpace(request.complaintscategory_name)]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "Complaints category with this name already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update an existing complaints category record",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "request body UpdateComplaintsCategoryRequest (inline)"
+        ],
+        "follow_up_apis": []
+      },
+      "llm_tool_definition": {
+        "name": "complaints_category_update",
+        "description": "Update an existing complaints category record",
+        "http_method": "PUT",
+        "endpoint": "api/ComplaintsCategory/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "complaintscategory_name": {
+            "type": "string",
+            "required": false,
+            "description": "complaintscategory name (body)"
+          },
+          "userid": {
+            "type": "int",
+            "required": false,
+            "description": "userid (body)"
+          },
+          "Description": {
+            "type": "string",
+            "required": false,
+            "description": "Description (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintsCategoryController.cs",
+        "action_method": "Update",
+        "related_dto_files": [
+          "Controllers/ComplaintsCategoryController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ComplaintsCategoryRepository.cs",
+          "Interfaces/IComplaintsCategoryRepository.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Update an existing complaints category record — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, IComplaintsCategoryRepository.IsComplaintsCategoryDuplicateAsync, IComplaintsCategoryRepository.UpdateComplaintsCategoryAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; request body of type UpdateComplaintsCategoryRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "ComplaintsCategory: UPDATE",
+        "validations": "Valid ID is required.; Complaints category name is required for update.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IComplaintsCategoryRepository.IsComplaintsCategoryDuplicateAsync",
+          "IComplaintsCategoryRepository.UpdateComplaintsCategoryAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ComplaintsCategoryRepository (Repositories/ComplaintsCategoryRepository.cs) via IComplaintsCategoryRepository"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Complaints category name is required for update.",
+            "when": "string.IsNullOrWhiteSpace(request.complaintscategory_name)"
+          },
+          {
+            "returns": 400,
+            "message": "Complaints category with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "complaints_category_delete",
+      "name": "Delete",
+      "action_method": "Delete",
+      "http_method": "DELETE",
+      "route": "api/ComplaintsCategory/{id}",
+      "business_purpose": "Delete a complaints category record",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [
+        {
+          "name": "userId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "settings/company-settings/complaints-category:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete a complaints category record",
+      "detailed_description": "Delete a complaints category record. It validates the request, then calls IComplaintsCategoryRepository.DeleteAsync. Persists changes to: ComplaintsCategory: UPDATE, soft delete (is_deleted flag). Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid complaints category ID is required. [when id <= 0]; Valid user ID is required. [when userId <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete a complaints category record",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "userId (query)"
+        ],
+        "follow_up_apis": []
+      },
+      "llm_tool_definition": {
+        "name": "complaints_category_delete",
+        "description": "Delete a complaints category record",
+        "http_method": "DELETE",
+        "endpoint": "api/ComplaintsCategory/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "userId": {
+            "type": "int",
+            "required": true,
+            "description": "user Id (query)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/ComplaintsCategoryController.cs",
+        "action_method": "Delete",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/ComplaintsCategoryRepository.cs",
+          "Interfaces/IComplaintsCategoryRepository.cs"
+        ]
+      },
+      "module": "Complaints Management",
+      "business_logic": {
+        "operation_summary": "Delete a complaints category record — validates the request, calls IComplaintsCategoryRepository.DeleteAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; required query parameter(s): userId; passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "ComplaintsCategory: UPDATE; soft delete (is_deleted flag)",
+        "validations": "Valid complaints category ID is required.; Valid user ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IComplaintsCategoryRepository.DeleteAsync"
+        ],
+        "calls_repositories": [
+          "ComplaintsCategoryRepository (Repositories/ComplaintsCategoryRepository.cs) via IComplaintsCategoryRepository"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid complaints category ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Valid user ID is required.",
+            "when": "userId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    }
+  ]
+}

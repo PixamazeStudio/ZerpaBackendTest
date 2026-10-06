@@ -1,0 +1,923 @@
+{
+  "controller": "AccountTransferSubHeaderController",
+  "file": "Controllers/AccountTransferSubHeaderController.cs",
+  "module": "Account Management",
+  "base_route": "api/AccountTransferSubHeader",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages account transfer sub header records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/company-settings/account-transfersub-head",
+        "module_code": "settings",
+        "section": "company-settings",
+        "sub_section": "account-transfersub-head",
+        "frontend_routes": [
+          "/settings/company-settings/account-transfersub-head"
+        ],
+        "menu_route_confirmed": true,
+        "display_names": {
+          "module": "Settings",
+          "section": "Company Settings",
+          "sub_section": "Account TransferSub Head"
+        }
+      }
+    ],
+    "section_configuration_keys": [
+      "AccountTransferSubheader"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Settings",
+        "section": "Company Settings",
+        "sub_section": "Account TransferSub Head"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "account_transfer_sub_header_get_all_account_transfer_sub_headers",
+      "name": "Get All Account Transfer Sub Headers",
+      "action_method": "GetAllAccountTransferSubHeaders",
+      "http_method": "GET",
+      "route": "api/AccountTransferSubHeader",
+      "business_purpose": "Retrieve all account transfer sub headers",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/company-settings/account-transfersub-head:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all account transfer sub headers",
+      "detailed_description": "Retrieve all account transfer sub headers. It calls IAccountTransferSubHeader.GetAccountTransferSubHeaderData, IAccountTransferSubHeader.GetAccountTransferSubHeaderActions, ICommon.GetPagination. Data access uses stored procedure(s): GetAccountTransferSubHeader, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all account transfer sub headers",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/AccountTransferSubHeader",
+          "GET api/AccountTransferSubHeader/{id}",
+          "GET api/AccountTransferSubHeader/mainheaders"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "account_transfer_sub_header_get_all_account_transfer_sub_headers",
+        "description": "Retrieve all account transfer sub headers",
+        "http_method": "GET",
+        "endpoint": "api/AccountTransferSubHeader",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AccountTransferSubHeaderController.cs",
+        "action_method": "GetAllAccountTransferSubHeaders",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/AccountTransferSubHeader_repo.cs",
+          "Interfaces/IAccountTransferSubHeader.cs",
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all account transfer sub headers — calls IAccountTransferSubHeader.GetAccountTransferSubHeaderData, IAccountTransferSubHeader.GetAccountTransferSubHeaderActions, ICommon.GetPagination",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IAccountTransferSubHeader.GetAccountTransferSubHeaderData",
+          "IAccountTransferSubHeader.GetAccountTransferSubHeaderActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "AccountTransferSubHeader_repo (Repositories/AccountTransferSubHeader_repo.cs) via IAccountTransferSubHeader",
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [
+          "GetAccountTransferSubHeader",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "account_transfer_sub_header_create_account_transfer_sub_header",
+      "name": "Create Account Transfer Sub Header",
+      "action_method": "CreateAccountTransferSubHeader",
+      "http_method": "POST",
+      "route": "api/AccountTransferSubHeader",
+      "business_purpose": "Create account transfer sub header",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateAccountTransferSubHeaderRequest (inline)",
+        "properties": [
+          {
+            "name": "subheadername",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "accounttransfermainheaderId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_default",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; a duplicate check exists so repeating usually fails with a conflict/validation message"
+      },
+      "required_permission": "settings/company-settings/account-transfersub-head:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create account transfer sub header",
+      "detailed_description": "Create account transfer sub header. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IAccountTransferSubHeader.GetAccountTransferMainHeaderById, IAccountTransferSubHeader.IsAccountTransferSubHeaderDuplicateAsync, then writes an audit log entry. Persists changes to: AccountTransferSubHeader: INSERT, AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; Sub header name is required. [when string.IsNullOrWhiteSpace(request.subheadername)]; Valid account transfer main header ID is required. [when request.accounttransfermainheaderId <= 0]; Account transfer main header not found. [when mainHeader == null]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "Sub header with this name already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create account transfer sub header",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateAccountTransferSubHeaderRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/AccountTransferSubHeader",
+          "GET api/AccountTransferSubHeader/mainheaders"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "account_transfer_sub_header_create_account_transfer_sub_header",
+        "description": "Create account transfer sub header",
+        "http_method": "POST",
+        "endpoint": "api/AccountTransferSubHeader",
+        "parameters": {
+          "subheadername": {
+            "type": "string",
+            "required": false,
+            "description": "subheadername (body)"
+          },
+          "accounttransfermainheaderId": {
+            "type": "int",
+            "required": false,
+            "description": "accounttransfermainheader Id (body)"
+          },
+          "is_default": {
+            "type": "bool",
+            "required": false,
+            "description": "is default (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/AccountTransferSubHeaderController.cs",
+        "action_method": "CreateAccountTransferSubHeader",
+        "related_dto_files": [
+          "Controllers/AccountTransferSubHeaderController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/AccountTransferSubHeader_repo.cs",
+          "Interfaces/IAccountTransferSubHeader.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Create account transfer sub header — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, IAccountTransferSubHeader.GetAccountTransferMainHeaderById, IAccountTransferSubHeader.IsAccountTransferSubHeaderDuplicateAsync, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; request body of type CreateAccountTransferSubHeaderRequest (inline); passes 6 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "AccountTransferSubHeader: INSERT; AuditLog: INSERT",
+        "validations": "ModelState (DTO data-annotation) validation; Invalid data provided.; Sub header name is required.; Valid account transfer main header ID is required.; Account transfer main header not found.",
+        "side_effects": "AuditLog CREATE (Settings > Company Settings > Account TransferSub Head)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAccountTransferSubHeader.GetAccountTransferMainHeaderById",
+          "IAccountTransferSubHeader.IsAccountTransferSubHeaderDuplicateAsync",
+          "IAccountTransferSubHeader.CreateAccountTransferSubHeaderAsync",
+          "ICommon.ToJsonString",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AccountTransferSubHeader_repo (Repositories/AccountTransferSubHeader_repo.cs) via IAccountTransferSubHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Sub header name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.subheadername)"
+          },
+          {
+            "returns": 400,
+            "message": "Valid account transfer main header ID is required.",
+            "when": "request.accounttransfermainheaderId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Account transfer main header not found.",
+            "when": "mainHeader == null"
+          },
+          {
+            "returns": 400,
+            "message": "Sub header with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "account_transfer_sub_header_update_account_transfer_sub_header",
+      "name": "Update Account Transfer Sub Header",
+      "action_method": "UpdateAccountTransferSubHeader",
+      "http_method": "PUT",
+      "route": "api/AccountTransferSubHeader/{subHeaderId}",
+      "business_purpose": "Update account transfer sub header",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "subHeaderId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateAccountTransferSubHeaderRequest (inline)",
+        "properties": [
+          {
+            "name": "subheadername",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "accounttransfermainheaderId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_default",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values; each call writes another audit log entry"
+      },
+      "required_permission": "settings/company-settings/account-transfersub-head:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update account transfer sub header",
+      "detailed_description": "Update account transfer sub header. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IAccountTransferSubHeader.GetAccountTransferSubHeaderById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: AccountTransferSubHeader: UPDATE, AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid sub header ID is required. [when subHeaderId <= 0]; At least one field (subheadername or accounttransfermainheaderId) must be provided for update. [when string.IsNullOrWhiteSpace(request.subheadername) && !request.accounttransfermainheaderId.H]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Account Transfer SubHead not found. [when existingAccountTransferSubHead == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "Sub header with this name already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update account transfer sub header",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "subHeaderId (route)",
+          "request body UpdateAccountTransferSubHeaderRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/AccountTransferSubHeader/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "account_transfer_sub_header_update_account_transfer_sub_header",
+        "description": "Update account transfer sub header",
+        "http_method": "PUT",
+        "endpoint": "api/AccountTransferSubHeader/{subHeaderId}",
+        "parameters": {
+          "subHeaderId": {
+            "type": "int",
+            "required": true,
+            "description": "sub Header Id (route)"
+          },
+          "subheadername": {
+            "type": "string",
+            "required": false,
+            "description": "subheadername (body)"
+          },
+          "accounttransfermainheaderId": {
+            "type": "int",
+            "required": false,
+            "description": "accounttransfermainheader Id (body)"
+          },
+          "is_default": {
+            "type": "bool",
+            "required": false,
+            "description": "is default (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/AccountTransferSubHeaderController.cs",
+        "action_method": "UpdateAccountTransferSubHeader",
+        "related_dto_files": [
+          "Controllers/AccountTransferSubHeaderController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/AccountTransferSubHeader_repo.cs",
+          "Interfaces/IAccountTransferSubHeader.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Update account transfer sub header — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, IAccountTransferSubHeader.GetAccountTransferSubHeaderById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) subHeaderId must reference existing record(s); request body of type UpdateAccountTransferSubHeaderRequest (inline); passes 5 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "AccountTransferSubHeader: UPDATE; AuditLog: INSERT",
+        "validations": "Valid sub header ID is required.; At least one field (subheadername or accounttransfermainheaderId) must be provided for update.",
+        "side_effects": "AuditLog UPDATE (Settings > Company Settings > Account TransferSub Head)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAccountTransferSubHeader.GetAccountTransferSubHeaderById",
+          "ICommon.ToJsonString",
+          "IAccountTransferSubHeader.IsAccountTransferSubHeaderDuplicateAsync",
+          "IAccountTransferSubHeader.UpdateAccountTransferSubHeaderAsync",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AccountTransferSubHeader_repo (Repositories/AccountTransferSubHeader_repo.cs) via IAccountTransferSubHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid sub header ID is required.",
+            "when": "subHeaderId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field (subheadername or accounttransfermainheaderId) must be provided for update.",
+            "when": "string.IsNullOrWhiteSpace(request.subheadername) && !request.accounttransfermainheaderId.HasValue"
+          },
+          {
+            "returns": 404,
+            "message": "Account Transfer SubHead not found.",
+            "when": "existingAccountTransferSubHead == null"
+          },
+          {
+            "returns": 400,
+            "message": "Sub header with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "account_transfer_sub_header_delete_account_transfer_sub_header",
+      "name": "Delete Account Transfer Sub Header",
+      "action_method": "DeleteAccountTransferSubHeader",
+      "http_method": "DELETE",
+      "route": "api/AccountTransferSubHeader/{subHeaderId}",
+      "business_purpose": "Delete account transfer sub header",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "subHeaderId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "settings/company-settings/account-transfersub-head:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete account transfer sub header",
+      "detailed_description": "Delete account transfer sub header. It validates the request, then calls ICommon.getUserByToken, IAccountTransferSubHeader.GetAccountTransferSubHeaderById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: AccountTransferSubHeader: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid sub header ID is required. [when subHeaderId <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Account Transfer SubHead not found. [when existingAccountTransferSubHead == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete account transfer sub header",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "subHeaderId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/AccountTransferSubHeader/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "account_transfer_sub_header_delete_account_transfer_sub_header",
+        "description": "Delete account transfer sub header",
+        "http_method": "DELETE",
+        "endpoint": "api/AccountTransferSubHeader/{subHeaderId}",
+        "parameters": {
+          "subHeaderId": {
+            "type": "int",
+            "required": true,
+            "description": "sub Header Id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/AccountTransferSubHeaderController.cs",
+        "action_method": "DeleteAccountTransferSubHeader",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/AccountTransferSubHeader_repo.cs",
+          "Interfaces/IAccountTransferSubHeader.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Delete account transfer sub header — validates the request, calls ICommon.getUserByToken, IAccountTransferSubHeader.GetAccountTransferSubHeaderById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) subHeaderId must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "AccountTransferSubHeader: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "validations": "Valid sub header ID is required.",
+        "side_effects": "AuditLog DELETE (Settings > Company Settings > Account TransferSub Head)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAccountTransferSubHeader.GetAccountTransferSubHeaderById",
+          "ICommon.ToJsonString",
+          "IAccountTransferSubHeader.DeleteAccountTransferSubHeader",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AccountTransferSubHeader_repo (Repositories/AccountTransferSubHeader_repo.cs) via IAccountTransferSubHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid sub header ID is required.",
+            "when": "subHeaderId <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Account Transfer SubHead not found.",
+            "when": "existingAccountTransferSubHead == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "account_transfer_sub_header_get_account_transfer_sub_header_by_id",
+      "name": "Get Account Transfer Sub Header By Id",
+      "action_method": "GetAccountTransferSubHeaderById",
+      "http_method": "GET",
+      "route": "api/AccountTransferSubHeader/{id}",
+      "business_purpose": "Retrieve account transfer sub header by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/company-settings/account-transfersub-head:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve account transfer sub header by ID",
+      "detailed_description": "Retrieve account transfer sub header by ID. It validates the request, then calls ICommon.getUserByToken, IAccountTransferSubHeader.GetAccountTransferSubHeaderById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid sub header ID is required [when id <= 0]",
+        "not_found": "404: Sub header not found [when subHeader == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve account transfer sub header by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/AccountTransferSubHeader",
+          "GET api/AccountTransferSubHeader/{id}",
+          "GET api/AccountTransferSubHeader/mainheaders"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "account_transfer_sub_header_get_account_transfer_sub_header_by_id",
+        "description": "Retrieve account transfer sub header by ID",
+        "http_method": "GET",
+        "endpoint": "api/AccountTransferSubHeader/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AccountTransferSubHeaderController.cs",
+        "action_method": "GetAccountTransferSubHeaderById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/AccountTransferSubHeader_repo.cs",
+          "Interfaces/IAccountTransferSubHeader.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Retrieve account transfer sub header by ID — validates the request, calls ICommon.getUserByToken, IAccountTransferSubHeader.GetAccountTransferSubHeaderById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid sub header ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAccountTransferSubHeader.GetAccountTransferSubHeaderById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AccountTransferSubHeader_repo (Repositories/AccountTransferSubHeader_repo.cs) via IAccountTransferSubHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid sub header ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Sub header not found",
+            "when": "subHeader == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "account_transfer_sub_header_get_account_transfer_main_headers",
+      "name": "Get Account Transfer Main Headers",
+      "action_method": "GetAccountTransferMainHeaders",
+      "http_method": "GET",
+      "route": "api/AccountTransferSubHeader/mainheaders",
+      "business_purpose": "Retrieve account transfer main headers",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/company-settings/account-transfersub-head:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve account transfer main headers",
+      "detailed_description": "Retrieve account transfer main headers. It calls ICommon.getUserByToken, IAccountTransferSubHeader.GetAccountTransferMainHeaders. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve account transfer main headers",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/AccountTransferSubHeader",
+          "GET api/AccountTransferSubHeader/{id}",
+          "GET api/AccountTransferSubHeader/mainheaders"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "account_transfer_sub_header_get_account_transfer_main_headers",
+        "description": "Retrieve account transfer main headers",
+        "http_method": "GET",
+        "endpoint": "api/AccountTransferSubHeader/mainheaders",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AccountTransferSubHeaderController.cs",
+        "action_method": "GetAccountTransferMainHeaders",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/AccountTransferSubHeader_repo.cs",
+          "Interfaces/IAccountTransferSubHeader.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Retrieve account transfer main headers — calls ICommon.getUserByToken, IAccountTransferSubHeader.GetAccountTransferMainHeaders",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAccountTransferSubHeader.GetAccountTransferMainHeaders"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AccountTransferSubHeader_repo (Repositories/AccountTransferSubHeader_repo.cs) via IAccountTransferSubHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,833 @@
+{
+  "controller": "CMS_CreditNoteTypesController",
+  "file": "Controllers/CMS_CreditNoteTypesController.cs",
+  "module": "Credit Note Management",
+  "base_route": "api/CMS_CreditNoteTypes",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages CMS credit note types records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/company-settings/cms-creditnote-types",
+        "module_code": "settings",
+        "section": "company-settings",
+        "sub_section": "cms-creditnote-types",
+        "frontend_routes": [
+          "/settings/company-settings/cms-creditnote-types"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "CMS_CreditNoteTypes"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Settings",
+        "section": "Company Settings",
+        "sub_section": "Credit Note Types"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "cms_credit_note_types_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/CMS_CreditNoteTypes",
+      "business_purpose": "Retrieve all CMS credit note types records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/company-settings/cms-creditnote-types:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all CMS credit note types records",
+      "detailed_description": "Retrieve all CMS credit note types records. It calls ICommon.getUserByToken, ICMS_CreditNoteTypesRepository.GetCMS_CreditNoteTypesData, ICMS_CreditNoteTypesRepository.GetCMS_CreditNoteTypesActions. Data access uses stored procedure(s): GetCMS_CreditNoteTypes, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all CMS credit note types records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/CMS_CreditNoteTypes",
+          "GET api/CMS_CreditNoteTypes/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "cms_credit_note_types_get_all",
+        "description": "Retrieve all CMS credit note types records",
+        "http_method": "GET",
+        "endpoint": "api/CMS_CreditNoteTypes",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CMS_CreditNoteTypesController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/CMS_CreditNoteTypesRepository.cs",
+          "Interfaces/ICMS_CreditNoteTypesRepository.cs"
+        ]
+      },
+      "module": "Credit Note Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all CMS credit note types records — calls ICommon.getUserByToken, ICMS_CreditNoteTypesRepository.GetCMS_CreditNoteTypesData, ICMS_CreditNoteTypesRepository.GetCMS_CreditNoteTypesActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMS_CreditNoteTypesRepository.GetCMS_CreditNoteTypesData",
+          "ICMS_CreditNoteTypesRepository.GetCMS_CreditNoteTypesActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "CMS_CreditNoteTypesRepository (Repositories/CMS_CreditNoteTypesRepository.cs) via ICMS_CreditNoteTypesRepository"
+        ],
+        "stored_procedures": [
+          "GetCMS_CreditNoteTypes",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cms_credit_note_types_get_credit_note_type_by_id",
+      "name": "Get Credit Note Type By Id",
+      "action_method": "GetCreditNoteTypeById",
+      "http_method": "GET",
+      "route": "api/CMS_CreditNoteTypes/{id}",
+      "business_purpose": "Retrieve credit note type by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/company-settings/cms-creditnote-types:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve credit note type by ID",
+      "detailed_description": "Retrieve credit note type by ID. It validates the request, then calls ICommon.getUserByToken, ICMS_CreditNoteTypesRepository.GetCreditNoteTypeById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid credit note type ID is required [when id <= 0]",
+        "not_found": "404: Credit note type not found [when creditNoteType == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve credit note type by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/CMS_CreditNoteTypes",
+          "GET api/CMS_CreditNoteTypes/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "cms_credit_note_types_get_credit_note_type_by_id",
+        "description": "Retrieve credit note type by ID",
+        "http_method": "GET",
+        "endpoint": "api/CMS_CreditNoteTypes/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CMS_CreditNoteTypesController.cs",
+        "action_method": "GetCreditNoteTypeById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/CMS_CreditNoteTypesRepository.cs",
+          "Interfaces/ICMS_CreditNoteTypesRepository.cs"
+        ]
+      },
+      "module": "Credit Note Management",
+      "business_logic": {
+        "operation_summary": "Retrieve credit note type by ID — validates the request, calls ICommon.getUserByToken, ICMS_CreditNoteTypesRepository.GetCreditNoteTypeById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid credit note type ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMS_CreditNoteTypesRepository.GetCreditNoteTypeById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "CMS_CreditNoteTypesRepository (Repositories/CMS_CreditNoteTypesRepository.cs) via ICMS_CreditNoteTypesRepository"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid credit note type ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Credit note type not found",
+            "when": "creditNoteType == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cms_credit_note_types_create",
+      "name": "Create",
+      "action_method": "Create",
+      "http_method": "POST",
+      "route": "api/CMS_CreditNoteTypes",
+      "business_purpose": "Create a new CMS credit note types record",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateCMS_CreditNoteTypesRequest (inline)",
+        "properties": [
+          {
+            "name": "type",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "userid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "is_default",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; a duplicate check exists so repeating usually fails with a conflict/validation message"
+      },
+      "required_permission": "settings/company-settings/cms-creditnote-types:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create a new CMS credit note types record",
+      "detailed_description": "Create a new CMS credit note types record. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, ICMS_CreditNoteTypesRepository.IsCMS_CreditNoteTypesDuplicateAsync, ICMS_CreditNoteTypesRepository.CreateCMS_CreditNoteTypesAsync, then writes an audit log entry. Persists changes to: CMS_CreditNoteTypes: INSERT, AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; Type is required. [when string.IsNullOrWhiteSpace(request.type)]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]; Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "Credit note type with this name already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create a new CMS credit note types record",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateCMS_CreditNoteTypesRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/CMS_CreditNoteTypes"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "cms_credit_note_types_create",
+        "description": "Create a new CMS credit note types record",
+        "http_method": "POST",
+        "endpoint": "api/CMS_CreditNoteTypes",
+        "parameters": {
+          "type": {
+            "type": "string",
+            "required": false,
+            "description": "type (body)"
+          },
+          "userid": {
+            "type": "int",
+            "required": false,
+            "description": "userid (body)"
+          },
+          "description": {
+            "type": "string",
+            "required": false,
+            "description": "description (body)"
+          },
+          "is_default": {
+            "type": "bool",
+            "required": false,
+            "description": "is default (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/CMS_CreditNoteTypesController.cs",
+        "action_method": "Create",
+        "related_dto_files": [
+          "Controllers/CMS_CreditNoteTypesController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/CMS_CreditNoteTypesRepository.cs",
+          "Interfaces/ICMS_CreditNoteTypesRepository.cs"
+        ]
+      },
+      "module": "Credit Note Management",
+      "business_logic": {
+        "operation_summary": "Create a new CMS credit note types record — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, ICMS_CreditNoteTypesRepository.IsCMS_CreditNoteTypesDuplicateAsync, ICMS_CreditNoteTypesRepository.CreateCMS_CreditNoteTypesAsync, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; request body of type CreateCMS_CreditNoteTypesRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "CMS_CreditNoteTypes: INSERT; AuditLog: INSERT",
+        "validations": "ModelState (DTO data-annotation) validation; Invalid data provided.; Type is required.",
+        "side_effects": "AuditLog CREATE (Settings > Company Settings > Credit Note Types)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMS_CreditNoteTypesRepository.IsCMS_CreditNoteTypesDuplicateAsync",
+          "ICMS_CreditNoteTypesRepository.CreateCMS_CreditNoteTypesAsync",
+          "ICommon.ToJsonString",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "CMS_CreditNoteTypesRepository (Repositories/CMS_CreditNoteTypesRepository.cs) via ICMS_CreditNoteTypesRepository"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "Type is required.",
+            "when": "string.IsNullOrWhiteSpace(request.type)"
+          },
+          {
+            "returns": 400,
+            "message": "Credit note type with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "cms_credit_note_types_update",
+      "name": "Update",
+      "action_method": "Update",
+      "http_method": "PUT",
+      "route": "api/CMS_CreditNoteTypes/{id}",
+      "business_purpose": "Update an existing CMS credit note types record",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateCMS_CreditNoteTypesRequest (inline)",
+        "properties": [
+          {
+            "name": "type",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "userid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "is_default",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values; each call writes another audit log entry"
+      },
+      "required_permission": "settings/company-settings/cms-creditnote-types:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update an existing CMS credit note types record",
+      "detailed_description": "Update an existing CMS credit note types record. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, ICMS_CreditNoteTypesRepository.GetCreditNoteTypeById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: CMS_CreditNoteTypes: UPDATE, AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required. [when id <= 0]; Type is required for update. [when string.IsNullOrWhiteSpace(request.type)]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Credit note type not found. [when existingCreditNoteType == null]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "Credit note type with this name already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update an existing CMS credit note types record",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "request body UpdateCMS_CreditNoteTypesRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/CMS_CreditNoteTypes/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "cms_credit_note_types_update",
+        "description": "Update an existing CMS credit note types record",
+        "http_method": "PUT",
+        "endpoint": "api/CMS_CreditNoteTypes/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "type": {
+            "type": "string",
+            "required": false,
+            "description": "type (body)"
+          },
+          "userid": {
+            "type": "int",
+            "required": false,
+            "description": "userid (body)"
+          },
+          "description": {
+            "type": "string",
+            "required": false,
+            "description": "description (body)"
+          },
+          "is_default": {
+            "type": "bool",
+            "required": false,
+            "description": "is default (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/CMS_CreditNoteTypesController.cs",
+        "action_method": "Update",
+        "related_dto_files": [
+          "Controllers/CMS_CreditNoteTypesController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/CMS_CreditNoteTypesRepository.cs",
+          "Interfaces/ICMS_CreditNoteTypesRepository.cs"
+        ]
+      },
+      "module": "Credit Note Management",
+      "business_logic": {
+        "operation_summary": "Update an existing CMS credit note types record — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, ICMS_CreditNoteTypesRepository.GetCreditNoteTypeById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); request body of type UpdateCMS_CreditNoteTypesRequest (inline); passes 5 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "CMS_CreditNoteTypes: UPDATE; AuditLog: INSERT",
+        "validations": "Valid ID is required.; Type is required for update.",
+        "side_effects": "AuditLog UPDATE (Settings > Company Settings > Credit Note Types)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMS_CreditNoteTypesRepository.GetCreditNoteTypeById",
+          "ICommon.ToJsonString",
+          "ICMS_CreditNoteTypesRepository.IsCMS_CreditNoteTypesDuplicateAsync",
+          "ICMS_CreditNoteTypesRepository.UpdateCMS_CreditNoteTypesAsync",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "CMS_CreditNoteTypesRepository (Repositories/CMS_CreditNoteTypesRepository.cs) via ICMS_CreditNoteTypesRepository"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Type is required for update.",
+            "when": "string.IsNullOrWhiteSpace(request.type)"
+          },
+          {
+            "returns": 404,
+            "message": "Credit note type not found.",
+            "when": "existingCreditNoteType == null"
+          },
+          {
+            "returns": 400,
+            "message": "Credit note type with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "cms_credit_note_types_delete",
+      "name": "Delete",
+      "action_method": "Delete",
+      "http_method": "DELETE",
+      "route": "api/CMS_CreditNoteTypes/{id}",
+      "business_purpose": "Delete a CMS credit note types record",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "settings/company-settings/cms-creditnote-types:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete a CMS credit note types record",
+      "detailed_description": "Delete a CMS credit note types record. It validates the request, then calls ICommon.getUserByToken, ICMS_CreditNoteTypesRepository.GetCreditNoteTypeById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: CMS_CreditNoteTypes: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid credit note type ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Credit note type not found. [when existingCreditNoteType == null]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete a CMS credit note types record",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/CMS_CreditNoteTypes/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "cms_credit_note_types_delete",
+        "description": "Delete a CMS credit note types record",
+        "http_method": "DELETE",
+        "endpoint": "api/CMS_CreditNoteTypes/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/CMS_CreditNoteTypesController.cs",
+        "action_method": "Delete",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/CMS_CreditNoteTypesRepository.cs",
+          "Interfaces/ICMS_CreditNoteTypesRepository.cs"
+        ]
+      },
+      "module": "Credit Note Management",
+      "business_logic": {
+        "operation_summary": "Delete a CMS credit note types record — validates the request, calls ICommon.getUserByToken, ICMS_CreditNoteTypesRepository.GetCreditNoteTypeById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "CMS_CreditNoteTypes: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "validations": "Valid credit note type ID is required.",
+        "side_effects": "AuditLog DELETE (Settings > Company Settings > Credit Note Types)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICMS_CreditNoteTypesRepository.GetCreditNoteTypeById",
+          "ICommon.ToJsonString",
+          "ICMS_CreditNoteTypesRepository.DeleteAsync",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "CMS_CreditNoteTypesRepository (Repositories/CMS_CreditNoteTypesRepository.cs) via ICMS_CreditNoteTypesRepository"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid credit note type ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Credit note type not found.",
+            "when": "existingCreditNoteType == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    }
+  ]
+}

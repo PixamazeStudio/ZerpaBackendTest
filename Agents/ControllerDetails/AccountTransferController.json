@@ -1,0 +1,369 @@
+{
+  "controller": "AccountTransferController",
+  "file": "Controllers/AccountTransferController.cs",
+  "module": "Account Management",
+  "base_route": "api/AccountTransfer",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages account transfer requests with approval workflows. Provides endpoints to list, retrieve, create, update, approve, reject, and manage account transfers with file uploads and user associations.",
+  "notes": "Global [Authorize] requires JWT token for all endpoints except where overridden",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/company-settings/account-transfer-head",
+        "module_code": "settings",
+        "section": "company-settings",
+        "sub_section": "account-transfer-head",
+        "frontend_routes": [
+          "/settings/company-settings/account-transfer-head/view-account-transfer-head/:id"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "acs/accounts/holding-account-transfers",
+        "module_code": "acs",
+        "section": "accounts",
+        "sub_section": "holding-account-transfers",
+        "frontend_routes": [
+          "/acs/accounts/holding-account-transfers/view-holding-account-transfer/:id"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "acs/accounts/all-account-transfers",
+        "module_code": "acs",
+        "section": "accounts",
+        "sub_section": "all-account-transfers",
+        "frontend_routes": [
+          "/acs/accounts/all-account-transfers/view-all-account-transfers/:id"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "acs/accounts/pending-account-transfers",
+        "module_code": "acs",
+        "section": "accounts",
+        "sub_section": "pending-account-transfers",
+        "frontend_routes": [
+          "/acs/accounts/pending-account-transfers/view-pending-account-transfer/:id"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "acs/accounts/confirmed-account-transfers",
+        "module_code": "acs",
+        "section": "accounts",
+        "sub_section": "confirmed-account-transfers",
+        "frontend_routes": [
+          "/acs/accounts/confirmed-account-transfers/view-confirmed-account-transfer/:id"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "acs/account-transfer",
+        "module_code": "acs",
+        "section": "account-transfer",
+        "sub_section": null,
+        "frontend_routes": [
+          "/acs/account-transfer/create-account-transfer",
+          "/acs/account-transfer/edit-account-transfer/:id",
+          "/acs/account-transfer/view-account-transfer/:id"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "acs/account-transfer/report",
+        "module_code": "acs",
+        "section": "account-transfer",
+        "sub_section": "report",
+        "frontend_routes": [
+          "/acs/account-transfer/report/:id"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Accounts",
+        "section": "Account Transfers",
+        "sub_section": null
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "accounttransfer_getall",
+      "name": "Get All Account Transfers",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/AccountTransfer/account-transfer",
+      "module": "Account Management",
+      "business_purpose": "Retrieve paginated list of account transfer requests with filtering and card summaries",
+      "short_description": "List all account transfers with status summaries and pagination",
+      "detailed_description": "Fetches all account transfers with applied filters (date range, main/sub headers, status). Returns summary cards with total counts (total requests, approved, pending, closed). Supports flexible date range selection (this month, last month, last 30/60/180 days, or custom).",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ],
+        "roles_or_policy": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_claims": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_headers": [
+          "Authorization: Bearer <token>"
+        ],
+        "notes": "Uses JWT token to get current user"
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "DateTime?",
+          "required": false,
+          "default": "null",
+          "description": "Start date for filtering",
+          "example": "2026-09-01"
+        },
+        {
+          "name": "todate",
+          "type": "DateTime?",
+          "required": false,
+          "default": "null",
+          "description": "End date for filtering",
+          "example": "2026-09-30"
+        },
+        {
+          "name": "dateRange",
+          "type": "string",
+          "required": false,
+          "default": "this_month",
+          "description": "Predefined date range",
+          "example": "last_30_days"
+        },
+        {
+          "name": "mainHeaderId",
+          "type": "int?",
+          "required": false,
+          "default": "null",
+          "description": "Filter by main header",
+          "example": "1"
+        },
+        {
+          "name": "subHeaderId",
+          "type": "int?",
+          "required": false,
+          "default": "null",
+          "description": "Filter by sub header",
+          "example": "5"
+        },
+        {
+          "name": "inputText",
+          "type": "string?",
+          "required": false,
+          "default": "null",
+          "description": "Search text",
+          "example": "vendor name"
+        },
+        {
+          "name": "status",
+          "type": "string?",
+          "required": false,
+          "default": "null",
+          "description": "Filter by status",
+          "example": "approved"
+        },
+        {
+          "name": "dateBy",
+          "type": "string",
+          "required": false,
+          "default": "request_date",
+          "description": "Date field to filter by",
+          "example": "payment_date"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10",
+          "description": "Records per page",
+          "example": "20"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1",
+          "description": "Page number",
+          "example": "2"
+        }
+      ],
+      "request_body": {
+        "dto_name": "none",
+        "source_file": "",
+        "properties": [],
+        "example_json": {}
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "anonymous object",
+        "properties": [
+          {
+            "name": "success",
+            "type": "boolean",
+            "nullable": false,
+            "description": "Operation success"
+          },
+          {
+            "name": "message",
+            "type": "string",
+            "nullable": false,
+            "description": "Response message"
+          },
+          {
+            "name": "cards",
+            "type": "array",
+            "nullable": false,
+            "description": "Summary cards with counts"
+          },
+          {
+            "name": "filters",
+            "type": "array",
+            "nullable": false,
+            "description": "Available filter options"
+          },
+          {
+            "name": "data",
+            "type": "array",
+            "nullable": false,
+            "description": "Paginated transfer records"
+          },
+          {
+            "name": "actions",
+            "type": "object",
+            "nullable": false,
+            "description": "Available actions"
+          },
+          {
+            "name": "pagination",
+            "type": "object",
+            "nullable": false,
+            "description": "Pagination info"
+          }
+        ],
+        "success_example": {
+          "success": true,
+          "message": "Account transfer details fetched successfully",
+          "cards": [
+            {
+              "key": "total_request",
+              "count": 42
+            }
+          ],
+          "data": []
+        },
+        "error_example": {
+          "success": false,
+          "message": "Invalid token or user not found"
+        },
+        "notes": "INFERRED FROM CODE: Date ranges are calculated server-side based on dateRange parameter"
+      },
+      "business_logic": {
+        "operation_summary": "List account transfers with filtering and status summaries",
+        "preconditions": "User has valid JWT token",
+        "state_changes": "None",
+        "validations": "JWT token validation, page_no >= 1",
+        "side_effects": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "calls_services": [
+          "IAccountTransfer.GetAccountTransferData",
+          "IAccountTransfer.GetAccountTransferActions",
+          "IAccountTransfer.GetAllAccountTransferHeadings"
+        ],
+        "calls_repositories": [
+          "IAccountTransfer"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "INFERRED FROM CODE: Uses current user from JWT token to filter visibility",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      },
+      "ai_agent_guidance": {
+        "use_when": "Need to list all account transfers with summaries and filters",
+        "do_not_use_when": "Looking for details of single transfer (use get by ID)",
+        "preconditions_needed": [
+          "Valid JWT token"
+        ],
+        "follow_up_apis": [
+          "api/AccountTransfer/{id} for details"
+        ]
+      },
+      "error_handling": {
+        "validation_errors": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "not_found": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "unauthorized": "Invalid token returns 401",
+        "business_rule_errors": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "exceptions": "Unhandled exception returns 500 with error message"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Completely idempotent read operation"
+      },
+      "llm_tool_definition": {
+        "name": "list_account_transfers",
+        "description": "Get paginated list of account transfers with filters",
+        "http_method": "GET",
+        "endpoint": "api/AccountTransfer/account-transfer",
+        "parameters": {
+          "dateRange": {
+            "type": "string",
+            "required": false,
+            "description": "Date range filter"
+          },
+          "mainHeaderId": {
+            "type": "integer",
+            "required": false,
+            "description": "Main header filter"
+          },
+          "limit": {
+            "type": "integer",
+            "required": false,
+            "description": "Page size"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AccountTransferController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Interfaces/IAccountTransfer",
+          "Interfaces/ICommon"
+        ]
+      },
+      "required_permission": "acs/account-transfer/report:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match"
+    }
+  ]
+}

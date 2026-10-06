@@ -1,0 +1,2943 @@
+{
+  "controller": "BranchReviewController",
+  "file": "Controllers/BranchReviewController.cs",
+  "module": "Branch Management",
+  "base_route": "api/BranchReview",
+  "class_level_auth": "none found",
+  "purpose": "Handles branch review: get branch review report, get branch review list, get branch review by id, get branch complaints, get complaint nature details, get team member details and 13 more",
+  "notes": "No [Authorize] at class level; authentication requirements vary per action",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "planner/monthly-branch-review",
+        "module_code": "planner",
+        "section": "monthly-branch-review",
+        "sub_section": null,
+        "frontend_routes": [
+          "/planner/monthly-branch-review",
+          "/planner/monthly-branch-review/create-branch-review",
+          "/planner/monthly-branch-review/edit-branch-review/:id",
+          "/planner/monthly-branch-review/view-branch-review/:id"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "branch_review_get_branch_review_report",
+      "name": "Get Branch Review Report",
+      "action_method": "GetBranchReviewReport",
+      "http_method": "GET",
+      "route": "api/BranchReview/report",
+      "business_purpose": "Retrieve branch review report",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": true
+        },
+        {
+          "name": "financialMonth",
+          "type": "int",
+          "required": false
+        },
+        {
+          "name": "year",
+          "type": "int",
+          "required": false
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/monthly-branch-review:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve branch review report",
+      "detailed_description": "Retrieve branch review report. It calls ICommon.getUserByToken, IBranchReview.GetDealerWiseSecondaryContributionCalculated, IBranchReview.GetProductSalesPercentageCalculated. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve branch review report",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "branchId (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/BranchReview/report",
+          "GET api/BranchReview/list",
+          "GET api/BranchReview/report/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_review_get_branch_review_report",
+        "description": "Retrieve branch review report",
+        "http_method": "GET",
+        "endpoint": "api/BranchReview/report",
+        "parameters": {
+          "branchId": {
+            "type": "int",
+            "required": true,
+            "description": "branch Id (query)"
+          },
+          "financialMonth": {
+            "type": "int",
+            "required": false,
+            "description": "financial Month (query)"
+          },
+          "year": {
+            "type": "int",
+            "required": false,
+            "description": "year (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/BranchReviewController.cs",
+        "action_method": "GetBranchReviewReport",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/BranchReviewRepo.cs",
+          "Interfaces/IBranchReview.cs",
+          "Repository/HomeRepo.cs",
+          "Interfaces/IHome.cs",
+          "Repository/FLMovementReport_repo.cs",
+          "Interfaces/IFLMovementReport.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Retrieve branch review report — calls ICommon.getUserByToken, IBranchReview.GetDealerWiseSecondaryContributionCalculated, IBranchReview.GetProductSalesPercentageCalculated",
+        "preconditions": "No authentication required; required query parameter(s): branchId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBranchReview.GetDealerWiseSecondaryContributionCalculated",
+          "IBranchReview.GetProductSalesPercentageCalculated",
+          "IBranchReview.GetPVCSalesPercentageCalculated",
+          "IBranchReview.GetFLPlannerVsActualCalculated",
+          "IBranchReview.GetBranchMonthComparisonCalculated",
+          "IBranchReview.GetBranchYearComparisonCalculated",
+          "IHome.GetUserWiseKYCCompletionSummary",
+          "IBranchReview.GetBranchOutstandingByDealer",
+          "IBranchReview.GetBranchOutstandingByFactory",
+          "IHome.GetLastMonthDealerData",
+          "IBranchReview.GetMonthlyPlanCardHistoryCalculated",
+          "IBranchReview.GetMonthlyComplaintAging",
+          "IBranchReview.GetMonthlyComplaintNature",
+          "IBranchReview.GetPlywoodNaTotals",
+          "IFLMovementReport.GetReportDataAsync",
+          "IBranchReview.GetProjectAnalysisCalculated",
+          "IBranchReview.GetSchemeDetailsByTeamMembersAsync",
+          "IBranchReview.GetTeamVisitDetailsByTeamMembersAsync",
+          "IBranchReview.GetSchemeInfluencerDetailsCalculated"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "BranchReviewRepo (Repository/BranchReviewRepo.cs) via IBranchReview",
+          "HomeRepo (Repository/HomeRepo.cs) via IHome",
+          "FLMovementReport_repo (Repository/FLMovementReport_repo.cs) via IFLMovementReport"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "branch_review_get_branch_review_list",
+      "name": "Get Branch Review List",
+      "action_method": "GetBranchReviewList",
+      "http_method": "GET",
+      "route": "api/BranchReview/list",
+      "business_purpose": "Retrieve branch review list",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": false
+        },
+        {
+          "name": "month",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "year",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/monthly-branch-review:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve branch review list",
+      "detailed_description": "Retrieve branch review list. It calls ICommon.getUserByToken, IBranchReview.GetReportListAsync, IBranchReview.GetBranchReviewActions. Data access uses stored procedure(s): GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve branch review list",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [],
+        "follow_up_apis": [
+          "GET api/BranchReview/report",
+          "GET api/BranchReview/list",
+          "GET api/BranchReview/report/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_review_get_branch_review_list",
+        "description": "Retrieve branch review list",
+        "http_method": "GET",
+        "endpoint": "api/BranchReview/list",
+        "parameters": {
+          "branchId": {
+            "type": "int",
+            "required": false,
+            "description": "branch Id (query)"
+          },
+          "month": {
+            "type": "string",
+            "required": false,
+            "description": "month (query)"
+          },
+          "year": {
+            "type": "int",
+            "required": false,
+            "description": "year (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/BranchReviewController.cs",
+        "action_method": "GetBranchReviewList",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/BranchReviewRepo.cs",
+          "Interfaces/IBranchReview.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Retrieve branch review list — calls ICommon.getUserByToken, IBranchReview.GetReportListAsync, IBranchReview.GetBranchReviewActions",
+        "preconditions": "No authentication required",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBranchReview.GetReportListAsync",
+          "IBranchReview.GetBranchReviewActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "BranchReviewRepo (Repository/BranchReviewRepo.cs) via IBranchReview"
+        ],
+        "stored_procedures": [
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "branch_review_get_branch_review_by_id",
+      "name": "Get Branch Review By Id",
+      "action_method": "GetBranchReviewById",
+      "http_method": "GET",
+      "route": "api/BranchReview/report/{id}",
+      "business_purpose": "Retrieve branch review by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/monthly-branch-review:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve branch review by ID",
+      "detailed_description": "Retrieve branch review by ID. It calls IBranchReview.GetReportByIdAsync, IBranchReview.GetBranchReviewActions. Data access uses stored procedure(s): GetSectionActions. Possible responses: 200, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Report with id {id} not found. [when header == null]",
+        "unauthorized": "None found in controller code",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve branch review by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/BranchReview/report",
+          "GET api/BranchReview/list",
+          "GET api/BranchReview/report/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_review_get_branch_review_by_id",
+        "description": "Retrieve branch review by ID",
+        "http_method": "GET",
+        "endpoint": "api/BranchReview/report/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/BranchReviewController.cs",
+        "action_method": "GetBranchReviewById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/BranchReviewRepo.cs",
+          "Interfaces/IBranchReview.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Retrieve branch review by ID — calls IBranchReview.GetReportByIdAsync, IBranchReview.GetBranchReviewActions",
+        "preconditions": "No authentication required; route parameter(s) id must reference existing record(s); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IBranchReview.GetReportByIdAsync",
+          "IBranchReview.GetBranchReviewActions"
+        ],
+        "calls_repositories": [
+          "BranchReviewRepo (Repository/BranchReviewRepo.cs) via IBranchReview"
+        ],
+        "stored_procedures": [
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 404,
+            "message": "Report with id {id} not found.",
+            "when": "header == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "branch_review_get_branch_complaints",
+      "name": "Get Branch Complaints",
+      "action_method": "GetBranchComplaints",
+      "http_method": "GET",
+      "route": "api/BranchReview/complaints/{branchId}",
+      "business_purpose": "Retrieve branch complaints",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/monthly-branch-review:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve branch complaints",
+      "detailed_description": "Retrieve branch complaints. It calls IHome.GetComplaintAging, IHome.GetComplaintNatureByBranch. Data access uses stored procedure(s): GetComplaintAging. Possible responses: 200, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "None found in controller code",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve branch complaints",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "branchId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/BranchReview/report",
+          "GET api/BranchReview/list",
+          "GET api/BranchReview/report/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_review_get_branch_complaints",
+        "description": "Retrieve branch complaints",
+        "http_method": "GET",
+        "endpoint": "api/BranchReview/complaints/{branchId}",
+        "parameters": {
+          "branchId": {
+            "type": "int",
+            "required": true,
+            "description": "branch Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/BranchReviewController.cs",
+        "action_method": "GetBranchComplaints",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/HomeRepo.cs",
+          "Interfaces/IHome.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Retrieve branch complaints — calls IHome.GetComplaintAging, IHome.GetComplaintNatureByBranch",
+        "preconditions": "No authentication required; route parameter(s) branchId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IHome.GetComplaintAging",
+          "IHome.GetComplaintNatureByBranch"
+        ],
+        "calls_repositories": [
+          "HomeRepo (Repository/HomeRepo.cs) via IHome"
+        ],
+        "stored_procedures": [
+          "GetComplaintAging"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "branch_review_get_complaint_nature_details",
+      "name": "Get Complaint Nature Details",
+      "action_method": "GetComplaintNatureDetails",
+      "http_method": "GET",
+      "route": "api/BranchReview/complaint-nature-details",
+      "business_purpose": "Retrieve complaint nature details",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": true
+        },
+        {
+          "name": "nature",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "monthName",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "year",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/monthly-branch-review:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve complaint nature details",
+      "detailed_description": "Retrieve complaint nature details. It validates the request, then calls IBranchReview.GetComplaintNatureDetails. Possible responses: 200, 400, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid branchId is required. [when branchId <= 0]; nature is required. [when string.IsNullOrWhiteSpace(nature)]; monthName is required. [when string.IsNullOrWhiteSpace(monthName)]; Invalid monthName/year.",
+        "not_found": "None found in controller code",
+        "unauthorized": "None found in controller code",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: FormatException, Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve complaint nature details",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "branchId (query)",
+          "nature (query)",
+          "monthName (query)",
+          "year (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/BranchReview/report",
+          "GET api/BranchReview/list",
+          "GET api/BranchReview/report/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_review_get_complaint_nature_details",
+        "description": "Retrieve complaint nature details",
+        "http_method": "GET",
+        "endpoint": "api/BranchReview/complaint-nature-details",
+        "parameters": {
+          "branchId": {
+            "type": "int",
+            "required": true,
+            "description": "branch Id (query)"
+          },
+          "nature": {
+            "type": "string",
+            "required": true,
+            "description": "nature (query)"
+          },
+          "monthName": {
+            "type": "string",
+            "required": true,
+            "description": "month Name (query)"
+          },
+          "year": {
+            "type": "int",
+            "required": true,
+            "description": "year (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/BranchReviewController.cs",
+        "action_method": "GetComplaintNatureDetails",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/BranchReviewRepo.cs",
+          "Interfaces/IBranchReview.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Retrieve complaint nature details — validates the request, calls IBranchReview.GetComplaintNatureDetails",
+        "preconditions": "No authentication required; required query parameter(s): branchId, nature, monthName, year; passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid branchId is required.; nature is required.; monthName is required.; Invalid monthName/year.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IBranchReview.GetComplaintNatureDetails"
+        ],
+        "calls_repositories": [
+          "BranchReviewRepo (Repository/BranchReviewRepo.cs) via IBranchReview"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid branchId is required.",
+            "when": "branchId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "nature is required.",
+            "when": "string.IsNullOrWhiteSpace(nature)"
+          },
+          {
+            "returns": 400,
+            "message": "monthName is required.",
+            "when": "string.IsNullOrWhiteSpace(monthName)"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid monthName/year.",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "branch_review_get_team_member_details",
+      "name": "Get Team Member Details",
+      "action_method": "GetTeamMemberDetails",
+      "http_method": "GET",
+      "route": "api/BranchReview/team-member-details",
+      "business_purpose": "Retrieve team member details",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "userId",
+          "type": "int",
+          "required": false
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "branchReviewId",
+          "type": "int",
+          "required": false
+        },
+        {
+          "name": "monthName",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "year",
+          "type": "int",
+          "required": false
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/monthly-branch-review:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve team member details",
+      "detailed_description": "Retrieve team member details. It validates the request, then calls IBranchReview.GetClientPerformanceByTeamMembersAsync. Possible responses: 200, 400, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Either userId or name is required. [when string.IsNullOrWhiteSpace(name)]; monthName and year are required. [when string.IsNullOrWhiteSpace(monthName) || !year.HasValue]",
+        "not_found": "404: Employee not found. [when !teamMemberId.HasValue]",
+        "unauthorized": "None found in controller code",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve team member details",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [],
+        "follow_up_apis": [
+          "GET api/BranchReview/report",
+          "GET api/BranchReview/list",
+          "GET api/BranchReview/report/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_review_get_team_member_details",
+        "description": "Retrieve team member details",
+        "http_method": "GET",
+        "endpoint": "api/BranchReview/team-member-details",
+        "parameters": {
+          "userId": {
+            "type": "int",
+            "required": false,
+            "description": "user Id (query)"
+          },
+          "name": {
+            "type": "string",
+            "required": false,
+            "description": "name (query)"
+          },
+          "branchReviewId": {
+            "type": "int",
+            "required": false,
+            "description": "branch Review Id (query)"
+          },
+          "monthName": {
+            "type": "string",
+            "required": false,
+            "description": "month Name (query)"
+          },
+          "year": {
+            "type": "int",
+            "required": false,
+            "description": "year (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/BranchReviewController.cs",
+        "action_method": "GetTeamMemberDetails",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/BranchReviewRepo.cs",
+          "Interfaces/IBranchReview.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Retrieve team member details — validates the request, calls IBranchReview.GetClientPerformanceByTeamMembersAsync",
+        "preconditions": "No authentication required; passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Either userId or name is required.; monthName and year are required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IBranchReview.GetClientPerformanceByTeamMembersAsync"
+        ],
+        "calls_repositories": [
+          "BranchReviewRepo (Repository/BranchReviewRepo.cs) via IBranchReview"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Either userId or name is required.",
+            "when": "string.IsNullOrWhiteSpace(name)"
+          },
+          {
+            "returns": 404,
+            "message": "Employee not found.",
+            "when": "!teamMemberId.HasValue"
+          },
+          {
+            "returns": 400,
+            "message": "monthName and year are required.",
+            "when": "string.IsNullOrWhiteSpace(monthName) || !year.HasValue"
+          }
+        ]
+      }
+    },
+    {
+      "id": "branch_review_get_profile_kyc_completion_detail",
+      "name": "Get Profile Kyc Completion Detail",
+      "action_method": "GetProfileKycCompletionDetail",
+      "http_method": "GET",
+      "route": "api/BranchReview/profile-kyc-completion-detail",
+      "business_purpose": "Retrieve profile kyc completion detail",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "userId",
+          "type": "int",
+          "required": false
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "bucket",
+          "type": "string",
+          "required": false
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/monthly-branch-review:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve profile kyc completion detail",
+      "detailed_description": "Retrieve profile kyc completion detail. It validates the request. Possible responses: 200, 400, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Either userId or name is required. [when string.IsNullOrWhiteSpace(name)]",
+        "not_found": "404: Employee not found. [when !teamMemberId.HasValue]",
+        "unauthorized": "None found in controller code",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve profile kyc completion detail",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [],
+        "follow_up_apis": [
+          "GET api/BranchReview/report",
+          "GET api/BranchReview/list",
+          "GET api/BranchReview/report/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_review_get_profile_kyc_completion_detail",
+        "description": "Retrieve profile kyc completion detail",
+        "http_method": "GET",
+        "endpoint": "api/BranchReview/profile-kyc-completion-detail",
+        "parameters": {
+          "userId": {
+            "type": "int",
+            "required": false,
+            "description": "user Id (query)"
+          },
+          "name": {
+            "type": "string",
+            "required": false,
+            "description": "name (query)"
+          },
+          "bucket": {
+            "type": "string",
+            "required": false,
+            "description": "bucket (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/BranchReviewController.cs",
+        "action_method": "GetProfileKycCompletionDetail",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": []
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Retrieve profile kyc completion detail — validates the request",
+        "preconditions": "No authentication required; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Either userId or name is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [],
+        "calls_repositories": [],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Either userId or name is required.",
+            "when": "string.IsNullOrWhiteSpace(name)"
+          },
+          {
+            "returns": 404,
+            "message": "Employee not found.",
+            "when": "!teamMemberId.HasValue"
+          }
+        ]
+      }
+    },
+    {
+      "id": "branch_review_get_fl_movement_details",
+      "name": "Get FL Movement Details",
+      "action_method": "GetFLMovementDetails",
+      "http_method": "GET",
+      "route": "api/BranchReview/fl-movement-details",
+      "business_purpose": "Retrieve FL movement details",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "teamMemberId",
+          "type": "int",
+          "required": true
+        },
+        {
+          "name": "movementType",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "branchReviewId",
+          "type": "int",
+          "required": false
+        },
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": false
+        },
+        {
+          "name": "monthName",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "year",
+          "type": "int",
+          "required": false
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/monthly-branch-review:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve FL movement details",
+      "detailed_description": "Retrieve FL movement details. It validates the request, then calls IFLMovementReport.GetAddedInfluencersAsync, IFLMovementReport.GetRemovedInfluencersAsync. Possible responses: 200, 400, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid teamMemberId is required. [when teamMemberId <= 0]; monthName is required. [when string.IsNullOrWhiteSpace(monthName)]",
+        "not_found": "None found in controller code",
+        "unauthorized": "None found in controller code",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve FL movement details",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "teamMemberId (query)",
+          "movementType (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/BranchReview/report",
+          "GET api/BranchReview/list",
+          "GET api/BranchReview/report/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_review_get_fl_movement_details",
+        "description": "Retrieve FL movement details",
+        "http_method": "GET",
+        "endpoint": "api/BranchReview/fl-movement-details",
+        "parameters": {
+          "teamMemberId": {
+            "type": "int",
+            "required": true,
+            "description": "team Member Id (query)"
+          },
+          "movementType": {
+            "type": "string",
+            "required": true,
+            "description": "movement Type (query)"
+          },
+          "branchReviewId": {
+            "type": "int",
+            "required": false,
+            "description": "branch Review Id (query)"
+          },
+          "branchId": {
+            "type": "int",
+            "required": false,
+            "description": "branch Id (query)"
+          },
+          "monthName": {
+            "type": "string",
+            "required": false,
+            "description": "month Name (query)"
+          },
+          "year": {
+            "type": "int",
+            "required": false,
+            "description": "year (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/BranchReviewController.cs",
+        "action_method": "GetFLMovementDetails",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/FLMovementReport_repo.cs",
+          "Interfaces/IFLMovementReport.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Retrieve FL movement details — validates the request, calls IFLMovementReport.GetAddedInfluencersAsync, IFLMovementReport.GetRemovedInfluencersAsync",
+        "preconditions": "No authentication required; required query parameter(s): teamMemberId, movementType; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid teamMemberId is required.; monthName is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IFLMovementReport.GetAddedInfluencersAsync",
+          "IFLMovementReport.GetRemovedInfluencersAsync"
+        ],
+        "calls_repositories": [
+          "FLMovementReport_repo (Repository/FLMovementReport_repo.cs) via IFLMovementReport"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid teamMemberId is required.",
+            "when": "teamMemberId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "monthName is required.",
+            "when": "string.IsNullOrWhiteSpace(monthName)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "branch_review_get_scheme_details_drilldown",
+      "name": "Get Scheme Details Drilldown",
+      "action_method": "GetSchemeDetailsDrilldown",
+      "http_method": "GET",
+      "route": "api/BranchReview/scheme-details-drilldown",
+      "business_purpose": "Retrieve scheme details drilldown",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "teamMemberId",
+          "type": "int",
+          "required": true
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/monthly-branch-review:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve scheme details drilldown",
+      "detailed_description": "Retrieve scheme details drilldown. It validates the request, then calls IBranchReview.GetSchemeDetailsClientsAsync. Possible responses: 200, 400, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid teamMemberId is required. [when teamMemberId <= 0]",
+        "not_found": "None found in controller code",
+        "unauthorized": "None found in controller code",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve scheme details drilldown",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "teamMemberId (query)",
+          "type (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/BranchReview/report",
+          "GET api/BranchReview/list",
+          "GET api/BranchReview/report/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_review_get_scheme_details_drilldown",
+        "description": "Retrieve scheme details drilldown",
+        "http_method": "GET",
+        "endpoint": "api/BranchReview/scheme-details-drilldown",
+        "parameters": {
+          "teamMemberId": {
+            "type": "int",
+            "required": true,
+            "description": "team Member Id (query)"
+          },
+          "type": {
+            "type": "string",
+            "required": true,
+            "description": "type (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/BranchReviewController.cs",
+        "action_method": "GetSchemeDetailsDrilldown",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/BranchReviewRepo.cs",
+          "Interfaces/IBranchReview.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Retrieve scheme details drilldown — validates the request, calls IBranchReview.GetSchemeDetailsClientsAsync",
+        "preconditions": "No authentication required; required query parameter(s): teamMemberId, type; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid teamMemberId is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IBranchReview.GetSchemeDetailsClientsAsync"
+        ],
+        "calls_repositories": [
+          "BranchReviewRepo (Repository/BranchReviewRepo.cs) via IBranchReview"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid teamMemberId is required.",
+            "when": "teamMemberId <= 0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "branch_review_get_team_visit_details_drilldown",
+      "name": "Get Team Visit Details Drilldown",
+      "action_method": "GetTeamVisitDetailsDrilldown",
+      "http_method": "GET",
+      "route": "api/BranchReview/team-visit-details-drilldown",
+      "business_purpose": "Retrieve team visit details drilldown",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "teamMemberId",
+          "type": "int",
+          "required": true
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "monthName",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "year",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/monthly-branch-review:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve team visit details drilldown",
+      "detailed_description": "Retrieve team visit details drilldown. It validates the request, then calls IBranchReview.GetTeamVisitDetailsClientsAsync. Possible responses: 200, 400, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid teamMemberId is required. [when teamMemberId <= 0]; monthName is required. [when string.IsNullOrWhiteSpace(monthName)]",
+        "not_found": "None found in controller code",
+        "unauthorized": "None found in controller code",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve team visit details drilldown",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "teamMemberId (query)",
+          "type (query)",
+          "monthName (query)",
+          "year (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/BranchReview/report",
+          "GET api/BranchReview/list",
+          "GET api/BranchReview/report/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_review_get_team_visit_details_drilldown",
+        "description": "Retrieve team visit details drilldown",
+        "http_method": "GET",
+        "endpoint": "api/BranchReview/team-visit-details-drilldown",
+        "parameters": {
+          "teamMemberId": {
+            "type": "int",
+            "required": true,
+            "description": "team Member Id (query)"
+          },
+          "type": {
+            "type": "string",
+            "required": true,
+            "description": "type (query)"
+          },
+          "monthName": {
+            "type": "string",
+            "required": true,
+            "description": "month Name (query)"
+          },
+          "year": {
+            "type": "int",
+            "required": true,
+            "description": "year (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/BranchReviewController.cs",
+        "action_method": "GetTeamVisitDetailsDrilldown",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/BranchReviewRepo.cs",
+          "Interfaces/IBranchReview.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Retrieve team visit details drilldown — validates the request, calls IBranchReview.GetTeamVisitDetailsClientsAsync",
+        "preconditions": "No authentication required; required query parameter(s): teamMemberId, type, monthName, year; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid teamMemberId is required.; monthName is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IBranchReview.GetTeamVisitDetailsClientsAsync"
+        ],
+        "calls_repositories": [
+          "BranchReviewRepo (Repository/BranchReviewRepo.cs) via IBranchReview"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid teamMemberId is required.",
+            "when": "teamMemberId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "monthName is required.",
+            "when": "string.IsNullOrWhiteSpace(monthName)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "branch_review_get_scheme_influencer_details_drilldown",
+      "name": "Get Scheme Influencer Details Drilldown",
+      "action_method": "GetSchemeInfluencerDetailsDrilldown",
+      "http_method": "GET",
+      "route": "api/BranchReview/scheme-influencer-details-drilldown",
+      "business_purpose": "Retrieve scheme influencer details drilldown",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "clientId",
+          "type": "int",
+          "required": true
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "monthName",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "year",
+          "type": "int",
+          "required": true
+        },
+        {
+          "name": "targetMonthName",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "targetYear",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/monthly-branch-review:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve scheme influencer details drilldown",
+      "detailed_description": "Retrieve scheme influencer details drilldown. It validates the request, then calls ICommon.getUserByToken, IBranchReview.GetFLPlannerVsActualCalculated, IBranchReview.GetSchemeInfluencerVisitDetailsAsync. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid clientId is required. [when clientId <= 0]; monthName is required. [when string.IsNullOrWhiteSpace(monthName)]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve scheme influencer details drilldown",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "clientId (query)",
+          "type (query)",
+          "monthName (query)",
+          "year (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/BranchReview/report",
+          "GET api/BranchReview/list",
+          "GET api/BranchReview/report/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_review_get_scheme_influencer_details_drilldown",
+        "description": "Retrieve scheme influencer details drilldown",
+        "http_method": "GET",
+        "endpoint": "api/BranchReview/scheme-influencer-details-drilldown",
+        "parameters": {
+          "clientId": {
+            "type": "int",
+            "required": true,
+            "description": "client Id (query)"
+          },
+          "type": {
+            "type": "string",
+            "required": true,
+            "description": "type (query)"
+          },
+          "monthName": {
+            "type": "string",
+            "required": true,
+            "description": "month Name (query)"
+          },
+          "year": {
+            "type": "int",
+            "required": true,
+            "description": "year (query)"
+          },
+          "targetMonthName": {
+            "type": "string",
+            "required": false,
+            "description": "target Month Name (query)"
+          },
+          "targetYear": {
+            "type": "int",
+            "required": false,
+            "description": "target Year (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/BranchReviewController.cs",
+        "action_method": "GetSchemeInfluencerDetailsDrilldown",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/BranchReviewRepo.cs",
+          "Interfaces/IBranchReview.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Retrieve scheme influencer details drilldown — validates the request, calls ICommon.getUserByToken, IBranchReview.GetFLPlannerVsActualCalculated, IBranchReview.GetSchemeInfluencerVisitDetailsAsync",
+        "preconditions": "No authentication required; required query parameter(s): clientId, type, monthName, year; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid clientId is required.; monthName is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBranchReview.GetFLPlannerVsActualCalculated",
+          "IBranchReview.GetSchemeInfluencerVisitDetailsAsync",
+          "IBranchReview.GetSchemeInfluencerSaleDetailsAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "BranchReviewRepo (Repository/BranchReviewRepo.cs) via IBranchReview"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid clientId is required.",
+            "when": "clientId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "monthName is required.",
+            "when": "string.IsNullOrWhiteSpace(monthName)"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "branch_review_create_branch_review_report",
+      "name": "Create Branch Review Report",
+      "action_method": "CreateBranchReviewReport",
+      "http_method": "POST",
+      "route": "api/BranchReview/report",
+      "business_purpose": "Create branch review report",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "BranchReviewSaveDto",
+        "properties": [
+          {
+            "name": "BranchId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Month",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Year",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "SalesMetrics",
+            "type": "List<BranchReviewSalesMetricsDto>",
+            "required": false
+          },
+          {
+            "name": "BrandSales",
+            "type": "List<BranchReviewBrandSalesDto>",
+            "required": false
+          },
+          {
+            "name": "PVCSales",
+            "type": "List<BranchReviewPVCSalesDto>",
+            "required": false
+          },
+          {
+            "name": "Outstanding",
+            "type": "List<BranchReviewOutstandingDto>",
+            "required": false
+          },
+          {
+            "name": "TeamPerformance",
+            "type": "List<BranchReviewTeamPerformanceDto>",
+            "required": false
+          },
+          {
+            "name": "SecondaryContribution",
+            "type": "BranchReviewSecondaryContributionDto",
+            "required": false
+          },
+          {
+            "name": "DealerSecondary",
+            "type": "List<BranchReviewDealerSecondaryDto>",
+            "required": false
+          },
+          {
+            "name": "ComplaintAging",
+            "type": "List<BranchReviewComplaintAgingDto>",
+            "required": false
+          },
+          {
+            "name": "ComplaintNature",
+            "type": "List<BranchReviewComplaintNatureDto>",
+            "required": false
+          },
+          {
+            "name": "DealerPerformance",
+            "type": "List<BranchReviewDealerPerformanceDto>",
+            "required": false
+          },
+          {
+            "name": "MonthlyPlan",
+            "type": "List<BranchReviewMonthlyPlanDto>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "planner/monthly-branch-review:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create branch review report",
+      "detailed_description": "Create branch review report. It calls ICommon.getUserByToken, IBranchReview.CreateReportAsync. Persists changes to: BranchReviewHeader: INSERT. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: DbUpdateException, Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create branch review report",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "request body BranchReviewSaveDto"
+        ],
+        "follow_up_apis": [
+          "GET api/BranchReview/report",
+          "GET api/BranchReview/list",
+          "GET api/BranchReview/complaint-nature-details"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_review_create_branch_review_report",
+        "description": "Create branch review report",
+        "http_method": "POST",
+        "endpoint": "api/BranchReview/report",
+        "parameters": {
+          "BranchId": {
+            "type": "int",
+            "required": false,
+            "description": "Branch Id (body)"
+          },
+          "Month": {
+            "type": "string",
+            "required": false,
+            "description": "Month (body)"
+          },
+          "Year": {
+            "type": "int",
+            "required": false,
+            "description": "Year (body)"
+          },
+          "SalesMetrics": {
+            "type": "List<BranchReviewSalesMetricsDto>",
+            "required": false,
+            "description": "Sales Metrics (body)"
+          },
+          "BrandSales": {
+            "type": "List<BranchReviewBrandSalesDto>",
+            "required": false,
+            "description": "Brand Sales (body)"
+          },
+          "PVCSales": {
+            "type": "List<BranchReviewPVCSalesDto>",
+            "required": false,
+            "description": "PVC Sales (body)"
+          },
+          "Outstanding": {
+            "type": "List<BranchReviewOutstandingDto>",
+            "required": false,
+            "description": "Outstanding (body)"
+          },
+          "TeamPerformance": {
+            "type": "List<BranchReviewTeamPerformanceDto>",
+            "required": false,
+            "description": "Team Performance (body)"
+          },
+          "SecondaryContribution": {
+            "type": "BranchReviewSecondaryContributionDto",
+            "required": false,
+            "description": "Secondary Contribution (body)"
+          },
+          "DealerSecondary": {
+            "type": "List<BranchReviewDealerSecondaryDto>",
+            "required": false,
+            "description": "Dealer Secondary (body)"
+          },
+          "ComplaintAging": {
+            "type": "List<BranchReviewComplaintAgingDto>",
+            "required": false,
+            "description": "Complaint Aging (body)"
+          },
+          "ComplaintNature": {
+            "type": "List<BranchReviewComplaintNatureDto>",
+            "required": false,
+            "description": "Complaint Nature (body)"
+          },
+          "DealerPerformance": {
+            "type": "List<BranchReviewDealerPerformanceDto>",
+            "required": false,
+            "description": "Dealer Performance (body)"
+          },
+          "MonthlyPlan": {
+            "type": "List<BranchReviewMonthlyPlanDto>",
+            "required": false,
+            "description": "Monthly Plan (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/BranchReviewController.cs",
+        "action_method": "CreateBranchReviewReport",
+        "related_dto_files": [
+          "DTOs/Request/BranchReviewSaveDto.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/BranchReviewRepo.cs",
+          "Interfaces/IBranchReview.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Create branch review report — calls ICommon.getUserByToken, IBranchReview.CreateReportAsync",
+        "preconditions": "No authentication required; request body of type BranchReviewSaveDto",
+        "state_changes": "BranchReviewHeader: INSERT",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBranchReview.CreateReportAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "BranchReviewRepo (Repository/BranchReviewRepo.cs) via IBranchReview"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "branch_review_update_branch_review_report",
+      "name": "Update Branch Review Report",
+      "action_method": "UpdateBranchReviewReport",
+      "http_method": "PUT",
+      "route": "api/BranchReview/report/{id}",
+      "business_purpose": "Update branch review report",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "BranchReviewSaveDto",
+        "properties": [
+          {
+            "name": "BranchId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Month",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Year",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "SalesMetrics",
+            "type": "List<BranchReviewSalesMetricsDto>",
+            "required": false
+          },
+          {
+            "name": "BrandSales",
+            "type": "List<BranchReviewBrandSalesDto>",
+            "required": false
+          },
+          {
+            "name": "PVCSales",
+            "type": "List<BranchReviewPVCSalesDto>",
+            "required": false
+          },
+          {
+            "name": "Outstanding",
+            "type": "List<BranchReviewOutstandingDto>",
+            "required": false
+          },
+          {
+            "name": "TeamPerformance",
+            "type": "List<BranchReviewTeamPerformanceDto>",
+            "required": false
+          },
+          {
+            "name": "SecondaryContribution",
+            "type": "BranchReviewSecondaryContributionDto",
+            "required": false
+          },
+          {
+            "name": "DealerSecondary",
+            "type": "List<BranchReviewDealerSecondaryDto>",
+            "required": false
+          },
+          {
+            "name": "ComplaintAging",
+            "type": "List<BranchReviewComplaintAgingDto>",
+            "required": false
+          },
+          {
+            "name": "ComplaintNature",
+            "type": "List<BranchReviewComplaintNatureDto>",
+            "required": false
+          },
+          {
+            "name": "DealerPerformance",
+            "type": "List<BranchReviewDealerPerformanceDto>",
+            "required": false
+          },
+          {
+            "name": "MonthlyPlan",
+            "type": "List<BranchReviewMonthlyPlanDto>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "planner/monthly-branch-review:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update branch review report",
+      "detailed_description": "Update branch review report. It validates the request, then calls ICommon.getUserByToken, IBranchReview.GetReportByIdAsync, IBranchReview.UpdateReportAsync. Persists changes to: BranchReviewSalesMetrics: DELETE, BranchReviewBrandSales: DELETE, BranchReviewPVCSales: DELETE, BranchReviewOutstandingDetail: DELETE. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: message returned by the called service/repository (ex.Message)",
+        "not_found": "404: Report with id {id} not found. [when existing == null]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: InvalidOperationException, DbUpdateException, Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update branch review report",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "id (route)",
+          "request body BranchReviewSaveDto"
+        ],
+        "follow_up_apis": [
+          "GET api/BranchReview/report/{id}",
+          "GET api/BranchReview/complaints/{branchId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_review_update_branch_review_report",
+        "description": "Update branch review report",
+        "http_method": "PUT",
+        "endpoint": "api/BranchReview/report/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "BranchId": {
+            "type": "int",
+            "required": false,
+            "description": "Branch Id (body)"
+          },
+          "Month": {
+            "type": "string",
+            "required": false,
+            "description": "Month (body)"
+          },
+          "Year": {
+            "type": "int",
+            "required": false,
+            "description": "Year (body)"
+          },
+          "SalesMetrics": {
+            "type": "List<BranchReviewSalesMetricsDto>",
+            "required": false,
+            "description": "Sales Metrics (body)"
+          },
+          "BrandSales": {
+            "type": "List<BranchReviewBrandSalesDto>",
+            "required": false,
+            "description": "Brand Sales (body)"
+          },
+          "PVCSales": {
+            "type": "List<BranchReviewPVCSalesDto>",
+            "required": false,
+            "description": "PVC Sales (body)"
+          },
+          "Outstanding": {
+            "type": "List<BranchReviewOutstandingDto>",
+            "required": false,
+            "description": "Outstanding (body)"
+          },
+          "TeamPerformance": {
+            "type": "List<BranchReviewTeamPerformanceDto>",
+            "required": false,
+            "description": "Team Performance (body)"
+          },
+          "SecondaryContribution": {
+            "type": "BranchReviewSecondaryContributionDto",
+            "required": false,
+            "description": "Secondary Contribution (body)"
+          },
+          "DealerSecondary": {
+            "type": "List<BranchReviewDealerSecondaryDto>",
+            "required": false,
+            "description": "Dealer Secondary (body)"
+          },
+          "ComplaintAging": {
+            "type": "List<BranchReviewComplaintAgingDto>",
+            "required": false,
+            "description": "Complaint Aging (body)"
+          },
+          "ComplaintNature": {
+            "type": "List<BranchReviewComplaintNatureDto>",
+            "required": false,
+            "description": "Complaint Nature (body)"
+          },
+          "DealerPerformance": {
+            "type": "List<BranchReviewDealerPerformanceDto>",
+            "required": false,
+            "description": "Dealer Performance (body)"
+          },
+          "MonthlyPlan": {
+            "type": "List<BranchReviewMonthlyPlanDto>",
+            "required": false,
+            "description": "Monthly Plan (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/BranchReviewController.cs",
+        "action_method": "UpdateBranchReviewReport",
+        "related_dto_files": [
+          "DTOs/Request/BranchReviewSaveDto.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/BranchReviewRepo.cs",
+          "Interfaces/IBranchReview.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Update branch review report — validates the request, calls ICommon.getUserByToken, IBranchReview.GetReportByIdAsync, IBranchReview.UpdateReportAsync",
+        "preconditions": "No authentication required; route parameter(s) id must reference existing record(s); request body of type BranchReviewSaveDto; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "BranchReviewSalesMetrics: DELETE; BranchReviewBrandSales: DELETE; BranchReviewPVCSales: DELETE; BranchReviewOutstandingDetail: DELETE; BranchReviewTeamPerformance: DELETE; BranchReviewEmployeeDetails: DELETE; BranchReviewDealerSecondary: DELETE; BranchReviewComplaintAging: DELETE; (+11 more)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBranchReview.GetReportByIdAsync",
+          "IBranchReview.UpdateReportAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "BranchReviewRepo (Repository/BranchReviewRepo.cs) via IBranchReview"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Report with id {id} not found.",
+            "when": "existing == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (ex.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "branch_review_submit_branch_review",
+      "name": "Submit Branch Review",
+      "action_method": "SubmitBranchReview",
+      "http_method": "POST",
+      "route": "api/BranchReview/submit/{id}",
+      "business_purpose": "Submit branch review",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "planner/monthly-branch-review:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Submit branch review",
+      "detailed_description": "Submit branch review. It validates the request, then calls ICommon.getUserByToken, IBranchReview.SubmitReportAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid branch review ID is required. [when id <= 0]",
+        "not_found": "404: Report with id {id} not found.",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: KeyNotFoundException, Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to submit branch review",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/BranchReview/report/{id}",
+          "GET api/BranchReview/complaints/{branchId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_review_submit_branch_review",
+        "description": "Submit branch review",
+        "http_method": "POST",
+        "endpoint": "api/BranchReview/submit/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/BranchReviewController.cs",
+        "action_method": "SubmitBranchReview",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/BranchReviewRepo.cs",
+          "Interfaces/IBranchReview.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Submit branch review — validates the request, calls ICommon.getUserByToken, IBranchReview.SubmitReportAsync",
+        "preconditions": "No authentication required; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "validations": "Valid branch review ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBranchReview.SubmitReportAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "BranchReviewRepo (Repository/BranchReviewRepo.cs) via IBranchReview"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid branch review ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Report with id {id} not found.",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "branch_review_approve_branch_review",
+      "name": "Approve Branch Review",
+      "action_method": "ApproveBranchReview",
+      "http_method": "POST",
+      "route": "api/BranchReview/approve/{id}",
+      "business_purpose": "Approve branch review",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [
+        {
+          "name": "remark",
+          "type": "string",
+          "required": false
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "planner/monthly-branch-review:approve",
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Approve branch review",
+      "detailed_description": "Approve branch review. It validates the request, then calls ICommon.getUserByToken, IBranchReview.ApproveReportAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid branch review ID is required. [when id <= 0]",
+        "not_found": "404: Report with id {id} not found.",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: KeyNotFoundException, Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to approve branch review",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/BranchReview/report/{id}",
+          "GET api/BranchReview/complaints/{branchId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_review_approve_branch_review",
+        "description": "Approve branch review",
+        "http_method": "POST",
+        "endpoint": "api/BranchReview/approve/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "remark": {
+            "type": "string",
+            "required": false,
+            "description": "remark (query)"
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Approves the record and advances its workflow"
+      },
+      "source": {
+        "controller_file": "Controllers/BranchReviewController.cs",
+        "action_method": "ApproveBranchReview",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/BranchReviewRepo.cs",
+          "Interfaces/IBranchReview.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Approve branch review — validates the request, calls ICommon.getUserByToken, IBranchReview.ApproveReportAsync",
+        "preconditions": "No authentication required; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "validations": "Valid branch review ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBranchReview.ApproveReportAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "BranchReviewRepo (Repository/BranchReviewRepo.cs) via IBranchReview"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid branch review ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Report with id {id} not found.",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "branch_review_reject_branch_review",
+      "name": "Reject Branch Review",
+      "action_method": "RejectBranchReview",
+      "http_method": "POST",
+      "route": "api/BranchReview/reject/{id}",
+      "business_purpose": "Reject branch review",
+      "data_effect": "REJECTION",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [
+        {
+          "name": "remark",
+          "type": "string",
+          "required": false
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "REJECTION",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "planner/monthly-branch-review:reject",
+      "permission_flags": [
+        "reject"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Reject branch review",
+      "detailed_description": "Reject branch review. It validates the request, then calls ICommon.getUserByToken, IBranchReview.RejectReportAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid branch review ID is required. [when id <= 0]",
+        "not_found": "404: Report with id {id} not found.",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: KeyNotFoundException, Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to reject branch review",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/BranchReview/report/{id}",
+          "GET api/BranchReview/complaints/{branchId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_review_reject_branch_review",
+        "description": "Reject branch review",
+        "http_method": "POST",
+        "endpoint": "api/BranchReview/reject/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "remark": {
+            "type": "string",
+            "required": false,
+            "description": "remark (query)"
+          }
+        },
+        "operation_type": "REJECTION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Rejects the record"
+      },
+      "source": {
+        "controller_file": "Controllers/BranchReviewController.cs",
+        "action_method": "RejectBranchReview",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/BranchReviewRepo.cs",
+          "Interfaces/IBranchReview.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Reject branch review — validates the request, calls ICommon.getUserByToken, IBranchReview.RejectReportAsync",
+        "preconditions": "No authentication required; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "validations": "Valid branch review ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBranchReview.RejectReportAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "BranchReviewRepo (Repository/BranchReviewRepo.cs) via IBranchReview"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid branch review ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Report with id {id} not found.",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "branch_review_reopen_branch_review",
+      "name": "Reopen Branch Review",
+      "action_method": "ReopenBranchReview",
+      "http_method": "POST",
+      "route": "api/BranchReview/reopen/{id}",
+      "business_purpose": "Handle reopen branch review",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "planner/monthly-branch-review:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Handle reopen branch review",
+      "detailed_description": "Handle reopen branch review. It validates the request, then calls ICommon.getUserByToken, IBranchReview.ReopenReportAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid branch review ID is required. [when id <= 0]",
+        "not_found": "404: Report with id {id} not found.",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: KeyNotFoundException, Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle reopen branch review",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/BranchReview/report/{id}",
+          "GET api/BranchReview/complaints/{branchId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_review_reopen_branch_review",
+        "description": "Handle reopen branch review",
+        "http_method": "POST",
+        "endpoint": "api/BranchReview/reopen/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/BranchReviewController.cs",
+        "action_method": "ReopenBranchReview",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/BranchReviewRepo.cs",
+          "Interfaces/IBranchReview.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Handle reopen branch review — validates the request, calls ICommon.getUserByToken, IBranchReview.ReopenReportAsync",
+        "preconditions": "No authentication required; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "validations": "Valid branch review ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBranchReview.ReopenReportAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "BranchReviewRepo (Repository/BranchReviewRepo.cs) via IBranchReview"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid branch review ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Report with id {id} not found.",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "branch_review_get_tasks_by_header",
+      "name": "Get Tasks By Header",
+      "action_method": "GetTasksByHeader",
+      "http_method": "GET",
+      "route": "api/BranchReview/{headerId}/tasks",
+      "business_purpose": "Retrieve tasks by header",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [
+        {
+          "name": "headerId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/monthly-branch-review:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve tasks by header",
+      "detailed_description": "Retrieve tasks by header. It calls ITaskManagement.GetTasksByRelatedAsync. Possible responses: 200, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "None found in controller code",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve tasks by header",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "headerId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/BranchReview/report",
+          "GET api/BranchReview/list",
+          "GET api/BranchReview/report/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_review_get_tasks_by_header",
+        "description": "Retrieve tasks by header",
+        "http_method": "GET",
+        "endpoint": "api/BranchReview/{headerId}/tasks",
+        "parameters": {
+          "headerId": {
+            "type": "int",
+            "required": true,
+            "description": "header Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/BranchReviewController.cs",
+        "action_method": "GetTasksByHeader",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/TaskManagementRepo.cs",
+          "Interfaces/ITaskManagement.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Retrieve tasks by header — calls ITaskManagement.GetTasksByRelatedAsync",
+        "preconditions": "No authentication required; route parameter(s) headerId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ITaskManagement.GetTasksByRelatedAsync"
+        ],
+        "calls_repositories": [
+          "TaskManagementRepo (Repository/TaskManagementRepo.cs) via ITaskManagement"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "branch_review_create_task",
+      "name": "Create Task",
+      "action_method": "CreateTask",
+      "http_method": "POST",
+      "route": "api/BranchReview/create-task",
+      "business_purpose": "Create task",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "TaskManagementCreateDto",
+        "properties": [
+          {
+            "name": "title",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "due_date",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "progress_percentage",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "status",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "related_id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "assigned_user_id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "assigned_user_ids",
+            "type": "List<int>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "planner/monthly-branch-review:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Create task",
+      "detailed_description": "Create task. It validates the request, then calls ICommon.getUserByToken, ICommon.GetUserById, ITaskManagement.CreateTaskAsync. Persists changes to: TaskManagement: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Task title is required [when string.IsNullOrWhiteSpace(dto.title)]; At least one assigned user is required [when dto.assigned_user_ids == null || !dto.assigned_user_ids.Any()]; Assigned user with id {userId} not found [when assignedUser == null]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create task",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "request body TaskManagementCreateDto"
+        ],
+        "follow_up_apis": [
+          "GET api/BranchReview/report",
+          "GET api/BranchReview/list",
+          "GET api/BranchReview/complaint-nature-details"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_review_create_task",
+        "description": "Create task",
+        "http_method": "POST",
+        "endpoint": "api/BranchReview/create-task",
+        "parameters": {
+          "title": {
+            "type": "string",
+            "required": false,
+            "description": "title (body)"
+          },
+          "description": {
+            "type": "string",
+            "required": false,
+            "description": "description (body)"
+          },
+          "due_date": {
+            "type": "datetime",
+            "required": false,
+            "description": "due date (body)"
+          },
+          "progress_percentage": {
+            "type": "int",
+            "required": false,
+            "description": "progress percentage (body)"
+          },
+          "status": {
+            "type": "string",
+            "required": false,
+            "description": "status (body)"
+          },
+          "related_id": {
+            "type": "int",
+            "required": false,
+            "description": "related id (body)"
+          },
+          "assigned_user_id": {
+            "type": "int",
+            "required": false,
+            "description": "assigned user id (body)"
+          },
+          "assigned_user_ids": {
+            "type": "List<int>",
+            "required": false,
+            "description": "assigned user ids (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/BranchReviewController.cs",
+        "action_method": "CreateTask",
+        "related_dto_files": [
+          "DTOs/Request/TaskManagementDto.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/TaskManagementRepo.cs",
+          "Interfaces/ITaskManagement.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Create task — validates the request, calls ICommon.getUserByToken, ICommon.GetUserById, ITaskManagement.CreateTaskAsync",
+        "preconditions": "No authentication required; request body of type TaskManagementCreateDto; passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "TaskManagement: INSERT",
+        "validations": "Task title is required; At least one assigned user is required; Assigned user with id {userId} not found",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.GetUserById",
+          "ITaskManagement.CreateTaskAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "TaskManagementRepo (Repository/TaskManagementRepo.cs) via ITaskManagement"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Task title is required",
+            "when": "string.IsNullOrWhiteSpace(dto.title)"
+          },
+          {
+            "returns": 400,
+            "message": "At least one assigned user is required",
+            "when": "dto.assigned_user_ids == null || !dto.assigned_user_ids.Any()"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Assigned user with id {userId} not found",
+            "when": "assignedUser == null"
+          }
+        ]
+      }
+    }
+  ]
+}

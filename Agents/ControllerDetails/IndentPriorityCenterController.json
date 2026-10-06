@@ -1,0 +1,346 @@
+{
+  "controller": "IndentPriorityCenterController",
+  "file": "Controllers/IndentPriorityCenterController.cs",
+  "module": "Indent Clubbing and Priority",
+  "base_route": "api/IndentPriorityCenter",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles indent priority center: set order priority, get all",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "ims/indent-priority-center",
+        "module_code": "ims",
+        "section": "indent-priority-center",
+        "sub_section": null,
+        "frontend_routes": [
+          "/ims/indent-priority-center"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "indent_priority_center_set_order_priority",
+      "name": "Set Order Priority",
+      "action_method": "SetOrderPriority",
+      "http_method": "POST",
+      "route": "api/IndentPriorityCenter/set-order-priority",
+      "business_purpose": "Set order priority",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "List<SetOrderPriorityDto> (inline)",
+        "properties": [
+          {
+            "name": "IndentId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "IndentPriority",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "IndentOrder",
+            "type": "float",
+            "required": false
+          }
+        ],
+        "is_collection": true
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "ims/indent-priority-center:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Set order priority",
+      "detailed_description": "Set order priority. It validates the request, then calls ICommon.getUserByToken, IIndentPriorityCenter.GetIndentHeaderById, IIndentPriorityCenter.SaveChangesAsync. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Request data is empty [when data == null || !data.Any()]; Indent ID(s) not found: {string.Join( [when invalidIndentIds.Any()]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Authorization token missing [when string.IsNullOrEmpty(token)]; Invalid or expired token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to set order priority",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body List<SetOrderPriorityDto> (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/IndentPriorityCenter"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "indent_priority_center_set_order_priority",
+        "description": "Set order priority",
+        "http_method": "POST",
+        "endpoint": "api/IndentPriorityCenter/set-order-priority",
+        "parameters": {
+          "IndentId": {
+            "type": "int",
+            "required": false,
+            "description": "Indent Id (body)"
+          },
+          "IndentPriority": {
+            "type": "int",
+            "required": false,
+            "description": "Indent Priority (body)"
+          },
+          "IndentOrder": {
+            "type": "float",
+            "required": false,
+            "description": "Indent Order (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/IndentPriorityCenterController.cs",
+        "action_method": "SetOrderPriority",
+        "related_dto_files": [
+          "Controllers/IndentPriorityCenterController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/IndentPriorityCenter_repo.cs",
+          "Interfaces/IIndentPriorityCenter.cs"
+        ]
+      },
+      "module": "Indent Clubbing and Priority",
+      "business_logic": {
+        "operation_summary": "Set order priority — validates the request, calls ICommon.getUserByToken, IIndentPriorityCenter.GetIndentHeaderById, IIndentPriorityCenter.SaveChangesAsync",
+        "preconditions": "Valid Bearer JWT; request body of type List<SetOrderPriorityDto> (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets indent.priority, indent.priority_order and saves changes",
+        "validations": "Request data is empty; Indent ID(s) not found: {string.Join(",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndentPriorityCenter.GetIndentHeaderById",
+          "IIndentPriorityCenter.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IndentPriorityCenter_repo (Repositories/IndentPriorityCenter_repo.cs) via IIndentPriorityCenter"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Authorization token missing",
+            "when": "string.IsNullOrEmpty(token)"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid or expired token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Request data is empty",
+            "when": "data == null || !data.Any()"
+          },
+          {
+            "returns": 400,
+            "message": "Indent ID(s) not found: {string.Join(",
+            "when": "invalidIndentIds.Any()"
+          }
+        ]
+      }
+    },
+    {
+      "id": "indent_priority_center_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/IndentPriorityCenter",
+      "business_purpose": "Retrieve all indent priority center records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ims/indent-priority-center:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all indent priority center records",
+      "detailed_description": "Retrieve all indent priority center records. It calls ICommon.getUserByToken, IIndentPriorityCenter.GetIndentPriorityCenterData, IIndentPriorityCenter.GetIndentPriorityCenterActions. Data access uses stored procedure(s): GetIndentPriorityCenter. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all indent priority center records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/IndentPriorityCenter"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "indent_priority_center_get_all",
+        "description": "Retrieve all indent priority center records",
+        "http_method": "GET",
+        "endpoint": "api/IndentPriorityCenter",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IndentPriorityCenterController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/IndentPriorityCenter_repo.cs",
+          "Interfaces/IIndentPriorityCenter.cs"
+        ]
+      },
+      "module": "Indent Clubbing and Priority",
+      "business_logic": {
+        "operation_summary": "Retrieve all indent priority center records — calls ICommon.getUserByToken, IIndentPriorityCenter.GetIndentPriorityCenterData, IIndentPriorityCenter.GetIndentPriorityCenterActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndentPriorityCenter.GetIndentPriorityCenterData",
+          "IIndentPriorityCenter.GetIndentPriorityCenterActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IndentPriorityCenter_repo (Repositories/IndentPriorityCenter_repo.cs) via IIndentPriorityCenter"
+        ],
+        "stored_procedures": [
+          "GetIndentPriorityCenter"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    }
+  ]
+}

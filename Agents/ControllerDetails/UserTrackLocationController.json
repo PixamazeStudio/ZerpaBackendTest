@@ -1,0 +1,164 @@
+{
+  "controller": "UserTrackLocationController",
+  "file": "Controllers/UserTrackLocationController.cs",
+  "module": "User and Access Management",
+  "base_route": "api/UserTrackLocation",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles user track location: create user track location",
+  "menu_permission": {
+    "status": "not referenced by frontend",
+    "menu_keys": [],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "user_track_location_create_user_track_location",
+      "name": "Create User Track Location",
+      "action_method": "CreateUserTrackLocation",
+      "http_method": "POST",
+      "route": "api/UserTrackLocation",
+      "business_purpose": "Create user track location",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateUserTrackLocationRequest (inline)",
+        "properties": [
+          {
+            "name": "latitude",
+            "type": "double",
+            "required": false
+          },
+          {
+            "name": "longitude",
+            "type": "double",
+            "required": false
+          },
+          {
+            "name": "time",
+            "type": "TimeSpan",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Create user track location",
+      "detailed_description": "Create user track location. It validates the request, then calls ICommon.getUserByToken, IUserTrackLocationRepository.CreateUserTrackLocationAsync. Persists changes to: UserTrackLocation: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create user track location",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateUserTrackLocationRequest (inline)"
+        ],
+        "follow_up_apis": []
+      },
+      "llm_tool_definition": {
+        "name": "user_track_location_create_user_track_location",
+        "description": "Create user track location",
+        "http_method": "POST",
+        "endpoint": "api/UserTrackLocation",
+        "parameters": {
+          "latitude": {
+            "type": "double",
+            "required": false,
+            "description": "latitude (body)"
+          },
+          "longitude": {
+            "type": "double",
+            "required": false,
+            "description": "longitude (body)"
+          },
+          "time": {
+            "type": "TimeSpan",
+            "required": false,
+            "description": "time (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/UserTrackLocationController.cs",
+        "action_method": "CreateUserTrackLocation",
+        "related_dto_files": [
+          "Controllers/UserTrackLocationController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/UserTrackLocationRepository.cs",
+          "Interfaces/IUserTrackLocationRepository.cs"
+        ]
+      },
+      "module": "User and Access Management",
+      "business_logic": {
+        "operation_summary": "Create user track location — validates the request, calls ICommon.getUserByToken, IUserTrackLocationRepository.CreateUserTrackLocationAsync",
+        "preconditions": "Valid Bearer JWT; request body of type CreateUserTrackLocationRequest (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "UserTrackLocation: INSERT",
+        "validations": "ModelState (DTO data-annotation) validation; Invalid data provided.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IUserTrackLocationRepository.CreateUserTrackLocationAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "UserTrackLocationRepository (Repositories/UserTrackLocationRepository.cs) via IUserTrackLocationRepository"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    }
+  ]
+}

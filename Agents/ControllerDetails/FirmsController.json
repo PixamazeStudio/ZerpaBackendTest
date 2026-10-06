@@ -1,0 +1,1802 @@
+{
+  "controller": "FirmsController",
+  "file": "Controllers/FirmsController.cs",
+  "base_route": "api/Firms",
+  "description": "Client and firm management",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "crm/firms",
+        "module_code": "crm",
+        "section": "firms",
+        "sub_section": null,
+        "frontend_routes": [
+          "/crm/firms",
+          "/crm/firms/create-firms",
+          "/crm/firms/edit-firms/:firmId",
+          "/crm/firms/view-firms/:id"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "Firms"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "fir_001",
+      "name": "GetAllFirms",
+      "http_method": "GET",
+      "route": "api/Firms",
+      "business_purpose": "GET operation for FirmsController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [
+          "GetFirms",
+          "GetFirmCards"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FirmsController.cs",
+        "action_method": "GetAllFirms"
+      },
+      "required_permission": "crm/firms:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "GET operation for FirmsController",
+      "detailed_description": "GET operation for FirmsController. It calls ICommon.getUserByToken, IFirms.GetFirmData, IFirms.GetFirmCards. Data access uses stored procedure(s): GetFirms, GetFirmCards. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to GET operation for firmscontroller",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Firms",
+          "GET api/Firms/{id}",
+          "GET api/Firms/areas/{region_id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "firms_get_all_firms",
+        "description": "GET operation for FirmsController",
+        "http_method": "GET",
+        "endpoint": "api/Firms",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "fir_002",
+      "name": "CreateClient",
+      "http_method": "POST",
+      "route": "api/Firms",
+      "business_purpose": "POST operation for FirmsController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "CREATE/UPDATE/DELETE",
+      "business_logic": {
+        "operation_summary": "POST operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "Client: INSERT; ComplaintsFile: INSERT",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "ClientName is empty",
+            "when": "string.IsNullOrWhiteSpace(request.ClientName)"
+          },
+          {
+            "returns": 400,
+            "message": "Region and Area are required",
+            "when": "request.RegionId <= 0 || request.AreaId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Client type is required",
+            "when": "request.ClientTypeId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Client not found",
+            "when": "client == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Organization",
+            "when": "organizations.Count != organizationIds.Count"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Influencer Source",
+            "when": "source == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Buying Trigger Type",
+            "when": "triggers.Count != buyingTriggerIds.Count"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Work Type",
+            "when": "workTypes.Count != workTypeIds.Count"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Project Type",
+            "when": "projectTypes.Count != projectTypeIds.Count"
+          },
+          {
+            "returns": 409,
+            "message": "Duplicate client found",
+            "when": null
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FirmsController.cs",
+        "action_method": "CreateClient"
+      },
+      "required_permission": "crm/firms:delete",
+      "permission_flags": [
+        "delete",
+        "add",
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "POST operation for FirmsController",
+      "detailed_description": "POST operation for FirmsController. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IClient.GetClientById, IClient.GetInfluencerSourceByID, then processes uploaded files. Persists changes to: Client: INSERT, ComplaintsFile: INSERT. Possible responses: 200, 400, 401, 404, 409, 500.",
+      "error_handling": {
+        "validation_errors": "400: ClientName is empty [when string.IsNullOrWhiteSpace(request.ClientName)]; Region and Area are required [when request.RegionId <= 0 || request.AreaId <= 0]; Client type is required [when request.ClientTypeId <= 0]; Client not found [when client == null]; Invalid Organization [when organizations.Count != organizationIds.Count]; Invalid Influencer Source [when source == null]; (+3 more)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]; Invalid token [when currentUser == null]",
+        "business_rule_errors": "Duplicate client found",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to POST operation for firmscontroller",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Firms",
+          "GET api/Firms/GetMasterDropdowns",
+          "GET api/Firms/region"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "firms_create_client",
+        "description": "POST operation for FirmsController",
+        "http_method": "POST",
+        "endpoint": "api/Firms",
+        "parameters": {},
+        "operation_type": "CREATE/UPDATE/DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "fir_003",
+      "name": "DeleteFirm",
+      "http_method": "DELETE",
+      "route": "api/Firms/{id}",
+      "business_purpose": "DELETE operation for FirmsController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "CREATE/UPDATE/DELETE",
+      "business_logic": {
+        "operation_summary": "DELETE operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "Client: UPDATE; sets firm.is_deleted, firm.modified_date, firm.modified_by and saves changes",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid firm ID provided.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Firm not found.",
+            "when": "firm == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FirmsController.cs",
+        "action_method": "DeleteFirm"
+      },
+      "required_permission": "crm/firms:delete",
+      "permission_flags": [
+        "delete",
+        "add",
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "DELETE operation for FirmsController",
+      "detailed_description": "DELETE operation for FirmsController. It validates the request, then calls ICommon.getUserByToken, IFirms.GetFirmByIdAsync, IFirms.UpdateFirmAsync. Persists changes to: Client: UPDATE. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid firm ID provided. [when id <= 0]",
+        "not_found": "404: Firm not found. [when firm == null]",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to DELETE operation for firmscontroller",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Firms",
+          "GET api/Firms/GetMasterDropdowns",
+          "GET api/Firms/region"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "firms_delete_firm",
+        "description": "DELETE operation for FirmsController",
+        "http_method": "DELETE",
+        "endpoint": "api/Firms/{id}",
+        "parameters": {},
+        "operation_type": "CREATE/UPDATE/DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "fir_004",
+      "name": "FirmApproval",
+      "http_method": "POST",
+      "route": "api/Firms/approval",
+      "business_purpose": "POST operation for FirmsController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "CREATE/UPDATE/DELETE",
+      "business_logic": {
+        "operation_summary": "POST operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "Client: UPDATE; sets client.is_approved, client.is_rejected, client.operated_by, client.operated_date, client.modified_by, client.modified_date and saves changes",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid firm ID provided.",
+            "when": "request.Id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Firm not found.",
+            "when": "client == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FirmsController.cs",
+        "action_method": "FirmApproval"
+      },
+      "required_permission": "crm/firms:delete",
+      "permission_flags": [
+        "delete",
+        "add",
+        "edit"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "POST operation for FirmsController",
+      "detailed_description": "POST operation for FirmsController. It validates the request, then calls ICommon.getUserByToken, IFirms.GetFirmByIdAsync, IFirms.UpdateFirmAsync. Persists changes to: Client: UPDATE. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid firm ID provided. [when request.Id <= 0]",
+        "not_found": "404: Firm not found. [when client == null]",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to POST operation for firmscontroller",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Firms",
+          "GET api/Firms/GetMasterDropdowns",
+          "GET api/Firms/region"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "firms_firm_approval",
+        "description": "POST operation for FirmsController",
+        "http_method": "POST",
+        "endpoint": "api/Firms/approval",
+        "parameters": {},
+        "operation_type": "CREATE/UPDATE/DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "fir_005",
+      "name": "FirmReject",
+      "http_method": "POST",
+      "route": "api/Firms/rejection",
+      "business_purpose": "POST operation for FirmsController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "CREATE/UPDATE/DELETE",
+      "business_logic": {
+        "operation_summary": "POST operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "Client: UPDATE; sets client.is_rejected, client.is_approved, client.operated_by, client.operated_date, client.modified_by, client.modified_date and saves changes",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid firm ID provided.",
+            "when": "request.Id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Firm not found.",
+            "when": "client == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FirmsController.cs",
+        "action_method": "FirmReject"
+      },
+      "required_permission": "crm/firms:delete",
+      "permission_flags": [
+        "delete",
+        "add",
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "POST operation for FirmsController",
+      "detailed_description": "POST operation for FirmsController. It validates the request, then calls ICommon.getUserByToken, IFirms.GetFirmByIdAsync, IFirms.UpdateFirmAsync. Persists changes to: Client: UPDATE. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid firm ID provided. [when request.Id <= 0]",
+        "not_found": "404: Firm not found. [when client == null]",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to POST operation for firmscontroller",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Firms",
+          "GET api/Firms/GetMasterDropdowns",
+          "GET api/Firms/region"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "firms_firm_reject",
+        "description": "POST operation for FirmsController",
+        "http_method": "POST",
+        "endpoint": "api/Firms/rejection",
+        "parameters": {},
+        "operation_type": "CREATE/UPDATE/DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "fir_006",
+      "name": "GetById",
+      "http_method": "GET",
+      "route": "api/Firms/{id}",
+      "business_purpose": "GET operation for FirmsController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid firm ID provided.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Client not found",
+            "when": "client == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FirmsController.cs",
+        "action_method": "GetById"
+      },
+      "required_permission": "crm/firms:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "GET operation for FirmsController",
+      "detailed_description": "GET operation for FirmsController. It validates the request, then calls ICommon.getUserByToken, IClient.GetClientById, IClient.GetAllProjectsByClientAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid firm ID provided. [when id <= 0]",
+        "not_found": "404: Client not found [when client == null]",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to GET operation for firmscontroller",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Firms",
+          "GET api/Firms/{id}",
+          "GET api/Firms/areas/{region_id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "firms_get_by_id",
+        "description": "GET operation for FirmsController",
+        "http_method": "GET",
+        "endpoint": "api/Firms/{id}",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "fir_007",
+      "name": "RelatedClientDelete",
+      "http_method": "DELETE",
+      "route": "api/Firms/related-client/{id}",
+      "business_purpose": "DELETE operation for FirmsController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "CREATE/UPDATE/DELETE",
+      "business_logic": {
+        "operation_summary": "DELETE operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "sets related_client.is_deleted, related_client.modified_date, related_client.modified_by and saves changes",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid linked team ID provided.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Related client not found.",
+            "when": "related_client == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FirmsController.cs",
+        "action_method": "RelatedClientDelete"
+      },
+      "required_permission": "crm/firms:delete",
+      "permission_flags": [
+        "delete",
+        "add",
+        "edit"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "DELETE operation for FirmsController",
+      "detailed_description": "DELETE operation for FirmsController. It validates the request, then calls ICommon.getUserByToken, IClient.GetLinkedTeamById, IClient.SaveChangesAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid linked team ID provided. [when id <= 0]",
+        "not_found": "404: Related client not found. [when related_client == null]",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to DELETE operation for firmscontroller",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Firms",
+          "GET api/Firms/GetMasterDropdowns",
+          "GET api/Firms/region"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "firms_related_client_delete",
+        "description": "DELETE operation for FirmsController",
+        "http_method": "DELETE",
+        "endpoint": "api/Firms/related-client/{id}",
+        "parameters": {},
+        "operation_type": "CREATE/UPDATE/DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "fir_008",
+      "name": "RelatedDealerDelete",
+      "http_method": "DELETE",
+      "route": "api/Firms/related-dealer/{id}",
+      "business_purpose": "DELETE operation for FirmsController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "CREATE/UPDATE/DELETE",
+      "business_logic": {
+        "operation_summary": "DELETE operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "sets related_dealer.is_deleted, related_dealer.modified_date, related_dealer.modified_by and saves changes",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid linked dealer ID provided.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Related dealer not found.",
+            "when": "related_dealer == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FirmsController.cs",
+        "action_method": "RelatedDealerDelete"
+      },
+      "required_permission": "crm/firms:delete",
+      "permission_flags": [
+        "delete",
+        "add",
+        "edit"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "DELETE operation for FirmsController",
+      "detailed_description": "DELETE operation for FirmsController. It validates the request, then calls ICommon.getUserByToken, IClient.GetLinkedDealerById, IClient.SaveChangesAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid linked dealer ID provided. [when id <= 0]",
+        "not_found": "404: Related dealer not found. [when related_dealer == null]",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to DELETE operation for firmscontroller",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Firms",
+          "GET api/Firms/GetMasterDropdowns",
+          "GET api/Firms/region"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "firms_related_dealer_delete",
+        "description": "DELETE operation for FirmsController",
+        "http_method": "DELETE",
+        "endpoint": "api/Firms/related-dealer/{id}",
+        "parameters": {},
+        "operation_type": "CREATE/UPDATE/DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "fir_009",
+      "name": "RelatedProductDelete",
+      "http_method": "DELETE",
+      "route": "api/Firms/related-product/{id}",
+      "business_purpose": "DELETE operation for FirmsController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "CREATE/UPDATE/DELETE",
+      "business_logic": {
+        "operation_summary": "DELETE operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "sets related_product.is_deleted, related_product.modified_date, related_product.modified_by and saves changes",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid linked product ID provided.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Related product not found.",
+            "when": "related_product == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FirmsController.cs",
+        "action_method": "RelatedProductDelete"
+      },
+      "required_permission": "crm/firms:delete",
+      "permission_flags": [
+        "delete",
+        "add",
+        "edit"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "DELETE operation for FirmsController",
+      "detailed_description": "DELETE operation for FirmsController. It validates the request, then calls ICommon.getUserByToken, IClient.GetLinkedProductById, IClient.SaveChangesAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid linked product ID provided. [when id <= 0]",
+        "not_found": "404: Related product not found. [when related_product == null]",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to DELETE operation for firmscontroller",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Firms",
+          "GET api/Firms/GetMasterDropdowns",
+          "GET api/Firms/region"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "firms_related_product_delete",
+        "description": "DELETE operation for FirmsController",
+        "http_method": "DELETE",
+        "endpoint": "api/Firms/related-product/{id}",
+        "parameters": {},
+        "operation_type": "CREATE/UPDATE/DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "fir_010",
+      "name": "CreateFirmEmployees",
+      "http_method": "POST",
+      "route": "api/Firms/employees",
+      "business_purpose": "POST operation for FirmsController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "CREATE/UPDATE/DELETE",
+      "business_logic": {
+        "operation_summary": "POST operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "Client: INSERT",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid firm ID provided.",
+            "when": "request.FirmId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "No employees provided.",
+            "when": "request.Employees == null || !request.Employees.Any()"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Firm not found with ID: {request.FirmId}",
+            "when": "firm == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FirmsController.cs",
+        "action_method": "CreateFirmEmployees"
+      },
+      "required_permission": "crm/firms:delete",
+      "permission_flags": [
+        "delete",
+        "add",
+        "edit"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "POST operation for FirmsController",
+      "detailed_description": "POST operation for FirmsController. It validates the request, then calls ICommon.getUserByToken, IClient.GetClientById, IClient.CreateClient. Persists changes to: Client: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; Invalid firm ID provided. [when request.FirmId <= 0]; No employees provided. [when request.Employees == null || !request.Employees.Any()]",
+        "not_found": "404: Firm not found with ID: {request.FirmId} [when firm == null]",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to POST operation for firmscontroller",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Firms",
+          "GET api/Firms/GetMasterDropdowns",
+          "GET api/Firms/region"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "firms_create_firm_employees",
+        "description": "POST operation for FirmsController",
+        "http_method": "POST",
+        "endpoint": "api/Firms/employees",
+        "parameters": {},
+        "operation_type": "CREATE/UPDATE/DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "fir_011",
+      "name": "DeleteFirmEmployee",
+      "http_method": "DELETE",
+      "route": "api/Firms/DeleteFirmEmployee/{employeeId}",
+      "business_purpose": "DELETE operation for FirmsController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "CREATE/UPDATE/DELETE",
+      "business_logic": {
+        "operation_summary": "DELETE operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "sets employee.is_deleted, employee.modified_date, employee.modified_by and saves changes",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid employee ID provided.",
+            "when": "employeeId <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Employee not found.",
+            "when": "employee == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid employee: This record does not appear to be an employee (missing firm_id).",
+            "when": "employee.firm_id == null || employee.firm_id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Cannot delete: This is a firm record, not an employee.",
+            "when": "employee.Class_type == \"Firm\""
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FirmsController.cs",
+        "action_method": "DeleteFirmEmployee"
+      },
+      "required_permission": "crm/firms:delete",
+      "permission_flags": [
+        "delete",
+        "add",
+        "edit"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "DELETE operation for FirmsController",
+      "detailed_description": "DELETE operation for FirmsController. It validates the request, then calls ICommon.getUserByToken, IClient.GetClientById, IClient.SaveChangesAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid employee ID provided. [when employeeId <= 0]; Invalid employee: This record does not appear to be an employee (missing firm_id). [when employee.firm_id == null || employee.firm_id <= 0]; Cannot delete: This is a firm record, not an employee. [when employee.Class_type == \"Firm\"]",
+        "not_found": "404: Employee not found. [when employee == null]",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to DELETE operation for firmscontroller",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Firms",
+          "GET api/Firms/GetMasterDropdowns",
+          "GET api/Firms/region"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "firms_delete_firm_employee",
+        "description": "DELETE operation for FirmsController",
+        "http_method": "DELETE",
+        "endpoint": "api/Firms/DeleteFirmEmployee/{employeeId}",
+        "parameters": {},
+        "operation_type": "CREATE/UPDATE/DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "fir_012",
+      "name": "GetAreas",
+      "http_method": "GET",
+      "route": "api/Firms/areas/{region_id}",
+      "business_purpose": "GET operation for FirmsController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "No Area found",
+            "when": "areas == null || !areas.Any()"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FirmsController.cs",
+        "action_method": "GetAreas"
+      },
+      "required_permission": "crm/firms:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "GET operation for FirmsController",
+      "detailed_description": "GET operation for FirmsController. It calls ICommon.getUserByToken, ICommon.GetAllArea. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No Area found [when areas == null || !areas.Any()]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to GET operation for firmscontroller",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Firms",
+          "GET api/Firms/{id}",
+          "GET api/Firms/areas/{region_id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "firms_get_areas",
+        "description": "GET operation for FirmsController",
+        "http_method": "GET",
+        "endpoint": "api/Firms/areas/{region_id}",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "fir_013",
+      "name": "GetSubAreas",
+      "http_method": "GET",
+      "route": "api/Firms/subareas/{region_id}/{area_id}",
+      "business_purpose": "GET operation for FirmsController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "No sub area found",
+            "when": "sub_areas == null || !sub_areas.Any()"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FirmsController.cs",
+        "action_method": "GetSubAreas"
+      },
+      "required_permission": "crm/firms:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "GET operation for FirmsController",
+      "detailed_description": "GET operation for FirmsController. It calls ICommon.getUserByToken, ICommon.GetAllSubArea. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No sub area found [when sub_areas == null || !sub_areas.Any()]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to GET operation for firmscontroller",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Firms",
+          "GET api/Firms/{id}",
+          "GET api/Firms/areas/{region_id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "firms_get_sub_areas",
+        "description": "GET operation for FirmsController",
+        "http_method": "GET",
+        "endpoint": "api/Firms/subareas/{region_id}/{area_id}",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "fir_014",
+      "name": "GetMasterDropdowns",
+      "http_method": "GET",
+      "route": "api/Firms/GetMasterDropdowns",
+      "business_purpose": "GET operation for FirmsController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FirmsController.cs",
+        "action_method": "GetMasterDropdowns"
+      },
+      "required_permission": "crm/firms:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "GET operation for FirmsController",
+      "detailed_description": "GET operation for FirmsController. It calls IFirms.GetMasterDropdownsAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to GET operation for firmscontroller",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Firms",
+          "GET api/Firms/{id}",
+          "GET api/Firms/areas/{region_id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "firms_get_master_dropdowns",
+        "description": "GET operation for FirmsController",
+        "http_method": "GET",
+        "endpoint": "api/Firms/GetMasterDropdowns",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "fir_015",
+      "name": "GetRegions",
+      "http_method": "GET",
+      "route": "api/Firms/region",
+      "business_purpose": "GET operation for FirmsController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "No Region found",
+            "when": "regions == null || !regions.Any()"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FirmsController.cs",
+        "action_method": "GetRegions"
+      },
+      "required_permission": "crm/firms:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "GET operation for FirmsController",
+      "detailed_description": "GET operation for FirmsController. It calls ICommon.getUserByToken, IFirms.GetRegionsAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No Region found [when regions == null || !regions.Any()]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to GET operation for firmscontroller",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Firms",
+          "GET api/Firms/{id}",
+          "GET api/Firms/areas/{region_id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "firms_get_regions",
+        "description": "GET operation for FirmsController",
+        "http_method": "GET",
+        "endpoint": "api/Firms/region",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "fir_016",
+      "name": "UpdateClient",
+      "http_method": "PUT",
+      "route": "api/Firms/{clientId}",
+      "business_purpose": "PUT operation for FirmsController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "CREATE/UPDATE/DELETE",
+      "business_logic": {
+        "operation_summary": "PUT operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "ComplaintsFile: INSERT; sets client.Name, client.Contact, client.Email, client.Address, client.DOB, client.region and saves changes",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid client ID is required",
+            "when": "clientId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field must be provided for update",
+            "when": null
+          },
+          {
+            "returns": 404,
+            "message": "Client not found",
+            "when": "client == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Organization",
+            "when": "organizations.Count != organizationIds.Count"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Buying Trigger Type",
+            "when": "triggers.Count != buyingTriggerIds.Count"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Work Type",
+            "when": "workTypes.Count != workTypeIds.Count"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Project Type",
+            "when": "projectTypes.Count != projectTypeIds.Count"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FirmsController.cs",
+        "action_method": "UpdateClient"
+      },
+      "required_permission": "crm/firms:delete",
+      "permission_flags": [
+        "delete",
+        "add",
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "PUT operation for FirmsController",
+      "detailed_description": "PUT operation for FirmsController. It validates the request, then calls ICommon.getUserByToken, IClient.GetClientById, IClient.GetRegionByID, then processes uploaded files. Persists changes to: ComplaintsFile: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid client ID is required [when clientId <= 0]; At least one field must be provided for update; Invalid Organization [when organizations.Count != organizationIds.Count]; Invalid Buying Trigger Type [when triggers.Count != buyingTriggerIds.Count]; Invalid Work Type [when workTypes.Count != workTypeIds.Count]; Invalid Project Type [when projectTypes.Count != projectTypeIds.Count]",
+        "not_found": "404: Client not found [when client == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to PUT operation for firmscontroller",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Firms",
+          "GET api/Firms/GetMasterDropdowns",
+          "GET api/Firms/region"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "firms_update_client",
+        "description": "PUT operation for FirmsController",
+        "http_method": "PUT",
+        "endpoint": "api/Firms/{clientId}",
+        "parameters": {},
+        "operation_type": "CREATE/UPDATE/DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "fir_017",
+      "name": "GetByIdForInfluencerView",
+      "http_method": "GET",
+      "route": "api/Firms/InfluencerView",
+      "business_purpose": "GET operation for FirmsController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid client ID provided.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Client not found",
+            "when": "firm == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FirmsController.cs",
+        "action_method": "GetByIdForInfluencerView"
+      },
+      "required_permission": "crm/firms:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "GET operation for FirmsController",
+      "detailed_description": "GET operation for FirmsController. It validates the request, then calls ICommon.getUserByToken, IFirms.GetFirmById, IFirms.GetAllClientTypesByClientAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid client ID provided. [when id <= 0]",
+        "not_found": "404: Client not found [when firm == null]",
+        "unauthorized": "401/403: Unauthorized [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to GET operation for firmscontroller",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Firms",
+          "GET api/Firms/{id}",
+          "GET api/Firms/areas/{region_id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "firms_get_by_id_for_influencer_view",
+        "description": "GET operation for FirmsController",
+        "http_method": "GET",
+        "endpoint": "api/Firms/InfluencerView",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    }
+  ]
+}

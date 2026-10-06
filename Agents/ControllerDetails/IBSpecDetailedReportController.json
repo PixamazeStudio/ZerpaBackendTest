@@ -1,0 +1,250 @@
+{
+  "controller": "IBSpecDetailedReportController",
+  "file": "Controllers/IBSpecDetailedReportController.cs",
+  "module": "Reporting",
+  "base_route": "api/IBSpecDetailedReport",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles IB spec detailed report: get all",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "rpt/ib-reports/ib-spec-detailed-report",
+        "module_code": "rpt",
+        "section": "ib-reports",
+        "sub_section": "ib-spec-detailed-report",
+        "frontend_routes": [
+          "/rpt/ib-reports/ib-spec-detailed-report"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "IBSpecDetailedReport"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "ib_spec_detailed_report_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/IBSpecDetailedReport",
+      "business_purpose": "Retrieve all IB spec detailed report records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "p_area",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        },
+        {
+          "name": "pstatus",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        },
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "\"this_month\""
+        },
+        {
+          "name": "user",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        },
+        {
+          "name": "assigneduser",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        },
+        {
+          "name": "input_text",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/ib-reports/ib-spec-detailed-report:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all IB spec detailed report records",
+      "detailed_description": "Retrieve all IB spec detailed report records. It calls ICommon.getUserByToken, IIBSpecDetailedReport.GetActions, IIBSpecDetailedReport.GetAllProjectsByUsersPaginated. Data access uses stored procedure(s): GetSectionActions, GetAllProjectsByUsers_API. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: (no message) [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all IB spec detailed report records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/IBSpecDetailedReport"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "ib_spec_detailed_report_get_all",
+        "description": "Retrieve all IB spec detailed report records",
+        "http_method": "GET",
+        "endpoint": "api/IBSpecDetailedReport",
+        "parameters": {
+          "p_area": {
+            "type": "int",
+            "required": false,
+            "description": "p area (query)"
+          },
+          "pstatus": {
+            "type": "int",
+            "required": false,
+            "description": "pstatus (query)"
+          },
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "date range (query)"
+          },
+          "user": {
+            "type": "int",
+            "required": false,
+            "description": "user (query)"
+          },
+          "assigneduser": {
+            "type": "int",
+            "required": false,
+            "description": "assigneduser (query)"
+          },
+          "input_text": {
+            "type": "string",
+            "required": false,
+            "description": "input text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IBSpecDetailedReportController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/IBSpecDetailedReport_repo.cs",
+          "Interfaces/IIBSpecDetailedReport.cs"
+        ]
+      },
+      "module": "Reporting",
+      "business_logic": {
+        "operation_summary": "Retrieve all IB spec detailed report records — calls ICommon.getUserByToken, IIBSpecDetailedReport.GetActions, IIBSpecDetailedReport.GetAllProjectsByUsersPaginated",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIBSpecDetailedReport.GetActions",
+          "IIBSpecDetailedReport.GetAllProjectsByUsersPaginated",
+          "IIBSpecDetailedReport.GetAllArea",
+          "ICommon.GetAllChannelUsers",
+          "ICommon.GetAllIBUsers",
+          "IIBSpecDetailedReport.GetAllProjectStatus"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IBSpecDetailedReport_repo (Repositories/IBSpecDetailedReport_repo.cs) via IIBSpecDetailedReport"
+        ],
+        "stored_procedures": [
+          "GetSectionActions",
+          "GetAllProjectsByUsers_API"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": null,
+            "when": "current_user == null"
+          }
+        ]
+      }
+    }
+  ]
+}
