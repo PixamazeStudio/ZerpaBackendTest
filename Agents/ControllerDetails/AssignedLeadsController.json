@@ -1,0 +1,335 @@
+{
+  "controller": "AssignedLeadsController",
+  "file": "Controllers/AssignedLeadsController.cs",
+  "module": "Lead and Client Management",
+  "base_route": "api/AssignedLeads",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles assigned leads: get assigned leads, get assigned leads by id",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "lms/assigned-leads",
+        "module_code": "lms",
+        "section": "assigned-leads",
+        "sub_section": null,
+        "frontend_routes": [
+          "/lms/assigned-leads"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "assigned_leads_get_assigned_leads",
+      "name": "Get Assigned Leads",
+      "action_method": "GetAssignedLeads",
+      "http_method": "GET",
+      "route": "api/AssignedLeads",
+      "business_purpose": "Retrieve assigned leads",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "status",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "lms/assigned-leads:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve assigned leads",
+      "detailed_description": "Retrieve assigned leads. It calls ICommon.getUserByToken, IIndent.BuildFilterContext, IAssignedLeads.GetAssignedLeadData. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve assigned leads",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/AssignedLeads",
+          "GET api/AssignedLeads/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "assigned_leads_get_assigned_leads",
+        "description": "Retrieve assigned leads",
+        "http_method": "GET",
+        "endpoint": "api/AssignedLeads",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "status": {
+            "type": "int",
+            "required": false,
+            "description": "status (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AssignedLeadsController.cs",
+        "action_method": "GetAssignedLeads",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs",
+          "Repositories/AssignedLeads_repo.cs",
+          "Interfaces/IAssignedLeads.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Retrieve assigned leads — calls ICommon.getUserByToken, IIndent.BuildFilterContext, IAssignedLeads.GetAssignedLeadData",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndent.BuildFilterContext",
+          "IAssignedLeads.GetAssignedLeadData",
+          "IAssignedLeads.GetAssignedLeadActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent",
+          "AssignedLeads_repo (Repositories/AssignedLeads_repo.cs) via IAssignedLeads"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "assigned_leads_get_assigned_leads_by_id",
+      "name": "Get Assigned Leads By Id",
+      "action_method": "GetAssignedLeadsById",
+      "http_method": "GET",
+      "route": "api/AssignedLeads/{id}",
+      "business_purpose": "Retrieve assigned leads by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          403,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "lms/assigned-leads:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve assigned leads by ID",
+      "detailed_description": "Retrieve assigned leads by ID. It validates the request, then calls ICommon.getUserByToken, IAssignedLeads.GetAssignedLeadsById, IAssignedLeads.AssignedLeadExists. Possible responses: 200, 400, 401, 403, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required [when id <= 0]",
+        "not_found": "404: Assigned lead not found",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]; You do not have permission to access this assigned lead [when await _assignedleads.AssignedLeadExists(id)]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve assigned leads by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/AssignedLeads",
+          "GET api/AssignedLeads/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "assigned_leads_get_assigned_leads_by_id",
+        "description": "Retrieve assigned leads by ID",
+        "http_method": "GET",
+        "endpoint": "api/AssignedLeads/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AssignedLeadsController.cs",
+        "action_method": "GetAssignedLeadsById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/AssignedLeads_repo.cs",
+          "Interfaces/IAssignedLeads.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Retrieve assigned leads by ID — validates the request, calls ICommon.getUserByToken, IAssignedLeads.GetAssignedLeadsById, IAssignedLeads.AssignedLeadExists",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAssignedLeads.GetAssignedLeadsById",
+          "IAssignedLeads.AssignedLeadExists"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AssignedLeads_repo (Repositories/AssignedLeads_repo.cs) via IAssignedLeads"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 403,
+            "message": "You do not have permission to access this assigned lead",
+            "when": "await _assignedleads.AssignedLeadExists(id)"
+          },
+          {
+            "returns": 404,
+            "message": "Assigned lead not found",
+            "when": null
+          }
+        ]
+      }
+    }
+  ]
+}

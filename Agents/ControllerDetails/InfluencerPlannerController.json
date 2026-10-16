@@ -1,0 +1,1573 @@
+{
+  "controller": "InfluencerPlannerController",
+  "file": "Controllers/InfluencerPlannerController.cs",
+  "module": "Influencer Management",
+  "base_route": "api/InfluencerPlanner",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages influencer planner records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "planner/influencer-planner",
+        "module_code": "planner",
+        "section": "influencer-planner",
+        "sub_section": null,
+        "frontend_routes": [
+          "/planner/influencer-planner",
+          "/planner/influencer-planner/create-influencer-planner",
+          "/planner/influencer-planner/edit-influencer-planner/:id",
+          "/planner/influencer-planner/view-influencer-planner/:id"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "crm/influencer-planner",
+        "module_code": "crm",
+        "section": "influencer-planner",
+        "sub_section": null,
+        "frontend_routes": [
+          "/crm/influencer-planner",
+          "/crm/influencer-planner/create-influencer-planner",
+          "/crm/influencer-planner/edit-influencer-planner/:id",
+          "/crm/influencer-planner/view-influencer-planner/:id"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "influencer_planner_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/InfluencerPlanner",
+      "business_purpose": "Retrieve all influencer planner records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "month",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/influencer-planner:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/influencer-planner"
+      ],
+      "short_description": "Retrieve all influencer planner records",
+      "detailed_description": "Retrieve all influencer planner records. It calls ICommon.getUserByToken, IInfluencerPlanner.GetInfluencerPlannerData, IInfluencerPlanner.GetInfluencerPlannerActions. Data access uses stored procedure(s): GetInfluencerPlanner. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all influencer planner records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerPlanner",
+          "GET api/InfluencerPlanner/{id}",
+          "GET api/InfluencerPlanner/months"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_planner_get_all",
+        "description": "Retrieve all influencer planner records",
+        "http_method": "GET",
+        "endpoint": "api/InfluencerPlanner",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "month": {
+            "type": "string",
+            "required": false,
+            "description": "month (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerPlannerController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/InfluencerPlanner_repo.cs",
+          "Interfaces/IInfluencerPlanner.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all influencer planner records — calls ICommon.getUserByToken, IInfluencerPlanner.GetInfluencerPlannerData, IInfluencerPlanner.GetInfluencerPlannerActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IInfluencerPlanner.GetInfluencerPlannerData",
+          "IInfluencerPlanner.GetInfluencerPlannerActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "InfluencerPlanner_repo (Repositories/InfluencerPlanner_repo.cs) via IInfluencerPlanner"
+        ],
+        "stored_procedures": [
+          "GetInfluencerPlanner"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "influencer_planner_delete_influencer_planner",
+      "name": "Delete Influencer Planner",
+      "action_method": "DeleteInfluencerPlanner",
+      "http_method": "DELETE",
+      "route": "api/InfluencerPlanner/{id}",
+      "business_purpose": "Delete influencer planner",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "planner/influencer-planner:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/influencer-planner"
+      ],
+      "short_description": "Delete influencer planner",
+      "detailed_description": "Delete influencer planner. It validates the request, then calls ICommon.getUserByToken, IInfluencerPlanner.DeleteInfluencerPlanner. Persists changes to: InfluencerPlannerHeader: UPDATE, soft delete (is_deleted flag). Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid influencer planner ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete influencer planner",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerPlanner/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_planner_delete_influencer_planner",
+        "description": "Delete influencer planner",
+        "http_method": "DELETE",
+        "endpoint": "api/InfluencerPlanner/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerPlannerController.cs",
+        "action_method": "DeleteInfluencerPlanner",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/InfluencerPlanner_repo.cs",
+          "Interfaces/IInfluencerPlanner.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Delete influencer planner — validates the request, calls ICommon.getUserByToken, IInfluencerPlanner.DeleteInfluencerPlanner",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "InfluencerPlannerHeader: UPDATE; soft delete (is_deleted flag)",
+        "validations": "Valid influencer planner ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IInfluencerPlanner.DeleteInfluencerPlanner"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "InfluencerPlanner_repo (Repositories/InfluencerPlanner_repo.cs) via IInfluencerPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid influencer planner ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "influencer_planner_get_influencer_planner_by_id",
+      "name": "Get Influencer Planner By Id",
+      "action_method": "GetInfluencerPlannerById",
+      "http_method": "GET",
+      "route": "api/InfluencerPlanner/{id}",
+      "business_purpose": "Retrieve influencer planner by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/influencer-planner:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/influencer-planner"
+      ],
+      "short_description": "Retrieve influencer planner by ID",
+      "detailed_description": "Retrieve influencer planner by ID. It validates the request, then calls ICommon.getUserByToken, IInfluencerPlanner.GetInfluencerPlannerById, IInfluencerPlanner.GetInfluencerPlannerDetailsByHeaderId. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid influencer planner ID is required [when id <= 0]; Invalid month name: '{current_month}'",
+        "not_found": "404: Influencer planner not found [when influencerPlanner == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: FormatException, Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve influencer planner by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerPlanner",
+          "GET api/InfluencerPlanner/{id}",
+          "GET api/InfluencerPlanner/months"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_planner_get_influencer_planner_by_id",
+        "description": "Retrieve influencer planner by ID",
+        "http_method": "GET",
+        "endpoint": "api/InfluencerPlanner/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerPlannerController.cs",
+        "action_method": "GetInfluencerPlannerById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/InfluencerPlanner_repo.cs",
+          "Interfaces/IInfluencerPlanner.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Retrieve influencer planner by ID — validates the request, calls ICommon.getUserByToken, IInfluencerPlanner.GetInfluencerPlannerById, IInfluencerPlanner.GetInfluencerPlannerDetailsByHeaderId",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid influencer planner ID is required; Invalid month name: '{current_month}'",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IInfluencerPlanner.GetInfluencerPlannerById",
+          "IInfluencerPlanner.GetInfluencerPlannerDetailsByHeaderId",
+          "IInfluencerPlanner.GetInfluencerPlannedDetailsByHeaderId",
+          "IInfluencerPlanner.GetInfluencerPlannerActions",
+          "IInfluencerPlanner.GetFocusListByUser",
+          "IInfluencerPlanner.GetLastSixMonthsInfluencerPlannerByUsers"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "InfluencerPlanner_repo (Repositories/InfluencerPlanner_repo.cs) via IInfluencerPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid influencer planner ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Influencer planner not found",
+            "when": "influencerPlanner == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid month name: '{current_month}'",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "influencer_planner_get_months",
+      "name": "Get Months",
+      "action_method": "GetMonths",
+      "http_method": "GET",
+      "route": "api/InfluencerPlanner/months",
+      "business_purpose": "Retrieve months",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/influencer-planner:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/influencer-planner"
+      ],
+      "short_description": "Retrieve months",
+      "detailed_description": "Retrieve months. It calls ICommon.getUserByToken, IInfluencerPlanner.GetMonths. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve months",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerPlanner",
+          "GET api/InfluencerPlanner/{id}",
+          "GET api/InfluencerPlanner/months"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_planner_get_months",
+        "description": "Retrieve months",
+        "http_method": "GET",
+        "endpoint": "api/InfluencerPlanner/months",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerPlannerController.cs",
+        "action_method": "GetMonths",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/InfluencerPlanner_repo.cs",
+          "Interfaces/IInfluencerPlanner.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Retrieve months — calls ICommon.getUserByToken, IInfluencerPlanner.GetMonths",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IInfluencerPlanner.GetMonths"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "InfluencerPlanner_repo (Repositories/InfluencerPlanner_repo.cs) via IInfluencerPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "influencer_planner_planner_approval",
+      "name": "Planner Approval",
+      "action_method": "PlannerApproval",
+      "http_method": "POST",
+      "route": "api/InfluencerPlanner/Approval",
+      "business_purpose": "Handle planner approval",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "PlannerApprovalRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "IsApproved",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "crm/influencer-planner:approve",
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "planner/influencer-planner"
+      ],
+      "short_description": "Handle planner approval",
+      "detailed_description": "Handle planner approval. It calls ICommon.getUserByToken, IInfluencerPlanner.GetInfluencerPlannerById, IInfluencerPlanner.GetUserById. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Planner not found [when planner == null]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle planner approval",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body PlannerApprovalRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerPlanner",
+          "GET api/InfluencerPlanner/months",
+          "GET api/InfluencerPlanner/influencer"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_planner_planner_approval",
+        "description": "Handle planner approval",
+        "http_method": "POST",
+        "endpoint": "api/InfluencerPlanner/Approval",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "IsApproved": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Approved (body)"
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Approves the record and advances its workflow"
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerPlannerController.cs",
+        "action_method": "PlannerApproval",
+        "related_dto_files": [
+          "Controllers/InfluencerPlannerController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/InfluencerPlanner_repo.cs",
+          "Interfaces/IInfluencerPlanner.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Handle planner approval — calls ICommon.getUserByToken, IInfluencerPlanner.GetInfluencerPlannerById, IInfluencerPlanner.GetUserById",
+        "preconditions": "Valid Bearer JWT; request body of type PlannerApprovalRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets planner.is_approved, planner.is_rejected, planner.operated_by, planner.operated_date, planner.modified_by, planner.modified_date and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IInfluencerPlanner.GetInfluencerPlannerById",
+          "IInfluencerPlanner.GetUserById",
+          "IInfluencerPlanner.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "InfluencerPlanner_repo (Repositories/InfluencerPlanner_repo.cs) via IInfluencerPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Planner not found",
+            "when": "planner == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "influencer_planner_planner_reject",
+      "name": "Planner Reject",
+      "action_method": "PlannerReject",
+      "http_method": "POST",
+      "route": "api/InfluencerPlanner/Reject",
+      "business_purpose": "Handle planner reject",
+      "data_effect": "REJECTION",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "PlannerRejectRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "IsRejected",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "REJECTION",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "crm/influencer-planner:reject",
+      "permission_flags": [
+        "reject"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "planner/influencer-planner"
+      ],
+      "short_description": "Handle planner reject",
+      "detailed_description": "Handle planner reject. It calls ICommon.getUserByToken, IInfluencerPlanner.GetInfluencerPlannerById, IInfluencerPlanner.GetUserById. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Planner not found [when planner == null]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle planner reject",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body PlannerRejectRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerPlanner",
+          "GET api/InfluencerPlanner/months",
+          "GET api/InfluencerPlanner/influencer"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_planner_planner_reject",
+        "description": "Handle planner reject",
+        "http_method": "POST",
+        "endpoint": "api/InfluencerPlanner/Reject",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "IsRejected": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Rejected (body)"
+          }
+        },
+        "operation_type": "REJECTION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Rejects the record"
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerPlannerController.cs",
+        "action_method": "PlannerReject",
+        "related_dto_files": [
+          "Controllers/InfluencerPlannerController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/InfluencerPlanner_repo.cs",
+          "Interfaces/IInfluencerPlanner.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Handle planner reject — calls ICommon.getUserByToken, IInfluencerPlanner.GetInfluencerPlannerById, IInfluencerPlanner.GetUserById",
+        "preconditions": "Valid Bearer JWT; request body of type PlannerRejectRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets planner.is_rejected, planner.is_approved, planner.operated_by, planner.operated_date, planner.modified_by, planner.modified_date and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IInfluencerPlanner.GetInfluencerPlannerById",
+          "IInfluencerPlanner.GetUserById",
+          "IInfluencerPlanner.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "InfluencerPlanner_repo (Repositories/InfluencerPlanner_repo.cs) via IInfluencerPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Planner not found",
+            "when": "planner == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "influencer_planner_make_editable",
+      "name": "Make Editable",
+      "action_method": "MakeEditable",
+      "http_method": "POST",
+      "route": "api/InfluencerPlanner/MakeEditable",
+      "business_purpose": "Handle make editable",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "MakeEditableDTO (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "planner/influencer-planner",
+        "crm/influencer-planner"
+      ],
+      "short_description": "Handle make editable",
+      "detailed_description": "Handle make editable. It calls IInfluencerPlanner.GetInfluencerPlannerById, IInfluencerPlanner.SaveChangesAsync. Possible responses: 200, 401, 404.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Influencer Planning Header not found [when planningHeader == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle make editable",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body MakeEditableDTO (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerPlanner",
+          "GET api/InfluencerPlanner/months",
+          "GET api/InfluencerPlanner/influencer"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_planner_make_editable",
+        "description": "Handle make editable",
+        "http_method": "POST",
+        "endpoint": "api/InfluencerPlanner/MakeEditable",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerPlannerController.cs",
+        "action_method": "MakeEditable",
+        "related_dto_files": [
+          "Controllers/InfluencerPlannerController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/InfluencerPlanner_repo.cs",
+          "Interfaces/IInfluencerPlanner.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Handle make editable — calls IInfluencerPlanner.GetInfluencerPlannerById, IInfluencerPlanner.SaveChangesAsync",
+        "preconditions": "Valid Bearer JWT; request body of type MakeEditableDTO (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets planningHeader.is_editable and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IInfluencerPlanner.GetInfluencerPlannerById",
+          "IInfluencerPlanner.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "InfluencerPlanner_repo (Repositories/InfluencerPlanner_repo.cs) via IInfluencerPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 404,
+            "message": "Influencer Planning Header not found",
+            "when": "planningHeader == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "influencer_planner_disable_editing",
+      "name": "Disable Editing",
+      "action_method": "DisableEditing",
+      "http_method": "POST",
+      "route": "api/InfluencerPlanner/DisableEditing",
+      "business_purpose": "Handle disable editing",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "DisableEditingDTO (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "planner/influencer-planner",
+        "crm/influencer-planner"
+      ],
+      "short_description": "Handle disable editing",
+      "detailed_description": "Handle disable editing. It calls IInfluencerPlanner.GetInfluencerPlannerById, IInfluencerPlanner.SaveChangesAsync. Possible responses: 200, 401, 404.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Influencer Planning Header not found [when planningHeader == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle disable editing",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body DisableEditingDTO (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerPlanner",
+          "GET api/InfluencerPlanner/months",
+          "GET api/InfluencerPlanner/influencer"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_planner_disable_editing",
+        "description": "Handle disable editing",
+        "http_method": "POST",
+        "endpoint": "api/InfluencerPlanner/DisableEditing",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerPlannerController.cs",
+        "action_method": "DisableEditing",
+        "related_dto_files": [
+          "Controllers/InfluencerPlannerController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/InfluencerPlanner_repo.cs",
+          "Interfaces/IInfluencerPlanner.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Handle disable editing — calls IInfluencerPlanner.GetInfluencerPlannerById, IInfluencerPlanner.SaveChangesAsync",
+        "preconditions": "Valid Bearer JWT; request body of type DisableEditingDTO (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets planningHeader.is_editable and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IInfluencerPlanner.GetInfluencerPlannerById",
+          "IInfluencerPlanner.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "InfluencerPlanner_repo (Repositories/InfluencerPlanner_repo.cs) via IInfluencerPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 404,
+            "message": "Influencer Planning Header not found",
+            "when": "planningHeader == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "influencer_planner_create_influencer_planner",
+      "name": "Create Influencer Planner",
+      "action_method": "CreateInfluencerPlanner",
+      "http_method": "POST",
+      "route": "api/InfluencerPlanner",
+      "business_purpose": "Create influencer planner",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "InfluencerPlannerCreateRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Month",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "NewInfluencerPhaseOne",
+            "type": "float",
+            "required": false
+          },
+          {
+            "name": "Influencers",
+            "type": "List<InfluencerPhaseDto>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "planner/influencer-planner:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/influencer-planner"
+      ],
+      "short_description": "Create influencer planner",
+      "detailed_description": "Create influencer planner. It validates the request, then calls ICommon.getUserByToken, IInfluencerPlanner.GetFocusListByUser, IInfluencerPlanner.CreateInfluencerPlanner. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: User not found [when user == null]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create influencer planner",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body InfluencerPlannerCreateRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerPlanner",
+          "GET api/InfluencerPlanner/months",
+          "GET api/InfluencerPlanner/influencer"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_planner_create_influencer_planner",
+        "description": "Create influencer planner",
+        "http_method": "POST",
+        "endpoint": "api/InfluencerPlanner",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "Month": {
+            "type": "string",
+            "required": false,
+            "description": "Month (body)"
+          },
+          "NewInfluencerPhaseOne": {
+            "type": "float",
+            "required": false,
+            "description": "New Influencer Phase One (body)"
+          },
+          "Influencers": {
+            "type": "List<InfluencerPhaseDto>",
+            "required": false,
+            "description": "Influencers (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerPlannerController.cs",
+        "action_method": "CreateInfluencerPlanner",
+        "related_dto_files": [
+          "Controllers/InfluencerPlannerController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/InfluencerPlanner_repo.cs",
+          "Interfaces/IInfluencerPlanner.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Create influencer planner — validates the request, calls ICommon.getUserByToken, IInfluencerPlanner.GetFocusListByUser, IInfluencerPlanner.CreateInfluencerPlanner",
+        "preconditions": "Valid Bearer JWT; request body of type InfluencerPlannerCreateRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "validations": "User not found",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IInfluencerPlanner.GetFocusListByUser",
+          "IInfluencerPlanner.CreateInfluencerPlanner"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "InfluencerPlanner_repo (Repositories/InfluencerPlanner_repo.cs) via IInfluencerPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "User not found",
+            "when": "user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "influencer_planner_get_influencers_by_user",
+      "name": "Get Influencers By User",
+      "action_method": "GetInfluencersByUser",
+      "http_method": "GET",
+      "route": "api/InfluencerPlanner/influencer",
+      "business_purpose": "Retrieve influencers by user",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/influencer-planner:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/influencer-planner"
+      ],
+      "short_description": "Retrieve influencers by user",
+      "detailed_description": "Retrieve influencers by user. It calls ICommon.getUserByToken, IInfluencerPlanner.GetUserById, IInfluencerPlanner.GetFocusListByUser. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: User not found. [when targetUser == null]",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: FormatException, Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve influencers by user",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerPlanner",
+          "GET api/InfluencerPlanner/{id}",
+          "GET api/InfluencerPlanner/months"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_planner_get_influencers_by_user",
+        "description": "Retrieve influencers by user",
+        "http_method": "GET",
+        "endpoint": "api/InfluencerPlanner/influencer",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerPlannerController.cs",
+        "action_method": "GetInfluencersByUser",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/InfluencerPlanner_repo.cs",
+          "Interfaces/IInfluencerPlanner.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Retrieve influencers by user — calls ICommon.getUserByToken, IInfluencerPlanner.GetUserById, IInfluencerPlanner.GetFocusListByUser",
+        "preconditions": "Valid Bearer JWT; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IInfluencerPlanner.GetUserById",
+          "IInfluencerPlanner.GetFocusListByUser",
+          "IInfluencerPlanner.GetLastSixMonthsInfluencerPlannerByUsers"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "InfluencerPlanner_repo (Repositories/InfluencerPlanner_repo.cs) via IInfluencerPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "User not found.",
+            "when": "targetUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "influencer_planner_update_influencer_planner",
+      "name": "Update Influencer Planner",
+      "action_method": "UpdateInfluencerPlanner",
+      "http_method": "PUT",
+      "route": "api/InfluencerPlanner/{id}",
+      "business_purpose": "Update influencer planner",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "InfluencerPlannerUpdateRequest (inline)",
+        "properties": [
+          {
+            "name": "Month",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "NewInfluencerPhaseOne",
+            "type": "float",
+            "required": false
+          },
+          {
+            "name": "Influencers",
+            "type": "List<InfluencerPhaseDto>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "planner/influencer-planner:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/influencer-planner"
+      ],
+      "short_description": "Update influencer planner",
+      "detailed_description": "Update influencer planner. It validates the request, then calls ICommon.getUserByToken, IInfluencerPlanner.UpdateInfluencerPlannerAsync. Persists changes to: InfluencerPlannerDetails: DELETE, InfluencerPlannerDetails: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid planner id required. [when id <= 0]; At least one field must be provided for update. [when string.IsNullOrWhiteSpace(request.Month) && request.NewInfluencerPhaseOne <= 0 && (request]; message returned by the called service/repository (result.Message) [when !result.Success]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update influencer planner",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "request body InfluencerPlannerUpdateRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerPlanner/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_planner_update_influencer_planner",
+        "description": "Update influencer planner",
+        "http_method": "PUT",
+        "endpoint": "api/InfluencerPlanner/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "Month": {
+            "type": "string",
+            "required": false,
+            "description": "Month (body)"
+          },
+          "NewInfluencerPhaseOne": {
+            "type": "float",
+            "required": false,
+            "description": "New Influencer Phase One (body)"
+          },
+          "Influencers": {
+            "type": "List<InfluencerPhaseDto>",
+            "required": false,
+            "description": "Influencers (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerPlannerController.cs",
+        "action_method": "UpdateInfluencerPlanner",
+        "related_dto_files": [
+          "Controllers/InfluencerPlannerController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/InfluencerPlanner_repo.cs",
+          "Interfaces/IInfluencerPlanner.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Update influencer planner — validates the request, calls ICommon.getUserByToken, IInfluencerPlanner.UpdateInfluencerPlannerAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; request body of type InfluencerPlannerUpdateRequest (inline); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "InfluencerPlannerDetails: DELETE; InfluencerPlannerDetails: INSERT",
+        "validations": "Valid planner id required.; At least one field must be provided for update.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IInfluencerPlanner.UpdateInfluencerPlannerAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "InfluencerPlanner_repo (Repositories/InfluencerPlanner_repo.cs) via IInfluencerPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid planner id required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field must be provided for update.",
+            "when": "string.IsNullOrWhiteSpace(request.Month) && request.NewInfluencerPhaseOne <= 0 && (request.Influencers == null || request.Influencers.Count == 0)"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": "!result.Success"
+          }
+        ]
+      }
+    }
+  ]
+}

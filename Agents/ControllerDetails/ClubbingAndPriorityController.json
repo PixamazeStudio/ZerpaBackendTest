@@ -1,0 +1,836 @@
+{
+  "controller": "ClubbingAndPriorityController",
+  "file": "Controllers/ClubbingAndPriorityController.cs",
+  "module": "Indent Clubbing and Priority",
+  "base_route": "api/ClubbingAndPriority",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages clubbing creation, indent selection for clubbing, and delivery order priority setting for grouped indents",
+  "notes": "Class has [Authorize] attribute. Inline DTOs: CreateClubbingDto, CreateClubbingIndentDto, SetOrderPriorityRequestDto. Uses IClubbingAndPriority service interface.",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "ims/indents/clubbing-and-priority",
+        "module_code": "ims",
+        "section": "indents",
+        "sub_section": "clubbing-and-priority",
+        "frontend_routes": [
+          "/ims/indents/clubbing-and-priority",
+          "/ims/indents/clubbing-and-priority/create-clubbing-and-priority"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "get_clubbing_data",
+      "name": "Get Clubbing and Priority Data",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/ClubbingAndPriority",
+      "module": "Indent Clubbing and Priority",
+      "business_purpose": "Retrieve grouped indent data organized by dealer with clubbing and priority information",
+      "short_description": "Fetches all indents grouped by dealer showing clubbing status and priority indexes with pagination",
+      "detailed_description": "Validates user, calls service to fetch clubbed indents with priority data, groups results by dealer/indent code/priority, transforms into ClubbingIndentResponseDto with nested item details, returns actions and grouped data.",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ],
+        "roles_or_policy": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_claims": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_headers": [
+          "Authorization: Bearer <token>"
+        ],
+        "notes": "Token validation required"
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null",
+          "description": "Search text",
+          "example": "dealer name"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10",
+          "description": "Records per page",
+          "example": "20"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1",
+          "description": "Page number",
+          "example": "2"
+        }
+      ],
+      "request_body": null,
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "IActionResult (Ok wrapping anonymous object)",
+        "properties": [
+          {
+            "name": "success",
+            "type": "bool",
+            "nullable": false,
+            "description": "Operation success"
+          },
+          {
+            "name": "message",
+            "type": "string",
+            "nullable": false,
+            "description": "Response message"
+          },
+          {
+            "name": "data",
+            "type": "array",
+            "nullable": false,
+            "description": "Grouped clubbing data"
+          },
+          {
+            "name": "actions",
+            "type": "object",
+            "nullable": true,
+            "description": "User actions"
+          }
+        ],
+        "success_example": {
+          "success": true,
+          "message": "Indent Clubbing Details fetched successfully",
+          "data": []
+        },
+        "error_example": {
+          "success": false,
+          "message": "No data found for this page"
+        },
+        "notes": "Groups data by dealer and priority; each row contains nested indent items"
+      },
+      "business_logic": {
+        "operation_summary": "Retrieve clubbed indents grouped and prioritized by dealer",
+        "preconditions": "User must be authenticated",
+        "state_changes": "No state changes",
+        "validations": "page_no < 1 defaults to 1",
+        "side_effects": "Fetches grouping and priority data from database",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IClubbingAndPriority.GetClubbingAndPriorityData",
+          "IClubbingAndPriority.GetClubbingAndPriorityActions"
+        ],
+        "calls_repositories": [
+          "IClubbingAndPriority"
+        ],
+        "stored_procedures": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "INFERRED FROM CODE: User context passed to service for filtering",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      },
+      "ai_agent_guidance": {
+        "use_when": "View all indents grouped by clubbing status and priority",
+        "do_not_use_when": "Creating new clubbing (use create_clubbing) or setting priorities",
+        "preconditions_needed": [
+          "JWT bearer token"
+        ],
+        "follow_up_apis": [
+          "create_clubbing",
+          "set_order_priority"
+        ]
+      },
+      "error_handling": {
+        "validation_errors": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "not_found": "Returns Ok with success=true and empty data list if no records found",
+        "unauthorized": "Returns Unauthorized if user not found",
+        "business_rule_errors": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "exceptions": "Catches all exceptions, returns StatusCode(500, ex.Message)"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Pure read operation"
+      },
+      "llm_tool_definition": {
+        "name": "get_clubbing_priority_data",
+        "description": "Retrieve all indents grouped by clubbing status and priority",
+        "http_method": "GET",
+        "endpoint": "api/ClubbingAndPriority",
+        "parameters": {
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "Search filter"
+          },
+          "page_no": {
+            "type": "integer",
+            "required": false,
+            "description": "Page number"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": "Read-only operation"
+      },
+      "source": {
+        "controller_file": "Controllers/ClubbingAndPriorityController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [
+          "DTOs/Response/ClubbingIndentResponseDto"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Interfaces/IClubbingAndPriority.cs"
+        ]
+      },
+      "required_permission": "ims/indents/clubbing-and-priority:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)"
+    },
+    {
+      "id": "get_indents_for_clubbing",
+      "name": "Get Indents for Clubbing",
+      "action_method": "GetAllIndentsForClubbing",
+      "http_method": "GET",
+      "route": "api/ClubbingAndPriority/IndentsForClubbing",
+      "module": "Indent Clubbing and Priority",
+      "business_purpose": "Retrieve list of indents available for clubbing selection",
+      "short_description": "Fetches indents available to be clubbed for the current user",
+      "detailed_description": "Validates token and user, calls service GetIndentsForClubbingByUserAsync to fetch climbable indents, returns success response with Data array",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ],
+        "roles_or_policy": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_claims": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_headers": [
+          "Authorization: Bearer <token>"
+        ],
+        "notes": "Token validation required"
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": null,
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "IActionResult (Ok wrapping anonymous object)",
+        "properties": [
+          {
+            "name": "Success",
+            "type": "bool",
+            "nullable": false,
+            "description": "Operation success"
+          },
+          {
+            "name": "Data",
+            "type": "array",
+            "nullable": false,
+            "description": "Available indents for clubbing"
+          }
+        ],
+        "success_example": {
+          "Success": true,
+          "Data": []
+        },
+        "error_example": {
+          "Success": false,
+          "Message": "An error occurred"
+        },
+        "notes": "Returns raw indent data for selection in UI"
+      },
+      "business_logic": {
+        "operation_summary": "Fetch indents eligible for clubbing",
+        "preconditions": "User must be authenticated",
+        "state_changes": "No state changes",
+        "validations": "User must be valid",
+        "side_effects": "Queries database for available indents",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IClubbingAndPriority.GetIndentsForClubbingByUserAsync"
+        ],
+        "calls_repositories": [
+          "IClubbingAndPriority"
+        ],
+        "stored_procedures": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "INFERRED FROM CODE: User passed to service for filtering eligible indents",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      },
+      "ai_agent_guidance": {
+        "use_when": "Get list of indents that can be clubbed",
+        "do_not_use_when": "Viewing already clubbed indents",
+        "preconditions_needed": [
+          "JWT bearer token"
+        ],
+        "follow_up_apis": [
+          "create_clubbing"
+        ]
+      },
+      "error_handling": {
+        "validation_errors": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "not_found": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "unauthorized": "Returns Unauthorized if user not found",
+        "business_rule_errors": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "exceptions": "Catches all exceptions, returns StatusCode(500, ...)"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Pure read operation"
+      },
+      "llm_tool_definition": {
+        "name": "get_indents_for_clubbing",
+        "description": "Get list of indents available for clubbing",
+        "http_method": "GET",
+        "endpoint": "api/ClubbingAndPriority/IndentsForClubbing",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": "Read-only operation"
+      },
+      "source": {
+        "controller_file": "Controllers/ClubbingAndPriorityController.cs",
+        "action_method": "GetAllIndentsForClubbing",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Interfaces/IClubbingAndPriority.cs"
+        ]
+      },
+      "required_permission": "ims/indents/clubbing-and-priority:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)"
+    },
+    {
+      "id": "create_clubbing",
+      "name": "Create Clubbing",
+      "action_method": "CreateClubbing",
+      "http_method": "POST",
+      "route": "api/ClubbingAndPriority",
+      "module": "Indent Clubbing and Priority",
+      "business_purpose": "Create a new clubbing record by selecting and grouping indents",
+      "short_description": "Creates clubbing header with nested details from selected indents, generates unique clubbing code, marks indents as clubbed",
+      "detailed_description": "Validates token and user, validates request (at least one indent selected), generates clubbing code 'TRJ-F-CLUB-{number}', iterates selected indents to fetch full details, marks each indent is_clubbed=true and club_code set, collects into clubbingDetails, creates ClubbingHeader with total calculations, saves via CreateClubbingAndPriority.",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ],
+        "roles_or_policy": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_claims": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_headers": [
+          "Authorization: Bearer <token>"
+        ],
+        "notes": "User validated and tracked"
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateClubbingDto",
+        "source_file": "Controllers/ClubbingAndPriorityController.cs (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false,
+            "nullable": false,
+            "validation": "none found",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": "0",
+            "description": "Update ID (0 for create)",
+            "example": 0
+          },
+          {
+            "name": "ClubbingCode",
+            "type": "string",
+            "required": false,
+            "nullable": true,
+            "validation": "none found",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "Optional code (auto-generated)",
+            "example": null
+          },
+          {
+            "name": "ClubbingDate",
+            "type": "DateTime",
+            "required": false,
+            "nullable": true,
+            "validation": "none found",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": "DateTime.Now",
+            "description": "Clubbing date",
+            "example": "2025-01-15"
+          },
+          {
+            "name": "NoOfIndents",
+            "type": "int",
+            "required": false,
+            "nullable": false,
+            "validation": "none found",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": "0",
+            "description": "Count of indents",
+            "example": 3
+          },
+          {
+            "name": "TotalWeight",
+            "type": "float",
+            "required": false,
+            "nullable": false,
+            "validation": "none found",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": "0",
+            "description": "Total weight",
+            "example": 100.5
+          },
+          {
+            "name": "TotalPrice",
+            "type": "float",
+            "required": false,
+            "nullable": false,
+            "validation": "none found",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": "0",
+            "description": "Total price",
+            "example": 5000
+          },
+          {
+            "name": "Remark",
+            "type": "string",
+            "required": false,
+            "nullable": true,
+            "validation": "none found",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "Remarks",
+            "example": "Special clubbing"
+          },
+          {
+            "name": "Indents",
+            "type": "List<CreateClubbingIndentDto>",
+            "required": true,
+            "nullable": false,
+            "validation": "At least one indent must have IsSelected=true",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": "[]",
+            "description": "List of indents to club",
+            "example": []
+          }
+        ],
+        "example_json": {
+          "Id": 0,
+          "ClubbingDate": "2025-01-15",
+          "Remark": "Test clubbing",
+          "Indents": [
+            {
+              "IndentId": 1,
+              "Weight": 100,
+              "Price": 5000,
+              "IsSelected": true
+            }
+          ]
+        }
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ],
+        "dto_name": "IActionResult (Ok wrapping anonymous object)",
+        "properties": [
+          {
+            "name": "Success",
+            "type": "bool",
+            "nullable": false,
+            "description": "Operation success"
+          },
+          {
+            "name": "Message",
+            "type": "string",
+            "nullable": false,
+            "description": "Result message"
+          },
+          {
+            "name": "Data",
+            "type": "object",
+            "nullable": true,
+            "description": "Created clubbing data with ClubbingId and ClubbingCode"
+          }
+        ],
+        "success_example": {
+          "Success": true,
+          "Message": "Clubbing created successfully.",
+          "Data": {
+            "ClubbingId": 1,
+            "ClubbingCode": "TRJ-F-CLUB-1"
+          }
+        },
+        "error_example": {
+          "Success": false,
+          "Message": "No indent selected."
+        },
+        "notes": "Returns generated clubbing ID and code for follow-up operations"
+      },
+      "business_logic": {
+        "operation_summary": "Create clubbing record by grouping selected indents",
+        "preconditions": "At least one indent must be selected; indents must exist in database",
+        "state_changes": "Creates ClubbingHeader and ClubbingDetails records; updates selected Indents to mark is_clubbed=true and set club_code",
+        "validations": "At least one IsSelected=true; each selected indent must exist; user must be valid",
+        "side_effects": "Marks indents as clubbed; generates automatic clubbing code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IClubbingAndPriority.GetIndentHeaderById",
+          "IClubbingAndPriority.CreateClubbingAndPriority",
+          "IClubbingAndPriority.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "IClubbingAndPriority"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "INFERRED FROM CODE: User ID from token used for audit trail (created_by)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "No indent selected.",
+            "when": "request == null || request.Indents == null || !request.Indents.Any(i => i.IsSelected)"
+          },
+          {
+            "returns": 400,
+            "message": "Indent ID {item.IndentId} not found.",
+            "when": "indent == null"
+          }
+        ]
+      },
+      "ai_agent_guidance": {
+        "use_when": "Create a new grouping of indents for clubbing",
+        "do_not_use_when": "Updating existing clubbing; setting priorities (use set_order_priority)",
+        "preconditions_needed": [
+          "At least one indent must be selected",
+          "Indents must exist in system",
+          "JWT bearer token"
+        ],
+        "follow_up_apis": [
+          "set_order_priority",
+          "get_clubbing_priority_data"
+        ]
+      },
+      "error_handling": {
+        "validation_errors": "BadRequest if no indent selected; BadRequest if selected indent not found",
+        "not_found": "BadRequest(new { Success = false, Message = 'Indent ID X not found.' }) if indent not found",
+        "unauthorized": "Returns Unauthorized if user not found or null",
+        "business_rule_errors": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "exceptions": "Catches all exceptions, returns StatusCode(500, ...)"
+      },
+      "idempotency": {
+        "risk_level": "HIGH",
+        "operation_type": "CREATE",
+        "notes": "Creates new records each call; no dedupe check found"
+      },
+      "llm_tool_definition": {
+        "name": "create_clubbing",
+        "description": "Create a new clubbing record by selecting indents",
+        "http_method": "POST",
+        "endpoint": "api/ClubbingAndPriority",
+        "parameters": {
+          "Indents": {
+            "type": "array",
+            "required": true,
+            "description": "Selected indents with IsSelected flag"
+          },
+          "ClubbingDate": {
+            "type": "string",
+            "required": false,
+            "description": "Clubbing date"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates permanent clubbing record and marks indents as clubbed"
+      },
+      "source": {
+        "controller_file": "Controllers/ClubbingAndPriorityController.cs",
+        "action_method": "CreateClubbing",
+        "related_dto_files": [
+          "Controllers/ClubbingAndPriorityController.cs (inline CreateClubbingDto, CreateClubbingIndentDto)"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Interfaces/IClubbingAndPriority.cs"
+        ]
+      },
+      "required_permission": "ims/indents/clubbing-and-priority:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match"
+    },
+    {
+      "id": "set_order_priority",
+      "name": "Set Order Priority",
+      "action_method": "SetOrderPriority",
+      "http_method": "POST",
+      "route": "api/ClubbingAndPriority/set-order-priority",
+      "module": "Indent Clubbing and Priority",
+      "business_purpose": "Set delivery order and priority values for clubbed indents",
+      "short_description": "Updates priority and delivery_order fields for indents, with special clubbing logic for grouped indents",
+      "detailed_description": "Validates token required, iterates request data array, fetches each indent, applies clubbing logic (if indent is club-approved, groups with other indents from same club and increments order), updates indent.priority and indent.delivery_order, collects into tracking list, saves all changes.",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ],
+        "roles_or_policy": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_claims": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_headers": [
+          "Authorization: Bearer <token>"
+        ],
+        "notes": "Token validation required; returns error if token missing"
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "List<SetOrderPriorityRequestDto>",
+        "source_file": "Controllers/ClubbingAndPriorityController.cs (inline)",
+        "properties": [
+          {
+            "name": "IndentId",
+            "type": "int",
+            "required": true,
+            "nullable": false,
+            "validation": "none found",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "Indent ID to update",
+            "example": 123
+          },
+          {
+            "name": "IndentOrder",
+            "type": "float",
+            "required": true,
+            "nullable": false,
+            "validation": "none found",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "Delivery order",
+            "example": 1.5
+          },
+          {
+            "name": "IndentPriority",
+            "type": "int",
+            "required": true,
+            "nullable": false,
+            "validation": "none found",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "Priority value",
+            "example": 10
+          }
+        ],
+        "example_json": [
+          {
+            "IndentId": 1,
+            "IndentOrder": 1.0,
+            "IndentPriority": 10
+          },
+          {
+            "IndentId": 2,
+            "IndentOrder": 2.0,
+            "IndentPriority": 20
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ],
+        "dto_name": "IActionResult (Ok wrapping anonymous object)",
+        "properties": [
+          {
+            "name": "success",
+            "type": "bool",
+            "nullable": false,
+            "description": "Operation success"
+          },
+          {
+            "name": "message",
+            "type": "string",
+            "nullable": false,
+            "description": "Result message"
+          }
+        ],
+        "success_example": {
+          "success": true,
+          "message": "Order priority set successfully"
+        },
+        "error_example": {
+          "success": false,
+          "message": "Authorization token missing"
+        },
+        "notes": "Returns summary message; details stored in database"
+      },
+      "business_logic": {
+        "operation_summary": "Update delivery order and priority for indents with clubbing awareness",
+        "preconditions": "All indent IDs must exist; token must be provided",
+        "state_changes": "Updates indent.priority and indent.delivery_order for each indent in request",
+        "validations": "Token required; request data not empty; indents must exist",
+        "side_effects": "Applies special order incrementing logic for club-approved indents",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IClubbingAndPriority.GetIndentHeaderById",
+          "IClubbingAndPriority.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "IClubbingAndPriority"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "INFERRED FROM CODE: User validation required; no user-specific filtering in updates",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Authorization token missing",
+            "when": "string.IsNullOrEmpty(token)"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid or expired token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Request data is empty",
+            "when": "data == null || data.Count == 0"
+          },
+          {
+            "returns": 400,
+            "message": "Indent ID(s) not found: {string.Join(",
+            "when": "invalidIndentIds.Any()"
+          }
+        ]
+      },
+      "ai_agent_guidance": {
+        "use_when": "Set delivery order and priority for indents after clubbing",
+        "do_not_use_when": "Creating clubbing (use create_clubbing)",
+        "preconditions_needed": [
+          "Indents must exist",
+          "JWT bearer token",
+          "Possibly indents already clubbed"
+        ],
+        "follow_up_apis": [
+          "create_clubbing",
+          "get_clubbing_priority_data"
+        ]
+      },
+      "error_handling": {
+        "validation_errors": "BadRequest if token missing or data empty; BadRequest if indent not found",
+        "not_found": "BadRequest('Indent ID(s) not found: {id list}') if any indent not found",
+        "unauthorized": "Unauthorized if token missing or user not found",
+        "business_rule_errors": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "exceptions": "Catches all exceptions, returns StatusCode(500, ...)"
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Multiple calls update same fields; achieves same end state but no explicit dedupe"
+      },
+      "llm_tool_definition": {
+        "name": "set_order_priority",
+        "description": "Set delivery order and priority for indents",
+        "http_method": "POST",
+        "endpoint": "api/ClubbingAndPriority/set-order-priority",
+        "parameters": {
+          "indents": {
+            "type": "array",
+            "required": true,
+            "description": "List of indents with order and priority"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Updates priority and order for multiple indents"
+      },
+      "source": {
+        "controller_file": "Controllers/ClubbingAndPriorityController.cs",
+        "action_method": "SetOrderPriority",
+        "related_dto_files": [
+          "Controllers/ClubbingAndPriorityController.cs (inline SetOrderPriorityRequestDto)"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Interfaces/IClubbingAndPriority.cs"
+        ]
+      },
+      "required_permission": "ims/indents/clubbing-and-priority:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match"
+    }
+  ]
+}

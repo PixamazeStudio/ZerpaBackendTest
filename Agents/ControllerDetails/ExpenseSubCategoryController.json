@@ -1,0 +1,921 @@
+{
+  "controller": "ExpenseSubCategoryController",
+  "file": "Controllers/ExpenseSubCategoryController.cs",
+  "module": "Expense Management",
+  "base_route": "api/ExpenseSubCategory",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages expense subcategories linked to categories with CRUD and duplicate checking",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/expense-settings/expense-sub-category",
+        "module_code": "settings",
+        "section": "expense-settings",
+        "sub_section": "expense-sub-category",
+        "frontend_routes": [
+          "/settings/expense-settings/expense-sub-category"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "ExpenseSubCategory"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Settings",
+        "section": "Expense Settings",
+        "sub_section": "Expense Subcategory"
+      },
+      {
+        "module": "Settings",
+        "section": "Expense Settings",
+        "sub_section": "Expense SubCategory"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "expense_subcategory_get_all",
+      "name": "Get All Expense Subcategories",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/ExpenseSubCategory",
+      "business_purpose": "Retrieve paginated list of expense subcategories",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "DateTime",
+          "required": false
+        },
+        {
+          "name": "todate",
+          "type": "DateTime",
+          "required": false
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/expense-settings/expense-sub-category:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve paginated list of expense subcategories",
+      "detailed_description": "Retrieve paginated list of expense subcategories. It calls ICommon.getUserByToken, IExpenseSubCategory.GetExpenseSubCategoryData, IExpenseSubCategory.GetExpenseSubCategoryActions. Data access uses stored procedure(s): GetExpenseSubCategory. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve paginated list of expense subcategories",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/ExpenseSubCategory",
+          "GET api/ExpenseSubCategory/{id}",
+          "GET api/ExpenseSubCategory/expense-category"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "expense_sub_category_get_all",
+        "description": "Retrieve paginated list of expense subcategories",
+        "http_method": "GET",
+        "endpoint": "api/ExpenseSubCategory",
+        "parameters": {
+          "fromdate": {
+            "type": "DateTime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "DateTime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ExpenseSubCategoryController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ExpenseSubCategory_repo.cs",
+          "Interfaces/IExpenseSubCategory.cs"
+        ]
+      },
+      "module": "Expense Management",
+      "business_logic": {
+        "operation_summary": "Retrieve paginated list of expense subcategories — calls ICommon.getUserByToken, IExpenseSubCategory.GetExpenseSubCategoryData, IExpenseSubCategory.GetExpenseSubCategoryActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IExpenseSubCategory.GetExpenseSubCategoryData",
+          "IExpenseSubCategory.GetExpenseSubCategoryActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ExpenseSubCategory_repo (Repositories/ExpenseSubCategory_repo.cs) via IExpenseSubCategory"
+        ],
+        "stored_procedures": [
+          "GetExpenseSubCategory"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "expense_subcategory_get_by_id",
+      "name": "Get Expense Subcategory By ID",
+      "action_method": "GetExpenseSubCategoryById",
+      "http_method": "GET",
+      "route": "api/ExpenseSubCategory/{id}",
+      "business_purpose": "Retrieve expense subcategory details with parent category",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/expense-settings/expense-sub-category:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve expense subcategory details with parent category",
+      "detailed_description": "Retrieve expense subcategory details with parent category. It validates the request, then calls ICommon.getUserByToken, IExpenseSubCategory.GetExpenseSubCategoryById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid expense subcategory ID is required [when id <= 0]",
+        "not_found": "404: Expense subcategory not found [when item == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve expense subcategory details with parent category",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/ExpenseSubCategory",
+          "GET api/ExpenseSubCategory/{id}",
+          "GET api/ExpenseSubCategory/expense-category"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "expense_sub_category_get_expense_sub_category_by_id",
+        "description": "Retrieve expense subcategory details with parent category",
+        "http_method": "GET",
+        "endpoint": "api/ExpenseSubCategory/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ExpenseSubCategoryController.cs",
+        "action_method": "GetExpenseSubCategoryById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ExpenseSubCategory_repo.cs",
+          "Interfaces/IExpenseSubCategory.cs"
+        ]
+      },
+      "module": "Expense Management",
+      "business_logic": {
+        "operation_summary": "Retrieve expense subcategory details with parent category — validates the request, calls ICommon.getUserByToken, IExpenseSubCategory.GetExpenseSubCategoryById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid expense subcategory ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IExpenseSubCategory.GetExpenseSubCategoryById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ExpenseSubCategory_repo (Repositories/ExpenseSubCategory_repo.cs) via IExpenseSubCategory"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid expense subcategory ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Expense subcategory not found",
+            "when": "item == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "expense_subcategory_delete",
+      "name": "Delete Expense Subcategory",
+      "action_method": "DeleteExpenseSubCategory",
+      "http_method": "DELETE",
+      "route": "api/ExpenseSubCategory/{id}",
+      "business_purpose": "Delete expense subcategory with audit logging",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "settings/expense-settings/expense-sub-category:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete expense subcategory with audit logging",
+      "detailed_description": "Delete expense subcategory with audit logging. It validates the request, then calls ICommon.getUserByToken, IExpenseSubCategory.GetExpenseSubCategoryById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: ExpenseSubCategory: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid subcategory ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Expense Subcategory not found. [when existingExpenseSubCategory == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete expense subcategory with audit logging",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/ExpenseSubCategory/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "expense_sub_category_delete_expense_sub_category",
+        "description": "Delete expense subcategory with audit logging",
+        "http_method": "DELETE",
+        "endpoint": "api/ExpenseSubCategory/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/ExpenseSubCategoryController.cs",
+        "action_method": "DeleteExpenseSubCategory",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ExpenseSubCategory_repo.cs",
+          "Interfaces/IExpenseSubCategory.cs"
+        ]
+      },
+      "module": "Expense Management",
+      "business_logic": {
+        "operation_summary": "Delete expense subcategory with audit logging — validates the request, calls ICommon.getUserByToken, IExpenseSubCategory.GetExpenseSubCategoryById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "ExpenseSubCategory: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "validations": "Valid subcategory ID is required.",
+        "side_effects": "AuditLog DELETE (Settings > Expense Settings > Expense Subcategory)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IExpenseSubCategory.GetExpenseSubCategoryById",
+          "ICommon.ToJsonString",
+          "IExpenseSubCategory.DeleteExpenseSubCategory",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ExpenseSubCategory_repo (Repositories/ExpenseSubCategory_repo.cs) via IExpenseSubCategory"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid subcategory ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Expense Subcategory not found.",
+            "when": "existingExpenseSubCategory == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "expense_subcategory_get_categories",
+      "name": "Get Expense Categories",
+      "action_method": "GetExpenseCategory",
+      "http_method": "GET",
+      "route": "api/ExpenseSubCategory/expense-category",
+      "business_purpose": "Retrieve all expense categories for dropdown selection",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/expense-settings/expense-sub-category:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all expense categories for dropdown selection",
+      "detailed_description": "Retrieve all expense categories for dropdown selection. It calls ICommon.getUserByToken, IExpenseSubCategory.GetExpenseCategory. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all expense categories for dropdown selection",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/ExpenseSubCategory",
+          "GET api/ExpenseSubCategory/{id}",
+          "GET api/ExpenseSubCategory/expense-category"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "expense_sub_category_get_expense_category",
+        "description": "Retrieve all expense categories for dropdown selection",
+        "http_method": "GET",
+        "endpoint": "api/ExpenseSubCategory/expense-category",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ExpenseSubCategoryController.cs",
+        "action_method": "GetExpenseCategory",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ExpenseSubCategory_repo.cs",
+          "Interfaces/IExpenseSubCategory.cs"
+        ]
+      },
+      "module": "Expense Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all expense categories for dropdown selection — calls ICommon.getUserByToken, IExpenseSubCategory.GetExpenseCategory",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IExpenseSubCategory.GetExpenseCategory"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ExpenseSubCategory_repo (Repositories/ExpenseSubCategory_repo.cs) via IExpenseSubCategory"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "expense_subcategory_create",
+      "name": "Create Expense Subcategory",
+      "action_method": "CreateExpenseSubCategory",
+      "http_method": "POST",
+      "route": "api/ExpenseSubCategory",
+      "business_purpose": "Create new expense subcategory linked to a category",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "request_body": {
+        "dto_name": "CreateExpenseSubCategoryDto (inline)",
+        "properties": [
+          {
+            "name": "ExpenseCategoryId",
+            "type": "int",
+            "required": true
+          },
+          {
+            "name": "SubCategoryName",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Description",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "IsDefault",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; a duplicate check exists so repeating usually fails with a conflict/validation message"
+      },
+      "required_permission": "settings/expense-settings/expense-sub-category:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create new expense subcategory linked to a category",
+      "detailed_description": "Create new expense subcategory linked to a category. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IExpenseSubCategory.GetExpenseCategoryByIdAsync, IExpenseSubCategory.DuplicateCheckAsync. Persists changes to: ExpenseSubCategory: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid expense category ID is required. [when request.ExpenseCategoryId <= 0]; Subcategory name is required. [when string.IsNullOrWhiteSpace(request.SubCategoryName)]",
+        "not_found": "404: Expense category not found. [when expenseCategory == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "Duplicate subcategory found. [when duplicate]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create new expense subcategory linked to a category",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateExpenseSubCategoryDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/ExpenseSubCategory",
+          "GET api/ExpenseSubCategory/expense-category"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "expense_sub_category_create_expense_sub_category",
+        "description": "Create new expense subcategory linked to a category",
+        "http_method": "POST",
+        "endpoint": "api/ExpenseSubCategory",
+        "parameters": {
+          "ExpenseCategoryId": {
+            "type": "int",
+            "required": true,
+            "description": "Expense Category Id (body)"
+          },
+          "SubCategoryName": {
+            "type": "string",
+            "required": true,
+            "description": "Sub Category Name (body)"
+          },
+          "Description": {
+            "type": "string",
+            "required": false,
+            "description": "Description (body)"
+          },
+          "IsDefault": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Default (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/ExpenseSubCategoryController.cs",
+        "action_method": "CreateExpenseSubCategory",
+        "related_dto_files": [
+          "Controllers/ExpenseSubCategoryController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ExpenseSubCategory_repo.cs",
+          "Interfaces/IExpenseSubCategory.cs"
+        ]
+      },
+      "module": "Expense Management",
+      "business_logic": {
+        "operation_summary": "Create new expense subcategory linked to a category — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, IExpenseSubCategory.GetExpenseCategoryByIdAsync, IExpenseSubCategory.DuplicateCheckAsync",
+        "preconditions": "Valid Bearer JWT; request body of type CreateExpenseSubCategoryDto (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "ExpenseSubCategory: INSERT",
+        "validations": "Valid expense category ID is required.; Subcategory name is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IExpenseSubCategory.GetExpenseCategoryByIdAsync",
+          "IExpenseSubCategory.DuplicateCheckAsync",
+          "IExpenseSubCategory.CreateExpenseSubCategoryAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ExpenseSubCategory_repo (Repositories/ExpenseSubCategory_repo.cs) via IExpenseSubCategory"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid expense category ID is required.",
+            "when": "request.ExpenseCategoryId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Subcategory name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.SubCategoryName)"
+          },
+          {
+            "returns": 404,
+            "message": "Expense category not found.",
+            "when": "expenseCategory == null"
+          },
+          {
+            "returns": 400,
+            "message": "Duplicate subcategory found.",
+            "when": "duplicate"
+          }
+        ]
+      }
+    },
+    {
+      "id": "expense_subcategory_update",
+      "name": "Update Expense Subcategory",
+      "action_method": "UpdateExpenseSubCategory",
+      "http_method": "PUT",
+      "route": "api/ExpenseSubCategory/{id}",
+      "business_purpose": "Update expense subcategory details",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "request_body": {
+        "dto_name": "UpdateExpenseSubCategoryDto (inline)",
+        "properties": [
+          {
+            "name": "SubCategoryName",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Description",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "IsDefault",
+            "type": "bool",
+            "required": false
+          },
+          {
+            "name": "ExpenseCategoryId",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values; each call writes another audit log entry"
+      },
+      "required_permission": "settings/expense-settings/expense-sub-category:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update expense subcategory details",
+      "detailed_description": "Update expense subcategory details. It validates the request, then calls ICommon.getUserByToken, IExpenseSubCategory.UpdateExpenseSubCategoryAsync, IExpenseSubCategory.GetExpenseSubCategoryById, then writes an audit log entry. Persists changes to: ExpenseSubCategory: UPDATE, AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid SubCategory ID is required. [when id <= 0]; At least one field must be provided for update. [when string.IsNullOrWhiteSpace(request.SubCategoryName) && string.IsNullOrWhiteSpace(request.De]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Expense SubCategory not found. [when existingExpenseSubCategory == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update expense subcategory details",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "request body UpdateExpenseSubCategoryDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/ExpenseSubCategory/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "expense_sub_category_update_expense_sub_category",
+        "description": "Update expense subcategory details",
+        "http_method": "PUT",
+        "endpoint": "api/ExpenseSubCategory/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "SubCategoryName": {
+            "type": "string",
+            "required": false,
+            "description": "Sub Category Name (body)"
+          },
+          "Description": {
+            "type": "string",
+            "required": false,
+            "description": "Description (body)"
+          },
+          "IsDefault": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Default (body)"
+          },
+          "ExpenseCategoryId": {
+            "type": "int",
+            "required": false,
+            "description": "Expense Category Id (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/ExpenseSubCategoryController.cs",
+        "action_method": "UpdateExpenseSubCategory",
+        "related_dto_files": [
+          "Controllers/ExpenseSubCategoryController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ExpenseSubCategory_repo.cs",
+          "Interfaces/IExpenseSubCategory.cs"
+        ]
+      },
+      "module": "Expense Management",
+      "business_logic": {
+        "operation_summary": "Update expense subcategory details — validates the request, calls ICommon.getUserByToken, IExpenseSubCategory.UpdateExpenseSubCategoryAsync, IExpenseSubCategory.GetExpenseSubCategoryById, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); request body of type UpdateExpenseSubCategoryDto (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "ExpenseSubCategory: UPDATE; AuditLog: INSERT",
+        "validations": "Valid SubCategory ID is required.; At least one field must be provided for update.",
+        "side_effects": "AuditLog UPDATE (Settings > Expense Settings > Expense SubCategory)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IExpenseSubCategory.UpdateExpenseSubCategoryAsync",
+          "IExpenseSubCategory.GetExpenseSubCategoryById",
+          "ICommon.ToJsonString",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ExpenseSubCategory_repo (Repositories/ExpenseSubCategory_repo.cs) via IExpenseSubCategory"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid SubCategory ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field must be provided for update.",
+            "when": "string.IsNullOrWhiteSpace(request.SubCategoryName) && string.IsNullOrWhiteSpace(request.Description) && request.IsDefault == null && request.ExpenseCategoryId == null"
+          },
+          {
+            "returns": 404,
+            "message": "Expense SubCategory not found.",
+            "when": "existingExpenseSubCategory == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    }
+  ]
+}

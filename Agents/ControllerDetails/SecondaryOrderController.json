@@ -1,0 +1,2572 @@
+{
+  "controller": "SecondaryOrderController",
+  "file": "Controllers/SecondaryOrderController.cs",
+  "module": "Secondary Sales Management",
+  "base_route": "api/SecondaryOrder",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages secondary order records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "crm/secondary-order",
+        "module_code": "crm",
+        "section": "secondary-order",
+        "sub_section": null,
+        "frontend_routes": [
+          "/crm/secondary-order",
+          "/crm/secondary-order/create-secondary-order",
+          "/crm/secondary-order/edit-secondary-order/:id",
+          "/crm/secondary-order/view-secondary-order/:id"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "also_called_from_menus": [
+      "crm/scheme-payment-request",
+      "crm/scheme-payment-request-for-corporate-approval",
+      "crm/scheme-payment-request-for-verification",
+      "crm/scheme-wise-orders",
+      "crm/scheme-wise-orders-for-corporate-approval-",
+      "crm/scheme-wise-orders-for-verification"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Customer Relationship Management",
+        "section": "Secondary Orders",
+        "sub_section": "Secondary Order"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "secondary_order_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/SecondaryOrder",
+      "business_purpose": "Retrieve all secondary order records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "\"this_month\""
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "userid",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/secondary-order:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all secondary order records",
+      "detailed_description": "Retrieve all secondary order records. It calls ICommon.getUserByToken, ISecondaryOrder.GetSecondaryOrderData, ISecondaryOrder.GetSecondaryOrderCards. Data access uses stored procedure(s): GetSecondaryOrders, GetSecondaryOrderCards. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all secondary order records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/SecondaryOrder",
+          "GET api/SecondaryOrder/{id}",
+          "GET api/SecondaryOrder/dealers/{search_text}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "secondary_order_get_all",
+        "description": "Retrieve all secondary order records",
+        "http_method": "GET",
+        "endpoint": "api/SecondaryOrder",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "date range (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "userid": {
+            "type": "int",
+            "required": false,
+            "description": "userid (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SecondaryOrderController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/SecondaryOrder_repo.cs",
+          "Interfaces/ISecondaryOrder.cs"
+        ]
+      },
+      "module": "Secondary Sales Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all secondary order records — calls ICommon.getUserByToken, ISecondaryOrder.GetSecondaryOrderData, ISecondaryOrder.GetSecondaryOrderCards",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISecondaryOrder.GetSecondaryOrderData",
+          "ISecondaryOrder.GetSecondaryOrderCards",
+          "ISecondaryOrder.GetAllUsersByCurrentUser",
+          "ISecondaryOrder.GetSecondaryOrderActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SecondaryOrder_repo (Repository/SecondaryOrder_repo.cs) via ISecondaryOrder"
+        ],
+        "stored_procedures": [
+          "GetSecondaryOrders",
+          "GetSecondaryOrderCards"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "secondary_order_get_secondary_order_by_id",
+      "name": "Get Secondary Order By Id",
+      "action_method": "GetSecondaryOrderById",
+      "http_method": "GET",
+      "route": "api/SecondaryOrder/{id}",
+      "business_purpose": "Retrieve secondary order by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/secondary-order:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve secondary order by ID",
+      "detailed_description": "Retrieve secondary order by ID. It validates the request, then calls ICommon.getUserByToken, ISecondaryOrder.GetSecondaryOrderById, ICommon.GetFilesById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid scheduler ID is required [when id <= 0]",
+        "not_found": "404: Lead not found [when secondaryOrder == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve secondary order by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/SecondaryOrder",
+          "GET api/SecondaryOrder/{id}",
+          "GET api/SecondaryOrder/dealers/{search_text}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "secondary_order_get_secondary_order_by_id",
+        "description": "Retrieve secondary order by ID",
+        "http_method": "GET",
+        "endpoint": "api/SecondaryOrder/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SecondaryOrderController.cs",
+        "action_method": "GetSecondaryOrderById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/SecondaryOrder_repo.cs",
+          "Interfaces/ISecondaryOrder.cs"
+        ]
+      },
+      "module": "Secondary Sales Management",
+      "business_logic": {
+        "operation_summary": "Retrieve secondary order by ID — validates the request, calls ICommon.getUserByToken, ISecondaryOrder.GetSecondaryOrderById, ICommon.GetFilesById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid scheduler ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISecondaryOrder.GetSecondaryOrderById",
+          "ICommon.GetFilesById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SecondaryOrder_repo (Repository/SecondaryOrder_repo.cs) via ISecondaryOrder"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid scheduler ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Lead not found",
+            "when": "secondaryOrder == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "secondary_order_get_dealers_by_text",
+      "name": "Get Dealers By Text",
+      "action_method": "GetDealersByText",
+      "http_method": "GET",
+      "route": "api/SecondaryOrder/dealers/{search_text}",
+      "business_purpose": "Retrieve dealers by text",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "search_text",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "indentDealerDto[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/secondary-order:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve dealers by text",
+      "detailed_description": "Retrieve dealers by text. It calls ICommon.getUserByToken, ISecondaryOrder.GetDealersearchText. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve dealers by text",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "search_text (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/SecondaryOrder",
+          "GET api/SecondaryOrder/{id}",
+          "GET api/SecondaryOrder/dealers/{search_text}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "secondary_order_get_dealers_by_text",
+        "description": "Retrieve dealers by text",
+        "http_method": "GET",
+        "endpoint": "api/SecondaryOrder/dealers/{search_text}",
+        "parameters": {
+          "search_text": {
+            "type": "string",
+            "required": true,
+            "description": "search text (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SecondaryOrderController.cs",
+        "action_method": "GetDealersByText",
+        "related_dto_files": [
+          "DTO/ReadDTO/indentDealerDto.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/SecondaryOrder_repo.cs",
+          "Interfaces/ISecondaryOrder.cs"
+        ]
+      },
+      "module": "Secondary Sales Management",
+      "business_logic": {
+        "operation_summary": "Retrieve dealers by text — calls ICommon.getUserByToken, ISecondaryOrder.GetDealersearchText",
+        "preconditions": "Valid Bearer JWT; route parameter(s) search_text",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISecondaryOrder.GetDealersearchText"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SecondaryOrder_repo (Repository/SecondaryOrder_repo.cs) via ISecondaryOrder"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "secondary_order_get_secondary_types",
+      "name": "Get Secondary Types",
+      "action_method": "GetSecondaryTypes",
+      "http_method": "GET",
+      "route": "api/SecondaryOrder/secondarytypes",
+      "business_purpose": "Retrieve secondary types",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "string[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/secondary-order:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve secondary types",
+      "detailed_description": "Retrieve secondary types. It calls ISecondaryOrder.GetSecondaryTypes. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve secondary types",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/SecondaryOrder",
+          "GET api/SecondaryOrder/{id}",
+          "GET api/SecondaryOrder/dealers/{search_text}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "secondary_order_get_secondary_types",
+        "description": "Retrieve secondary types",
+        "http_method": "GET",
+        "endpoint": "api/SecondaryOrder/secondarytypes",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SecondaryOrderController.cs",
+        "action_method": "GetSecondaryTypes",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/SecondaryOrder_repo.cs",
+          "Interfaces/ISecondaryOrder.cs"
+        ]
+      },
+      "module": "Secondary Sales Management",
+      "business_logic": {
+        "operation_summary": "Retrieve secondary types — calls ISecondaryOrder.GetSecondaryTypes",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ISecondaryOrder.GetSecondaryTypes"
+        ],
+        "calls_repositories": [
+          "SecondaryOrder_repo (Repository/SecondaryOrder_repo.cs) via ISecondaryOrder"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "secondary_order_get_dealers",
+      "name": "Get Dealers",
+      "action_method": "GetDealers",
+      "http_method": "GET",
+      "route": "api/SecondaryOrder/dealers",
+      "business_purpose": "Retrieve dealers",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "search_text",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "indentDealerDto[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/secondary-order:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve dealers",
+      "detailed_description": "Retrieve dealers. It calls ICommon.getUserByToken, ISecondaryOrder.GetDealerData. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve dealers",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "search_text (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/SecondaryOrder",
+          "GET api/SecondaryOrder/{id}",
+          "GET api/SecondaryOrder/dealers/{search_text}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "secondary_order_get_dealers",
+        "description": "Retrieve dealers",
+        "http_method": "GET",
+        "endpoint": "api/SecondaryOrder/dealers",
+        "parameters": {
+          "search_text": {
+            "type": "string",
+            "required": true,
+            "description": "search text (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SecondaryOrderController.cs",
+        "action_method": "GetDealers",
+        "related_dto_files": [
+          "DTO/ReadDTO/indentDealerDto.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/SecondaryOrder_repo.cs",
+          "Interfaces/ISecondaryOrder.cs"
+        ]
+      },
+      "module": "Secondary Sales Management",
+      "business_logic": {
+        "operation_summary": "Retrieve dealers — calls ICommon.getUserByToken, ISecondaryOrder.GetDealerData",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): search_text",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISecondaryOrder.GetDealerData"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SecondaryOrder_repo (Repository/SecondaryOrder_repo.cs) via ISecondaryOrder"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "secondary_order_get_products",
+      "name": "Get Products",
+      "action_method": "GetProducts",
+      "http_method": "GET",
+      "route": "api/SecondaryOrder/products",
+      "business_purpose": "Retrieve products",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "string[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/secondary-order:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve products",
+      "detailed_description": "Retrieve products. It calls ICommon.getUserByToken, ISecondaryOrder.GetProducts. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve products",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/SecondaryOrder",
+          "GET api/SecondaryOrder/{id}",
+          "GET api/SecondaryOrder/dealers/{search_text}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "secondary_order_get_products",
+        "description": "Retrieve products",
+        "http_method": "GET",
+        "endpoint": "api/SecondaryOrder/products",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SecondaryOrderController.cs",
+        "action_method": "GetProducts",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/SecondaryOrder_repo.cs",
+          "Interfaces/ISecondaryOrder.cs"
+        ]
+      },
+      "module": "Secondary Sales Management",
+      "business_logic": {
+        "operation_summary": "Retrieve products — calls ICommon.getUserByToken, ISecondaryOrder.GetProducts",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISecondaryOrder.GetProducts"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SecondaryOrder_repo (Repository/SecondaryOrder_repo.cs) via ISecondaryOrder"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "secondary_order_get_grades",
+      "name": "Get Grades",
+      "action_method": "GetGrades",
+      "http_method": "GET",
+      "route": "api/SecondaryOrder/grades",
+      "business_purpose": "Retrieve grades",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "productname",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ],
+        "dto_name": "string[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/secondary-order:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve grades",
+      "detailed_description": "Retrieve grades. It calls ISecondaryOrder.GetGrades. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No grades found [when grades == null || !grades.Any()]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve grades",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "productname (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/SecondaryOrder",
+          "GET api/SecondaryOrder/{id}",
+          "GET api/SecondaryOrder/dealers/{search_text}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "secondary_order_get_grades",
+        "description": "Retrieve grades",
+        "http_method": "GET",
+        "endpoint": "api/SecondaryOrder/grades",
+        "parameters": {
+          "productname": {
+            "type": "string",
+            "required": true,
+            "description": "productname (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SecondaryOrderController.cs",
+        "action_method": "GetGrades",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/SecondaryOrder_repo.cs",
+          "Interfaces/ISecondaryOrder.cs"
+        ]
+      },
+      "module": "Secondary Sales Management",
+      "business_logic": {
+        "operation_summary": "Retrieve grades — calls ISecondaryOrder.GetGrades",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): productname; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ISecondaryOrder.GetGrades"
+        ],
+        "calls_repositories": [
+          "SecondaryOrder_repo (Repository/SecondaryOrder_repo.cs) via ISecondaryOrder"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 404,
+            "message": "No grades found",
+            "when": "grades == null || !grades.Any()"
+          }
+        ]
+      }
+    },
+    {
+      "id": "secondary_order_get_thickness",
+      "name": "Get Thickness",
+      "action_method": "GetThickness",
+      "http_method": "GET",
+      "route": "api/SecondaryOrder/thickness",
+      "business_purpose": "Retrieve thickness",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "productname",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "grade",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ],
+        "dto_name": "string[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/secondary-order:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve thickness",
+      "detailed_description": "Retrieve thickness. It calls ISecondaryOrder.GetThickenss. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No thickenss found [when thickenss == null || !thickenss.Any()]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve thickness",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "productname (query)",
+          "grade (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/SecondaryOrder",
+          "GET api/SecondaryOrder/{id}",
+          "GET api/SecondaryOrder/dealers/{search_text}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "secondary_order_get_thickness",
+        "description": "Retrieve thickness",
+        "http_method": "GET",
+        "endpoint": "api/SecondaryOrder/thickness",
+        "parameters": {
+          "productname": {
+            "type": "string",
+            "required": true,
+            "description": "productname (query)"
+          },
+          "grade": {
+            "type": "string",
+            "required": true,
+            "description": "grade (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SecondaryOrderController.cs",
+        "action_method": "GetThickness",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/SecondaryOrder_repo.cs",
+          "Interfaces/ISecondaryOrder.cs"
+        ]
+      },
+      "module": "Secondary Sales Management",
+      "business_logic": {
+        "operation_summary": "Retrieve thickness — calls ISecondaryOrder.GetThickenss",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): productname, grade; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ISecondaryOrder.GetThickenss"
+        ],
+        "calls_repositories": [
+          "SecondaryOrder_repo (Repository/SecondaryOrder_repo.cs) via ISecondaryOrder"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 404,
+            "message": "No thickenss found",
+            "when": "thickenss == null || !thickenss.Any()"
+          }
+        ]
+      }
+    },
+    {
+      "id": "secondary_order_get_sizes",
+      "name": "Get Sizes",
+      "action_method": "GetSizes",
+      "http_method": "GET",
+      "route": "api/SecondaryOrder/sizes",
+      "business_purpose": "Retrieve sizes",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "productname",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "grade",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "thickness",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ],
+        "dto_name": "string[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/secondary-order:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve sizes",
+      "detailed_description": "Retrieve sizes. It calls ISecondaryOrder.GetSizes. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No sizes found [when sizes == null || !sizes.Any()]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve sizes",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "productname (query)",
+          "grade (query)",
+          "thickness (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/SecondaryOrder",
+          "GET api/SecondaryOrder/{id}",
+          "GET api/SecondaryOrder/dealers/{search_text}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "secondary_order_get_sizes",
+        "description": "Retrieve sizes",
+        "http_method": "GET",
+        "endpoint": "api/SecondaryOrder/sizes",
+        "parameters": {
+          "productname": {
+            "type": "string",
+            "required": true,
+            "description": "productname (query)"
+          },
+          "grade": {
+            "type": "string",
+            "required": true,
+            "description": "grade (query)"
+          },
+          "thickness": {
+            "type": "string",
+            "required": true,
+            "description": "thickness (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SecondaryOrderController.cs",
+        "action_method": "GetSizes",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/SecondaryOrder_repo.cs",
+          "Interfaces/ISecondaryOrder.cs"
+        ]
+      },
+      "module": "Secondary Sales Management",
+      "business_logic": {
+        "operation_summary": "Retrieve sizes — calls ISecondaryOrder.GetSizes",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): productname, grade, thickness; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ISecondaryOrder.GetSizes"
+        ],
+        "calls_repositories": [
+          "SecondaryOrder_repo (Repository/SecondaryOrder_repo.cs) via ISecondaryOrder"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 404,
+            "message": "No sizes found",
+            "when": "sizes == null || !sizes.Any()"
+          }
+        ]
+      }
+    },
+    {
+      "id": "secondary_order_order_approval",
+      "name": "Order Approval",
+      "action_method": "OrderApproval",
+      "http_method": "POST",
+      "route": "api/SecondaryOrder/approval",
+      "business_purpose": "Handle order approval",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "SecondaryOrderApprovalRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "IsApproved",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "crm/secondary-order:approve",
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Handle order approval",
+      "detailed_description": "Handle order approval. It calls ICommon.getUserByToken, ISecondaryOrder.GetSecondaryOrderById, ISecondaryOrder.SaveChanges. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Order not found [when order == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle order approval",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body SecondaryOrderApprovalRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/SecondaryOrder",
+          "GET api/SecondaryOrder/secondarytypes",
+          "GET api/SecondaryOrder/dealers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "secondary_order_order_approval",
+        "description": "Handle order approval",
+        "http_method": "POST",
+        "endpoint": "api/SecondaryOrder/approval",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "IsApproved": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Approved (body)"
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Approves the record and advances its workflow"
+      },
+      "source": {
+        "controller_file": "Controllers/SecondaryOrderController.cs",
+        "action_method": "OrderApproval",
+        "related_dto_files": [
+          "Controllers/SecondaryOrderController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/SecondaryOrder_repo.cs",
+          "Interfaces/ISecondaryOrder.cs"
+        ]
+      },
+      "module": "Secondary Sales Management",
+      "business_logic": {
+        "operation_summary": "Handle order approval — calls ICommon.getUserByToken, ISecondaryOrder.GetSecondaryOrderById, ISecondaryOrder.SaveChanges",
+        "preconditions": "Valid Bearer JWT; request body of type SecondaryOrderApprovalRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets order.is_approved, order.is_rejected, order.operated_by, order.operated_date, order.status, order.modified_by and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISecondaryOrder.GetSecondaryOrderById",
+          "ISecondaryOrder.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SecondaryOrder_repo (Repository/SecondaryOrder_repo.cs) via ISecondaryOrder"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Order not found",
+            "when": "order == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "secondary_order_order_reject",
+      "name": "Order Reject",
+      "action_method": "OrderReject",
+      "http_method": "POST",
+      "route": "api/SecondaryOrder/reject",
+      "business_purpose": "Handle order reject",
+      "data_effect": "REJECTION",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "SecondaryOrderRejectRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "IsRejected",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "REJECTION",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "crm/secondary-order:reject",
+      "permission_flags": [
+        "reject"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Handle order reject",
+      "detailed_description": "Handle order reject. It calls ICommon.getUserByToken, ISecondaryOrder.GetSecondaryOrderById, ISecondaryOrder.SaveChanges. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Order not found [when order == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle order reject",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body SecondaryOrderRejectRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/SecondaryOrder",
+          "GET api/SecondaryOrder/secondarytypes",
+          "GET api/SecondaryOrder/dealers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "secondary_order_order_reject",
+        "description": "Handle order reject",
+        "http_method": "POST",
+        "endpoint": "api/SecondaryOrder/reject",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "IsRejected": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Rejected (body)"
+          }
+        },
+        "operation_type": "REJECTION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Rejects the record"
+      },
+      "source": {
+        "controller_file": "Controllers/SecondaryOrderController.cs",
+        "action_method": "OrderReject",
+        "related_dto_files": [
+          "Controllers/SecondaryOrderController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/SecondaryOrder_repo.cs",
+          "Interfaces/ISecondaryOrder.cs"
+        ]
+      },
+      "module": "Secondary Sales Management",
+      "business_logic": {
+        "operation_summary": "Handle order reject — calls ICommon.getUserByToken, ISecondaryOrder.GetSecondaryOrderById, ISecondaryOrder.SaveChanges",
+        "preconditions": "Valid Bearer JWT; request body of type SecondaryOrderRejectRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets order.is_rejected, order.is_approved, order.operated_by, order.operated_date, order.status, order.modified_by and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISecondaryOrder.GetSecondaryOrderById",
+          "ISecondaryOrder.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SecondaryOrder_repo (Repository/SecondaryOrder_repo.cs) via ISecondaryOrder"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Order not found",
+            "when": "order == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "secondary_order_get_influencers",
+      "name": "Get Influencers",
+      "action_method": "GetInfluencers",
+      "http_method": "GET",
+      "route": "api/SecondaryOrder/influencers",
+      "business_purpose": "Retrieve influencers",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fl_status",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "searchText",
+          "type": "string",
+          "required": false,
+          "default": "\"\""
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/secondary-order:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve influencers",
+      "detailed_description": "Retrieve influencers. It calls ICommon.getUserByToken, ISecondaryOrder.GetInfluencerByName, ISecondaryOrder.GetInfluencersBySearchText. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No Influencer found [when influencer == null || !influencer.Any()]",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve influencers",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "fl_status (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/SecondaryOrder",
+          "GET api/SecondaryOrder/{id}",
+          "GET api/SecondaryOrder/dealers/{search_text}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "secondary_order_get_influencers",
+        "description": "Retrieve influencers",
+        "http_method": "GET",
+        "endpoint": "api/SecondaryOrder/influencers",
+        "parameters": {
+          "fl_status": {
+            "type": "string",
+            "required": true,
+            "description": "fl status (query)"
+          },
+          "searchText": {
+            "type": "string",
+            "required": false,
+            "description": "search Text (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SecondaryOrderController.cs",
+        "action_method": "GetInfluencers",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/SecondaryOrder_repo.cs",
+          "Interfaces/ISecondaryOrder.cs"
+        ]
+      },
+      "module": "Secondary Sales Management",
+      "business_logic": {
+        "operation_summary": "Retrieve influencers — calls ICommon.getUserByToken, ISecondaryOrder.GetInfluencerByName, ISecondaryOrder.GetInfluencersBySearchText",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): fl_status; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISecondaryOrder.GetInfluencerByName",
+          "ISecondaryOrder.GetInfluencersBySearchText"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SecondaryOrder_repo (Repository/SecondaryOrder_repo.cs) via ISecondaryOrder"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "No Influencer found",
+            "when": "influencer == null || !influencer.Any()"
+          }
+        ]
+      }
+    },
+    {
+      "id": "secondary_order_get_projects",
+      "name": "Get Projects",
+      "action_method": "GetProjects",
+      "http_method": "GET",
+      "route": "api/SecondaryOrder/projects",
+      "business_purpose": "Retrieve projects",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "client_id",
+          "type": "int",
+          "required": true
+        },
+        {
+          "name": "searchText",
+          "type": "string",
+          "required": false,
+          "default": "\"\""
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/secondary-order:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve projects",
+      "detailed_description": "Retrieve projects. It calls ICommon.getUserByToken, ISecondaryOrder.GetClientProjectByNameAndInfluencer. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No project found [when projects == null || !projects.Any()]",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve projects",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "client_id (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/SecondaryOrder",
+          "GET api/SecondaryOrder/{id}",
+          "GET api/SecondaryOrder/dealers/{search_text}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "secondary_order_get_projects",
+        "description": "Retrieve projects",
+        "http_method": "GET",
+        "endpoint": "api/SecondaryOrder/projects",
+        "parameters": {
+          "client_id": {
+            "type": "int",
+            "required": true,
+            "description": "client id (query)"
+          },
+          "searchText": {
+            "type": "string",
+            "required": false,
+            "description": "search Text (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SecondaryOrderController.cs",
+        "action_method": "GetProjects",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/SecondaryOrder_repo.cs",
+          "Interfaces/ISecondaryOrder.cs"
+        ]
+      },
+      "module": "Secondary Sales Management",
+      "business_logic": {
+        "operation_summary": "Retrieve projects — calls ICommon.getUserByToken, ISecondaryOrder.GetClientProjectByNameAndInfluencer",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): client_id; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISecondaryOrder.GetClientProjectByNameAndInfluencer"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SecondaryOrder_repo (Repository/SecondaryOrder_repo.cs) via ISecondaryOrder"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "No project found",
+            "when": "projects == null || !projects.Any()"
+          }
+        ]
+      }
+    },
+    {
+      "id": "secondary_order_get_my_projects",
+      "name": "Get My Projects",
+      "action_method": "GetMyProjects",
+      "http_method": "GET",
+      "route": "api/SecondaryOrder/myprojects",
+      "business_purpose": "Retrieve my projects",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "searchText",
+          "type": "string",
+          "required": false,
+          "default": "\"\""
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/secondary-order:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve my projects",
+      "detailed_description": "Retrieve my projects. It calls ICommon.getUserByToken, ISecondaryOrder.GetMyProjects. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No project found [when projects == null || !projects.Any()]",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve my projects",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/SecondaryOrder",
+          "GET api/SecondaryOrder/{id}",
+          "GET api/SecondaryOrder/dealers/{search_text}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "secondary_order_get_my_projects",
+        "description": "Retrieve my projects",
+        "http_method": "GET",
+        "endpoint": "api/SecondaryOrder/myprojects",
+        "parameters": {
+          "searchText": {
+            "type": "string",
+            "required": false,
+            "description": "search Text (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SecondaryOrderController.cs",
+        "action_method": "GetMyProjects",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/SecondaryOrder_repo.cs",
+          "Interfaces/ISecondaryOrder.cs"
+        ]
+      },
+      "module": "Secondary Sales Management",
+      "business_logic": {
+        "operation_summary": "Retrieve my projects — calls ICommon.getUserByToken, ISecondaryOrder.GetMyProjects",
+        "preconditions": "Valid Bearer JWT; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISecondaryOrder.GetMyProjects"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SecondaryOrder_repo (Repository/SecondaryOrder_repo.cs) via ISecondaryOrder"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "No project found",
+            "when": "projects == null || !projects.Any()"
+          }
+        ]
+      }
+    },
+    {
+      "id": "secondary_order_get_projects_by_name",
+      "name": "Get Projects By Name",
+      "action_method": "GetProjectsByName",
+      "http_method": "GET",
+      "route": "api/SecondaryOrder/projects-by-name",
+      "business_purpose": "Retrieve projects by name",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "searchText",
+          "type": "string",
+          "required": false,
+          "default": "\"\""
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/secondary-order:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve projects by name",
+      "detailed_description": "Retrieve projects by name. It calls ICommon.getUserByToken, ISecondaryOrder.GetProjectsByName. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No project found [when projects == null || !projects.Any()]",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve projects by name",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/SecondaryOrder",
+          "GET api/SecondaryOrder/{id}",
+          "GET api/SecondaryOrder/dealers/{search_text}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "secondary_order_get_projects_by_name",
+        "description": "Retrieve projects by name",
+        "http_method": "GET",
+        "endpoint": "api/SecondaryOrder/projects-by-name",
+        "parameters": {
+          "searchText": {
+            "type": "string",
+            "required": false,
+            "description": "search Text (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SecondaryOrderController.cs",
+        "action_method": "GetProjectsByName",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/SecondaryOrder_repo.cs",
+          "Interfaces/ISecondaryOrder.cs"
+        ]
+      },
+      "module": "Secondary Sales Management",
+      "business_logic": {
+        "operation_summary": "Retrieve projects by name — calls ICommon.getUserByToken, ISecondaryOrder.GetProjectsByName",
+        "preconditions": "Valid Bearer JWT; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISecondaryOrder.GetProjectsByName"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SecondaryOrder_repo (Repository/SecondaryOrder_repo.cs) via ISecondaryOrder"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "No project found",
+            "when": "projects == null || !projects.Any()"
+          }
+        ]
+      }
+    },
+    {
+      "id": "secondary_order_delete_secondary_order",
+      "name": "Delete Secondary Order",
+      "action_method": "DeleteSecondaryOrder",
+      "http_method": "DELETE",
+      "route": "api/SecondaryOrder/{id}",
+      "business_purpose": "Delete secondary order",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "crm/secondary-order:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete secondary order",
+      "detailed_description": "Delete secondary order. It validates the request, then calls ICommon.getUserByToken, ISecondaryOrder.GetSecondaryOrderById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid lead ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Secondary Order not found. [when existingSecondaryOrder == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete secondary order",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/SecondaryOrder/{id}",
+          "GET api/SecondaryOrder/dealers/{search_text}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "secondary_order_delete_secondary_order",
+        "description": "Delete secondary order",
+        "http_method": "DELETE",
+        "endpoint": "api/SecondaryOrder/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/SecondaryOrderController.cs",
+        "action_method": "DeleteSecondaryOrder",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/SecondaryOrder_repo.cs",
+          "Interfaces/ISecondaryOrder.cs"
+        ]
+      },
+      "module": "Secondary Sales Management",
+      "business_logic": {
+        "operation_summary": "Delete secondary order — validates the request, calls ICommon.getUserByToken, ISecondaryOrder.GetSecondaryOrderById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "soft delete (is_deleted flag); AuditLog: INSERT",
+        "validations": "Valid lead ID is required.",
+        "side_effects": "AuditLog DELETE (Customer Relationship Management > Secondary Orders > Secondary Order)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISecondaryOrder.GetSecondaryOrderById",
+          "ICommon.ToJsonString",
+          "ISecondaryOrder.DeleteSecondaryOrder",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SecondaryOrder_repo (Repository/SecondaryOrder_repo.cs) via ISecondaryOrder"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid lead ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Secondary Order not found.",
+            "when": "existingSecondaryOrder == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "secondary_order_update_view_count",
+      "name": "Update View Count",
+      "action_method": "UpdateViewCount",
+      "http_method": "POST",
+      "route": "api/SecondaryOrder/viewUpdate/{id}",
+      "business_purpose": "Update view count",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": null,
+        "content_type": "multipart/form-data",
+        "properties": [
+          {
+            "name": "invoice_no",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "invoiceDate",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "file",
+            "type": "IFormFile",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "crm/secondary-order:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/scheme-payment-request-for-verification",
+        "crm/scheme-payment-request-for-corporate-approval",
+        "crm/scheme-wise-orders-for-verification",
+        "crm/scheme-payment-request",
+        "crm/scheme-wise-orders",
+        "crm/scheme-wise-orders-for-corporate-approval-"
+      ],
+      "short_description": "Update view count",
+      "detailed_description": "Update view count. It calls ICommon.getUserByToken, ISecondaryOrder.GetSecondaryOrderById, ICommon.CreateComplaintFilesRange, then processes uploaded files. Persists changes to: ComplaintsFile: INSERT. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Order not found [when order == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update view count",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/SecondaryOrder/{id}",
+          "GET api/SecondaryOrder/dealers/{search_text}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "secondary_order_update_view_count",
+        "description": "Update view count",
+        "http_method": "POST",
+        "endpoint": "api/SecondaryOrder/viewUpdate/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "invoice_no": {
+            "type": "string",
+            "required": true,
+            "description": "invoice no (body)"
+          },
+          "invoiceDate": {
+            "type": "string",
+            "required": true,
+            "description": "invoice Date (body)"
+          },
+          "file": {
+            "type": "IFormFile",
+            "required": false,
+            "description": "file (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/SecondaryOrderController.cs",
+        "action_method": "UpdateViewCount",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/SecondaryOrder_repo.cs",
+          "Interfaces/ISecondaryOrder.cs"
+        ]
+      },
+      "module": "Secondary Sales Management",
+      "business_logic": {
+        "operation_summary": "Update view count — calls ICommon.getUserByToken, ISecondaryOrder.GetSecondaryOrderById, ICommon.CreateComplaintFilesRange, processes uploaded files",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "ComplaintsFile: INSERT; sets order.invoice_no, order.invoice_date and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "Handles file upload/storage",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISecondaryOrder.GetSecondaryOrderById",
+          "ICommon.CreateComplaintFilesRange",
+          "ISecondaryOrder.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SecondaryOrder_repo (Repository/SecondaryOrder_repo.cs) via ISecondaryOrder"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Order not found",
+            "when": "order == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "secondary_order_create_secondary_order",
+      "name": "Create Secondary Order",
+      "action_method": "CreateSecondaryOrder",
+      "http_method": "POST",
+      "route": "api/SecondaryOrder",
+      "business_purpose": "Create secondary order",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "SecondaryOrderPostRequest (inline)",
+        "content_type": "multipart/form-data",
+        "properties": [
+          {
+            "name": "inputdata",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "file",
+            "type": "IFormFile",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "crm/secondary-order:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create secondary order",
+      "detailed_description": "Create secondary order. It validates the request, then calls ISecondaryOrder.getUserByToken, ISecondaryOrder.GetDealerByID, ISecondaryOrder.GetClientByID, then processes uploaded files. Persists changes to: ComplaintsFile: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid dealer [when suppliedBy == null]; No valid product details found [when !details.Any()]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]; Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create secondary order",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body SecondaryOrderPostRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/SecondaryOrder",
+          "GET api/SecondaryOrder/secondarytypes",
+          "GET api/SecondaryOrder/dealers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "secondary_order_create_secondary_order",
+        "description": "Create secondary order",
+        "http_method": "POST",
+        "endpoint": "api/SecondaryOrder",
+        "parameters": {
+          "inputdata": {
+            "type": "string",
+            "required": false,
+            "description": "inputdata (body)"
+          },
+          "file": {
+            "type": "IFormFile",
+            "required": false,
+            "description": "file (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/SecondaryOrderController.cs",
+        "action_method": "CreateSecondaryOrder",
+        "related_dto_files": [
+          "Controllers/SecondaryOrderController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/SecondaryOrder_repo.cs",
+          "Interfaces/ISecondaryOrder.cs",
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Secondary Sales Management",
+      "business_logic": {
+        "operation_summary": "Create secondary order — validates the request, calls ISecondaryOrder.getUserByToken, ISecondaryOrder.GetDealerByID, ISecondaryOrder.GetClientByID, processes uploaded files",
+        "preconditions": "Valid Bearer JWT; request body of type SecondaryOrderPostRequest (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "ComplaintsFile: INSERT",
+        "validations": "Invalid dealer; No valid product details found",
+        "side_effects": "Handles file upload/storage",
+        "calls_services": [
+          "ISecondaryOrder.getUserByToken",
+          "ISecondaryOrder.GetDealerByID",
+          "ISecondaryOrder.GetClientByID",
+          "ISecondaryOrder.GetSecondaryTypeById",
+          "ISecondaryOrder.GetProjectByID",
+          "ISecondaryOrder.GetProjectStatusById",
+          "ISecondaryOrder.GetBranchByDealer",
+          "ISecondaryOrder.GetMaxNumber",
+          "ISecondaryOrder.GetProductsByIdAsync",
+          "ISecondaryOrder.CreateSecondaryOrder",
+          "ICommon.CreateComplaintFilesRange"
+        ],
+        "calls_repositories": [
+          "SecondaryOrder_repo (Repository/SecondaryOrder_repo.cs) via ISecondaryOrder",
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid dealer",
+            "when": "suppliedBy == null"
+          },
+          {
+            "returns": 400,
+            "message": "No valid product details found",
+            "when": "!details.Any()"
+          }
+        ]
+      }
+    },
+    {
+      "id": "secondary_order_update_secondary_order",
+      "name": "Update Secondary Order",
+      "action_method": "UpdateSecondaryOrder",
+      "http_method": "PUT",
+      "route": "api/SecondaryOrder/{id}",
+      "business_purpose": "Update secondary order",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "PutSecondaryOrderRequest (inline)",
+        "content_type": "multipart/form-data",
+        "properties": [
+          {
+            "name": "inputdata",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "file",
+            "type": "IFormFile",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "crm/secondary-order:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update secondary order",
+      "detailed_description": "Update secondary order. It validates the request, then calls ICommon.getUserByToken, ISecondaryOrder.UpdateSecondaryOrderAsync, ICommon.CreateComplaintFilesRange, then processes uploaded files. Persists changes to: ComplaintsFile: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: message built at runtime [when !result.Success]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update secondary order",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "request body PutSecondaryOrderRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/SecondaryOrder/{id}",
+          "GET api/SecondaryOrder/dealers/{search_text}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "secondary_order_update_secondary_order",
+        "description": "Update secondary order",
+        "http_method": "PUT",
+        "endpoint": "api/SecondaryOrder/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "inputdata": {
+            "type": "string",
+            "required": false,
+            "description": "inputdata (body)"
+          },
+          "file": {
+            "type": "IFormFile",
+            "required": false,
+            "description": "file (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/SecondaryOrderController.cs",
+        "action_method": "UpdateSecondaryOrder",
+        "related_dto_files": [
+          "Controllers/SecondaryOrderController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/SecondaryOrder_repo.cs",
+          "Interfaces/ISecondaryOrder.cs"
+        ]
+      },
+      "module": "Secondary Sales Management",
+      "business_logic": {
+        "operation_summary": "Update secondary order — validates the request, calls ICommon.getUserByToken, ISecondaryOrder.UpdateSecondaryOrderAsync, ICommon.CreateComplaintFilesRange, processes uploaded files",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; request body of type PutSecondaryOrderRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "ComplaintsFile: INSERT",
+        "validations": "None found in controller code",
+        "side_effects": "Handles file upload/storage",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISecondaryOrder.UpdateSecondaryOrderAsync",
+          "ICommon.CreateComplaintFilesRange"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SecondaryOrder_repo (Repository/SecondaryOrder_repo.cs) via ISecondaryOrder"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "message built at runtime",
+            "when": "!result.Success"
+          }
+        ]
+      }
+    }
+  ]
+}

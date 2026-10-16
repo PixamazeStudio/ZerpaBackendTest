@@ -1,0 +1,350 @@
+{
+  "controller": "ERPSettingsController",
+  "file": "Controllers/ERPSettingsController.cs",
+  "module": "Settings",
+  "base_route": "api/ERPSettings",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages ERP system settings for visit lags and secondary order supply days limits",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/company-settings/erp-settings",
+        "module_code": "settings",
+        "section": "company-settings",
+        "sub_section": "erp-settings",
+        "frontend_routes": [
+          "/settings/company-settings/erp-settings"
+        ],
+        "menu_route_confirmed": true,
+        "display_names": {
+          "module": "Settings",
+          "section": "Company Settings",
+          "sub_section": "ERP Settings"
+        }
+      },
+      {
+        "path": "settings/user-settings/erp-settings",
+        "module_code": "settings",
+        "section": "user-settings",
+        "sub_section": "erp-settings",
+        "frontend_routes": [
+          "/settings/user-settings/erp-settings"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Settings",
+        "section": "Company Settings",
+        "sub_section": "ERP Settings"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "erp_settings_get",
+      "name": "Get ERP Settings",
+      "action_method": "GetERPSettingsById",
+      "http_method": "GET",
+      "route": "api/ERPSettings/{id}",
+      "business_purpose": "Retrieve ERP settings by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "settings/company-settings/erp-settings",
+        "settings/user-settings/erp-settings"
+      ],
+      "short_description": "Retrieve ERP settings by ID",
+      "detailed_description": "Retrieve ERP settings by ID. It validates the request, then calls IERPSettings.GetERPSettingsById. Possible responses: 200, 400, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ERP Settings ID is required. [when id <= 0]",
+        "not_found": "404: ERP Settings not found. [when erpSettings == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve ERP settings by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/ERPSettings/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "erp_settings_get_erp_settings_by_id",
+        "description": "Retrieve ERP settings by ID",
+        "http_method": "GET",
+        "endpoint": "api/ERPSettings/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ERPSettingsController.cs",
+        "action_method": "GetERPSettingsById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/ERPSettings_repo.cs",
+          "Interfaces/IERPSettings.cs"
+        ]
+      },
+      "module": "Settings",
+      "business_logic": {
+        "operation_summary": "Retrieve ERP settings by ID — validates the request, calls IERPSettings.GetERPSettingsById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid ERP Settings ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IERPSettings.GetERPSettingsById"
+        ],
+        "calls_repositories": [
+          "ERPSettings_repo (Repositories/ERPSettings_repo.cs) via IERPSettings"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid ERP Settings ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "ERP Settings not found.",
+            "when": "erpSettings == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "erp_settings_update",
+      "name": "Update ERP Settings",
+      "action_method": "UpdateERPSettings",
+      "http_method": "PUT",
+      "route": "api/ERPSettings/{id}",
+      "business_purpose": "Update ERP settings like visit lags and supply day limits",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "request_body": {
+        "dto_name": "UpdateERPSettingsRequest (inline)",
+        "properties": [
+          {
+            "name": "default_next_visit_days_lag",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "default_visit_days_lag",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "defualt_secondary_order_supplied_days_limit_days",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          404,
+          500
+        ]
+      },
+      "business_logic": {
+        "operation_summary": "Updates ERP settings with audit trail; validates at least one field is provided",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); request body of type UpdateERPSettingsRequest (inline); passes 5 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "ERP_Settings: UPDATE; AuditLog: INSERT",
+        "validations": "ModelState (DTO data-annotation) validation; Valid ERP Settings ID is required.; Invalid data provided.; At least one field must be provided for update.",
+        "side_effects": "AuditLog UPDATE (Settings > Company Settings > ERP Settings)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IERPSettings.GetERPSettingsById",
+          "ICommon.ToJsonString",
+          "IERPSettings.UpdateERPSettingsAsync",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ERPSettings_repo (Repositories/ERPSettings_repo.cs) via IERPSettings"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid ERP Settings ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field must be provided for update.",
+            "when": "request.default_next_visit_days_lag == null && request.default_visit_days_lag == null && request.defualt_secondary_order_supplied_days_limit_days == null"
+          },
+          {
+            "returns": 404,
+            "message": "ERP not found.",
+            "when": "existingErp == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values; each call writes another audit log entry"
+      },
+      "required_permission": "settings/company-settings/erp-settings:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "settings/user-settings/erp-settings"
+      ],
+      "short_description": "Update ERP settings like visit lags and supply day limits",
+      "detailed_description": "Update ERP settings like visit lags and supply day limits. It validates the request, then calls ICommon.getUserByToken, IERPSettings.GetERPSettingsById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: ERP_Settings: UPDATE, AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ERP Settings ID is required. [when id <= 0]; Invalid data provided. [when !ModelState.IsValid]; At least one field must be provided for update. [when request.default_next_visit_days_lag == null && request.default_visit_days_lag == null && r]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: ERP not found. [when existingErp == null]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update ERP settings like visit lags and supply day limits",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "request body UpdateERPSettingsRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/ERPSettings/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "erp_settings_update_erp_settings",
+        "description": "Update ERP settings like visit lags and supply day limits",
+        "http_method": "PUT",
+        "endpoint": "api/ERPSettings/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "default_next_visit_days_lag": {
+            "type": "int",
+            "required": false,
+            "description": "default next visit days lag (body)"
+          },
+          "default_visit_days_lag": {
+            "type": "int",
+            "required": false,
+            "description": "default visit days lag (body)"
+          },
+          "defualt_secondary_order_supplied_days_limit_days": {
+            "type": "int",
+            "required": false,
+            "description": "defualt secondary order supplied days limit days (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/ERPSettingsController.cs",
+        "action_method": "UpdateERPSettings",
+        "related_dto_files": [
+          "Controllers/ERPSettingsController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ERPSettings_repo.cs",
+          "Interfaces/IERPSettings.cs"
+        ]
+      },
+      "module": "Settings"
+    }
+  ]
+}

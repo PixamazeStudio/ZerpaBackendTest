@@ -1,0 +1,2042 @@
+{
+  "controller": "VisitController",
+  "file": "Controllers/VisitController.cs",
+  "module": "Planning and Visit Management",
+  "base_route": "api/Visit",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages visit records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "crm/visit",
+        "module_code": "crm",
+        "section": "visit",
+        "sub_section": null,
+        "frontend_routes": [
+          "/crm/visit",
+          "/crm/visit/create-visit",
+          "/crm/visit/edit-visit/:id"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "also_called_from_menus": [
+      "crm/projects",
+      "lms/ib-leads"
+    ],
+    "section_configuration_keys": [
+      "Visit"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "visit_get_all_visits",
+      "name": "Get All Visits",
+      "action_method": "GetAllVisits",
+      "http_method": "GET",
+      "route": "api/Visit",
+      "business_purpose": "Retrieve all visits",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "\"this_month\""
+        },
+        {
+          "name": "fromDate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "toDate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        },
+        {
+          "name": "activity_type_id",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        },
+        {
+          "name": "selected_user_id",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/visit:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all visits",
+      "detailed_description": "Retrieve all visits. It calls ICommon.GetDateRange, ICommon.getUserByToken, IVisit.GetAllVisitActivityType. Data access uses stored procedure(s): GetVisitData, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all visits",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Visit",
+          "GET api/Visit/{id}",
+          "GET api/Visit/visitactivitytype"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "visit_get_all_visits",
+        "description": "Retrieve all visits",
+        "http_method": "GET",
+        "endpoint": "api/Visit",
+        "parameters": {
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "date range (query)"
+          },
+          "fromDate": {
+            "type": "datetime",
+            "required": false,
+            "description": "from Date (query)"
+          },
+          "toDate": {
+            "type": "datetime",
+            "required": false,
+            "description": "to Date (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          },
+          "activity_type_id": {
+            "type": "int",
+            "required": false,
+            "description": "activity type id (query)"
+          },
+          "selected_user_id": {
+            "type": "int",
+            "required": false,
+            "description": "selected user id (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/VisitController.cs",
+        "action_method": "GetAllVisits",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/VisitRepo.cs",
+          "Interfaces/IVisit.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all visits — calls ICommon.GetDateRange, ICommon.getUserByToken, IVisit.GetAllVisitActivityType",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.GetDateRange",
+          "ICommon.getUserByToken",
+          "IVisit.GetAllVisitActivityType",
+          "IVisit.GetAllUsersByCurrentUser",
+          "IVisit.GetAllVisits",
+          "IVisit.GetVisitActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "VisitRepo (Repository/VisitRepo.cs) via IVisit"
+        ],
+        "stored_procedures": [
+          "GetVisitData",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "visit_get_visit_by_id",
+      "name": "Get Visit By Id",
+      "action_method": "GetVisitById",
+      "http_method": "GET",
+      "route": "api/Visit/{id}",
+      "business_purpose": "Retrieve visit by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/visit:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve visit by ID",
+      "detailed_description": "Retrieve visit by ID. It calls ICommon.getUserByToken, IVisit.GetVisitById. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Visit not found [when visit == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve visit by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Visit",
+          "GET api/Visit/{id}",
+          "GET api/Visit/visitactivitytype"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "visit_get_visit_by_id",
+        "description": "Retrieve visit by ID",
+        "http_method": "GET",
+        "endpoint": "api/Visit/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/VisitController.cs",
+        "action_method": "GetVisitById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/VisitRepo.cs",
+          "Interfaces/IVisit.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve visit by ID — calls ICommon.getUserByToken, IVisit.GetVisitById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IVisit.GetVisitById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "VisitRepo (Repository/VisitRepo.cs) via IVisit"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Visit not found",
+            "when": "visit == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "visit_get_visit_activity_types_for_dropdown",
+      "name": "Get Visit Activity Types For Dropdown",
+      "action_method": "GetVisitActivityTypesForDropdown",
+      "http_method": "GET",
+      "route": "api/Visit/visitactivitytype",
+      "business_purpose": "Retrieve visit activity types for dropdown",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/visit:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve visit activity types for dropdown",
+      "detailed_description": "Retrieve visit activity types for dropdown. It calls ICommon.getUserByToken, IVisit.GetVisitActivityTypesAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve visit activity types for dropdown",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Visit",
+          "GET api/Visit/{id}",
+          "GET api/Visit/visitactivitytype"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "visit_get_visit_activity_types_for_dropdown",
+        "description": "Retrieve visit activity types for dropdown",
+        "http_method": "GET",
+        "endpoint": "api/Visit/visitactivitytype",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/VisitController.cs",
+        "action_method": "GetVisitActivityTypesForDropdown",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/VisitRepo.cs",
+          "Interfaces/IVisit.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve visit activity types for dropdown — calls ICommon.getUserByToken, IVisit.GetVisitActivityTypesAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IVisit.GetVisitActivityTypesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "VisitRepo (Repository/VisitRepo.cs) via IVisit"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "visit_get_visit_activity_types",
+      "name": "Get Visit Activity Types",
+      "action_method": "GetVisitActivityTypes",
+      "http_method": "GET",
+      "route": "api/Visit/activitytypes",
+      "business_purpose": "Retrieve visit activity types",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/visit:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve visit activity types",
+      "detailed_description": "Retrieve visit activity types. It calls ICommon.getUserByToken, IVisit.GetVisitActivityTypesAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve visit activity types",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Visit",
+          "GET api/Visit/{id}",
+          "GET api/Visit/visitactivitytype"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "visit_get_visit_activity_types",
+        "description": "Retrieve visit activity types",
+        "http_method": "GET",
+        "endpoint": "api/Visit/activitytypes",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/VisitController.cs",
+        "action_method": "GetVisitActivityTypes",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/VisitRepo.cs",
+          "Interfaces/IVisit.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve visit activity types — calls ICommon.getUserByToken, IVisit.GetVisitActivityTypesAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IVisit.GetVisitActivityTypesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "VisitRepo (Repository/VisitRepo.cs) via IVisit"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "visit_get_contact_types",
+      "name": "Get Contact Types",
+      "action_method": "GetContactTypes",
+      "http_method": "GET",
+      "route": "api/Visit/contacttypes",
+      "business_purpose": "Retrieve contact types",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/visit:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve contact types",
+      "detailed_description": "Retrieve contact types. It calls ICommon.getUserByToken, IVisit.GetAllClientTypes. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve contact types",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Visit",
+          "GET api/Visit/{id}",
+          "GET api/Visit/visitactivitytype"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "visit_get_contact_types",
+        "description": "Retrieve contact types",
+        "http_method": "GET",
+        "endpoint": "api/Visit/contacttypes",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/VisitController.cs",
+        "action_method": "GetContactTypes",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/VisitRepo.cs",
+          "Interfaces/IVisit.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve contact types — calls ICommon.getUserByToken, IVisit.GetAllClientTypes",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IVisit.GetAllClientTypes"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "VisitRepo (Repository/VisitRepo.cs) via IVisit"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "visit_get_visits_by_user_id",
+      "name": "Get Visits By User Id",
+      "action_method": "GetVisitsByUserId",
+      "http_method": "GET",
+      "route": "api/Visit/user/{userId}",
+      "business_purpose": "Retrieve visits by user id",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "userId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/visit:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve visits by user id",
+      "detailed_description": "Retrieve visits by user id. It calls ICommon.getUserByToken, IVisit.GetVisitsByUserId. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve visits by user id",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "userId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Visit",
+          "GET api/Visit/{id}",
+          "GET api/Visit/visitactivitytype"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "visit_get_visits_by_user_id",
+        "description": "Retrieve visits by user id",
+        "http_method": "GET",
+        "endpoint": "api/Visit/user/{userId}",
+        "parameters": {
+          "userId": {
+            "type": "int",
+            "required": true,
+            "description": "user Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/VisitController.cs",
+        "action_method": "GetVisitsByUserId",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/VisitRepo.cs",
+          "Interfaces/IVisit.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve visits by user id — calls ICommon.getUserByToken, IVisit.GetVisitsByUserId",
+        "preconditions": "Valid Bearer JWT; route parameter(s) userId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IVisit.GetVisitsByUserId"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "VisitRepo (Repository/VisitRepo.cs) via IVisit"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "visit_get_visits_by_client_id",
+      "name": "Get Visits By Client Id",
+      "action_method": "GetVisitsByClientId",
+      "http_method": "GET",
+      "route": "api/Visit/client/{clientId}",
+      "business_purpose": "Retrieve visits by client id",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "clientId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/visit:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve visits by client id",
+      "detailed_description": "Retrieve visits by client id. It calls ICommon.getUserByToken, IVisit.GetVisitsByClientId. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve visits by client id",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "clientId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Visit",
+          "GET api/Visit/{id}",
+          "GET api/Visit/visitactivitytype"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "visit_get_visits_by_client_id",
+        "description": "Retrieve visits by client id",
+        "http_method": "GET",
+        "endpoint": "api/Visit/client/{clientId}",
+        "parameters": {
+          "clientId": {
+            "type": "int",
+            "required": true,
+            "description": "client Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/VisitController.cs",
+        "action_method": "GetVisitsByClientId",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/VisitRepo.cs",
+          "Interfaces/IVisit.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve visits by client id — calls ICommon.getUserByToken, IVisit.GetVisitsByClientId",
+        "preconditions": "Valid Bearer JWT; route parameter(s) clientId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IVisit.GetVisitsByClientId"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "VisitRepo (Repository/VisitRepo.cs) via IVisit"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "visit_get_visits_by_dealer_id",
+      "name": "Get Visits By Dealer Id",
+      "action_method": "GetVisitsByDealerId",
+      "http_method": "GET",
+      "route": "api/Visit/dealer/{dealerId}",
+      "business_purpose": "Retrieve visits by dealer id",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "dealerId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/visit:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve visits by dealer id",
+      "detailed_description": "Retrieve visits by dealer id. It calls ICommon.getUserByToken, IVisit.GetVisitsByDealerId. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve visits by dealer id",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "dealerId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Visit",
+          "GET api/Visit/{id}",
+          "GET api/Visit/visitactivitytype"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "visit_get_visits_by_dealer_id",
+        "description": "Retrieve visits by dealer id",
+        "http_method": "GET",
+        "endpoint": "api/Visit/dealer/{dealerId}",
+        "parameters": {
+          "dealerId": {
+            "type": "int",
+            "required": true,
+            "description": "dealer Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/VisitController.cs",
+        "action_method": "GetVisitsByDealerId",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/VisitRepo.cs",
+          "Interfaces/IVisit.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve visits by dealer id — calls ICommon.getUserByToken, IVisit.GetVisitsByDealerId",
+        "preconditions": "Valid Bearer JWT; route parameter(s) dealerId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IVisit.GetVisitsByDealerId"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "VisitRepo (Repository/VisitRepo.cs) via IVisit"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "visit_get_visits_by_date_range",
+      "name": "Get Visits By Date Range",
+      "action_method": "GetVisitsByDateRange",
+      "http_method": "GET",
+      "route": "api/Visit/daterange",
+      "business_purpose": "Retrieve visits by date range",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromDate",
+          "type": "datetime",
+          "required": true
+        },
+        {
+          "name": "toDate",
+          "type": "datetime",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/visit:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve visits by date range",
+      "detailed_description": "Retrieve visits by date range. It calls ICommon.getUserByToken, IVisit.GetVisitsByDateRange. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve visits by date range",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "fromDate (query)",
+          "toDate (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/Visit",
+          "GET api/Visit/{id}",
+          "GET api/Visit/visitactivitytype"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "visit_get_visits_by_date_range",
+        "description": "Retrieve visits by date range",
+        "http_method": "GET",
+        "endpoint": "api/Visit/daterange",
+        "parameters": {
+          "fromDate": {
+            "type": "datetime",
+            "required": true,
+            "description": "from Date (query)"
+          },
+          "toDate": {
+            "type": "datetime",
+            "required": true,
+            "description": "to Date (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/VisitController.cs",
+        "action_method": "GetVisitsByDateRange",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/VisitRepo.cs",
+          "Interfaces/IVisit.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve visits by date range — calls ICommon.getUserByToken, IVisit.GetVisitsByDateRange",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): fromDate, toDate",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IVisit.GetVisitsByDateRange"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "VisitRepo (Repository/VisitRepo.cs) via IVisit"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "visit_create_visit",
+      "name": "Create Visit",
+      "action_method": "CreateVisit",
+      "http_method": "POST",
+      "route": "api/Visit",
+      "business_purpose": "Create visit",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "VisitPostDto",
+        "properties": [
+          {
+            "name": "VisitActivityTypeId",
+            "type": "int",
+            "required": true
+          },
+          {
+            "name": "MetPersonType",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "personId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "MeetingDate",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "NextMeetingDate",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "ObjectiveOfMeeting",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Description",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "LeadCreated",
+            "type": "bool",
+            "required": false
+          },
+          {
+            "name": "leads",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "LeadNames",
+            "type": "List<string>",
+            "required": false
+          },
+          {
+            "name": "LeadDueDates",
+            "type": "List<datetime>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "crm/visit:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create visit",
+      "detailed_description": "Create visit. It validates the request, then calls ICommon.getUserByToken, IVisit.GetVisitActivityTypeByIdAsync, IVisit.GetVisitDealerByIdAsync. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid Visit Activity Type ID [when activityType == null]; Invalid Dealer ID [when dealer == null]; Invalid Project ID [when project == null]; Invalid Client ID [when client == null]; Selected client '{client.Name}' is not a Dealer/Sub-dealer [when visit.MetPersonType == \"Dealer/ Sub-dealer\" && client.Client_type?.type_name != \"Dealer/ S]; IB leads can only be created when the visit contact is a client/influencer. [when visit.MetPersonType == \"Dealer\" || visit.MetPersonType == \"Project\" || client == null || c]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]; Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create visit",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body VisitPostDto"
+        ],
+        "follow_up_apis": [
+          "GET api/Visit",
+          "GET api/Visit/visitactivitytype",
+          "GET api/Visit/activitytypes"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "visit_create_visit",
+        "description": "Create visit",
+        "http_method": "POST",
+        "endpoint": "api/Visit",
+        "parameters": {
+          "VisitActivityTypeId": {
+            "type": "int",
+            "required": true,
+            "description": "Visit Activity Type Id (body)"
+          },
+          "MetPersonType": {
+            "type": "string",
+            "required": true,
+            "description": "Met Person Type (body)"
+          },
+          "personId": {
+            "type": "int",
+            "required": false,
+            "description": "person Id (body)"
+          },
+          "MeetingDate": {
+            "type": "datetime",
+            "required": false,
+            "description": "Meeting Date (body)"
+          },
+          "NextMeetingDate": {
+            "type": "datetime",
+            "required": false,
+            "description": "Next Meeting Date (body)"
+          },
+          "ObjectiveOfMeeting": {
+            "type": "string",
+            "required": false,
+            "description": "Objective Of Meeting (body)"
+          },
+          "Description": {
+            "type": "string",
+            "required": false,
+            "description": "Description (body)"
+          },
+          "LeadCreated": {
+            "type": "bool",
+            "required": false,
+            "description": "Lead Created (body)"
+          },
+          "leads": {
+            "type": "int",
+            "required": false,
+            "description": "leads (body)"
+          },
+          "LeadNames": {
+            "type": "List<string>",
+            "required": false,
+            "description": "Lead Names (body)"
+          },
+          "LeadDueDates": {
+            "type": "List<datetime>",
+            "required": false,
+            "description": "Lead Due Dates (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/VisitController.cs",
+        "action_method": "CreateVisit",
+        "related_dto_files": [
+          "DTOs/Request/VisitPostDto.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/VisitRepo.cs",
+          "Interfaces/IVisit.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Create visit — validates the request, calls ICommon.getUserByToken, IVisit.GetVisitActivityTypeByIdAsync, IVisit.GetVisitDealerByIdAsync",
+        "preconditions": "Valid Bearer JWT; request body of type VisitPostDto; passes 6 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "validations": "Invalid Visit Activity Type ID; Invalid Dealer ID; Invalid Project ID; Invalid Client ID; Selected client '{client.Name}' is not a Dealer/Sub-dealer; IB leads can only be created when the visit contact is a client/influencer.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IVisit.GetVisitActivityTypeByIdAsync",
+          "IVisit.GetVisitDealerByIdAsync",
+          "IVisit.GetProjectByIdAsync",
+          "IVisit.GetVisitClientByIdAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "VisitRepo (Repository/VisitRepo.cs) via IVisit"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Visit Activity Type ID",
+            "when": "activityType == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Dealer ID",
+            "when": "dealer == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Project ID",
+            "when": "project == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Client ID",
+            "when": "client == null"
+          },
+          {
+            "returns": 400,
+            "message": "Selected client '{client.Name}' is not a Dealer/Sub-dealer",
+            "when": "visit.MetPersonType == \"Dealer/ Sub-dealer\" && client.Client_type?.type_name != \"Dealer/ Sub-dealer\""
+          },
+          {
+            "returns": 400,
+            "message": "IB leads can only be created when the visit contact is a client/influencer.",
+            "when": "visit.MetPersonType == \"Dealer\" || visit.MetPersonType == \"Project\" || client == null || client.Id <= 0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "visit_update_visit",
+      "name": "Update Visit",
+      "action_method": "UpdateVisit",
+      "http_method": "PUT",
+      "route": "api/Visit/{id}",
+      "business_purpose": "Update visit",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "VisitPostDto",
+        "properties": [
+          {
+            "name": "VisitActivityTypeId",
+            "type": "int",
+            "required": true
+          },
+          {
+            "name": "MetPersonType",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "personId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "MeetingDate",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "NextMeetingDate",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "ObjectiveOfMeeting",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Description",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "LeadCreated",
+            "type": "bool",
+            "required": false
+          },
+          {
+            "name": "leads",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "LeadNames",
+            "type": "List<string>",
+            "required": false
+          },
+          {
+            "name": "LeadDueDates",
+            "type": "List<datetime>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "crm/visit:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update visit",
+      "detailed_description": "Update visit. It validates the request, then calls ICommon.getUserByToken, IVisit.GetCrmVisitById, IVisit.GetVisitActivityTypeByIdAsync. Persists changes to: CRM_Visit: UPDATE. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid Visit Activity Type ID [when activityType == null]; Invalid Dealer ID [when dealer == null]; Invalid Client ID [when client == null]",
+        "not_found": "404: Visit not found [when existingVisit == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update visit",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "request body VisitPostDto"
+        ],
+        "follow_up_apis": [
+          "GET api/Visit/{id}",
+          "GET api/Visit/user/{userId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "visit_update_visit",
+        "description": "Update visit",
+        "http_method": "PUT",
+        "endpoint": "api/Visit/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "VisitActivityTypeId": {
+            "type": "int",
+            "required": true,
+            "description": "Visit Activity Type Id (body)"
+          },
+          "MetPersonType": {
+            "type": "string",
+            "required": true,
+            "description": "Met Person Type (body)"
+          },
+          "personId": {
+            "type": "int",
+            "required": false,
+            "description": "person Id (body)"
+          },
+          "MeetingDate": {
+            "type": "datetime",
+            "required": false,
+            "description": "Meeting Date (body)"
+          },
+          "NextMeetingDate": {
+            "type": "datetime",
+            "required": false,
+            "description": "Next Meeting Date (body)"
+          },
+          "ObjectiveOfMeeting": {
+            "type": "string",
+            "required": false,
+            "description": "Objective Of Meeting (body)"
+          },
+          "Description": {
+            "type": "string",
+            "required": false,
+            "description": "Description (body)"
+          },
+          "LeadCreated": {
+            "type": "bool",
+            "required": false,
+            "description": "Lead Created (body)"
+          },
+          "leads": {
+            "type": "int",
+            "required": false,
+            "description": "leads (body)"
+          },
+          "LeadNames": {
+            "type": "List<string>",
+            "required": false,
+            "description": "Lead Names (body)"
+          },
+          "LeadDueDates": {
+            "type": "List<datetime>",
+            "required": false,
+            "description": "Lead Due Dates (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/VisitController.cs",
+        "action_method": "UpdateVisit",
+        "related_dto_files": [
+          "DTOs/Request/VisitPostDto.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/VisitRepo.cs",
+          "Interfaces/IVisit.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Update visit — validates the request, calls ICommon.getUserByToken, IVisit.GetCrmVisitById, IVisit.GetVisitActivityTypeByIdAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); request body of type VisitPostDto; passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "CRM_Visit: UPDATE; sets existingVisit.visit_activity_type, existingVisit.met_person_type, existingVisit.meeting_date, existingVisit.dealer, existingVisit.client, existingVisit.next_meeting_date and saves changes",
+        "validations": "Invalid Visit Activity Type ID; Invalid Dealer ID; Invalid Client ID",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IVisit.GetCrmVisitById",
+          "IVisit.GetVisitActivityTypeByIdAsync",
+          "IVisit.GetVisitDealerByIdAsync",
+          "IVisit.GetVisitClientByIdAsync",
+          "IVisit.UpdateVisit",
+          "IVisit.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "VisitRepo (Repository/VisitRepo.cs) via IVisit"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Visit not found",
+            "when": "existingVisit == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Visit Activity Type ID",
+            "when": "activityType == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Dealer ID",
+            "when": "dealer == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid Client ID",
+            "when": "client == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "visit_delete_visit",
+      "name": "Delete Visit",
+      "action_method": "DeleteVisit",
+      "http_method": "DELETE",
+      "route": "api/Visit/{id}",
+      "business_purpose": "Delete visit",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "crm/visit:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete visit",
+      "detailed_description": "Delete visit. It calls ICommon.getUserByToken, IVisit.GetCrmVisitById, IVisit.SaveChanges. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Visit not found [when existingVisit == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete visit",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Visit/{id}",
+          "GET api/Visit/user/{userId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "visit_delete_visit",
+        "description": "Delete visit",
+        "http_method": "DELETE",
+        "endpoint": "api/Visit/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/VisitController.cs",
+        "action_method": "DeleteVisit",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/VisitRepo.cs",
+          "Interfaces/IVisit.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Delete visit — calls ICommon.getUserByToken, IVisit.GetCrmVisitById, IVisit.SaveChanges",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets existingVisit.is_deleted, existingVisit.modified_by, existingVisit.modified_date and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IVisit.GetCrmVisitById",
+          "IVisit.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "VisitRepo (Repository/VisitRepo.cs) via IVisit"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Visit not found",
+            "when": "existingVisit == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "visit_get_persons_by_type",
+      "name": "Get Persons By Type",
+      "action_method": "GetPersonsByType",
+      "http_method": "GET",
+      "route": "api/Visit/person/{type}/{searchText}",
+      "business_purpose": "Retrieve persons by type",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "type",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "searchText",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/visit:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve persons by type",
+      "detailed_description": "Retrieve persons by type. It validates the request, then calls ICommon.getUserByToken, IVisit.GetAllDealersByUserAndText, IVisit.GetCurrentUserProjects. Possible responses: 200, 400, 401.",
+      "error_handling": {
+        "validation_errors": "400: Search text is required [when string.IsNullOrWhiteSpace(searchText)]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve persons by type",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "type (route)",
+          "searchText (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Visit",
+          "GET api/Visit/{id}",
+          "GET api/Visit/visitactivitytype"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "visit_get_persons_by_type",
+        "description": "Retrieve persons by type",
+        "http_method": "GET",
+        "endpoint": "api/Visit/person/{type}/{searchText}",
+        "parameters": {
+          "type": {
+            "type": "string",
+            "required": true,
+            "description": "type (route)"
+          },
+          "searchText": {
+            "type": "string",
+            "required": true,
+            "description": "search Text (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/VisitController.cs",
+        "action_method": "GetPersonsByType",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/VisitRepo.cs",
+          "Interfaces/IVisit.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve persons by type — validates the request, calls ICommon.getUserByToken, IVisit.GetAllDealersByUserAndText, IVisit.GetCurrentUserProjects",
+        "preconditions": "Valid Bearer JWT; route parameter(s) type, searchText; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Search text is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IVisit.GetAllDealersByUserAndText",
+          "IVisit.GetCurrentUserProjects",
+          "IVisit.GetAllClientByUserTypeAndText"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "VisitRepo (Repository/VisitRepo.cs) via IVisit"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Search text is required",
+            "when": "string.IsNullOrWhiteSpace(searchText)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "visit_get_persons_by_search_text",
+      "name": "Get Persons By Search Text",
+      "action_method": "GetPersonsBySearchText",
+      "http_method": "GET",
+      "route": "api/Visit/persons/{searchText}",
+      "business_purpose": "Retrieve persons by search text",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "searchText",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/projects:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "lms/ib-leads"
+      ],
+      "short_description": "Retrieve persons by search text",
+      "detailed_description": "Retrieve persons by search text. It validates the request, then calls ICommon.getUserByToken, IVisit.GetAllClientsByUserAndText. Possible responses: 200, 400, 401.",
+      "error_handling": {
+        "validation_errors": "400: Search text is required [when string.IsNullOrWhiteSpace(searchText)]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve persons by search text",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "searchText (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Visit",
+          "GET api/Visit/{id}",
+          "GET api/Visit/visitactivitytype"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "visit_get_persons_by_search_text",
+        "description": "Retrieve persons by search text",
+        "http_method": "GET",
+        "endpoint": "api/Visit/persons/{searchText}",
+        "parameters": {
+          "searchText": {
+            "type": "string",
+            "required": true,
+            "description": "search Text (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/VisitController.cs",
+        "action_method": "GetPersonsBySearchText",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/VisitRepo.cs",
+          "Interfaces/IVisit.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve persons by search text — validates the request, calls ICommon.getUserByToken, IVisit.GetAllClientsByUserAndText",
+        "preconditions": "Valid Bearer JWT; route parameter(s) searchText; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Search text is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IVisit.GetAllClientsByUserAndText"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "VisitRepo (Repository/VisitRepo.cs) via IVisit"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Search text is required",
+            "when": "string.IsNullOrWhiteSpace(searchText)"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,778 @@
+{
+  "controller": "SchedulerController",
+  "file": "Controllers/SchedulerController.cs",
+  "module": "Factory Management",
+  "base_route": "api/Scheduler",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles scheduler: get factory users, get all, get scheduler by id, delete scheduler, update scheduler",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "cms/scheduler",
+        "module_code": "cms",
+        "section": "scheduler",
+        "sub_section": null,
+        "frontend_routes": [
+          "/cms/scheduler",
+          "/cms/scheduler/edit-scheduler",
+          "/cms/scheduler/edit-scheduler/:id"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "also_called_from_menus": [
+      "cms/complaints-center"
+    ],
+    "section_configuration_keys": [
+      "Scheduler"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Complaint Management System",
+        "section": "Scheduler",
+        "sub_section": "Scheduler"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "scheduler_get_factory_users",
+      "name": "Get Factory Users",
+      "action_method": "GetFactoryUsers",
+      "http_method": "GET",
+      "route": "api/Scheduler/GetFactoryUsers",
+      "business_purpose": "Retrieve factory users",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "cms/scheduler:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "cms/complaints-center"
+      ],
+      "short_description": "Retrieve factory users",
+      "detailed_description": "Retrieve factory users. It calls ICommon.getUserByToken, IScheduler.GetFactoryUsers. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No factory users found [when factoryUsers == null || !factoryUsers.Any()]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: System.Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve factory users",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Scheduler/GetFactoryUsers",
+          "GET api/Scheduler",
+          "GET api/Scheduler/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "scheduler_get_factory_users",
+        "description": "Retrieve factory users",
+        "http_method": "GET",
+        "endpoint": "api/Scheduler/GetFactoryUsers",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SchedulerController.cs",
+        "action_method": "GetFactoryUsers",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Scheduler_repo.cs",
+          "Interfaces/IScheduler.cs"
+        ]
+      },
+      "module": "Factory Management",
+      "business_logic": {
+        "operation_summary": "Retrieve factory users — calls ICommon.getUserByToken, IScheduler.GetFactoryUsers",
+        "preconditions": "Valid Bearer JWT; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IScheduler.GetFactoryUsers"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Scheduler_repo (Repository/Scheduler_repo.cs) via IScheduler"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "No factory users found",
+            "when": "factoryUsers == null || !factoryUsers.Any()"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scheduler_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/Scheduler",
+      "business_purpose": "Retrieve all scheduler records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "\"last_30_days\""
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "cms/scheduler:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all scheduler records",
+      "detailed_description": "Retrieve all scheduler records. It calls ICommon.getUserByToken, IIndent.BuildFilterContext, IScheduler.GetSchedulerData. Data access uses stored procedure(s): GetScheduler. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all scheduler records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Scheduler/GetFactoryUsers",
+          "GET api/Scheduler",
+          "GET api/Scheduler/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "scheduler_get_all",
+        "description": "Retrieve all scheduler records",
+        "http_method": "GET",
+        "endpoint": "api/Scheduler",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "date range (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SchedulerController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs",
+          "Repository/Scheduler_repo.cs",
+          "Interfaces/IScheduler.cs"
+        ]
+      },
+      "module": "Factory Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all scheduler records — calls ICommon.getUserByToken, IIndent.BuildFilterContext, IScheduler.GetSchedulerData",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndent.BuildFilterContext",
+          "IScheduler.GetSchedulerData",
+          "IScheduler.GetSchedulerActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent",
+          "Scheduler_repo (Repository/Scheduler_repo.cs) via IScheduler"
+        ],
+        "stored_procedures": [
+          "GetScheduler"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scheduler_get_scheduler_by_id",
+      "name": "Get Scheduler By Id",
+      "action_method": "GetSchedulerById",
+      "http_method": "GET",
+      "route": "api/Scheduler/{id}",
+      "business_purpose": "Retrieve scheduler by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "cms/scheduler:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "cms/complaints-center"
+      ],
+      "short_description": "Retrieve scheduler by ID",
+      "detailed_description": "Retrieve scheduler by ID. It validates the request, then calls ICommon.getUserByToken, IScheduler.GetSchedulerById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid scheduler ID is required [when id <= 0]",
+        "not_found": "404: Scheduler not found [when scheduler == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve scheduler by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Scheduler/GetFactoryUsers",
+          "GET api/Scheduler",
+          "GET api/Scheduler/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "scheduler_get_scheduler_by_id",
+        "description": "Retrieve scheduler by ID",
+        "http_method": "GET",
+        "endpoint": "api/Scheduler/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SchedulerController.cs",
+        "action_method": "GetSchedulerById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Scheduler_repo.cs",
+          "Interfaces/IScheduler.cs"
+        ]
+      },
+      "module": "Factory Management",
+      "business_logic": {
+        "operation_summary": "Retrieve scheduler by ID — validates the request, calls ICommon.getUserByToken, IScheduler.GetSchedulerById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid scheduler ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IScheduler.GetSchedulerById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Scheduler_repo (Repository/Scheduler_repo.cs) via IScheduler"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid scheduler ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Scheduler not found",
+            "when": "scheduler == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scheduler_delete_scheduler",
+      "name": "Delete Scheduler",
+      "action_method": "DeleteScheduler",
+      "http_method": "DELETE",
+      "route": "api/Scheduler/{id}",
+      "business_purpose": "Delete scheduler",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "cms/scheduler:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete scheduler",
+      "detailed_description": "Delete scheduler. It validates the request, then calls ICommon.getUserByToken, IScheduler.GetSchedulerById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: Scheduler: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid scheduler ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Scheduler not found. [when existingScheduler == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete scheduler",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Scheduler/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "scheduler_delete_scheduler",
+        "description": "Delete scheduler",
+        "http_method": "DELETE",
+        "endpoint": "api/Scheduler/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/SchedulerController.cs",
+        "action_method": "DeleteScheduler",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Scheduler_repo.cs",
+          "Interfaces/IScheduler.cs"
+        ]
+      },
+      "module": "Factory Management",
+      "business_logic": {
+        "operation_summary": "Delete scheduler — validates the request, calls ICommon.getUserByToken, IScheduler.GetSchedulerById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Scheduler: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "validations": "Valid scheduler ID is required.",
+        "side_effects": "AuditLog DELETE (Complaint Management System > Scheduler > Scheduler)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IScheduler.GetSchedulerById",
+          "ICommon.ToJsonString",
+          "IScheduler.DeleteScheduler",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Scheduler_repo (Repository/Scheduler_repo.cs) via IScheduler"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid scheduler ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Scheduler not found.",
+            "when": "existingScheduler == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "scheduler_update_scheduler",
+      "name": "Update Scheduler",
+      "action_method": "UpdateScheduler",
+      "http_method": "PUT",
+      "route": "api/Scheduler/{schedulerId}",
+      "business_purpose": "Update scheduler",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "schedulerId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateSchedulerRequest (inline)",
+        "properties": [
+          {
+            "name": "CmsId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "ForUserId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "ScheduledDate",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "Remarks",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values; each call writes another audit log entry"
+      },
+      "required_permission": "cms/scheduler:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update scheduler",
+      "detailed_description": "Update scheduler. It validates the request, then calls ICommon.getUserByToken, IScheduler.GetUserById, IScheduler.GetSchedulerById, then writes an audit log entry. Persists changes to: AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid scheduler ID is required. [when schedulerId <= 0]; At least one field must be provided for update. [when !request.CmsId.HasValue && !request.ForUserId.HasValue && request.ScheduledDate == default]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update scheduler",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "schedulerId (route)",
+          "request body UpdateSchedulerRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Scheduler/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "scheduler_update_scheduler",
+        "description": "Update scheduler",
+        "http_method": "PUT",
+        "endpoint": "api/Scheduler/{schedulerId}",
+        "parameters": {
+          "schedulerId": {
+            "type": "int",
+            "required": true,
+            "description": "scheduler Id (route)"
+          },
+          "CmsId": {
+            "type": "int",
+            "required": false,
+            "description": "Cms Id (body)"
+          },
+          "ForUserId": {
+            "type": "int",
+            "required": false,
+            "description": "For User Id (body)"
+          },
+          "ScheduledDate": {
+            "type": "datetime",
+            "required": false,
+            "description": "Scheduled Date (body)"
+          },
+          "Remarks": {
+            "type": "string",
+            "required": false,
+            "description": "Remarks (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/SchedulerController.cs",
+        "action_method": "UpdateScheduler",
+        "related_dto_files": [
+          "Controllers/SchedulerController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Scheduler_repo.cs",
+          "Interfaces/IScheduler.cs"
+        ]
+      },
+      "module": "Factory Management",
+      "business_logic": {
+        "operation_summary": "Update scheduler — validates the request, calls ICommon.getUserByToken, IScheduler.GetUserById, IScheduler.GetSchedulerById, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) schedulerId; request body of type UpdateSchedulerRequest (inline); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "AuditLog: INSERT",
+        "validations": "Valid scheduler ID is required.; At least one field must be provided for update.",
+        "side_effects": "AuditLog UPDATE (Complaint Management System > Scheduler > Scheduler)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IScheduler.GetUserById",
+          "IScheduler.GetSchedulerById",
+          "ICommon.ToJsonString",
+          "IScheduler.UpdateSchedulerAsync",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Scheduler_repo (Repository/Scheduler_repo.cs) via IScheduler"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid scheduler ID is required.",
+            "when": "schedulerId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field must be provided for update.",
+            "when": "!request.CmsId.HasValue && !request.ForUserId.HasValue && request.ScheduledDate == default(DateTime) && string.IsNullOrWhiteSpace(request.Remarks)"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    }
+  ]
+}

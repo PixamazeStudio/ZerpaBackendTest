@@ -1,0 +1,1050 @@
+{
+  "controller": "IncentiveBrandRateController",
+  "file": "Controllers/IncentiveBrandRateController.cs",
+  "module": "Incentive Management",
+  "base_route": "api/IncentiveBrandRate",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages incentive brand rate records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/incentive-settings/incentive-brand-rate",
+        "module_code": "settings",
+        "section": "incentive-settings",
+        "sub_section": "incentive-brand-rate",
+        "frontend_routes": [
+          "/settings/incentive-settings/incentive-brand-rate",
+          "/settings/incentive-settings/incentive-brand-rate/create-incentive-brand-rate",
+          "/settings/incentive-settings/incentive-brand-rate/edit-incentive-brand-rate/:id"
+        ],
+        "menu_route_confirmed": true,
+        "display_names": {
+          "module": "Settings",
+          "section": "Incentive Settings",
+          "sub_section": "Incentive Brand Rate"
+        }
+      }
+    ],
+    "section_configuration_keys": [
+      "IncentiveBrandRate"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Settings",
+        "section": "Incentive Settings",
+        "sub_section": "Incentive Brand Rate"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "incentive_brand_rate_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/IncentiveBrandRate",
+      "business_purpose": "Retrieve all incentive brand rate records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/incentive-settings/incentive-brand-rate:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all incentive brand rate records",
+      "detailed_description": "Retrieve all incentive brand rate records. It calls ICommon.getUserByToken, IIncentiveBrandRate.GetIncentiveBrandRateData, IIncentiveBrandRate.GetActions. Data access uses stored procedure(s): GetIncentiveBrandRate, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all incentive brand rate records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveBrandRate",
+          "GET api/IncentiveBrandRate/{id}",
+          "GET api/IncentiveBrandRate/brands"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_brand_rate_get_all",
+        "description": "Retrieve all incentive brand rate records",
+        "http_method": "GET",
+        "endpoint": "api/IncentiveBrandRate",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveBrandRateController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/IncentiveBrandRate_repo.cs",
+          "Interfaces/IIncentiveBrandRate.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all incentive brand rate records — calls ICommon.getUserByToken, IIncentiveBrandRate.GetIncentiveBrandRateData, IIncentiveBrandRate.GetActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIncentiveBrandRate.GetIncentiveBrandRateData",
+          "IIncentiveBrandRate.GetActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IncentiveBrandRate_repo (Repositories/IncentiveBrandRate_repo.cs) via IIncentiveBrandRate"
+        ],
+        "stored_procedures": [
+          "GetIncentiveBrandRate",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "incentive_brand_rate_get_incentive_brand_rate_by_id",
+      "name": "Get Incentive Brand Rate By Id",
+      "action_method": "GetIncentiveBrandRateById",
+      "http_method": "GET",
+      "route": "api/IncentiveBrandRate/{id}",
+      "business_purpose": "Retrieve incentive brand rate by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/incentive-settings/incentive-brand-rate:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve incentive brand rate by ID",
+      "detailed_description": "Retrieve incentive brand rate by ID. It validates the request, then calls ICommon.getUserByToken, IIncentiveBrandRate.GetById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required [when id <= 0]",
+        "not_found": "404: Incentive Brand Rate not found [when data == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve incentive brand rate by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveBrandRate",
+          "GET api/IncentiveBrandRate/{id}",
+          "GET api/IncentiveBrandRate/brands"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_brand_rate_get_incentive_brand_rate_by_id",
+        "description": "Retrieve incentive brand rate by ID",
+        "http_method": "GET",
+        "endpoint": "api/IncentiveBrandRate/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveBrandRateController.cs",
+        "action_method": "GetIncentiveBrandRateById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/IncentiveBrandRate_repo.cs",
+          "Interfaces/IIncentiveBrandRate.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Retrieve incentive brand rate by ID — validates the request, calls ICommon.getUserByToken, IIncentiveBrandRate.GetById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIncentiveBrandRate.GetById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IncentiveBrandRate_repo (Repositories/IncentiveBrandRate_repo.cs) via IIncentiveBrandRate"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Incentive Brand Rate not found",
+            "when": "data == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "incentive_brand_rate_delete_incentive_brand_rate",
+      "name": "Delete Incentive Brand Rate",
+      "action_method": "DeleteIncentiveBrandRate",
+      "http_method": "DELETE",
+      "route": "api/IncentiveBrandRate/{id}",
+      "business_purpose": "Delete incentive brand rate",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "settings/incentive-settings/incentive-brand-rate:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete incentive brand rate",
+      "detailed_description": "Delete incentive brand rate. It validates the request, then calls ICommon.getUserByToken, IIncentiveBrandRate.GetById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: IncentiveBrandRate: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Region not found. [when existingIncentiveBrandRate == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete incentive brand rate",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveBrandRate/{id}",
+          "GET api/IncentiveBrandRate/bybrand/{brandId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_brand_rate_delete_incentive_brand_rate",
+        "description": "Delete incentive brand rate",
+        "http_method": "DELETE",
+        "endpoint": "api/IncentiveBrandRate/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveBrandRateController.cs",
+        "action_method": "DeleteIncentiveBrandRate",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/IncentiveBrandRate_repo.cs",
+          "Interfaces/IIncentiveBrandRate.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Delete incentive brand rate — validates the request, calls ICommon.getUserByToken, IIncentiveBrandRate.GetById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "IncentiveBrandRate: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "validations": "Valid ID is required.",
+        "side_effects": "AuditLog DELETE (Settings > Incentive Settings > Incentive Brand Rate)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIncentiveBrandRate.GetById",
+          "ICommon.ToJsonString",
+          "IIncentiveBrandRate.Delete",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IncentiveBrandRate_repo (Repositories/IncentiveBrandRate_repo.cs) via IIncentiveBrandRate"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Region not found.",
+            "when": "existingIncentiveBrandRate == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "incentive_brand_rate_create_incentive_brand_rate",
+      "name": "Create Incentive Brand Rate",
+      "action_method": "CreateIncentiveBrandRate",
+      "http_method": "POST",
+      "route": "api/IncentiveBrandRate",
+      "business_purpose": "Create incentive brand rate",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateIncentiveBrandRateDto (inline)",
+        "properties": [
+          {
+            "name": "BrandName",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "GradeName",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "RatePerSheet",
+            "type": "decimal",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; a duplicate check exists so repeating usually fails with a conflict/validation message"
+      },
+      "required_permission": "settings/incentive-settings/incentive-brand-rate:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create incentive brand rate",
+      "detailed_description": "Create incentive brand rate. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IIncentiveBrandRate.IsDuplicate, IIncentiveBrandRate.CreateIncentiveBrandRateAsync, then writes an audit log entry. Persists changes to: IncentiveBrandRate: INSERT, AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Brand name is required. [when string.IsNullOrWhiteSpace(request.BrandName)]; Grade name is required. [when string.IsNullOrWhiteSpace(request.GradeName)]; Valid rate is required. [when request.RatePerSheet <= 0]; Failed to save data.",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "Brand already exists. [when isDuplicate]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create incentive brand rate",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateIncentiveBrandRateDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveBrandRate",
+          "GET api/IncentiveBrandRate/brands"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_brand_rate_create_incentive_brand_rate",
+        "description": "Create incentive brand rate",
+        "http_method": "POST",
+        "endpoint": "api/IncentiveBrandRate",
+        "parameters": {
+          "BrandName": {
+            "type": "string",
+            "required": false,
+            "description": "Brand Name (body)"
+          },
+          "GradeName": {
+            "type": "string",
+            "required": false,
+            "description": "Grade Name (body)"
+          },
+          "RatePerSheet": {
+            "type": "decimal",
+            "required": false,
+            "description": "Rate Per Sheet (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveBrandRateController.cs",
+        "action_method": "CreateIncentiveBrandRate",
+        "related_dto_files": [
+          "Controllers/IncentiveBrandRateController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/IncentiveBrandRate_repo.cs",
+          "Interfaces/IIncentiveBrandRate.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Create incentive brand rate — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, IIncentiveBrandRate.IsDuplicate, IIncentiveBrandRate.CreateIncentiveBrandRateAsync, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; request body of type CreateIncentiveBrandRateDto (inline); passes 5 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "IncentiveBrandRate: INSERT; AuditLog: INSERT",
+        "validations": "Brand name is required.; Grade name is required.; Valid rate is required.; Failed to save data.",
+        "side_effects": "AuditLog CREATE (Settings > Incentive Settings > Incentive Brand Rate)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIncentiveBrandRate.IsDuplicate",
+          "IIncentiveBrandRate.CreateIncentiveBrandRateAsync",
+          "ICommon.ToJsonString",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IncentiveBrandRate_repo (Repositories/IncentiveBrandRate_repo.cs) via IIncentiveBrandRate"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Brand name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.BrandName)"
+          },
+          {
+            "returns": 400,
+            "message": "Grade name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.GradeName)"
+          },
+          {
+            "returns": 400,
+            "message": "Valid rate is required.",
+            "when": "request.RatePerSheet <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Brand already exists.",
+            "when": "isDuplicate"
+          },
+          {
+            "returns": 400,
+            "message": "Failed to save data.",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "incentive_brand_rate_update_incentive_brand_rate",
+      "name": "Update Incentive Brand Rate",
+      "action_method": "UpdateIncentiveBrandRate",
+      "http_method": "PUT",
+      "route": "api/IncentiveBrandRate/{id}",
+      "business_purpose": "Update incentive brand rate",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateIncentiveBrandRateDto (inline)",
+        "properties": [
+          {
+            "name": "BrandName",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "GradeName",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "RatePerSheet",
+            "type": "decimal",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values; each call writes another audit log entry"
+      },
+      "required_permission": "settings/incentive-settings/incentive-brand-rate:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update incentive brand rate",
+      "detailed_description": "Update incentive brand rate. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IIncentiveBrandRate.GetById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: IncentiveBrandRate: UPDATE, AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required. [when id <= 0]; At least one field must be provided for update. [when string.IsNullOrWhiteSpace(request.BrandName) && string.IsNullOrWhiteSpace(request.GradeNam]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Incentive Brand Rate not found. [when existingIncentiveBrandRate == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "Brand already exists. [when isDuplicate]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update incentive brand rate",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "request body UpdateIncentiveBrandRateDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveBrandRate/{id}",
+          "GET api/IncentiveBrandRate/bybrand/{brandId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_brand_rate_update_incentive_brand_rate",
+        "description": "Update incentive brand rate",
+        "http_method": "PUT",
+        "endpoint": "api/IncentiveBrandRate/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "BrandName": {
+            "type": "string",
+            "required": false,
+            "description": "Brand Name (body)"
+          },
+          "GradeName": {
+            "type": "string",
+            "required": false,
+            "description": "Grade Name (body)"
+          },
+          "RatePerSheet": {
+            "type": "decimal",
+            "required": false,
+            "description": "Rate Per Sheet (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveBrandRateController.cs",
+        "action_method": "UpdateIncentiveBrandRate",
+        "related_dto_files": [
+          "Controllers/IncentiveBrandRateController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/IncentiveBrandRate_repo.cs",
+          "Interfaces/IIncentiveBrandRate.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Update incentive brand rate — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, IIncentiveBrandRate.GetById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); request body of type UpdateIncentiveBrandRateDto (inline); passes 5 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "IncentiveBrandRate: UPDATE; AuditLog: INSERT",
+        "validations": "Valid ID is required.; At least one field must be provided for update.",
+        "side_effects": "AuditLog UPDATE (Settings > Incentive Settings > Incentive Brand Rate)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIncentiveBrandRate.GetById",
+          "ICommon.ToJsonString",
+          "IIncentiveBrandRate.IsDuplicate",
+          "IIncentiveBrandRate.UpdateAsync",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IncentiveBrandRate_repo (Repositories/IncentiveBrandRate_repo.cs) via IIncentiveBrandRate"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field must be provided for update.",
+            "when": "string.IsNullOrWhiteSpace(request.BrandName) && string.IsNullOrWhiteSpace(request.GradeName) && request.RatePerSheet == null"
+          },
+          {
+            "returns": 404,
+            "message": "Incentive Brand Rate not found.",
+            "when": "existingIncentiveBrandRate == null"
+          },
+          {
+            "returns": 400,
+            "message": "Brand already exists.",
+            "when": "isDuplicate"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "incentive_brand_rate_get_brands",
+      "name": "Get Brands",
+      "action_method": "GetBrands",
+      "http_method": "GET",
+      "route": "api/IncentiveBrandRate/brands",
+      "business_purpose": "Retrieve brands",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/incentive-settings/incentive-brand-rate:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve brands",
+      "detailed_description": "Retrieve brands. It calls ICommon.getUserByToken, IIncentiveBrandRate.GetBrands. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve brands",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveBrandRate",
+          "GET api/IncentiveBrandRate/{id}",
+          "GET api/IncentiveBrandRate/brands"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_brand_rate_get_brands",
+        "description": "Retrieve brands",
+        "http_method": "GET",
+        "endpoint": "api/IncentiveBrandRate/brands",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveBrandRateController.cs",
+        "action_method": "GetBrands",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/IncentiveBrandRate_repo.cs",
+          "Interfaces/IIncentiveBrandRate.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Retrieve brands — calls ICommon.getUserByToken, IIncentiveBrandRate.GetBrands",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIncentiveBrandRate.GetBrands"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IncentiveBrandRate_repo (Repositories/IncentiveBrandRate_repo.cs) via IIncentiveBrandRate"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "incentive_brand_rate_get_grade_by_brand",
+      "name": "Get Grade By Brand",
+      "action_method": "GetGradeByBrand",
+      "http_method": "GET",
+      "route": "api/IncentiveBrandRate/bybrand/{brandId}",
+      "business_purpose": "Retrieve grade by brand",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "brandId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/incentive-settings/incentive-brand-rate:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve grade by brand",
+      "detailed_description": "Retrieve grade by brand. It validates the request, then calls ICommon.getUserByToken, IIncentiveBrandRate.GetGradeByBrand. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid branch ID is required. [when brandId <= 0]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve grade by brand",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "brandId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveBrandRate",
+          "GET api/IncentiveBrandRate/{id}",
+          "GET api/IncentiveBrandRate/brands"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_brand_rate_get_grade_by_brand",
+        "description": "Retrieve grade by brand",
+        "http_method": "GET",
+        "endpoint": "api/IncentiveBrandRate/bybrand/{brandId}",
+        "parameters": {
+          "brandId": {
+            "type": "int",
+            "required": true,
+            "description": "brand Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveBrandRateController.cs",
+        "action_method": "GetGradeByBrand",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/IncentiveBrandRate_repo.cs",
+          "Interfaces/IIncentiveBrandRate.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Retrieve grade by brand — validates the request, calls ICommon.getUserByToken, IIncentiveBrandRate.GetGradeByBrand",
+        "preconditions": "Valid Bearer JWT; route parameter(s) brandId; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid branch ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIncentiveBrandRate.GetGradeByBrand"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IncentiveBrandRate_repo (Repositories/IncentiveBrandRate_repo.cs) via IIncentiveBrandRate"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid branch ID is required.",
+            "when": "brandId <= 0"
+          }
+        ]
+      }
+    }
+  ]
+}

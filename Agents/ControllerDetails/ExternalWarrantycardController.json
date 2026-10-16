@@ -1,0 +1,1610 @@
+{
+  "controller": "ExternalWarrantycardController",
+  "file": "Controllers/ExternalWarrantycardController.cs",
+  "module": "Warranty Management",
+  "base_route": "api/ExternalWarrantycard",
+  "class_level_auth": "none found",
+  "purpose": "Manages external warranty card registration and viewing with OTP verification for customers",
+  "notes": "No class-level [Authorize] attribute; endpoints are public but some may require session/authentication via query parameters",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "ExternalWarrantycard/WarrantyHome",
+        "module_code": "ExternalWarrantycard",
+        "section": "WarrantyHome",
+        "sub_section": null,
+        "frontend_routes": [
+          "/ExternalWarrantycard/WarrantyHome"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "also_called_from_menus": [
+      "crm/projects",
+      "lms/ib-leads"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "external_warranty_get_regions",
+      "name": "Get Regions",
+      "action_method": "GetRegions",
+      "http_method": "GET",
+      "route": "api/ExternalWarrantycard/GetRegions",
+      "business_purpose": "Retrieve all regions for warranty registration",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false
+      },
+      "response": {
+        "status_codes": [
+          200
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ExternalWarrantycard/WarrantyHome:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve all regions for warranty registration",
+      "detailed_description": "Retrieve all regions for warranty registration. It calls IExternalWarrantycard.GetStates. Possible responses: 200.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "None found in controller code",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all regions for warranty registration",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [],
+        "follow_up_apis": [
+          "GET api/ExternalWarrantycard/GetRegions",
+          "GET api/ExternalWarrantycard/GetExternalRegions",
+          "GET api/ExternalWarrantycard/GetAreas"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "external_warrantycard_get_regions",
+        "description": "Retrieve all regions for warranty registration",
+        "http_method": "GET",
+        "endpoint": "api/ExternalWarrantycard/GetRegions",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ExternalWarrantycardController.cs",
+        "action_method": "GetRegions",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/ExternalWarrantycard_repo.cs",
+          "Interfaces/IExternalWarrantycard.cs"
+        ]
+      },
+      "module": "Warranty Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all regions for warranty registration — calls IExternalWarrantycard.GetStates",
+        "preconditions": "No authentication required",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IExternalWarrantycard.GetStates"
+        ],
+        "calls_repositories": [
+          "ExternalWarrantycard_repo (Repositories/ExternalWarrantycard_repo.cs) via IExternalWarrantycard"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "external_warranty_get_external_regions",
+      "name": "Get External Regions",
+      "action_method": "GetExternalRegions",
+      "http_method": "GET",
+      "route": "api/ExternalWarrantycard/GetExternalRegions",
+      "business_purpose": "Retrieve external regions for warranty management",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false
+      },
+      "response": {
+        "status_codes": [
+          200
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/projects:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "lms/ib-leads"
+      ],
+      "short_description": "Retrieve external regions for warranty management",
+      "detailed_description": "Retrieve external regions for warranty management. It calls IExternalWarrantycard.GetExternalRegions. Possible responses: 200.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "None found in controller code",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve external regions for warranty management",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [],
+        "follow_up_apis": [
+          "GET api/ExternalWarrantycard/GetRegions",
+          "GET api/ExternalWarrantycard/GetExternalRegions",
+          "GET api/ExternalWarrantycard/GetAreas"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "external_warrantycard_get_external_regions",
+        "description": "Retrieve external regions for warranty management",
+        "http_method": "GET",
+        "endpoint": "api/ExternalWarrantycard/GetExternalRegions",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ExternalWarrantycardController.cs",
+        "action_method": "GetExternalRegions",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/ExternalWarrantycard_repo.cs",
+          "Interfaces/IExternalWarrantycard.cs"
+        ]
+      },
+      "module": "Warranty Management",
+      "business_logic": {
+        "operation_summary": "Retrieve external regions for warranty management — calls IExternalWarrantycard.GetExternalRegions",
+        "preconditions": "No authentication required",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IExternalWarrantycard.GetExternalRegions"
+        ],
+        "calls_repositories": [
+          "ExternalWarrantycard_repo (Repositories/ExternalWarrantycard_repo.cs) via IExternalWarrantycard"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "external_warranty_get_areas",
+      "name": "Get Areas By Region",
+      "action_method": "GetAreasByRegion",
+      "http_method": "GET",
+      "route": "api/ExternalWarrantycard/GetAreas",
+      "business_purpose": "Retrieve areas within a selected region",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false
+      },
+      "query_parameters": [
+        {
+          "name": "regionId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ExternalWarrantycard/WarrantyHome:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve areas within a selected region",
+      "detailed_description": "Retrieve areas within a selected region. It calls IExternalWarrantycard.GetAreasByRegion. Possible responses: 200, 400.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "None found in controller code",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve areas within a selected region",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "regionId (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/ExternalWarrantycard/GetRegions",
+          "GET api/ExternalWarrantycard/GetExternalRegions",
+          "GET api/ExternalWarrantycard/GetAreas"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "external_warrantycard_get_areas_by_region",
+        "description": "Retrieve areas within a selected region",
+        "http_method": "GET",
+        "endpoint": "api/ExternalWarrantycard/GetAreas",
+        "parameters": {
+          "regionId": {
+            "type": "int",
+            "required": true,
+            "description": "region Id (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ExternalWarrantycardController.cs",
+        "action_method": "GetAreasByRegion",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/ExternalWarrantycard_repo.cs",
+          "Interfaces/IExternalWarrantycard.cs"
+        ]
+      },
+      "module": "Warranty Management",
+      "business_logic": {
+        "operation_summary": "Retrieve areas within a selected region — calls IExternalWarrantycard.GetAreasByRegion",
+        "preconditions": "No authentication required; required query parameter(s): regionId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IExternalWarrantycard.GetAreasByRegion"
+        ],
+        "calls_repositories": [
+          "ExternalWarrantycard_repo (Repositories/ExternalWarrantycard_repo.cs) via IExternalWarrantycard"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "external_warranty_register_customer",
+      "name": "Register Customer",
+      "action_method": "RegisterCustomer",
+      "http_method": "POST",
+      "route": "api/ExternalWarrantycard/register-customer",
+      "business_purpose": "Register external customer for warranty card services",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": false
+      },
+      "request_body": {
+        "dto_name": "RegisterCustomerRequest (inline)",
+        "properties": [
+          {
+            "name": "Name",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "PhoneNumber",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "RegionId",
+            "type": "int",
+            "required": true
+          },
+          {
+            "name": "AreaId",
+            "type": "int",
+            "required": true
+          },
+          {
+            "name": "Email",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Address",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "ExternalWarrantycard/WarrantyHome:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Register external customer for warranty card services",
+      "detailed_description": "Register external customer for warranty card services. It calls IExternalWarrantycard.GetRegionById, IExternalWarrantycard.GetAreaById, IExternalWarrantycard.CreateCustomer. Persists changes to: Customers: INSERT. Possible responses: 200, 400.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "None found in controller code",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to register external customer for warranty card services",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "request body RegisterCustomerRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/ExternalWarrantycard/GetRegions",
+          "GET api/ExternalWarrantycard/GetExternalRegions",
+          "GET api/ExternalWarrantycard/GetAreas"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "external_warrantycard_register_customer",
+        "description": "Register external customer for warranty card services",
+        "http_method": "POST",
+        "endpoint": "api/ExternalWarrantycard/register-customer",
+        "parameters": {
+          "Name": {
+            "type": "string",
+            "required": true,
+            "description": "Name (body)"
+          },
+          "PhoneNumber": {
+            "type": "string",
+            "required": true,
+            "description": "Phone Number (body)"
+          },
+          "RegionId": {
+            "type": "int",
+            "required": true,
+            "description": "Region Id (body)"
+          },
+          "AreaId": {
+            "type": "int",
+            "required": true,
+            "description": "Area Id (body)"
+          },
+          "Email": {
+            "type": "string",
+            "required": false,
+            "description": "Email (body)"
+          },
+          "Address": {
+            "type": "string",
+            "required": false,
+            "description": "Address (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/ExternalWarrantycardController.cs",
+        "action_method": "RegisterCustomer",
+        "related_dto_files": [
+          "Controllers/ExternalWarrantycardController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/ExternalWarrantycard_repo.cs",
+          "Interfaces/IExternalWarrantycard.cs"
+        ]
+      },
+      "module": "Warranty Management",
+      "business_logic": {
+        "operation_summary": "Register external customer for warranty card services — calls IExternalWarrantycard.GetRegionById, IExternalWarrantycard.GetAreaById, IExternalWarrantycard.CreateCustomer",
+        "preconditions": "No authentication required; request body of type RegisterCustomerRequest (inline)",
+        "state_changes": "Customers: INSERT",
+        "validations": "None found in controller code",
+        "side_effects": "Sends notification(s) (WhatsappDetails, whatsappObj)",
+        "calls_services": [
+          "IExternalWarrantycard.GetRegionById",
+          "IExternalWarrantycard.GetAreaById",
+          "IExternalWarrantycard.CreateCustomer",
+          "IExternalWarrantycard.GetWhatsappDetails"
+        ],
+        "calls_repositories": [
+          "ExternalWarrantycard_repo (Repositories/ExternalWarrantycard_repo.cs) via IExternalWarrantycard"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": true,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "external_warranty_generate_otp",
+      "name": "Generate OTP",
+      "action_method": "GenerateOTP",
+      "http_method": "POST",
+      "route": "api/ExternalWarrantycard/generate-otp",
+      "business_purpose": "Generate and send OTP to registered customer phone",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": false
+      },
+      "query_parameters": [
+        {
+          "name": "phoneNumber",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "ExternalWarrantycard/WarrantyHome:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Generate and send OTP to registered customer phone",
+      "detailed_description": "Generate and send OTP to registered customer phone. It calls IExternalWarrantycard.GetCustomerByContact, IExternalWarrantycard.UpdateCustomer, IExternalWarrantycard.GetWhatsappDetails. Persists changes to: Customers: UPDATE. Possible responses: 200, 400.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "None found in controller code",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to generate and send OTP to registered customer phone",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "phoneNumber (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/ExternalWarrantycard/GetRegions",
+          "GET api/ExternalWarrantycard/GetExternalRegions",
+          "GET api/ExternalWarrantycard/GetAreas"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "external_warrantycard_generate_otp",
+        "description": "Generate and send OTP to registered customer phone",
+        "http_method": "POST",
+        "endpoint": "api/ExternalWarrantycard/generate-otp",
+        "parameters": {
+          "phoneNumber": {
+            "type": "string",
+            "required": true,
+            "description": "phone Number (query)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/ExternalWarrantycardController.cs",
+        "action_method": "GenerateOTP",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/ExternalWarrantycard_repo.cs",
+          "Interfaces/IExternalWarrantycard.cs"
+        ]
+      },
+      "module": "Warranty Management",
+      "business_logic": {
+        "operation_summary": "Generate and send OTP to registered customer phone — calls IExternalWarrantycard.GetCustomerByContact, IExternalWarrantycard.UpdateCustomer, IExternalWarrantycard.GetWhatsappDetails",
+        "preconditions": "No authentication required; required query parameter(s): phoneNumber",
+        "state_changes": "Customers: UPDATE; sets customer.last_otp, customer.otp_generated_time, customer.is_session_active",
+        "validations": "None found in controller code",
+        "side_effects": "Sends notification(s) (WhatsappDetails, whatsappObj)",
+        "calls_services": [
+          "IExternalWarrantycard.GetCustomerByContact",
+          "IExternalWarrantycard.UpdateCustomer",
+          "IExternalWarrantycard.GetWhatsappDetails"
+        ],
+        "calls_repositories": [
+          "ExternalWarrantycard_repo (Repositories/ExternalWarrantycard_repo.cs) via IExternalWarrantycard"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": true,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "external_warranty_verify_otp",
+      "name": "Verify OTP",
+      "action_method": "VerifyOTP",
+      "http_method": "POST",
+      "route": "api/ExternalWarrantycard/verify-otp",
+      "business_purpose": "Verify OTP and activate customer session",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": false
+      },
+      "query_parameters": [
+        {
+          "name": "phoneNumber",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "otp",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE"
+      },
+      "required_permission": "ExternalWarrantycard/WarrantyHome:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)"
+    },
+    {
+      "id": "external_warranty_home",
+      "name": "Warranty Home",
+      "action_method": "WarrantyHome",
+      "http_method": "GET",
+      "route": "api/ExternalWarrantycard/home",
+      "business_purpose": "Get warranty home dashboard with pending, approved, rejected warranties",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false,
+        "notes": "Requires customerId and customerPhone query parameters"
+      },
+      "query_parameters": [
+        {
+          "name": "customerId",
+          "type": "int",
+          "required": true
+        },
+        {
+          "name": "customerPhone",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          302
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ExternalWarrantycard/WarrantyHome:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Get warranty home dashboard with pending, approved, rejected warranties",
+      "detailed_description": "Get warranty home dashboard with pending, approved, rejected warranties. It calls IExternalWarrantycard.GetCustomerByContact, IExternalWarrantycard.GetAllWarrantyCards, IExternalWarrantycard.GetCompany. Possible responses: 200, 302.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "None found in controller code",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to get warranty home dashboard with pending, approved, rejected warranties",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "customerId (query)",
+          "customerPhone (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/ExternalWarrantycard/GetRegions",
+          "GET api/ExternalWarrantycard/GetExternalRegions",
+          "GET api/ExternalWarrantycard/GetAreas"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "external_warrantycard_warranty_home",
+        "description": "Get warranty home dashboard with pending, approved, rejected warranties",
+        "http_method": "GET",
+        "endpoint": "api/ExternalWarrantycard/home",
+        "parameters": {
+          "customerId": {
+            "type": "int",
+            "required": true,
+            "description": "customer Id (query)"
+          },
+          "customerPhone": {
+            "type": "string",
+            "required": true,
+            "description": "customer Phone (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ExternalWarrantycardController.cs",
+        "action_method": "WarrantyHome",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/ExternalWarrantycard_repo.cs",
+          "Interfaces/IExternalWarrantycard.cs"
+        ]
+      },
+      "module": "Warranty Management",
+      "business_logic": {
+        "operation_summary": "Get warranty home dashboard with pending, approved, rejected warranties — calls IExternalWarrantycard.GetCustomerByContact, IExternalWarrantycard.GetAllWarrantyCards, IExternalWarrantycard.GetCompany",
+        "preconditions": "No authentication required; required query parameter(s): customerId, customerPhone",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IExternalWarrantycard.GetCustomerByContact",
+          "IExternalWarrantycard.GetAllWarrantyCards",
+          "IExternalWarrantycard.GetCompany",
+          "IExternalWarrantycard.GetAllProducts"
+        ],
+        "calls_repositories": [
+          "ExternalWarrantycard_repo (Repositories/ExternalWarrantycard_repo.cs) via IExternalWarrantycard"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "external_warranty_get_pending",
+      "name": "Get Pending Warranties",
+      "action_method": "GetPendingWarranties",
+      "http_method": "GET",
+      "route": "api/ExternalWarrantycard/pending-warranties",
+      "business_purpose": "Retrieve pending warranty cards for customer",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false
+      },
+      "query_parameters": [
+        {
+          "name": "customerId",
+          "type": "int",
+          "required": true
+        },
+        {
+          "name": "customerPhone",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ExternalWarrantycard/WarrantyHome:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve pending warranty cards for customer",
+      "detailed_description": "Retrieve pending warranty cards for customer. It calls IExternalWarrantycard.GetCustomerByContact, IExternalWarrantycard.GetAllWarrantyCards, ICommon.GetDriveFileIdByPath, then processes uploaded files. Possible responses: 200, 400.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "None found in controller code",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve pending warranty cards for customer",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "customerId (query)",
+          "customerPhone (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/ExternalWarrantycard/GetRegions",
+          "GET api/ExternalWarrantycard/GetExternalRegions",
+          "GET api/ExternalWarrantycard/GetAreas"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "external_warrantycard_get_pending_warranties",
+        "description": "Retrieve pending warranty cards for customer",
+        "http_method": "GET",
+        "endpoint": "api/ExternalWarrantycard/pending-warranties",
+        "parameters": {
+          "customerId": {
+            "type": "int",
+            "required": true,
+            "description": "customer Id (query)"
+          },
+          "customerPhone": {
+            "type": "string",
+            "required": true,
+            "description": "customer Phone (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ExternalWarrantycardController.cs",
+        "action_method": "GetPendingWarranties",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/ExternalWarrantycard_repo.cs",
+          "Interfaces/IExternalWarrantycard.cs",
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Warranty Management",
+      "business_logic": {
+        "operation_summary": "Retrieve pending warranty cards for customer — calls IExternalWarrantycard.GetCustomerByContact, IExternalWarrantycard.GetAllWarrantyCards, ICommon.GetDriveFileIdByPath, processes uploaded files",
+        "preconditions": "No authentication required; required query parameter(s): customerId, customerPhone",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "Handles file upload/storage",
+        "calls_services": [
+          "IExternalWarrantycard.GetCustomerByContact",
+          "IExternalWarrantycard.GetAllWarrantyCards",
+          "ICommon.GetDriveFileIdByPath"
+        ],
+        "calls_repositories": [
+          "ExternalWarrantycard_repo (Repositories/ExternalWarrantycard_repo.cs) via IExternalWarrantycard",
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "external_warranty_get_approved",
+      "name": "Get Approved Warranties",
+      "action_method": "GetApprovedWarranties",
+      "http_method": "GET",
+      "route": "api/ExternalWarrantycard/approved-warranties",
+      "business_purpose": "Retrieve approved warranty cards for customer",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false
+      },
+      "query_parameters": [
+        {
+          "name": "customerId",
+          "type": "int",
+          "required": true
+        },
+        {
+          "name": "customerPhone",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ExternalWarrantycard/WarrantyHome:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve approved warranty cards for customer",
+      "detailed_description": "Retrieve approved warranty cards for customer. It calls IExternalWarrantycard.GetCustomerByContact, IExternalWarrantycard.GetAllWarrantyCards, ICommon.GetDriveFileIdByPath, then processes uploaded files. Possible responses: 200, 400.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "None found in controller code",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve approved warranty cards for customer",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "customerId (query)",
+          "customerPhone (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/ExternalWarrantycard/GetRegions",
+          "GET api/ExternalWarrantycard/GetExternalRegions",
+          "GET api/ExternalWarrantycard/GetAreas"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "external_warrantycard_get_approved_warranties",
+        "description": "Retrieve approved warranty cards for customer",
+        "http_method": "GET",
+        "endpoint": "api/ExternalWarrantycard/approved-warranties",
+        "parameters": {
+          "customerId": {
+            "type": "int",
+            "required": true,
+            "description": "customer Id (query)"
+          },
+          "customerPhone": {
+            "type": "string",
+            "required": true,
+            "description": "customer Phone (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ExternalWarrantycardController.cs",
+        "action_method": "GetApprovedWarranties",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/ExternalWarrantycard_repo.cs",
+          "Interfaces/IExternalWarrantycard.cs",
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Warranty Management",
+      "business_logic": {
+        "operation_summary": "Retrieve approved warranty cards for customer — calls IExternalWarrantycard.GetCustomerByContact, IExternalWarrantycard.GetAllWarrantyCards, ICommon.GetDriveFileIdByPath, processes uploaded files",
+        "preconditions": "No authentication required; required query parameter(s): customerId, customerPhone",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "Handles file upload/storage",
+        "calls_services": [
+          "IExternalWarrantycard.GetCustomerByContact",
+          "IExternalWarrantycard.GetAllWarrantyCards",
+          "ICommon.GetDriveFileIdByPath"
+        ],
+        "calls_repositories": [
+          "ExternalWarrantycard_repo (Repositories/ExternalWarrantycard_repo.cs) via IExternalWarrantycard",
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "external_warranty_get_rejected",
+      "name": "Get Rejected Warranties",
+      "action_method": "GetRejectedWarranties",
+      "http_method": "GET",
+      "route": "api/ExternalWarrantycard/rejected-warranties",
+      "business_purpose": "Retrieve rejected warranty cards for customer",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false
+      },
+      "query_parameters": [
+        {
+          "name": "customerId",
+          "type": "int",
+          "required": true
+        },
+        {
+          "name": "customerPhone",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ExternalWarrantycard/WarrantyHome:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve rejected warranty cards for customer",
+      "detailed_description": "Retrieve rejected warranty cards for customer. It calls IExternalWarrantycard.GetCustomerByContact, IExternalWarrantycard.GetAllWarrantyCards, ICommon.GetDriveFileIdByPath, then processes uploaded files. Possible responses: 200, 400.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "None found in controller code",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve rejected warranty cards for customer",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "customerId (query)",
+          "customerPhone (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/ExternalWarrantycard/GetRegions",
+          "GET api/ExternalWarrantycard/GetExternalRegions",
+          "GET api/ExternalWarrantycard/GetAreas"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "external_warrantycard_get_rejected_warranties",
+        "description": "Retrieve rejected warranty cards for customer",
+        "http_method": "GET",
+        "endpoint": "api/ExternalWarrantycard/rejected-warranties",
+        "parameters": {
+          "customerId": {
+            "type": "int",
+            "required": true,
+            "description": "customer Id (query)"
+          },
+          "customerPhone": {
+            "type": "string",
+            "required": true,
+            "description": "customer Phone (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ExternalWarrantycardController.cs",
+        "action_method": "GetRejectedWarranties",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/ExternalWarrantycard_repo.cs",
+          "Interfaces/IExternalWarrantycard.cs",
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Warranty Management",
+      "business_logic": {
+        "operation_summary": "Retrieve rejected warranty cards for customer — calls IExternalWarrantycard.GetCustomerByContact, IExternalWarrantycard.GetAllWarrantyCards, ICommon.GetDriveFileIdByPath, processes uploaded files",
+        "preconditions": "No authentication required; required query parameter(s): customerId, customerPhone",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "Handles file upload/storage",
+        "calls_services": [
+          "IExternalWarrantycard.GetCustomerByContact",
+          "IExternalWarrantycard.GetAllWarrantyCards",
+          "ICommon.GetDriveFileIdByPath"
+        ],
+        "calls_repositories": [
+          "ExternalWarrantycard_repo (Repositories/ExternalWarrantycard_repo.cs) via IExternalWarrantycard",
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "external_warranty_create",
+      "name": "Create Warranty Card",
+      "action_method": "CreateWarrantyCard",
+      "http_method": "POST",
+      "route": "api/ExternalWarrantycard/create-warranty",
+      "business_purpose": "Create new warranty card with products and invoices",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": false
+      },
+      "request_body": {
+        "dto_name": "CreateWarrantyCardDto (inline)",
+        "properties": [
+          {
+            "name": "CustomerName",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "ContactNumber",
+            "type": "long",
+            "required": true
+          },
+          {
+            "name": "CustomerAddress",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "CustomerEmail",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "DealerId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "other_dealer_name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "PurchasedDate",
+            "type": "DateTime",
+            "required": false
+          },
+          {
+            "name": "Remark",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "IsDefault",
+            "type": "bool",
+            "required": false
+          },
+          {
+            "name": "InvoiceDetail",
+            "type": "List",
+            "required": false
+          },
+          {
+            "name": "WarrantyDetails",
+            "type": "List",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE"
+      },
+      "required_permission": "ExternalWarrantycard/WarrantyHome:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)"
+    },
+    {
+      "id": "external_warranty_update_put_id",
+      "name": "Update Warranty Card (Form)",
+      "action_method": "UpdateWarrantyCard",
+      "http_method": "PUT",
+      "route": "api/ExternalWarrantycard/{id}",
+      "business_purpose": "Update warranty card details via form submission",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "request_body": {
+        "dto_name": "UpdateWarrantyCardDto (inline)"
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "ExternalWarrantycard/WarrantyHome:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Update warranty card details via form submission",
+      "detailed_description": "Update warranty card details via form submission. It validates the request, then calls ICommon.GetSystemUser, IWarrantyCard.GetWarrantyCardById, IWarrantyCard.GetDealerById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid WarrantyCard ID is required. [when id <= 0]",
+        "not_found": "404: Warranty Card not found. [when warrantyCard == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update warranty card details via form submission",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "id (route)",
+          "request body UpdateWarrantyCardDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/ExternalWarrantycard/warranty/{id}",
+          "GET api/ExternalWarrantycard/dealers/{search_text}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "external_warrantycard_update_warranty_card",
+        "description": "Update warranty card details via form submission",
+        "http_method": "PUT",
+        "endpoint": "api/ExternalWarrantycard/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/ExternalWarrantycardController.cs",
+        "action_method": "UpdateWarrantyCard",
+        "related_dto_files": [
+          "Controllers/WarrantyCardController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/WarrantyCard_repo.cs",
+          "Interfaces/IWarrantyCard.cs"
+        ]
+      },
+      "module": "Warranty Management",
+      "business_logic": {
+        "operation_summary": "Update warranty card details via form submission — validates the request, calls ICommon.GetSystemUser, IWarrantyCard.GetWarrantyCardById, IWarrantyCard.GetDealerById",
+        "preconditions": "No authentication required; route parameter(s) id must reference existing record(s); request body of type UpdateWarrantyCardDto (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets warrantyCard.customer_name, warrantyCard.contact_number, warrantyCard.customer_address, warrantyCard.customer_email, warrantyCard.dealer, warrantyCard.purchased_date and saves changes",
+        "validations": "Valid WarrantyCard ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.GetSystemUser",
+          "IWarrantyCard.GetWarrantyCardById",
+          "IWarrantyCard.GetDealerById",
+          "IWarrantyCard.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WarrantyCard_repo (Repositories/WarrantyCard_repo.cs) via IWarrantyCard"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid WarrantyCard ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Warranty Card not found.",
+            "when": "warrantyCard == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "external_warranty_get_by_id",
+      "name": "Get Warranty Card By ID",
+      "action_method": "GetWarrantyCardById",
+      "http_method": "GET",
+      "route": "api/ExternalWarrantycard/warranty/{id}",
+      "business_purpose": "Retrieve complete warranty card details with invoices and products",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ExternalWarrantycard/WarrantyHome:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve complete warranty card details with invoices and products",
+      "detailed_description": "Retrieve complete warranty card details with invoices and products. It validates the request, then calls IWarrantyCard.GetWarrantyCardById, ICommon.GetDriveFileIdByPath, then processes uploaded files. Possible responses: 200, 400, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid scheduler ID is required [when id <= 0]",
+        "not_found": "404: WarrantyCard not found [when warrantyCard == null]",
+        "unauthorized": "None found in controller code",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve complete warranty card details with invoices and products",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/ExternalWarrantycard/GetRegions",
+          "GET api/ExternalWarrantycard/GetExternalRegions",
+          "GET api/ExternalWarrantycard/GetAreas"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "external_warrantycard_get_warranty_card_by_id",
+        "description": "Retrieve complete warranty card details with invoices and products",
+        "http_method": "GET",
+        "endpoint": "api/ExternalWarrantycard/warranty/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ExternalWarrantycardController.cs",
+        "action_method": "GetWarrantyCardById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/WarrantyCard_repo.cs",
+          "Interfaces/IWarrantyCard.cs",
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Warranty Management",
+      "business_logic": {
+        "operation_summary": "Retrieve complete warranty card details with invoices and products — validates the request, calls IWarrantyCard.GetWarrantyCardById, ICommon.GetDriveFileIdByPath, processes uploaded files",
+        "preconditions": "No authentication required; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid scheduler ID is required",
+        "side_effects": "Handles file upload/storage",
+        "calls_services": [
+          "IWarrantyCard.GetWarrantyCardById",
+          "ICommon.GetDriveFileIdByPath"
+        ],
+        "calls_repositories": [
+          "WarrantyCard_repo (Repositories/WarrantyCard_repo.cs) via IWarrantyCard",
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid scheduler ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "WarrantyCard not found",
+            "when": "warrantyCard == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "external_warranty_get_dealers",
+      "name": "Get Dealers By Search Text",
+      "action_method": "GetDealersByText",
+      "http_method": "GET",
+      "route": "api/ExternalWarrantycard/dealers/{search_text}",
+      "business_purpose": "Search and retrieve dealers by name",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false
+      },
+      "route_parameters": [
+        {
+          "name": "search_text",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ExternalWarrantycard/WarrantyHome:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Search and retrieve dealers by name",
+      "detailed_description": "Search and retrieve dealers by name. It calls ISecondaryOrder.GetDealersearchText. Possible responses: 200, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "None found in controller code",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to search and retrieve dealers by name",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "search_text (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/ExternalWarrantycard/GetRegions",
+          "GET api/ExternalWarrantycard/GetExternalRegions",
+          "GET api/ExternalWarrantycard/GetAreas"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "external_warrantycard_get_dealers_by_text",
+        "description": "Search and retrieve dealers by name",
+        "http_method": "GET",
+        "endpoint": "api/ExternalWarrantycard/dealers/{search_text}",
+        "parameters": {
+          "search_text": {
+            "type": "string",
+            "required": true,
+            "description": "search text (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ExternalWarrantycardController.cs",
+        "action_method": "GetDealersByText",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/SecondaryOrder_repo.cs",
+          "Interfaces/ISecondaryOrder.cs"
+        ]
+      },
+      "module": "Warranty Management",
+      "business_logic": {
+        "operation_summary": "Search and retrieve dealers by name — calls ISecondaryOrder.GetDealersearchText",
+        "preconditions": "No authentication required; route parameter(s) search_text",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ISecondaryOrder.GetDealersearchText"
+        ],
+        "calls_repositories": [
+          "SecondaryOrder_repo (Repository/SecondaryOrder_repo.cs) via ISecondaryOrder"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "external_warranty_update_put_warranty_id",
+      "name": "Update Warranty Card (JSON)",
+      "action_method": "UpdateWarrantyCard (overload)",
+      "http_method": "PUT",
+      "route": "api/ExternalWarrantycard/warranty/{id}",
+      "business_purpose": "Update warranty card via JSON body with session validation",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": false,
+        "notes": "Requires session authentication"
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "request_body": {
+        "dto_name": "UpdateWarrantyCardRequest (inline)"
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "ExternalWarrantycard/WarrantyHome:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Update warranty card via JSON body with session validation",
+      "detailed_description": "Update warranty card via JSON body with session validation. It calls IExternalWarrantycard.GetCustomerById, IExternalWarrantycard.GetWarrantyCardById, IExternalWarrantycard.GetDealerById, then processes uploaded files. Possible responses: 200, 400, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "None found in controller code",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update warranty card via JSON body with session validation",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "id (route)",
+          "request body UpdateWarrantyCardRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/ExternalWarrantycard/warranty/{id}",
+          "GET api/ExternalWarrantycard/dealers/{search_text}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "external_warrantycard_update_warranty_card_(overload)",
+        "description": "Update warranty card via JSON body with session validation",
+        "http_method": "PUT",
+        "endpoint": "api/ExternalWarrantycard/warranty/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/ExternalWarrantycardController.cs",
+        "action_method": "UpdateWarrantyCard (overload)",
+        "related_dto_files": [
+          "Controllers/ExternalWarrantycardController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/ExternalWarrantycard_repo.cs",
+          "Interfaces/IExternalWarrantycard.cs"
+        ]
+      },
+      "module": "Warranty Management",
+      "business_logic": {
+        "operation_summary": "Update warranty card via JSON body with session validation — calls IExternalWarrantycard.GetCustomerById, IExternalWarrantycard.GetWarrantyCardById, IExternalWarrantycard.GetDealerById, processes uploaded files",
+        "preconditions": "No authentication required; route parameter(s) id; request body of type UpdateWarrantyCardRequest (inline)",
+        "state_changes": "sets warrantyCard.dealer, warrantyCard.other_dealer_name, warrantyCard.remarks, warrantyCard.warranty_details, warrantyCard.invoice_details and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "Handles file upload/storage",
+        "calls_services": [
+          "IExternalWarrantycard.GetCustomerById",
+          "IExternalWarrantycard.GetWarrantyCardById",
+          "IExternalWarrantycard.GetDealerById",
+          "IExternalWarrantycard.SaveChanges"
+        ],
+        "calls_repositories": [
+          "ExternalWarrantycard_repo (Repositories/ExternalWarrantycard_repo.cs) via IExternalWarrantycard"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    }
+  ]
+}

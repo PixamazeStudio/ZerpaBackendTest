@@ -1,0 +1,449 @@
+{
+  "controller": "CollectionReportController",
+  "file": "Controllers/CollectionReportController.cs",
+  "module": "Collection Report",
+  "base_route": "api/CollectionReport",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Provides collection report data with extensive filtering by date, region, branch, dealer, and factory",
+  "notes": "Class has [Authorize] attribute. Fetches data from ICollectionReport service with complex filter context building.",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "rpt/accounts-reports/collection-report",
+        "module_code": "rpt",
+        "section": "accounts-reports",
+        "sub_section": "collection-report",
+        "frontend_routes": [
+          "/rpt/accounts-reports/collection-report"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "CollectionReport"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "get_collection_report",
+      "name": "Get Collection Report",
+      "action_method": "GetAllCollectionReport",
+      "http_method": "GET",
+      "route": "api/CollectionReport",
+      "module": "Collection Report",
+      "business_purpose": "Retrieve collection report with dashboard cards and detailed records with multi-level filtering",
+      "short_description": "Fetches collection report data with dashboard summary cards, filters, and paginated data with support for region/branch/dealer/factory filtering",
+      "detailed_description": "Extracts and validates token, applies date range logic, builds filter context with region/branch/dealer information, calls GetCollectionReportData to fetch cards and data, calculates dashboard metrics (totalDealers, totalAmountLakhs), builds dynamic filter options from database, returns comprehensive response with cards, filters, data, actions, and pagination.",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ],
+        "roles_or_policy": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_claims": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_headers": [
+          "Authorization: Bearer <token>"
+        ],
+        "notes": "Token extraction and user validation required"
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "DateTime",
+          "required": false,
+          "default": "null",
+          "description": "Start date for custom range",
+          "example": "2025-01-01"
+        },
+        {
+          "name": "todate",
+          "type": "DateTime",
+          "required": false,
+          "default": "null",
+          "description": "End date for custom range",
+          "example": "2025-01-31"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null",
+          "description": "Search text",
+          "example": "search"
+        },
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "this_month",
+          "description": "Preset range (this_month, last_month, last_30_days, last_60_days, last_180_days, custom)",
+          "example": "this_month"
+        },
+        {
+          "name": "regionId",
+          "type": "int",
+          "required": false,
+          "default": "null",
+          "description": "Region filter",
+          "example": 1
+        },
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": false,
+          "default": "null",
+          "description": "Branch filter",
+          "example": 2
+        },
+        {
+          "name": "dealerId",
+          "type": "int",
+          "required": false,
+          "default": "null",
+          "description": "Dealer filter",
+          "example": 3
+        },
+        {
+          "name": "factory",
+          "type": "string",
+          "required": false,
+          "default": "null",
+          "description": "Factory filter (Warehouse or Mangalore)",
+          "example": "Warehouse"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10",
+          "description": "Records per page",
+          "example": "20"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1",
+          "description": "Page number",
+          "example": "2"
+        }
+      ],
+      "request_body": null,
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ],
+        "dto_name": "IActionResult (Ok wrapping anonymous object)",
+        "properties": [
+          {
+            "name": "success",
+            "type": "bool",
+            "nullable": false,
+            "description": "Operation success"
+          },
+          {
+            "name": "message",
+            "type": "string",
+            "nullable": false,
+            "description": "Response message"
+          },
+          {
+            "name": "cards",
+            "type": "array",
+            "nullable": false,
+            "description": "Dashboard cards (total_dealers, total_amount_lakhs)"
+          },
+          {
+            "name": "filters",
+            "type": "array",
+            "nullable": false,
+            "description": "Available filter options"
+          },
+          {
+            "name": "data",
+            "type": "array",
+            "nullable": false,
+            "description": "Collection report records"
+          },
+          {
+            "name": "actions",
+            "type": "object",
+            "nullable": true,
+            "description": "User action permissions"
+          },
+          {
+            "name": "pagination",
+            "type": "object",
+            "nullable": false,
+            "description": "Pagination info"
+          }
+        ],
+        "success_example": {
+          "success": true,
+          "message": "Collection report details fetched successfully",
+          "cards": [
+            {
+              "key": "total_dealers",
+              "count": 5
+            }
+          ]
+        },
+        "error_example": {
+          "success": false,
+          "message": "From date and To date are required for custom range"
+        },
+        "notes": "Dashboard cards show key metrics; filters include date, region, branch, dealer, factory"
+      },
+      "business_logic": {
+        "operation_summary": "Generate collection report with dashboard metrics and multi-level filtering",
+        "preconditions": "Valid JWT token required; if custom date_range, both fromdate and todate required",
+        "state_changes": "No state changes",
+        "validations": "Date validation (custom range requires both dates); page_no >= 1",
+        "side_effects": "Queries region, branch, dealer, factory data from database for filter options",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICollectionReport.GetCollectionReportData",
+          "ICollectionReport.GetCollectionReportActions",
+          "IIndent.GetAllBranches"
+        ],
+        "calls_repositories": [
+          "ICollectionReport"
+        ],
+        "stored_procedures": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "INFERRED FROM CODE: User context passed to service and used for branch filtering",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "From date and To date are required for custom range",
+            "when": "!fromdate.HasValue || !todate.HasValue"
+          }
+        ]
+      },
+      "ai_agent_guidance": {
+        "use_when": "Need collection report with filtering by date, region, branch, dealer, or factory",
+        "do_not_use_when": "Creating or updating collection records",
+        "preconditions_needed": [
+          "JWT bearer token",
+          "For custom date_range: both fromdate and todate"
+        ],
+        "follow_up_apis": [
+          "get_collection_report_by_id"
+        ]
+      },
+      "error_handling": {
+        "validation_errors": "BadRequest if custom date_range but missing fromdate or todate",
+        "not_found": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "unauthorized": "Returns Unauthorized if user not found",
+        "business_rule_errors": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "exceptions": "Catches all exceptions, returns StatusCode(500, 'Internal server error: {message}')"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Pure read operation"
+      },
+      "llm_tool_definition": {
+        "name": "get_collection_report",
+        "description": "Get collection report with filtering options",
+        "http_method": "GET",
+        "endpoint": "api/CollectionReport",
+        "parameters": {
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "Date range"
+          },
+          "regionId": {
+            "type": "integer",
+            "required": false,
+            "description": "Region"
+          },
+          "dealerId": {
+            "type": "integer",
+            "required": false,
+            "description": "Dealer"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": "Read-only operation"
+      },
+      "source": {
+        "controller_file": "Controllers/CollectionReportController.cs",
+        "action_method": "GetAllCollectionReport",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Interfaces/ICollectionReport.cs"
+        ]
+      },
+      "required_permission": "rpt/accounts-reports/collection-report:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match"
+    },
+    {
+      "id": "get_collection_report_by_id",
+      "name": "Get Collection Report by ID",
+      "action_method": "GetCollectionReportById",
+      "http_method": "GET",
+      "route": "api/CollectionReport/{id}",
+      "module": "Collection Report",
+      "business_purpose": "Retrieve details for a specific collection report record",
+      "short_description": "Fetches individual collection report record by ID",
+      "detailed_description": "Validates ID > 0, calls service GetCollectionReportById, returns record or NotFound error",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ],
+        "roles_or_policy": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_claims": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_headers": [
+          "Authorization: Bearer <token>"
+        ],
+        "notes": "Token validation implicit in [Authorize] but not explicitly checked in method"
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true,
+          "description": "Report record ID",
+          "example": "123"
+        }
+      ],
+      "query_parameters": [],
+      "request_body": null,
+      "response": {
+        "status_codes": [
+          200,
+          404,
+          500
+        ],
+        "dto_name": "IActionResult (Ok wrapping ReceiptHeader)",
+        "properties": [
+          {
+            "name": "ReceiptHeader",
+            "type": "object",
+            "nullable": false,
+            "description": "Receipt/collection report header data"
+          }
+        ],
+        "success_example": {
+          "id": 123,
+          "header": "..."
+        },
+        "error_example": {
+          "error": "Not Found"
+        },
+        "notes": "Returns raw ReceiptHeader object"
+      },
+      "business_logic": {
+        "operation_summary": "Retrieve single collection report record",
+        "preconditions": "Report with given ID must exist",
+        "state_changes": "No state changes",
+        "validations": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "side_effects": "Queries database for report record",
+        "calls_services": [
+          "ICollectionReport.GetCollectionReportById"
+        ],
+        "calls_repositories": [
+          "ICollectionReport"
+        ],
+        "stored_procedures": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "validation_rules": [
+          {
+            "returns": 404,
+            "message": null,
+            "when": "collectionReport == null"
+          }
+        ]
+      },
+      "ai_agent_guidance": {
+        "use_when": "Get details for a specific collection report record",
+        "do_not_use_when": "Listing all reports (use get_collection_report)",
+        "preconditions_needed": [
+          "Valid report ID",
+          "JWT bearer token"
+        ],
+        "follow_up_apis": [
+          "get_collection_report"
+        ]
+      },
+      "error_handling": {
+        "validation_errors": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "not_found": "Returns NotFound() if report not found",
+        "unauthorized": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "business_rule_errors": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "exceptions": "Catches all exceptions, returns StatusCode(500, ...)"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Pure read operation"
+      },
+      "llm_tool_definition": {
+        "name": "get_collection_report_by_id",
+        "description": "Get a specific collection report record",
+        "http_method": "GET",
+        "endpoint": "api/CollectionReport/{id}",
+        "parameters": {
+          "id": {
+            "type": "integer",
+            "required": true,
+            "description": "Report ID"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": "Read-only operation"
+      },
+      "source": {
+        "controller_file": "Controllers/CollectionReportController.cs",
+        "action_method": "GetCollectionReportById",
+        "related_dto_files": [
+          "Models/ReceiptHeader"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Interfaces/ICollectionReport.cs"
+        ]
+      },
+      "required_permission": "rpt/accounts-reports/collection-report:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match"
+    }
+  ]
+}

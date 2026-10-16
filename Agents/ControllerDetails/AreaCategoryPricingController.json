@@ -1,0 +1,1030 @@
+{
+  "controller": "AreaCategoryPricingController",
+  "file": "Controllers/AreaCategoryPricingController.cs",
+  "module": "Pricing Management",
+  "base_route": "api/AreaCategoryPricing",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages area-category pricing mappings. Allows creation, retrieval, updating, and deletion of pricing rules for specific combinations of job grades and area categories.",
+  "notes": null,
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/company-settings/area-category-pricing",
+        "module_code": "settings",
+        "section": "company-settings",
+        "sub_section": "area-category-pricing",
+        "frontend_routes": [
+          "/settings/company-settings/area-category-pricing"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "areaCategoryPricing"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "areacategorypricing_getall",
+      "name": "Get All Area Category Pricing",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/AreaCategoryPricing",
+      "module": "Pricing Management",
+      "business_purpose": "Retrieve paginated list of all area-category pricing records",
+      "short_description": "Fetch all area category pricing records with filters",
+      "detailed_description": "Retrieves paginated pricing data filtered by date range and search text. Validates user via JWT token, calls repository, and returns data with actions and pagination.",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ],
+        "roles_or_policy": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_claims": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_headers": [
+          "Authorization: Bearer <token>"
+        ],
+        "notes": "JWT token extracted from Authorization header"
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "DateTime",
+          "required": false,
+          "default": null,
+          "description": "Start of date range filter",
+          "example": "2024-01-01"
+        },
+        {
+          "name": "todate",
+          "type": "DateTime",
+          "required": false,
+          "default": null,
+          "description": "End of date range filter",
+          "example": "2024-12-31"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": null,
+          "description": "Search text filter",
+          "example": "grade1"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10",
+          "description": "Records per page",
+          "example": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0",
+          "description": "Page number (0-indexed)",
+          "example": "0"
+        }
+      ],
+      "request_body": null,
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "anonymous object",
+        "properties": [
+          {
+            "name": "success",
+            "type": "bool",
+            "nullable": false,
+            "description": "Operation success flag"
+          },
+          {
+            "name": "message",
+            "type": "string",
+            "nullable": false,
+            "description": "Success message"
+          },
+          {
+            "name": "data",
+            "type": "List<Dictionary>",
+            "nullable": false,
+            "description": "List of pricing records"
+          },
+          {
+            "name": "actions",
+            "type": "List",
+            "nullable": false,
+            "description": "Available actions"
+          },
+          {
+            "name": "pagination",
+            "type": "object",
+            "nullable": false,
+            "description": "Pagination info"
+          }
+        ],
+        "success_example": {
+          "success": true,
+          "message": "Area Category Pricing details fetched successfully",
+          "data": [],
+          "actions": [],
+          "pagination": {
+            "page": 1,
+            "limit": 10
+          }
+        },
+        "error_example": {
+          "success": false,
+          "message": "Invalid token or user not found"
+        },
+        "notes": "Returns 401 if token invalid; 500 on exception"
+      },
+      "business_logic": {
+        "operation_summary": "Fetch paginated pricing records with optional filtering",
+        "preconditions": "User must be authenticated with valid JWT token",
+        "state_changes": "None (read-only operation)",
+        "validations": "Token validation, user existence check",
+        "side_effects": "None",
+        "calls_services": [
+          "ICommon",
+          "IAreaCategoryPricing"
+        ],
+        "calls_repositories": [
+          "IAreaCategoryPricing"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Reads JWT token from request header",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      },
+      "ai_agent_guidance": {
+        "use_when": "Agent needs to retrieve all area-category pricing configurations",
+        "do_not_use_when": "Only a specific pricing record is needed",
+        "preconditions_needed": [
+          "Valid JWT token in Authorization header"
+        ],
+        "follow_up_apis": [
+          "GetAreaCategoryPricingById"
+        ]
+      },
+      "error_handling": {
+        "validation_errors": "None at endpoint level",
+        "not_found": "Not applicable (list operation)",
+        "unauthorized": "Returns 401 with 'Invalid token or user not found' if token is invalid",
+        "business_rule_errors": "None",
+        "exceptions": "Catches all exceptions and returns 500 with ex.Message"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only operation; idempotent by nature"
+      },
+      "llm_tool_definition": {
+        "name": "get_area_category_pricing",
+        "description": "Retrieve all area category pricing records with pagination and filtering",
+        "http_method": "GET",
+        "endpoint": "api/AreaCategoryPricing",
+        "parameters": {
+          "fromdate": {
+            "type": "string",
+            "required": false,
+            "description": "Start date (ISO 8601)"
+          },
+          "todate": {
+            "type": "string",
+            "required": false,
+            "description": "End date (ISO 8601)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "Search filter"
+          },
+          "limit": {
+            "type": "integer",
+            "required": false,
+            "description": "Page size"
+          },
+          "page_no": {
+            "type": "integer",
+            "required": false,
+            "description": "Page number"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": null
+      },
+      "source": {
+        "controller_file": "Controllers/AreaCategoryPricingController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [
+          "Services/IAreaCategoryPricing.cs"
+        ],
+        "related_repository_files": [
+          "Interfaces/IAreaCategoryPricing.cs"
+        ]
+      },
+      "required_permission": "settings/company-settings/area-category-pricing:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match"
+    },
+    {
+      "id": "areacategorypricing_getbyid",
+      "name": "Get Area Category Pricing By ID",
+      "action_method": "GetAreaCategoryPricingById",
+      "http_method": "GET",
+      "route": "api/AreaCategoryPricing/{id}",
+      "module": "Pricing Management",
+      "business_purpose": "Retrieve details of a specific area-category pricing record",
+      "short_description": "Fetch a single area category pricing record by its ID",
+      "detailed_description": "Retrieves specific pricing record by ID. Validates ID > 0, extracts JWT token, validates user, checks record existence, maps entity to DTO, and returns formatted response.",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ],
+        "roles_or_policy": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_claims": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_headers": [
+          "Authorization: Bearer <token>"
+        ],
+        "notes": "JWT token extracted from Authorization header"
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true,
+          "description": "Area Category Pricing ID",
+          "example": "123"
+        }
+      ],
+      "query_parameters": [],
+      "request_body": null,
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ],
+        "dto_name": "anonymous object with AreaCategoryPricingReadDTO",
+        "properties": [
+          {
+            "name": "success",
+            "type": "bool",
+            "nullable": false,
+            "description": "Operation success"
+          },
+          {
+            "name": "message",
+            "type": "string",
+            "nullable": false,
+            "description": "Response message"
+          },
+          {
+            "name": "data",
+            "type": "object",
+            "nullable": false,
+            "description": "Pricing details"
+          }
+        ],
+        "success_example": {
+          "success": true,
+          "message": "Area Category Pricing Details fetched successfully",
+          "data": {
+            "id": 1,
+            "GradeId": 2,
+            "grade": {},
+            "AreaCategoryId": 3,
+            "area_category": {},
+            "amount": 100
+          }
+        },
+        "error_example": {
+          "success": false,
+          "message": "area category pricing not found"
+        },
+        "notes": "Returns 400 if id <= 0; 404 if not found; 401 if unauthorized"
+      },
+      "business_logic": {
+        "operation_summary": "Fetch single pricing record with associated grade and area category",
+        "preconditions": "Pricing record must exist and user must be authorized",
+        "state_changes": "None (read-only)",
+        "validations": "ID > 0 check; token validation; record existence check",
+        "side_effects": "None",
+        "calls_services": [
+          "ICommon (getUserByToken)",
+          "IAreaCategoryPricing"
+        ],
+        "calls_repositories": [
+          "IAreaCategoryPricing"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "JWT token required",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid scheduler ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "area category pricing not found",
+            "when": "areacategorypricing == null"
+          }
+        ]
+      },
+      "ai_agent_guidance": {
+        "use_when": "Agent needs details of a specific area-category pricing",
+        "do_not_use_when": "Listing all prices or creating new prices",
+        "preconditions_needed": [
+          "Valid pricing ID",
+          "Valid JWT token"
+        ],
+        "follow_up_apis": [
+          "Update"
+        ]
+      },
+      "error_handling": {
+        "validation_errors": "ID <= 0 returns BadRequest",
+        "not_found": "Returns 404 if pricing not found",
+        "unauthorized": "Returns 401 if token invalid",
+        "business_rule_errors": "None",
+        "exceptions": "Returns 500 with details"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; always idempotent"
+      },
+      "llm_tool_definition": {
+        "name": "get_area_category_pricing_by_id",
+        "description": "Retrieve a specific area category pricing record",
+        "http_method": "GET",
+        "endpoint": "api/AreaCategoryPricing/{id}",
+        "parameters": {
+          "id": {
+            "type": "integer",
+            "required": true,
+            "description": "Pricing record ID"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": null
+      },
+      "source": {
+        "controller_file": "Controllers/AreaCategoryPricingController.cs",
+        "action_method": "GetAreaCategoryPricingById",
+        "related_dto_files": [
+          "DTO/ReadDTO/AreaCategoryPricingReadDTO"
+        ],
+        "related_service_files": [],
+        "related_repository_files": []
+      },
+      "required_permission": "settings/company-settings/area-category-pricing:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match"
+    },
+    {
+      "id": "areacategorypricing_create",
+      "name": "Create Area Category Pricing",
+      "action_method": "CreateAreaCategoryPricing",
+      "http_method": "POST",
+      "route": "api/AreaCategoryPricing",
+      "module": "Pricing Management",
+      "business_purpose": "Create a new area-category pricing record with duplicate prevention",
+      "short_description": "Create a new pricing rule for a grade-area category combination",
+      "detailed_description": "Creates new pricing record. Validates request data, extracts and validates JWT token, fetches job grade and area category records, performs duplicate check, creates new entity, saves changes, and returns success response.",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ],
+        "roles_or_policy": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_claims": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_headers": [
+          "Authorization: Bearer <token>"
+        ],
+        "notes": "JWT token required in Authorization header"
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateAreaCategoryPricingRequest",
+        "source_file": "Controllers/AreaCategoryPricingController.cs (inline)",
+        "properties": [
+          {
+            "name": "GradeId",
+            "type": "int",
+            "required": true,
+            "nullable": false,
+            "validation": "Grade must exist in database",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "Job Grade ID",
+            "example": 1
+          },
+          {
+            "name": "AreaCategoryId",
+            "type": "int",
+            "required": true,
+            "nullable": false,
+            "validation": "Area Category must exist",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "Area Category ID",
+            "example": 2
+          },
+          {
+            "name": "Amount",
+            "type": "decimal",
+            "required": true,
+            "nullable": false,
+            "validation": "No explicit validation found",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "Pricing amount",
+            "example": 100
+          }
+        ],
+        "example_json": {
+          "GradeId": 1,
+          "AreaCategoryId": 2,
+          "Amount": 100
+        }
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ],
+        "dto_name": "anonymous object",
+        "properties": [
+          {
+            "name": "Success",
+            "type": "bool",
+            "nullable": false,
+            "description": "Creation success"
+          },
+          {
+            "name": "Message",
+            "type": "string",
+            "nullable": false,
+            "description": "Response message"
+          }
+        ],
+        "success_example": {
+          "Success": true,
+          "Message": "Area Category Pricing created successfully."
+        },
+        "error_example": {
+          "Success": false,
+          "Message": "Duplicate pricing found."
+        },
+        "notes": "Returns 400 if duplicate found, grade not found, or area category not found"
+      },
+      "business_logic": {
+        "operation_summary": "Create pricing record with validation and deduplication",
+        "preconditions": "Grade and Area Category must exist; combination must be unique",
+        "state_changes": "New pricing record inserted into database",
+        "validations": "ModelState validation, Grade existence check, Area Category existence check, Duplicate check",
+        "side_effects": "INFERRED FROM CODE: Creates audit trail implicitly",
+        "calls_services": [
+          "ICommon (getUserByToken)",
+          "IAreaCategoryPricing"
+        ],
+        "calls_repositories": [
+          "IAreaCategoryPricing"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Current user set as creator; JWT token required",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "Selected Job Grade not found.",
+            "when": "jobGrade == null"
+          },
+          {
+            "returns": 400,
+            "message": "Selected Area Category not found.",
+            "when": "areaCategory == null"
+          },
+          {
+            "returns": 400,
+            "message": "Duplicate pricing found.",
+            "when": "duplicateCheck"
+          }
+        ]
+      },
+      "ai_agent_guidance": {
+        "use_when": "Agent needs to create new pricing rules",
+        "do_not_use_when": "Updating existing pricing or checking if pricing exists",
+        "preconditions_needed": [
+          "Valid GradeId and AreaCategoryId",
+          "Grade/AreaCategory must exist",
+          "Combination must be unique"
+        ],
+        "follow_up_apis": [
+          "Update",
+          "GetAreaCategoryPricingById"
+        ]
+      },
+      "error_handling": {
+        "validation_errors": "Returns 400 if ModelState invalid",
+        "not_found": "Returns 400 if grade or area category not found",
+        "unauthorized": "Returns 401 if no token",
+        "business_rule_errors": "Returns 400 if duplicate pricing found",
+        "exceptions": "Returns 500 with exception message"
+      },
+      "idempotency": {
+        "risk_level": "HIGH",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; creates new record each call without API-level deduplication"
+      },
+      "llm_tool_definition": {
+        "name": "create_area_category_pricing",
+        "description": "Create a new area category pricing record",
+        "http_method": "POST",
+        "endpoint": "api/AreaCategoryPricing",
+        "parameters": {
+          "GradeId": {
+            "type": "integer",
+            "required": true,
+            "description": "Job Grade ID"
+          },
+          "AreaCategoryId": {
+            "type": "integer",
+            "required": true,
+            "description": "Area Category ID"
+          },
+          "Amount": {
+            "type": "number",
+            "required": true,
+            "description": "Pricing amount"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates permanent pricing record"
+      },
+      "source": {
+        "controller_file": "Controllers/AreaCategoryPricingController.cs",
+        "action_method": "CreateAreaCategoryPricing",
+        "related_dto_files": [
+          "Controllers/AreaCategoryPricingController.cs (inline CreateAreaCategoryPricingRequest)"
+        ],
+        "related_service_files": [],
+        "related_repository_files": []
+      },
+      "required_permission": "settings/company-settings/area-category-pricing:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match"
+    },
+    {
+      "id": "areacategorypricing_update",
+      "name": "Update Area Category Pricing",
+      "action_method": "Update",
+      "http_method": "PUT",
+      "route": "api/AreaCategoryPricing/{id}",
+      "module": "Pricing Management",
+      "business_purpose": "Update existing area-category pricing record",
+      "short_description": "Modify pricing amount and category associations",
+      "detailed_description": "Updates pricing record by ID. Validates ID and token, fetches existing record, validates grade and area category exist, calls repository update with user context, and returns success response.",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ],
+        "roles_or_policy": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_claims": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_headers": [
+          "Authorization: Bearer <token>"
+        ],
+        "notes": "JWT token required"
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true,
+          "description": "Pricing record ID",
+          "example": 1
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateAreaCategoryPricingRequest",
+        "source_file": "Controllers/AreaCategoryPricingController.cs (inline)",
+        "properties": [
+          {
+            "name": "GradeId",
+            "type": "int",
+            "required": true,
+            "nullable": false,
+            "validation": "Grade must exist",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "Job Grade ID",
+            "example": 1
+          },
+          {
+            "name": "AreaCategoryId",
+            "type": "int",
+            "required": true,
+            "nullable": false,
+            "validation": "Area Category must exist",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "Area Category ID",
+            "example": 2
+          },
+          {
+            "name": "Amount",
+            "type": "decimal",
+            "required": true,
+            "nullable": false,
+            "validation": "No explicit validation",
+            "allowed_values": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+            "default": null,
+            "description": "New pricing amount",
+            "example": 150
+          }
+        ],
+        "example_json": {
+          "GradeId": 1,
+          "AreaCategoryId": 2,
+          "Amount": 150
+        }
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ],
+        "dto_name": "anonymous object",
+        "properties": [
+          {
+            "name": "Success",
+            "type": "bool",
+            "nullable": false,
+            "description": "Update success"
+          },
+          {
+            "name": "Message",
+            "type": "string",
+            "nullable": false,
+            "description": "Response message"
+          }
+        ],
+        "success_example": {
+          "Success": true,
+          "Message": "Area Category Pricing updated successfully."
+        },
+        "error_example": {
+          "Success": false,
+          "Message": "Area Category Pricing not found."
+        },
+        "notes": "Returns 404 if record not found; 400 if grade/category invalid"
+      },
+      "business_logic": {
+        "operation_summary": "Update pricing with entity validation",
+        "preconditions": "Pricing record must exist; grade and area category must exist",
+        "state_changes": "Pricing record updated in database",
+        "validations": "ID > 0; record exists; grade exists; area category exists",
+        "side_effects": "INFERRED FROM CODE: User context recorded; potential audit trail",
+        "calls_services": [
+          "ICommon",
+          "IAreaCategoryPricing"
+        ],
+        "calls_repositories": [
+          "IAreaCategoryPricing"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Current user set as modifier",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Area Category Pricing not found.",
+            "when": "existingPricing == null"
+          },
+          {
+            "returns": 400,
+            "message": "Selected Job Grade not found.",
+            "when": "jobGrade == null"
+          },
+          {
+            "returns": 400,
+            "message": "Selected Area Category not found.",
+            "when": "areaCategory == null"
+          }
+        ]
+      },
+      "ai_agent_guidance": {
+        "use_when": "Agent needs to update pricing amounts or associations",
+        "do_not_use_when": "Creating new pricing or deleting pricing",
+        "preconditions_needed": [
+          "Valid pricing ID",
+          "Grade/AreaCategory must exist"
+        ],
+        "follow_up_apis": [
+          "GetAreaCategoryPricingById"
+        ]
+      },
+      "error_handling": {
+        "validation_errors": "ID <= 0 returns BadRequest",
+        "not_found": "Returns 404 if pricing not found",
+        "unauthorized": "Returns 401 if token invalid",
+        "business_rule_errors": "Returns 400 if grade/area category invalid",
+        "exceptions": "Returns 500 with message"
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Repeating same update is safe but system doesn't prevent redundant updates"
+      },
+      "llm_tool_definition": {
+        "name": "update_area_category_pricing",
+        "description": "Update an existing area category pricing record",
+        "http_method": "PUT",
+        "endpoint": "api/AreaCategoryPricing/{id}",
+        "parameters": {
+          "id": {
+            "type": "integer",
+            "required": true,
+            "description": "Pricing record ID"
+          },
+          "GradeId": {
+            "type": "integer",
+            "required": true,
+            "description": "New Grade ID"
+          },
+          "AreaCategoryId": {
+            "type": "integer",
+            "required": true,
+            "description": "New Area Category ID"
+          },
+          "Amount": {
+            "type": "number",
+            "required": true,
+            "description": "New pricing amount"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies existing pricing record"
+      },
+      "source": {
+        "controller_file": "Controllers/AreaCategoryPricingController.cs",
+        "action_method": "Update",
+        "related_dto_files": [
+          "Controllers/AreaCategoryPricingController.cs (inline UpdateAreaCategoryPricingRequest)"
+        ],
+        "related_service_files": [],
+        "related_repository_files": []
+      },
+      "required_permission": "settings/company-settings/area-category-pricing:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match"
+    },
+    {
+      "id": "areacategorypricing_delete",
+      "name": "Delete Area Category Pricing",
+      "action_method": "DeleteAreaCategoryPricing",
+      "http_method": "DELETE",
+      "route": "api/AreaCategoryPricing/{id}",
+      "module": "Pricing Management",
+      "business_purpose": "Soft-delete an area-category pricing record",
+      "short_description": "Delete a pricing rule by ID",
+      "detailed_description": "Soft-deletes pricing record. Validates ID, extracts and validates JWT token, manages user entity tracking in EF context, checks record existence, calls repository delete with user context, and returns success response.",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ],
+        "roles_or_policy": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_claims": [
+          "UNKNOWN — NOT DETERMINED FROM SOURCE"
+        ],
+        "required_headers": [
+          "Authorization: Bearer <token>"
+        ],
+        "notes": "JWT token required"
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true,
+          "description": "Pricing record ID",
+          "example": 1
+        }
+      ],
+      "query_parameters": [],
+      "request_body": null,
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ],
+        "dto_name": "anonymous object",
+        "properties": [
+          {
+            "name": "success",
+            "type": "bool",
+            "nullable": false,
+            "description": "Deletion success"
+          },
+          {
+            "name": "message",
+            "type": "string",
+            "nullable": false,
+            "description": "Response message"
+          }
+        ],
+        "success_example": {
+          "success": true,
+          "message": "Area category pricing deleted sucessfully"
+        },
+        "error_example": {
+          "success": false,
+          "message": "Area Category Pricing not found."
+        },
+        "notes": "Returns 400 if id <= 0; 404 if not found; 401 if unauthorized"
+      },
+      "business_logic": {
+        "operation_summary": "Soft-delete pricing record with user tracking",
+        "preconditions": "Pricing record must exist",
+        "state_changes": "Record is_deleted flag set to true",
+        "validations": "ID > 0; record exists; token valid",
+        "side_effects": "INFERRED FROM CODE: Audit logging via user context",
+        "calls_services": [
+          "ICommon (getUserByToken)",
+          "IAreaCategoryPricing"
+        ],
+        "calls_repositories": [
+          "IAreaCategoryPricing"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Current user recorded as deleter",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid fuel type ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Area Category Pricing not found.",
+            "when": "existingAreaCategoryPricing == null"
+          }
+        ]
+      },
+      "ai_agent_guidance": {
+        "use_when": "Agent needs to remove pricing rules",
+        "do_not_use_when": "Retrieving or updating pricing",
+        "preconditions_needed": [
+          "Valid pricing ID",
+          "Record must exist"
+        ],
+        "follow_up_apis": []
+      },
+      "error_handling": {
+        "validation_errors": "ID <= 0 returns BadRequest",
+        "not_found": "Returns 404 if pricing not found",
+        "unauthorized": "Returns 401 if no token",
+        "business_rule_errors": "None",
+        "exceptions": "Returns 500 with message"
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Soft-delete (is_deleted flag); repeated calls on already-deleted record may succeed without error"
+      },
+      "llm_tool_definition": {
+        "name": "delete_area_category_pricing",
+        "description": "Delete an area category pricing record",
+        "http_method": "DELETE",
+        "endpoint": "api/AreaCategoryPricing/{id}",
+        "parameters": {
+          "id": {
+            "type": "integer",
+            "required": true,
+            "description": "Pricing record ID to delete"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Removes pricing rule permanently"
+      },
+      "source": {
+        "controller_file": "Controllers/AreaCategoryPricingController.cs",
+        "action_method": "DeleteAreaCategoryPricing",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": []
+      },
+      "required_permission": "settings/company-settings/area-category-pricing:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match"
+    }
+  ]
+}

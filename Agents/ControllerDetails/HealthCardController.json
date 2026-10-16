@@ -1,0 +1,293 @@
+{
+  "controller": "HealthCardController",
+  "file": "Controllers/HealthCardController.cs",
+  "base_route": "api/planner/health-card",
+  "description": "Health card management",
+  "menu_permission": {
+    "status": "not referenced by frontend",
+    "menu_keys": [],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "hea_001",
+      "name": "GetDealerDirectory",
+      "http_method": "GET",
+      "route": "api/planner/health-card/dealers",
+      "business_purpose": "GET operation for HealthCardController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/HealthCardController.cs",
+        "action_method": "GetDealerDirectory"
+      },
+      "required_permission": "planner/health-card:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "GET operation for HealthCardController",
+      "detailed_description": "GET operation for HealthCardController. It calls ICommon.getUserByToken, IHealthCard.GetDealerDirectoryAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to GET operation for healthcardcontroller",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/planner/health-card/dealers",
+          "GET api/planner/health-card/influencers",
+          "GET api/planner/health-card/{userId:int}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "health_card_get_dealer_directory",
+        "description": "GET operation for HealthCardController",
+        "http_method": "GET",
+        "endpoint": "api/planner/health-card/dealers",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "hea_002",
+      "name": "GetInfluencerDirectory",
+      "http_method": "GET",
+      "route": "api/planner/health-card/influencers",
+      "business_purpose": "GET operation for HealthCardController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/HealthCardController.cs",
+        "action_method": "GetInfluencerDirectory"
+      },
+      "required_permission": "planner/health-card:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "GET operation for HealthCardController",
+      "detailed_description": "GET operation for HealthCardController. It calls ICommon.getUserByToken, IHealthCard.GetInfluencerDirectoryAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to GET operation for healthcardcontroller",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/planner/health-card/dealers",
+          "GET api/planner/health-card/influencers",
+          "GET api/planner/health-card/{userId:int}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "health_card_get_influencer_directory",
+        "description": "GET operation for HealthCardController",
+        "http_method": "GET",
+        "endpoint": "api/planner/health-card/influencers",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "hea_003",
+      "name": "GetHealthCard",
+      "http_method": "GET",
+      "route": "api/planner/health-card/{userId:int}",
+      "business_purpose": "GET operation for HealthCardController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid user ID",
+            "when": "userId <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "User not found",
+            "when": "healthCard == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/HealthCardController.cs",
+        "action_method": "GetHealthCard"
+      },
+      "required_permission": "planner/health-card:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "GET operation for HealthCardController",
+      "detailed_description": "GET operation for HealthCardController. It validates the request, then calls ICommon.getUserByToken, IHealthCard.GetHealthCardByUserIdAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid user ID [when userId <= 0]",
+        "not_found": "404: User not found [when healthCard == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to GET operation for healthcardcontroller",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/planner/health-card/dealers",
+          "GET api/planner/health-card/influencers",
+          "GET api/planner/health-card/{userId:int}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "health_card_get_health_card",
+        "description": "GET operation for HealthCardController",
+        "http_method": "GET",
+        "endpoint": "api/planner/health-card/{userId:int}",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    }
+  ]
+}

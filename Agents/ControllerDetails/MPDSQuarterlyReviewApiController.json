@@ -1,0 +1,1464 @@
+{
+  "controller": "MPDSQuarterlyReviewApiController",
+  "file": "Controllers/MPDSQuarterlyReviewApiController.cs",
+  "module": "Planning and Visit Management",
+  "base_route": "api/MPDSQuarterlyReviewApi",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles MPDS quarterly review api: get all, get quarters by year, get current year quarters, get masters, get details, get a ll review details and 4 more",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "planner/mpds-quarterly-review",
+        "module_code": "planner",
+        "section": "mpds-quarterly-review",
+        "sub_section": null,
+        "frontend_routes": [
+          "/planner/mpds-quarterly-review",
+          "/planner/mpds-quarterly-review/create-mpds-quarterly-review",
+          "/planner/mpds-quarterly-review/edit-mpds-quarterly-review/:id",
+          "/planner/mpds-quarterly-review/edit-mpds-quarterly-review/:userId/:quarterId"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "mpds_quarterly_review_api_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/MPDSQuarterlyReviewApi",
+      "business_purpose": "Retrieve all MPDS quarterly review api records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "quarterId",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        },
+        {
+          "name": "userId",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/mpds-quarterly-review:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all MPDS quarterly review api records",
+      "detailed_description": "Retrieve all MPDS quarterly review api records. It calls ICommon.getUserByToken, IMPDSQuarterlyReview.GetMPDSQuarterlyReviewData, IMPDSQuarterlyReview.GetMPDSQuarterlyReviewActions. Data access uses stored procedure(s): GetMPDSQuarterlyReviewList, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all MPDS quarterly review api records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/MPDSQuarterlyReviewApi",
+          "GET api/MPDSQuarterlyReviewApi/quarters-by-year/{financialYearId}",
+          "GET api/MPDSQuarterlyReviewApi/current-year-quarters"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "mpds_quarterly_review_api_get_all",
+        "description": "Retrieve all MPDS quarterly review api records",
+        "http_method": "GET",
+        "endpoint": "api/MPDSQuarterlyReviewApi",
+        "parameters": {
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "quarterId": {
+            "type": "int",
+            "required": false,
+            "description": "quarter Id (query)"
+          },
+          "userId": {
+            "type": "int",
+            "required": false,
+            "description": "user Id (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/MPDSQuarterlyReviewApiController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/MPDSQuarterlyReview_repo.cs",
+          "Interfaces/IMPDSQuarterlyReview.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all MPDS quarterly review api records — calls ICommon.getUserByToken, IMPDSQuarterlyReview.GetMPDSQuarterlyReviewData, IMPDSQuarterlyReview.GetMPDSQuarterlyReviewActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMPDSQuarterlyReview.GetMPDSQuarterlyReviewData",
+          "IMPDSQuarterlyReview.GetMPDSQuarterlyReviewActions",
+          "ICommon.GetPagination",
+          "ICommon.GetAllUsersByCurrentUser",
+          "IMPDSQuarterlyReview.GetAllFinancialYearsAsync",
+          "IMPDSQuarterlyReview.GetCurrentFinancialYearAsync",
+          "IMPDSQuarterlyReview.GetQuartersByFinancialYearAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MPDSQuarterlyReview_repo (Repository/MPDSQuarterlyReview_repo.cs) via IMPDSQuarterlyReview"
+        ],
+        "stored_procedures": [
+          "GetMPDSQuarterlyReviewList",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mpds_quarterly_review_api_get_quarters_by_year",
+      "name": "Get Quarters By Year",
+      "action_method": "GetQuartersByYear",
+      "http_method": "GET",
+      "route": "api/MPDSQuarterlyReviewApi/quarters-by-year/{financialYearId}",
+      "business_purpose": "Retrieve quarters by year",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "financialYearId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/mpds-quarterly-review:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve quarters by year",
+      "detailed_description": "Retrieve quarters by year. It calls ICommon.getUserByToken, IMPDSQuarterlyReview.GetQuartersByFinancialYearAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve quarters by year",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "financialYearId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/MPDSQuarterlyReviewApi",
+          "GET api/MPDSQuarterlyReviewApi/quarters-by-year/{financialYearId}",
+          "GET api/MPDSQuarterlyReviewApi/current-year-quarters"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "mpds_quarterly_review_api_get_quarters_by_year",
+        "description": "Retrieve quarters by year",
+        "http_method": "GET",
+        "endpoint": "api/MPDSQuarterlyReviewApi/quarters-by-year/{financialYearId}",
+        "parameters": {
+          "financialYearId": {
+            "type": "int",
+            "required": true,
+            "description": "financial Year Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/MPDSQuarterlyReviewApiController.cs",
+        "action_method": "GetQuartersByYear",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/MPDSQuarterlyReview_repo.cs",
+          "Interfaces/IMPDSQuarterlyReview.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve quarters by year — calls ICommon.getUserByToken, IMPDSQuarterlyReview.GetQuartersByFinancialYearAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) financialYearId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMPDSQuarterlyReview.GetQuartersByFinancialYearAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MPDSQuarterlyReview_repo (Repository/MPDSQuarterlyReview_repo.cs) via IMPDSQuarterlyReview"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mpds_quarterly_review_api_get_current_year_quarters",
+      "name": "Get Current Year Quarters",
+      "action_method": "GetCurrentYearQuarters",
+      "http_method": "GET",
+      "route": "api/MPDSQuarterlyReviewApi/current-year-quarters",
+      "business_purpose": "Retrieve current year quarters",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/mpds-quarterly-review:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve current year quarters",
+      "detailed_description": "Retrieve current year quarters. It calls ICommon.getUserByToken, IMPDSQuarterlyReview.GetCurrentFinancialYearAsync, IMPDSQuarterlyReview.GetQuartersByFinancialYearAsync. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No financial year found for current date [when currentFinancialYear == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve current year quarters",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/MPDSQuarterlyReviewApi",
+          "GET api/MPDSQuarterlyReviewApi/quarters-by-year/{financialYearId}",
+          "GET api/MPDSQuarterlyReviewApi/current-year-quarters"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "mpds_quarterly_review_api_get_current_year_quarters",
+        "description": "Retrieve current year quarters",
+        "http_method": "GET",
+        "endpoint": "api/MPDSQuarterlyReviewApi/current-year-quarters",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/MPDSQuarterlyReviewApiController.cs",
+        "action_method": "GetCurrentYearQuarters",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/MPDSQuarterlyReview_repo.cs",
+          "Interfaces/IMPDSQuarterlyReview.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve current year quarters — calls ICommon.getUserByToken, IMPDSQuarterlyReview.GetCurrentFinancialYearAsync, IMPDSQuarterlyReview.GetQuartersByFinancialYearAsync",
+        "preconditions": "Valid Bearer JWT; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMPDSQuarterlyReview.GetCurrentFinancialYearAsync",
+          "IMPDSQuarterlyReview.GetQuartersByFinancialYearAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MPDSQuarterlyReview_repo (Repository/MPDSQuarterlyReview_repo.cs) via IMPDSQuarterlyReview"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "No financial year found for current date",
+            "when": "currentFinancialYear == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mpds_quarterly_review_api_get_masters",
+      "name": "Get Masters",
+      "action_method": "GetMasters",
+      "http_method": "GET",
+      "route": "api/MPDSQuarterlyReviewApi/masters",
+      "business_purpose": "Retrieve masters",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/mpds-quarterly-review:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve masters",
+      "detailed_description": "Retrieve masters. It calls ICommon.getUserByToken, IMPDSQuarterlyReview.GetAllGoalsAsync, IMPDSQuarterlyReview.GetAllUsersAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve masters",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/MPDSQuarterlyReviewApi",
+          "GET api/MPDSQuarterlyReviewApi/quarters-by-year/{financialYearId}",
+          "GET api/MPDSQuarterlyReviewApi/current-year-quarters"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "mpds_quarterly_review_api_get_masters",
+        "description": "Retrieve masters",
+        "http_method": "GET",
+        "endpoint": "api/MPDSQuarterlyReviewApi/masters",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/MPDSQuarterlyReviewApiController.cs",
+        "action_method": "GetMasters",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/MPDSQuarterlyReview_repo.cs",
+          "Interfaces/IMPDSQuarterlyReview.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve masters — calls ICommon.getUserByToken, IMPDSQuarterlyReview.GetAllGoalsAsync, IMPDSQuarterlyReview.GetAllUsersAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMPDSQuarterlyReview.GetAllGoalsAsync",
+          "IMPDSQuarterlyReview.GetAllUsersAsync",
+          "IMPDSQuarterlyReview.GetAllFinancialQuartersAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MPDSQuarterlyReview_repo (Repository/MPDSQuarterlyReview_repo.cs) via IMPDSQuarterlyReview"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mpds_quarterly_review_api_get_details",
+      "name": "Get Details",
+      "action_method": "GetDetails",
+      "http_method": "GET",
+      "route": "api/MPDSQuarterlyReviewApi/details",
+      "business_purpose": "Retrieve details",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "userId",
+          "type": "int",
+          "required": true
+        },
+        {
+          "name": "quarterId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/mpds-quarterly-review:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve details",
+      "detailed_description": "Retrieve details. It validates the request, then calls ICommon.getUserByToken, IMPDSQuarterlyReview.GetFinancialQuarterByIdAsync, IMPDSQuarterlyReview.GetMPDSHeadersByUserAndFinancialYearAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid userId and quarterId are required. [when userId <= 0 || quarterId <= 0]",
+        "not_found": "404: Quarter not found. [when selectedQuarter == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve details",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "userId (query)",
+          "quarterId (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/MPDSQuarterlyReviewApi",
+          "GET api/MPDSQuarterlyReviewApi/quarters-by-year/{financialYearId}",
+          "GET api/MPDSQuarterlyReviewApi/current-year-quarters"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "mpds_quarterly_review_api_get_details",
+        "description": "Retrieve details",
+        "http_method": "GET",
+        "endpoint": "api/MPDSQuarterlyReviewApi/details",
+        "parameters": {
+          "userId": {
+            "type": "int",
+            "required": true,
+            "description": "user Id (query)"
+          },
+          "quarterId": {
+            "type": "int",
+            "required": true,
+            "description": "quarter Id (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/MPDSQuarterlyReviewApiController.cs",
+        "action_method": "GetDetails",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/MPDSQuarterlyReview_repo.cs",
+          "Interfaces/IMPDSQuarterlyReview.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve details — validates the request, calls ICommon.getUserByToken, IMPDSQuarterlyReview.GetFinancialQuarterByIdAsync, IMPDSQuarterlyReview.GetMPDSHeadersByUserAndFinancialYearAsync",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): userId, quarterId; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid userId and quarterId are required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMPDSQuarterlyReview.GetFinancialQuarterByIdAsync",
+          "IMPDSQuarterlyReview.GetMPDSHeadersByUserAndFinancialYearAsync",
+          "IMPDSQuarterlyReview.GetMPDSQuarterlyReviewHeaderAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MPDSQuarterlyReview_repo (Repository/MPDSQuarterlyReview_repo.cs) via IMPDSQuarterlyReview"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid userId and quarterId are required.",
+            "when": "userId <= 0 || quarterId <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Quarter not found.",
+            "when": "selectedQuarter == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mpds_quarterly_review_api_get_a_ll_review_details",
+      "name": "Get A Ll Review Details",
+      "action_method": "GetALlReviewDetails",
+      "http_method": "GET",
+      "route": "api/MPDSQuarterlyReviewApi/all-details",
+      "business_purpose": "Retrieve a ll review details",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "userId",
+          "type": "int",
+          "required": true
+        },
+        {
+          "name": "quarterId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/mpds-quarterly-review:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve a ll review details",
+      "detailed_description": "Retrieve a ll review details. It validates the request, then calls ICommon.getUserByToken, IMPDSQuarterlyReview.GetFinancialQuarterByIdAsync, IMPDSQuarterlyReview.GetQuartersByFinancialYearAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid userId and quarterId are required. [when userId <= 0 || quarterId <= 0]",
+        "not_found": "404: Quarter not found. [when selectedQuarter == null]; Financial year not found. [when financialYear == null]; No quarters found for this financial year. [when allQuartersInYear == null || !allQuartersInYear.Any()]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve a ll review details",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "userId (query)",
+          "quarterId (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/MPDSQuarterlyReviewApi",
+          "GET api/MPDSQuarterlyReviewApi/quarters-by-year/{financialYearId}",
+          "GET api/MPDSQuarterlyReviewApi/current-year-quarters"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "mpds_quarterly_review_api_get_a_ll_review_details",
+        "description": "Retrieve a ll review details",
+        "http_method": "GET",
+        "endpoint": "api/MPDSQuarterlyReviewApi/all-details",
+        "parameters": {
+          "userId": {
+            "type": "int",
+            "required": true,
+            "description": "user Id (query)"
+          },
+          "quarterId": {
+            "type": "int",
+            "required": true,
+            "description": "quarter Id (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/MPDSQuarterlyReviewApiController.cs",
+        "action_method": "GetALlReviewDetails",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/MPDSQuarterlyReview_repo.cs",
+          "Interfaces/IMPDSQuarterlyReview.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve a ll review details — validates the request, calls ICommon.getUserByToken, IMPDSQuarterlyReview.GetFinancialQuarterByIdAsync, IMPDSQuarterlyReview.GetQuartersByFinancialYearAsync",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): userId, quarterId; passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid userId and quarterId are required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMPDSQuarterlyReview.GetFinancialQuarterByIdAsync",
+          "IMPDSQuarterlyReview.GetQuartersByFinancialYearAsync",
+          "IMPDSQuarterlyReview.GetAllMPDSHeadersByUserId",
+          "IMPDSQuarterlyReview.GetMPDSQuarterlyReviewHeaderAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MPDSQuarterlyReview_repo (Repository/MPDSQuarterlyReview_repo.cs) via IMPDSQuarterlyReview"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid userId and quarterId are required.",
+            "when": "userId <= 0 || quarterId <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Quarter not found.",
+            "when": "selectedQuarter == null"
+          },
+          {
+            "returns": 404,
+            "message": "Financial year not found.",
+            "when": "financialYear == null"
+          },
+          {
+            "returns": 404,
+            "message": "No quarters found for this financial year.",
+            "when": "allQuartersInYear == null || !allQuartersInYear.Any()"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mpds_quarterly_review_api_save",
+      "name": "Save",
+      "action_method": "Save",
+      "http_method": "POST",
+      "route": "api/MPDSQuarterlyReviewApi",
+      "business_purpose": "Save",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "MPDSQuarterlyReviewCreateDto",
+        "properties": [
+          {
+            "name": "UserId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "QuarterId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Remark",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Goals",
+            "type": "List<MPDSQuarterlyReviewGoalInputDto>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "planner/mpds-quarterly-review:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Save",
+      "detailed_description": "Save. It validates the request, then calls ICommon.getUserByToken, IMPDSQuarterlyReview.GetUserByIdAsync, IMPDSQuarterlyReview.GetFinancialQuarterByIdAsync. Persists changes to: MPDSQuarterlyReviewHeader: INSERT, MPDSQuarterlyReviewDetails: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid UserId and QuarterId are required. [when dto.UserId <= 0 || dto.QuarterId <= 0]; No goal data found to save. [when savedCount == 0]",
+        "not_found": "404: User not found. [when selectedUser == null]; Quarter not found. [when selectedQuarter == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to save",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body MPDSQuarterlyReviewCreateDto"
+        ],
+        "follow_up_apis": [
+          "GET api/MPDSQuarterlyReviewApi",
+          "GET api/MPDSQuarterlyReviewApi/current-year-quarters",
+          "GET api/MPDSQuarterlyReviewApi/masters"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "mpds_quarterly_review_api_save",
+        "description": "Save",
+        "http_method": "POST",
+        "endpoint": "api/MPDSQuarterlyReviewApi",
+        "parameters": {
+          "UserId": {
+            "type": "int",
+            "required": false,
+            "description": "User Id (body)"
+          },
+          "QuarterId": {
+            "type": "int",
+            "required": false,
+            "description": "Quarter Id (body)"
+          },
+          "Remark": {
+            "type": "string",
+            "required": false,
+            "description": "Remark (body)"
+          },
+          "Goals": {
+            "type": "List<MPDSQuarterlyReviewGoalInputDto>",
+            "required": false,
+            "description": "Goals (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/MPDSQuarterlyReviewApiController.cs",
+        "action_method": "Save",
+        "related_dto_files": [
+          "DTOs/Request/MPDSQuarterlyReviewCreateDto.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/MPDSQuarterlyReview_repo.cs",
+          "Interfaces/IMPDSQuarterlyReview.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Save — validates the request, calls ICommon.getUserByToken, IMPDSQuarterlyReview.GetUserByIdAsync, IMPDSQuarterlyReview.GetFinancialQuarterByIdAsync",
+        "preconditions": "Valid Bearer JWT; request body of type MPDSQuarterlyReviewCreateDto; passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "MPDSQuarterlyReviewHeader: INSERT; MPDSQuarterlyReviewDetails: INSERT; sets reviewHeader.Remark, reviewHeader.modified_by, reviewHeader.modified_date, reviewHeader.mpdsQuarterlyReviewDetails and saves changes",
+        "validations": "Valid UserId and QuarterId are required.; No goal data found to save.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMPDSQuarterlyReview.GetUserByIdAsync",
+          "IMPDSQuarterlyReview.GetFinancialQuarterByIdAsync",
+          "IMPDSQuarterlyReview.GetMPDSQuarterlyReviewHeaderAsync",
+          "IMPDSQuarterlyReview.GetAllMPDSHeadersAsync",
+          "IMPDSQuarterlyReview.CreateMPDSQuarterlyReviewHeader",
+          "IMPDSQuarterlyReview.AddMPDSQuarterlyReviewDetailsRange",
+          "IMPDSQuarterlyReview.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MPDSQuarterlyReview_repo (Repository/MPDSQuarterlyReview_repo.cs) via IMPDSQuarterlyReview"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid UserId and QuarterId are required.",
+            "when": "dto.UserId <= 0 || dto.QuarterId <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "User not found.",
+            "when": "selectedUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Quarter not found.",
+            "when": "selectedQuarter == null"
+          },
+          {
+            "returns": 400,
+            "message": "No goal data found to save.",
+            "when": "savedCount == 0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mpds_quarterly_review_api_update",
+      "name": "Update",
+      "action_method": "Update",
+      "http_method": "PUT",
+      "route": "api/MPDSQuarterlyReviewApi",
+      "business_purpose": "Update an existing MPDS quarterly review api record",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "MPDSQuarterlyReviewUpdateDto",
+        "properties": [
+          {
+            "name": "UserId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "QuarterId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Remark",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Goals",
+            "type": "List<MPDSQuarterlyReviewGoalInputDto>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "planner/mpds-quarterly-review:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update an existing MPDS quarterly review api record",
+      "detailed_description": "Update an existing MPDS quarterly review api record. It validates the request, then calls ICommon.getUserByToken, IMPDSQuarterlyReview.GetMPDSQuarterlyReviewHeaderAsync, IMPDSQuarterlyReview.GetUserByIdAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid UserId and QuarterId are required. [when dto.UserId <= 0 || dto.QuarterId <= 0]; No existing goal data found to update. [when updatedCount == 0]",
+        "not_found": "404: No existing quarterly review found for update. [when reviewHeader == null || reviewHeader.mpdsQuarterlyReviewDetails == null || !reviewHeader.m]; User not found. [when selectedUser == null]; Quarter not found. [when selectedQuarter == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update an existing MPDS quarterly review api record",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body MPDSQuarterlyReviewUpdateDto"
+        ],
+        "follow_up_apis": [
+          "GET api/MPDSQuarterlyReviewApi",
+          "GET api/MPDSQuarterlyReviewApi/current-year-quarters",
+          "GET api/MPDSQuarterlyReviewApi/masters"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "mpds_quarterly_review_api_update",
+        "description": "Update an existing MPDS quarterly review api record",
+        "http_method": "PUT",
+        "endpoint": "api/MPDSQuarterlyReviewApi",
+        "parameters": {
+          "UserId": {
+            "type": "int",
+            "required": false,
+            "description": "User Id (body)"
+          },
+          "QuarterId": {
+            "type": "int",
+            "required": false,
+            "description": "Quarter Id (body)"
+          },
+          "Remark": {
+            "type": "string",
+            "required": false,
+            "description": "Remark (body)"
+          },
+          "Goals": {
+            "type": "List<MPDSQuarterlyReviewGoalInputDto>",
+            "required": false,
+            "description": "Goals (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/MPDSQuarterlyReviewApiController.cs",
+        "action_method": "Update",
+        "related_dto_files": [
+          "DTOs/Request/MPDSQuarterlyReviewCreateDto.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/MPDSQuarterlyReview_repo.cs",
+          "Interfaces/IMPDSQuarterlyReview.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Update an existing MPDS quarterly review api record — validates the request, calls ICommon.getUserByToken, IMPDSQuarterlyReview.GetMPDSQuarterlyReviewHeaderAsync, IMPDSQuarterlyReview.GetUserByIdAsync",
+        "preconditions": "Valid Bearer JWT; request body of type MPDSQuarterlyReviewUpdateDto; passes 5 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets reviewHeader.user, reviewHeader.financial_quarter, reviewHeader.Remark, reviewHeader.modified_by, reviewHeader.modified_date and saves changes",
+        "validations": "Valid UserId and QuarterId are required.; No existing goal data found to update.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMPDSQuarterlyReview.GetMPDSQuarterlyReviewHeaderAsync",
+          "IMPDSQuarterlyReview.GetUserByIdAsync",
+          "IMPDSQuarterlyReview.GetFinancialQuarterByIdAsync",
+          "IMPDSQuarterlyReview.GetAllMPDSHeadersAsync",
+          "IMPDSQuarterlyReview.UpdateMPDSQuarterlyReviewDetails",
+          "IMPDSQuarterlyReview.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MPDSQuarterlyReview_repo (Repository/MPDSQuarterlyReview_repo.cs) via IMPDSQuarterlyReview"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid UserId and QuarterId are required.",
+            "when": "dto.UserId <= 0 || dto.QuarterId <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "No existing quarterly review found for update.",
+            "when": "reviewHeader == null || reviewHeader.mpdsQuarterlyReviewDetails == null || !reviewHeader.mpdsQuarterlyReviewDetails.Any()"
+          },
+          {
+            "returns": 404,
+            "message": "User not found.",
+            "when": "selectedUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Quarter not found.",
+            "when": "selectedQuarter == null"
+          },
+          {
+            "returns": 400,
+            "message": "No existing goal data found to update.",
+            "when": "updatedCount == 0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mpds_quarterly_review_api_delete",
+      "name": "Delete",
+      "action_method": "Delete",
+      "http_method": "DELETE",
+      "route": "api/MPDSQuarterlyReviewApi/{userId}/{quarterId}",
+      "business_purpose": "Delete a MPDS quarterly review api record",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "userId",
+          "type": "int",
+          "required": true
+        },
+        {
+          "name": "quarterId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "planner/mpds-quarterly-review:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Delete a MPDS quarterly review api record",
+      "detailed_description": "Delete a MPDS quarterly review api record. It validates the request, then calls ICommon.getUserByToken, IMPDSQuarterlyReview.GetMPDSQuarterlyReviewHeaderAsync, IMPDSQuarterlyReview.SaveChangesAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid userId and quarterId are required. [when userId <= 0 || quarterId <= 0]",
+        "not_found": "404: Review not found. [when reviewHeader == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete a MPDS quarterly review api record",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "userId (route)",
+          "quarterId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/MPDSQuarterlyReviewApi/quarters-by-year/{financialYearId}",
+          "GET api/MPDSQuarterlyReviewApi/{userId}/{quarterId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "mpds_quarterly_review_api_delete",
+        "description": "Delete a MPDS quarterly review api record",
+        "http_method": "DELETE",
+        "endpoint": "api/MPDSQuarterlyReviewApi/{userId}/{quarterId}",
+        "parameters": {
+          "userId": {
+            "type": "int",
+            "required": true,
+            "description": "user Id (route)"
+          },
+          "quarterId": {
+            "type": "int",
+            "required": true,
+            "description": "quarter Id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/MPDSQuarterlyReviewApiController.cs",
+        "action_method": "Delete",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/MPDSQuarterlyReview_repo.cs",
+          "Interfaces/IMPDSQuarterlyReview.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Delete a MPDS quarterly review api record — validates the request, calls ICommon.getUserByToken, IMPDSQuarterlyReview.GetMPDSQuarterlyReviewHeaderAsync, IMPDSQuarterlyReview.SaveChangesAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) userId, quarterId must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets reviewHeader.is_deleted, reviewHeader.modified_date, reviewHeader.modified_by and saves changes",
+        "validations": "Valid userId and quarterId are required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMPDSQuarterlyReview.GetMPDSQuarterlyReviewHeaderAsync",
+          "IMPDSQuarterlyReview.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MPDSQuarterlyReview_repo (Repository/MPDSQuarterlyReview_repo.cs) via IMPDSQuarterlyReview"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid userId and quarterId are required.",
+            "when": "userId <= 0 || quarterId <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Review not found.",
+            "when": "reviewHeader == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mpds_quarterly_review_api_get_by_user_id_and_quarter_id",
+      "name": "Get By User Id And Quarter Id",
+      "action_method": "GetByUserIdAndQuarterId",
+      "http_method": "GET",
+      "route": "api/MPDSQuarterlyReviewApi/{userId}/{quarterId}",
+      "business_purpose": "Retrieve by user id and quarter id",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "userId",
+          "type": "int",
+          "required": true
+        },
+        {
+          "name": "quarterId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/mpds-quarterly-review:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve by user id and quarter id",
+      "detailed_description": "Retrieve by user id and quarter id. It validates the request, then calls ICommon.getUserByToken, IMPDSQuarterlyReview.GetMPDSQuarterlyReviewHeaderAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid UserId and QuarterId are required [when userId <= 0 || quarterId <= 0]",
+        "not_found": "404: Quarterly review not found [when reviewHeader == null || reviewHeader.mpdsQuarterlyReviewDetails == null || !reviewHeader.m]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve by user id and quarter id",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "userId (route)",
+          "quarterId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/MPDSQuarterlyReviewApi",
+          "GET api/MPDSQuarterlyReviewApi/quarters-by-year/{financialYearId}",
+          "GET api/MPDSQuarterlyReviewApi/current-year-quarters"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "mpds_quarterly_review_api_get_by_user_id_and_quarter_id",
+        "description": "Retrieve by user id and quarter id",
+        "http_method": "GET",
+        "endpoint": "api/MPDSQuarterlyReviewApi/{userId}/{quarterId}",
+        "parameters": {
+          "userId": {
+            "type": "int",
+            "required": true,
+            "description": "user Id (route)"
+          },
+          "quarterId": {
+            "type": "int",
+            "required": true,
+            "description": "quarter Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/MPDSQuarterlyReviewApiController.cs",
+        "action_method": "GetByUserIdAndQuarterId",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/MPDSQuarterlyReview_repo.cs",
+          "Interfaces/IMPDSQuarterlyReview.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve by user id and quarter id — validates the request, calls ICommon.getUserByToken, IMPDSQuarterlyReview.GetMPDSQuarterlyReviewHeaderAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) userId, quarterId must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid UserId and QuarterId are required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMPDSQuarterlyReview.GetMPDSQuarterlyReviewHeaderAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MPDSQuarterlyReview_repo (Repository/MPDSQuarterlyReview_repo.cs) via IMPDSQuarterlyReview"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid UserId and QuarterId are required",
+            "when": "userId <= 0 || quarterId <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Quarterly review not found",
+            "when": "reviewHeader == null || reviewHeader.mpdsQuarterlyReviewDetails == null || !reviewHeader.mpdsQuarterlyReviewDetails.Any()"
+          }
+        ]
+      }
+    }
+  ]
+}

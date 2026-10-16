@@ -1,0 +1,434 @@
+{
+  "controller": "FLMovementReportController",
+  "file": "Controllers/FLMovementReportController.cs",
+  "module": "Reporting",
+  "base_route": "api/FLMovementReport",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Generates Field Leader movement reports showing influencer additions and removals by branch and month",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "rpt/crm-reports/fl-movement-report",
+        "module_code": "rpt",
+        "section": "crm-reports",
+        "sub_section": "fl-movement-report",
+        "frontend_routes": [
+          "/rpt/crm-reports/fl-movement-report"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "fl_report_get",
+      "name": "Get FL Movement Report",
+      "action_method": "GetReport",
+      "http_method": "GET",
+      "route": "api/FLMovementReport",
+      "business_purpose": "Generate FL movement report with monthly and branch filters",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "query_parameters": [
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": false
+        },
+        {
+          "name": "month_name",
+          "type": "string",
+          "required": false,
+          "default": "current month"
+        },
+        {
+          "name": "year",
+          "type": "int",
+          "required": false,
+          "default": "current year"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/crm-reports/fl-movement-report:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Generate FL movement report with monthly and branch filters",
+      "detailed_description": "Generate FL movement report with monthly and branch filters. It calls IFLMovementReport.GetReportDataAsync, IFLMovementReport.GetBranchesAsync. Possible responses: 200, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to generate FL movement report with monthly and branch filters",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/FLMovementReport",
+          "GET api/FLMovementReport/added",
+          "GET api/FLMovementReport/removed"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "fl_movement_report_get_report",
+        "description": "Generate FL movement report with monthly and branch filters",
+        "http_method": "GET",
+        "endpoint": "api/FLMovementReport",
+        "parameters": {
+          "branchId": {
+            "type": "int",
+            "required": false,
+            "description": "branch Id (query)"
+          },
+          "month_name": {
+            "type": "string",
+            "required": false,
+            "description": "month name (query)"
+          },
+          "year": {
+            "type": "int",
+            "required": false,
+            "description": "year (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/FLMovementReportController.cs",
+        "action_method": "GetReport",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/FLMovementReport_repo.cs",
+          "Interfaces/IFLMovementReport.cs"
+        ]
+      },
+      "module": "Reporting",
+      "business_logic": {
+        "operation_summary": "Generate FL movement report with monthly and branch filters — calls IFLMovementReport.GetReportDataAsync, IFLMovementReport.GetBranchesAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IFLMovementReport.GetReportDataAsync",
+          "IFLMovementReport.GetBranchesAsync"
+        ],
+        "calls_repositories": [
+          "FLMovementReport_repo (Repository/FLMovementReport_repo.cs) via IFLMovementReport"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "fl_report_get_added",
+      "name": "Get Added Influencers",
+      "action_method": "GetAddedInfluencers",
+      "http_method": "GET",
+      "route": "api/FLMovementReport/added",
+      "business_purpose": "Retrieve influencers added during specified period for a team member",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "query_parameters": [
+        {
+          "name": "teamMemberId",
+          "type": "int",
+          "required": true
+        },
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": false
+        },
+        {
+          "name": "month_name",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "year",
+          "type": "int",
+          "required": false
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/crm-reports/fl-movement-report:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve influencers added during specified period for a team member",
+      "detailed_description": "Retrieve influencers added during specified period for a team member. It validates the request, then calls IFLMovementReport.GetAddedInfluencersAsync. Possible responses: 200, 400, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid teamMemberId is required. [when teamMemberId <= 0]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve influencers added during specified period for a team member",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "teamMemberId (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/FLMovementReport",
+          "GET api/FLMovementReport/added",
+          "GET api/FLMovementReport/removed"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "fl_movement_report_get_added_influencers",
+        "description": "Retrieve influencers added during specified period for a team member",
+        "http_method": "GET",
+        "endpoint": "api/FLMovementReport/added",
+        "parameters": {
+          "teamMemberId": {
+            "type": "int",
+            "required": true,
+            "description": "team Member Id (query)"
+          },
+          "branchId": {
+            "type": "int",
+            "required": false,
+            "description": "branch Id (query)"
+          },
+          "month_name": {
+            "type": "string",
+            "required": false,
+            "description": "month name (query)"
+          },
+          "year": {
+            "type": "int",
+            "required": false,
+            "description": "year (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/FLMovementReportController.cs",
+        "action_method": "GetAddedInfluencers",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/FLMovementReport_repo.cs",
+          "Interfaces/IFLMovementReport.cs"
+        ]
+      },
+      "module": "Reporting",
+      "business_logic": {
+        "operation_summary": "Retrieve influencers added during specified period for a team member — validates the request, calls IFLMovementReport.GetAddedInfluencersAsync",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): teamMemberId; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid teamMemberId is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IFLMovementReport.GetAddedInfluencersAsync"
+        ],
+        "calls_repositories": [
+          "FLMovementReport_repo (Repository/FLMovementReport_repo.cs) via IFLMovementReport"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid teamMemberId is required.",
+            "when": "teamMemberId <= 0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "fl_report_get_removed",
+      "name": "Get Removed Influencers",
+      "action_method": "GetRemovedInfluencers",
+      "http_method": "GET",
+      "route": "api/FLMovementReport/removed",
+      "business_purpose": "Retrieve influencers removed during specified period for a team member",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "query_parameters": [
+        {
+          "name": "teamMemberId",
+          "type": "int",
+          "required": true
+        },
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": false
+        },
+        {
+          "name": "month_name",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "year",
+          "type": "int",
+          "required": false
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/crm-reports/fl-movement-report:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve influencers removed during specified period for a team member",
+      "detailed_description": "Retrieve influencers removed during specified period for a team member. It validates the request, then calls IFLMovementReport.GetRemovedInfluencersAsync. Possible responses: 200, 400, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid teamMemberId is required. [when teamMemberId <= 0]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve influencers removed during specified period for a team member",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "teamMemberId (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/FLMovementReport",
+          "GET api/FLMovementReport/added",
+          "GET api/FLMovementReport/removed"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "fl_movement_report_get_removed_influencers",
+        "description": "Retrieve influencers removed during specified period for a team member",
+        "http_method": "GET",
+        "endpoint": "api/FLMovementReport/removed",
+        "parameters": {
+          "teamMemberId": {
+            "type": "int",
+            "required": true,
+            "description": "team Member Id (query)"
+          },
+          "branchId": {
+            "type": "int",
+            "required": false,
+            "description": "branch Id (query)"
+          },
+          "month_name": {
+            "type": "string",
+            "required": false,
+            "description": "month name (query)"
+          },
+          "year": {
+            "type": "int",
+            "required": false,
+            "description": "year (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/FLMovementReportController.cs",
+        "action_method": "GetRemovedInfluencers",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/FLMovementReport_repo.cs",
+          "Interfaces/IFLMovementReport.cs"
+        ]
+      },
+      "module": "Reporting",
+      "business_logic": {
+        "operation_summary": "Retrieve influencers removed during specified period for a team member — validates the request, calls IFLMovementReport.GetRemovedInfluencersAsync",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): teamMemberId; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid teamMemberId is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IFLMovementReport.GetRemovedInfluencersAsync"
+        ],
+        "calls_repositories": [
+          "FLMovementReport_repo (Repository/FLMovementReport_repo.cs) via IFLMovementReport"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid teamMemberId is required.",
+            "when": "teamMemberId <= 0"
+          }
+        ]
+      }
+    }
+  ]
+}

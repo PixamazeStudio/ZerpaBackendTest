@@ -1,0 +1,650 @@
+{
+  "controller": "MySchemesController",
+  "file": "Controllers/MySchemesController.cs",
+  "module": "Influencer Management",
+  "base_route": "api/MySchemes",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles my schemes: get all, get schemes, get scheme load by id, get schemes by user, get influencers by scheme",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "crm/my-schemes",
+        "module_code": "crm",
+        "section": "my-schemes",
+        "sub_section": null,
+        "frontend_routes": [
+          "/crm/my-schemes"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "also_called_from_menus": [
+      "crm/contacts",
+      "crm/firms",
+      "crm/scheme-request"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "my_schemes_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/MySchemes",
+      "business_purpose": "Retrieve all my schemes records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/my-schemes:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve all my schemes records",
+      "detailed_description": "Retrieve all my schemes records. It calls ICommon.getUserByToken, IMySchemes.GetMySchemeData, IMySchemes.GetMySchemeActions. Data access uses stored procedure(s): GetMyScheme. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all my schemes records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/MySchemes",
+          "GET api/MySchemes/getSchemes",
+          "GET api/MySchemes/schemeload/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "my_schemes_get_all",
+        "description": "Retrieve all my schemes records",
+        "http_method": "GET",
+        "endpoint": "api/MySchemes",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/MySchemesController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/MySchemes_repo.cs",
+          "Interfaces/IMySchemes.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all my schemes records — calls ICommon.getUserByToken, IMySchemes.GetMySchemeData, IMySchemes.GetMySchemeActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMySchemes.GetMySchemeData",
+          "IMySchemes.GetMySchemeActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MySchemes_repo (Repositories/MySchemes_repo.cs) via IMySchemes"
+        ],
+        "stored_procedures": [
+          "GetMyScheme"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "my_schemes_get_schemes",
+      "name": "Get Schemes",
+      "action_method": "GetSchemes",
+      "http_method": "GET",
+      "route": "api/MySchemes/getSchemes",
+      "business_purpose": "Retrieve schemes",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/my-schemes:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/contacts",
+        "crm/scheme-request",
+        "crm/firms"
+      ],
+      "short_description": "Retrieve schemes",
+      "detailed_description": "Retrieve schemes. It calls ICommon.getUserByToken, IMySchemes.GetSchemes. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve schemes",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/MySchemes",
+          "GET api/MySchemes/getSchemes",
+          "GET api/MySchemes/schemeload/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "my_schemes_get_schemes",
+        "description": "Retrieve schemes",
+        "http_method": "GET",
+        "endpoint": "api/MySchemes/getSchemes",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/MySchemesController.cs",
+        "action_method": "GetSchemes",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/MySchemes_repo.cs",
+          "Interfaces/IMySchemes.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Retrieve schemes — calls ICommon.getUserByToken, IMySchemes.GetSchemes",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMySchemes.GetSchemes"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MySchemes_repo (Repositories/MySchemes_repo.cs) via IMySchemes"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "my_schemes_get_scheme_load_by_id",
+      "name": "Get Scheme Load By Id",
+      "action_method": "GetSchemeLoadById",
+      "http_method": "GET",
+      "route": "api/MySchemes/schemeload/{id}",
+      "business_purpose": "Retrieve scheme load by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/my-schemes:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve scheme load by ID",
+      "detailed_description": "Retrieve scheme load by ID. It validates the request, then calls ICommon.getUserByToken, IMySchemes.GetSchemeByIdAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid scheme ID is required. [when id <= 0]",
+        "not_found": "404: Scheme not found. [when scheme == null]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve scheme load by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/MySchemes",
+          "GET api/MySchemes/getSchemes",
+          "GET api/MySchemes/schemeload/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "my_schemes_get_scheme_load_by_id",
+        "description": "Retrieve scheme load by ID",
+        "http_method": "GET",
+        "endpoint": "api/MySchemes/schemeload/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/MySchemesController.cs",
+        "action_method": "GetSchemeLoadById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/MySchemes_repo.cs",
+          "Interfaces/IMySchemes.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Retrieve scheme load by ID — validates the request, calls ICommon.getUserByToken, IMySchemes.GetSchemeByIdAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid scheme ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMySchemes.GetSchemeByIdAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MySchemes_repo (Repositories/MySchemes_repo.cs) via IMySchemes"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid scheme ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Scheme not found.",
+            "when": "scheme == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "my_schemes_get_schemes_by_user",
+      "name": "Get Schemes By User",
+      "action_method": "GetSchemesByUser",
+      "http_method": "GET",
+      "route": "api/MySchemes/schemes",
+      "business_purpose": "Retrieve schemes by user",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/my-schemes:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve schemes by user",
+      "detailed_description": "Retrieve schemes by user. It calls ICommon.getUserByToken, IMySchemes.GetSchemesByUserAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve schemes by user",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/MySchemes",
+          "GET api/MySchemes/getSchemes",
+          "GET api/MySchemes/schemeload/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "my_schemes_get_schemes_by_user",
+        "description": "Retrieve schemes by user",
+        "http_method": "GET",
+        "endpoint": "api/MySchemes/schemes",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/MySchemesController.cs",
+        "action_method": "GetSchemesByUser",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/MySchemes_repo.cs",
+          "Interfaces/IMySchemes.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Retrieve schemes by user — calls ICommon.getUserByToken, IMySchemes.GetSchemesByUserAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMySchemes.GetSchemesByUserAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MySchemes_repo (Repositories/MySchemes_repo.cs) via IMySchemes"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "my_schemes_get_influencers_by_scheme",
+      "name": "Get Influencers By Scheme",
+      "action_method": "GetInfluencersByScheme",
+      "http_method": "GET",
+      "route": "api/MySchemes/GetInfluencersByScheme/{schemeId}",
+      "business_purpose": "Retrieve influencers by scheme",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "schemeId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/my-schemes:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve influencers by scheme",
+      "detailed_description": "Retrieve influencers by scheme. It calls ICommon.getUserByToken, IMySchemes.GetSchemeDetailsByIdAndUserAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve influencers by scheme",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "schemeId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/MySchemes",
+          "GET api/MySchemes/getSchemes",
+          "GET api/MySchemes/schemeload/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "my_schemes_get_influencers_by_scheme",
+        "description": "Retrieve influencers by scheme",
+        "http_method": "GET",
+        "endpoint": "api/MySchemes/GetInfluencersByScheme/{schemeId}",
+        "parameters": {
+          "schemeId": {
+            "type": "int",
+            "required": true,
+            "description": "scheme Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/MySchemesController.cs",
+        "action_method": "GetInfluencersByScheme",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/MySchemes_repo.cs",
+          "Interfaces/IMySchemes.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Retrieve influencers by scheme — calls ICommon.getUserByToken, IMySchemes.GetSchemeDetailsByIdAndUserAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) schemeId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMySchemes.GetSchemeDetailsByIdAndUserAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MySchemes_repo (Repositories/MySchemes_repo.cs) via IMySchemes"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    }
+  ]
+}

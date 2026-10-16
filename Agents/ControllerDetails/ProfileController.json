@@ -1,0 +1,470 @@
+{
+  "controller": "ProfileController",
+  "file": "Controllers/ProfileController.cs",
+  "module": "User and Access Management",
+  "base_route": "api/Profile",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles profile: get profile, change password, update profile",
+  "menu_permission": {
+    "status": "not referenced by frontend",
+    "menu_keys": [],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "profile_get_profile",
+      "name": "Get Profile",
+      "action_method": "GetProfile",
+      "http_method": "GET",
+      "route": "api/Profile",
+      "business_purpose": "Retrieve profile",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve profile",
+      "detailed_description": "Retrieve profile. It calls ICommon.getUserByToken, IProfile.GetCurrentUserDetailsBYid, IProfile.GetComplaintsFileById, then processes uploaded files. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve profile",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Profile"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "profile_get_profile",
+        "description": "Retrieve profile",
+        "http_method": "GET",
+        "endpoint": "api/Profile",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ProfileController.cs",
+        "action_method": "GetProfile",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Profile_repo.cs",
+          "Interfaces/IProfile.cs"
+        ]
+      },
+      "module": "User and Access Management",
+      "business_logic": {
+        "operation_summary": "Retrieve profile — calls ICommon.getUserByToken, IProfile.GetCurrentUserDetailsBYid, IProfile.GetComplaintsFileById, processes uploaded files",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "Handles file upload/storage",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IProfile.GetCurrentUserDetailsBYid",
+          "IProfile.GetComplaintsFileById",
+          "IProfile.GetUserBranchNameById",
+          "ICommon.GetDriveFileIdByPath"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Profile_repo (Repository/Profile_repo.cs) via IProfile"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile_change_password",
+      "name": "Change Password",
+      "action_method": "ChangePassword",
+      "http_method": "POST",
+      "route": "api/Profile/change-password",
+      "business_purpose": "Change password",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "ChangePasswordRequest (inline)",
+        "properties": [
+          {
+            "name": "id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "password",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Change password",
+      "detailed_description": "Change password. It validates the request, then calls IProfile.GetUserById, IProfile.SaveChanges. Possible responses: 200, 400, 401, 404.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data received [when request == null]; Valid user ID and password are required [when request.id <= 0 || string.IsNullOrEmpty(request.password)]; message built at runtime",
+        "not_found": "404: User not found [when user == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to change password",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body ChangePasswordRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Profile"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "profile_change_password",
+        "description": "Change password",
+        "http_method": "POST",
+        "endpoint": "api/Profile/change-password",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": false,
+            "description": "id (body)"
+          },
+          "password": {
+            "type": "string",
+            "required": false,
+            "description": "password (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/ProfileController.cs",
+        "action_method": "ChangePassword",
+        "related_dto_files": [
+          "Controllers/ProfileController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Profile_repo.cs",
+          "Interfaces/IProfile.cs"
+        ]
+      },
+      "module": "User and Access Management",
+      "business_logic": {
+        "operation_summary": "Change password — validates the request, calls IProfile.GetUserById, IProfile.SaveChanges",
+        "preconditions": "Valid Bearer JWT; request body of type ChangePasswordRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets user.Password and saves changes",
+        "validations": "Invalid data received; Valid user ID and password are required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IProfile.GetUserById",
+          "IProfile.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Profile_repo (Repository/Profile_repo.cs) via IProfile"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid data received",
+            "when": "request == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid user ID and password are required",
+            "when": "request.id <= 0 || string.IsNullOrEmpty(request.password)"
+          },
+          {
+            "returns": 404,
+            "message": "User not found",
+            "when": "user == null"
+          },
+          {
+            "returns": 400,
+            "message": "message built at runtime",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile_update_profile",
+      "name": "Update Profile",
+      "action_method": "UpdateProfile",
+      "http_method": "POST",
+      "route": "api/Profile/update-profile",
+      "business_purpose": "Update profile",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateProfileRequest (inline)",
+        "content_type": "multipart/form-data",
+        "properties": [
+          {
+            "name": "id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "email",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "phone",
+            "type": "long",
+            "required": false
+          },
+          {
+            "name": "dob",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "address",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "summary",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "image",
+            "type": "IFormFile",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Update profile",
+      "detailed_description": "Update profile. It validates the request, then calls IProfile.GetUserById, IUsers.SaveChanges, IProfile.SaveChanges, then processes uploaded files. Possible responses: 200, 400, 401, 404.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data received [when request == null]; Valid user ID is required [when request.id <= 0]; message built at runtime",
+        "not_found": "404: User not found [when user == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update profile",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body UpdateProfileRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Profile"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "profile_update_profile",
+        "description": "Update profile",
+        "http_method": "POST",
+        "endpoint": "api/Profile/update-profile",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": false,
+            "description": "id (body)"
+          },
+          "name": {
+            "type": "string",
+            "required": false,
+            "description": "name (body)"
+          },
+          "email": {
+            "type": "string",
+            "required": false,
+            "description": "email (body)"
+          },
+          "phone": {
+            "type": "long",
+            "required": false,
+            "description": "phone (body)"
+          },
+          "dob": {
+            "type": "string",
+            "required": false,
+            "description": "dob (body)"
+          },
+          "address": {
+            "type": "string",
+            "required": false,
+            "description": "address (body)"
+          },
+          "summary": {
+            "type": "string",
+            "required": false,
+            "description": "summary (body)"
+          },
+          "image": {
+            "type": "IFormFile",
+            "required": false,
+            "description": "image (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/ProfileController.cs",
+        "action_method": "UpdateProfile",
+        "related_dto_files": [
+          "Controllers/ProfileController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Profile_repo.cs",
+          "Interfaces/IProfile.cs",
+          "Repositories/Users_repo.cs",
+          "Interfaces/IUsers.cs"
+        ]
+      },
+      "module": "User and Access Management",
+      "business_logic": {
+        "operation_summary": "Update profile — validates the request, calls IProfile.GetUserById, IUsers.SaveChanges, IProfile.SaveChanges, processes uploaded files",
+        "preconditions": "Valid Bearer JWT; request body of type UpdateProfileRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets user.FullName, user.Email, user.PhoneNumber, user.DateOfBirth, user.Address, user.summary and saves changes",
+        "validations": "Invalid data received; Valid user ID is required",
+        "side_effects": "Handles file upload/storage",
+        "calls_services": [
+          "IProfile.GetUserById",
+          "IUsers.SaveChanges",
+          "IProfile.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Profile_repo (Repository/Profile_repo.cs) via IProfile",
+          "Users_repo (Repositories/Users_repo.cs) via IUsers"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid data received",
+            "when": "request == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid user ID is required",
+            "when": "request.id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "User not found",
+            "when": "user == null"
+          },
+          {
+            "returns": 400,
+            "message": "message built at runtime",
+            "when": null
+          }
+        ]
+      }
+    }
+  ]
+}

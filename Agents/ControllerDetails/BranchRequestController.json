@@ -1,0 +1,1344 @@
+{
+  "controller": "BranchRequestController",
+  "file": "Controllers/BranchRequestController.cs",
+  "module": "Branch Management",
+  "base_route": "api/BranchRequest",
+  "class_level_auth": "none found",
+  "purpose": "Manages branch request records with list, get-by-id, create, update and delete operations",
+  "notes": "No [Authorize] at class level; authentication requirements vary per action",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "cms/branch-requests",
+        "module_code": "cms",
+        "section": "branch-requests",
+        "sub_section": null,
+        "frontend_routes": [
+          "/cms/branch-requests",
+          "/cms/branch-requests/create-branch-requests",
+          "/cms/branch-requests/edit-branch-requests/:id",
+          "/cms/branch-requests/view-branch-requests/:id?"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "acs/branch-requests",
+        "module_code": "acs",
+        "section": "branch-requests",
+        "sub_section": null,
+        "frontend_routes": [
+          "/acs/branch-requests"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "BranchRequest"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Complaint Management System",
+        "section": "Branch Requests",
+        "sub_section": "Branch Request"
+      },
+      {
+        "module": "Complaint Management System",
+        "section": "Branch Requests",
+        "sub_section": "Branch Requests"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "branch_request_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/BranchRequest",
+      "business_purpose": "Retrieve all branch request records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "\"last_30_days\""
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "cms/branch-requests:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "acs/branch-requests"
+      ],
+      "short_description": "Retrieve all branch request records",
+      "detailed_description": "Retrieve all branch request records. It calls ICommon.getUserByToken, IBranchRequest.GetBranchRequestTypes, IBranchRequest.GetBranchRequestWithPagination. Data access uses stored procedure(s): GetBranchRequest. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all branch request records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [],
+        "follow_up_apis": [
+          "GET api/BranchRequest",
+          "GET api/BranchRequest/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_request_get_all",
+        "description": "Retrieve all branch request records",
+        "http_method": "GET",
+        "endpoint": "api/BranchRequest",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "date range (query)"
+          },
+          "type": {
+            "type": "string",
+            "required": false,
+            "description": "type (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/BranchRequestController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/BranchRequest_repo.cs",
+          "Interfaces/IBranchRequest.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all branch request records — calls ICommon.getUserByToken, IBranchRequest.GetBranchRequestTypes, IBranchRequest.GetBranchRequestWithPagination",
+        "preconditions": "No authentication required",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBranchRequest.GetBranchRequestTypes",
+          "IBranchRequest.GetBranchRequestWithPagination",
+          "IBranchRequest.GetBranchRequestActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "BranchRequest_repo (Repository/BranchRequest_repo.cs) via IBranchRequest"
+        ],
+        "stored_procedures": [
+          "GetBranchRequest"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "branch_request_get_by_id",
+      "name": "Get By Id",
+      "action_method": "GetById",
+      "http_method": "GET",
+      "route": "api/BranchRequest/{id}",
+      "business_purpose": "Retrieve a branch request record by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "cms/branch-requests:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "acs/branch-requests"
+      ],
+      "short_description": "Retrieve a branch request record by ID",
+      "detailed_description": "Retrieve a branch request record by ID. It validates the request, then calls ICommon.getUserByToken, IBranchRequest.GetBranchRequestActions, IBranchRequest.GetBranchRequestById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required. [when id <= 0]",
+        "not_found": "404: Branch Request not found. [when branchRequest == null]",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve a branch request record by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/BranchRequest",
+          "GET api/BranchRequest/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_request_get_by_id",
+        "description": "Retrieve a branch request record by ID",
+        "http_method": "GET",
+        "endpoint": "api/BranchRequest/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/BranchRequestController.cs",
+        "action_method": "GetById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/BranchRequest_repo.cs",
+          "Interfaces/IBranchRequest.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Retrieve a branch request record by ID — validates the request, calls ICommon.getUserByToken, IBranchRequest.GetBranchRequestActions, IBranchRequest.GetBranchRequestById",
+        "preconditions": "No authentication required; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBranchRequest.GetBranchRequestActions",
+          "IBranchRequest.GetBranchRequestById",
+          "ICommon.GetFilesById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "BranchRequest_repo (Repository/BranchRequest_repo.cs) via IBranchRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Branch Request not found.",
+            "when": "branchRequest == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "branch_request_create_branch_request",
+      "name": "Create Branch Request",
+      "action_method": "CreateBranchRequest",
+      "http_method": "POST",
+      "route": "api/BranchRequest",
+      "business_purpose": "Create branch request",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "PostCreateData (inline)",
+        "content_type": "multipart/form-data",
+        "properties": [
+          {
+            "name": "reqData",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "files",
+            "type": "List<IFormFile>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again; each call writes another audit log entry"
+      },
+      "required_permission": "cms/branch-requests:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "acs/branch-requests"
+      ],
+      "short_description": "Create branch request",
+      "detailed_description": "Create branch request. It validates the request, then calls ICommon.getUserByToken, IBranchRequest.CreateBranchRequestAsync, ICMSComplaints.CreateComplaintFilesRange, then writes an audit log entry, then processes uploaded files. Persists changes to: CMS_CreditNoteRequisition: INSERT, ComplaintsFile: INSERT, AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create branch request",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "request body PostCreateData (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/BranchRequest"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_request_create_branch_request",
+        "description": "Create branch request",
+        "http_method": "POST",
+        "endpoint": "api/BranchRequest",
+        "parameters": {
+          "reqData": {
+            "type": "string",
+            "required": false,
+            "description": "req Data (body)"
+          },
+          "files": {
+            "type": "List<IFormFile>",
+            "required": false,
+            "description": "files (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/BranchRequestController.cs",
+        "action_method": "CreateBranchRequest",
+        "related_dto_files": [
+          "Controllers/BranchRequestController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/BranchRequest_repo.cs",
+          "Interfaces/IBranchRequest.cs",
+          "Repository/Complaints_repo.cs",
+          "Interfaces/ICMSComplaints.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Create branch request — validates the request, calls ICommon.getUserByToken, IBranchRequest.CreateBranchRequestAsync, ICMSComplaints.CreateComplaintFilesRange, writes an audit log entry, processes uploaded files",
+        "preconditions": "No authentication required; request body of type PostCreateData (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "CMS_CreditNoteRequisition: INSERT; ComplaintsFile: INSERT; AuditLog: INSERT",
+        "validations": "ModelState (DTO data-annotation) validation; Invalid data provided.",
+        "side_effects": "AuditLog CREATE (Complaint Management System > Branch Requests > Branch Request); Handles file upload/storage",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBranchRequest.CreateBranchRequestAsync",
+          "ICMSComplaints.CreateComplaintFilesRange",
+          "ICMSComplaints.SaveChanges",
+          "ICommon.ToJsonString",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "BranchRequest_repo (Repository/BranchRequest_repo.cs) via IBranchRequest",
+          "Complaints_repo (Repository/Complaints_repo.cs) via ICMSComplaints"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "branch_request_update_branch_request",
+      "name": "Update Branch Request",
+      "action_method": "UpdateBranchRequest",
+      "http_method": "PUT",
+      "route": "api/BranchRequest/{id}",
+      "business_purpose": "Update branch request",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "PostCreateData (inline)",
+        "content_type": "multipart/form-data",
+        "properties": [
+          {
+            "name": "reqData",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "files",
+            "type": "List<IFormFile>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "cms/branch-requests:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "acs/branch-requests"
+      ],
+      "short_description": "Update branch request",
+      "detailed_description": "Update branch request. It validates the request, then calls ICommon.getUserByToken, IBranchRequest.UpdateBranchRequestAsync, ICMSComplaints.CreateComplaintFilesRange, then processes uploaded files. Persists changes to: CMS_CreditNoteRequisition: UPDATE, ComplaintsFile: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid Branch Request ID is required. [when id <= 0]; At least one field must be provided for update. [when string.IsNullOrWhiteSpace(request.message) && string.IsNullOrWhiteSpace(request.file) && s]; Upload failed: {ex.Message}; message returned by the called service/repository (result.Message) [when !result.Success]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update branch request",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "id (route)",
+          "request body PostCreateData (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/BranchRequest/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_request_update_branch_request",
+        "description": "Update branch request",
+        "http_method": "PUT",
+        "endpoint": "api/BranchRequest/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "reqData": {
+            "type": "string",
+            "required": false,
+            "description": "req Data (body)"
+          },
+          "files": {
+            "type": "List<IFormFile>",
+            "required": false,
+            "description": "files (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/BranchRequestController.cs",
+        "action_method": "UpdateBranchRequest",
+        "related_dto_files": [
+          "Controllers/BranchRequestController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/BranchRequest_repo.cs",
+          "Interfaces/IBranchRequest.cs",
+          "Repository/Complaints_repo.cs",
+          "Interfaces/ICMSComplaints.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Update branch request — validates the request, calls ICommon.getUserByToken, IBranchRequest.UpdateBranchRequestAsync, ICMSComplaints.CreateComplaintFilesRange, processes uploaded files",
+        "preconditions": "No authentication required; route parameter(s) id; request body of type PostCreateData (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "CMS_CreditNoteRequisition: UPDATE; ComplaintsFile: INSERT",
+        "validations": "Valid Branch Request ID is required.; At least one field must be provided for update.; Upload failed: {ex.Message}",
+        "side_effects": "Handles file upload/storage",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBranchRequest.UpdateBranchRequestAsync",
+          "ICMSComplaints.CreateComplaintFilesRange",
+          "ICMSComplaints.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "BranchRequest_repo (Repository/BranchRequest_repo.cs) via IBranchRequest",
+          "Complaints_repo (Repository/Complaints_repo.cs) via ICMSComplaints"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Branch Request ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field must be provided for update.",
+            "when": "string.IsNullOrWhiteSpace(request.message) && string.IsNullOrWhiteSpace(request.file) && string.IsNullOrWhiteSpace(request.Vendor_name) && request.Amount == null"
+          },
+          {
+            "returns": 400,
+            "message": "Upload failed: {ex.Message}",
+            "when": null
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": "!result.Success"
+          }
+        ]
+      }
+    },
+    {
+      "id": "branch_request_delete_branch_request",
+      "name": "Delete Branch Request",
+      "action_method": "DeleteBranchRequest",
+      "http_method": "DELETE",
+      "route": "api/BranchRequest/{id}",
+      "business_purpose": "Delete branch request",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "cms/branch-requests:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "acs/branch-requests"
+      ],
+      "short_description": "Delete branch request",
+      "detailed_description": "Delete branch request. It validates the request, then calls ICommon.getUserByToken, IBranchRequest.GetBranchRequestById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: CMS_CreditNoteRequisition: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid branch request ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Branch Request not found. [when existingBranchRequest == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete branch request",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/BranchRequest/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_request_delete_branch_request",
+        "description": "Delete branch request",
+        "http_method": "DELETE",
+        "endpoint": "api/BranchRequest/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/BranchRequestController.cs",
+        "action_method": "DeleteBranchRequest",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/BranchRequest_repo.cs",
+          "Interfaces/IBranchRequest.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Delete branch request — validates the request, calls ICommon.getUserByToken, IBranchRequest.GetBranchRequestById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "No authentication required; route parameter(s) id must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "CMS_CreditNoteRequisition: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "validations": "Valid branch request ID is required.",
+        "side_effects": "AuditLog DELETE (Complaint Management System > Branch Requests > Branch Requests)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBranchRequest.GetBranchRequestById",
+          "ICommon.ToJsonString",
+          "IBranchRequest.DeleteBranchRequest",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "BranchRequest_repo (Repository/BranchRequest_repo.cs) via IBranchRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid branch request ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Branch Request not found.",
+            "when": "existingBranchRequest == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "branch_request_update_branch_request_type",
+      "name": "Update Branch Request Type",
+      "action_method": "UpdateBranchRequestType",
+      "http_method": "POST",
+      "route": "api/BranchRequest/type/{id}",
+      "business_purpose": "Update branch request type",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateBranchRequestTypeDto (inline)",
+        "properties": [
+          {
+            "name": "type",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          403,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values; each call writes another audit log entry"
+      },
+      "required_permission": "cms/branch-requests:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update branch request type",
+      "detailed_description": "Update branch request type. It validates the request, then calls ICommon.getUserByToken, IBranchRequest.UpdateBranchRequestTypeAsync, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: CMS_CreditNoteRequisition: UPDATE, AuditLog: INSERT. Possible responses: 200, 400, 401, 403, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid branch request ID is required. [when id <= 0]; message returned by the called service/repository (result.Message) [when !result.Success]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]; Only Control Center users can update the request type. [when current_user.role_level != \"Control Center\"]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update branch request type",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "id (route)",
+          "request body UpdateBranchRequestTypeDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/BranchRequest/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_request_update_branch_request_type",
+        "description": "Update branch request type",
+        "http_method": "POST",
+        "endpoint": "api/BranchRequest/type/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "type": {
+            "type": "string",
+            "required": false,
+            "description": "type (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/BranchRequestController.cs",
+        "action_method": "UpdateBranchRequestType",
+        "related_dto_files": [
+          "Controllers/BranchRequestController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/BranchRequest_repo.cs",
+          "Interfaces/IBranchRequest.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Update branch request type — validates the request, calls ICommon.getUserByToken, IBranchRequest.UpdateBranchRequestTypeAsync, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "No authentication required; route parameter(s) id; request body of type UpdateBranchRequestTypeDto (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "CMS_CreditNoteRequisition: UPDATE; AuditLog: INSERT",
+        "validations": "Valid branch request ID is required.",
+        "side_effects": "AuditLog UPDATE (Complaint Management System > Branch Requests > Branch Request)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBranchRequest.UpdateBranchRequestTypeAsync",
+          "ICommon.ToJsonString",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "BranchRequest_repo (Repository/BranchRequest_repo.cs) via IBranchRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid branch request ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 403,
+            "message": "Only Control Center users can update the request type.",
+            "when": "current_user.role_level != \"Control Center\""
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": "!result.Success"
+          }
+        ]
+      }
+    },
+    {
+      "id": "branch_request_approve_branch_request",
+      "name": "Approve Branch Request",
+      "action_method": "ApproveBranchRequest",
+      "http_method": "POST",
+      "route": "api/BranchRequest/approve/{id}",
+      "business_purpose": "Approve branch request",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Not idempotent; repeating the call may perform the action again; each call writes another audit log entry"
+      },
+      "required_permission": "cms/branch-requests:approve",
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Approve branch request",
+      "detailed_description": "Approve branch request. It validates the request, then calls ICommon.getUserByToken, IBranchRequest.ApproveBranchRequest, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: CMS_CreditNoteRequisition: UPDATE, AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid branch request ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to approve branch request",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/BranchRequest/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_request_approve_branch_request",
+        "description": "Approve branch request",
+        "http_method": "POST",
+        "endpoint": "api/BranchRequest/approve/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Approves the record and advances its workflow"
+      },
+      "source": {
+        "controller_file": "Controllers/BranchRequestController.cs",
+        "action_method": "ApproveBranchRequest",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/BranchRequest_repo.cs",
+          "Interfaces/IBranchRequest.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Approve branch request — validates the request, calls ICommon.getUserByToken, IBranchRequest.ApproveBranchRequest, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "No authentication required; route parameter(s) id; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "CMS_CreditNoteRequisition: UPDATE; AuditLog: INSERT",
+        "validations": "Valid branch request ID is required.",
+        "side_effects": "AuditLog CREATE (Complaint Management System > Branch Requests > Branch Request)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBranchRequest.ApproveBranchRequest",
+          "ICommon.ToJsonString",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "BranchRequest_repo (Repository/BranchRequest_repo.cs) via IBranchRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid branch request ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "branch_request_close_branch_request",
+      "name": "Close Branch Request",
+      "action_method": "CloseBranchRequest",
+      "http_method": "POST",
+      "route": "api/BranchRequest/close/{id}",
+      "business_purpose": "Close branch request",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values; each call writes another audit log entry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "cms/branch-requests",
+        "acs/branch-requests"
+      ],
+      "short_description": "Close branch request",
+      "detailed_description": "Close branch request. It validates the request, then calls ICommon.getUserByToken, IBranchRequest.CloseBranchRequest, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: CMS_CreditNoteRequisition: UPDATE, AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid branch request ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to close branch request",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/BranchRequest/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_request_close_branch_request",
+        "description": "Close branch request",
+        "http_method": "POST",
+        "endpoint": "api/BranchRequest/close/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/BranchRequestController.cs",
+        "action_method": "CloseBranchRequest",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/BranchRequest_repo.cs",
+          "Interfaces/IBranchRequest.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Close branch request — validates the request, calls ICommon.getUserByToken, IBranchRequest.CloseBranchRequest, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "No authentication required; route parameter(s) id; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "CMS_CreditNoteRequisition: UPDATE; AuditLog: INSERT",
+        "validations": "Valid branch request ID is required.",
+        "side_effects": "AuditLog CREATE (Complaint Management System > Branch Requests > Branch Request)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBranchRequest.CloseBranchRequest",
+          "ICommon.ToJsonString",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "BranchRequest_repo (Repository/BranchRequest_repo.cs) via IBranchRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid branch request ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "branch_request_reject_branch_request",
+      "name": "Reject Branch Request",
+      "action_method": "RejectBranchRequest",
+      "http_method": "POST",
+      "route": "api/BranchRequest/reject/{id}",
+      "business_purpose": "Reject branch request",
+      "data_effect": "REJECTION",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "REJECTION",
+        "notes": "Not idempotent; repeating the call may perform the action again; each call writes another audit log entry"
+      },
+      "required_permission": "cms/branch-requests:reject",
+      "permission_flags": [
+        "reject"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Reject branch request",
+      "detailed_description": "Reject branch request. It validates the request, then calls ICommon.getUserByToken, IBranchRequest.RejectBranchRequest, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: CMS_CreditNoteRequisition: UPDATE, AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid branch request ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to reject branch request",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/BranchRequest/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_request_reject_branch_request",
+        "description": "Reject branch request",
+        "http_method": "POST",
+        "endpoint": "api/BranchRequest/reject/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "REJECTION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Rejects the record"
+      },
+      "source": {
+        "controller_file": "Controllers/BranchRequestController.cs",
+        "action_method": "RejectBranchRequest",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/BranchRequest_repo.cs",
+          "Interfaces/IBranchRequest.cs"
+        ]
+      },
+      "module": "Branch Management",
+      "business_logic": {
+        "operation_summary": "Reject branch request — validates the request, calls ICommon.getUserByToken, IBranchRequest.RejectBranchRequest, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "No authentication required; route parameter(s) id; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "CMS_CreditNoteRequisition: UPDATE; AuditLog: INSERT",
+        "validations": "Valid branch request ID is required.",
+        "side_effects": "AuditLog CREATE (Complaint Management System > Branch Requests > Branch Request)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBranchRequest.RejectBranchRequest",
+          "ICommon.ToJsonString",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "BranchRequest_repo (Repository/BranchRequest_repo.cs) via IBranchRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid branch request ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    }
+  ]
+}

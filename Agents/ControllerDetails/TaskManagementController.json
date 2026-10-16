@@ -1,0 +1,1185 @@
+{
+  "controller": "TaskManagementController",
+  "file": "Controllers/TaskManagementController.cs",
+  "module": "Task Management",
+  "base_route": "api/TaskManagement",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages task management records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "not referenced by frontend",
+    "menu_keys": [],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "task_management_get_all_tasks",
+      "name": "Get All Tasks",
+      "action_method": "GetAllTasks",
+      "http_method": "GET",
+      "route": "api/TaskManagement",
+      "business_purpose": "Retrieve all tasks",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "dateRange",
+          "type": "string",
+          "required": false,
+          "default": "\"this_month\""
+        },
+        {
+          "name": "userId",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve all tasks",
+      "detailed_description": "Retrieve all tasks. It calls ICommon.getUserByToken, ICommon.GetCrmUserWiseHierarchy, ITaskManagement.GetAllTasksAsync. Data access uses stored procedure(s): GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all tasks",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/TaskManagement",
+          "GET api/TaskManagement/{id}",
+          "GET api/TaskManagement/user/{userId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "task_management_get_all_tasks",
+        "description": "Retrieve all tasks",
+        "http_method": "GET",
+        "endpoint": "api/TaskManagement",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "dateRange": {
+            "type": "string",
+            "required": false,
+            "description": "date Range (query)"
+          },
+          "userId": {
+            "type": "int",
+            "required": false,
+            "description": "user Id (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/TaskManagementController.cs",
+        "action_method": "GetAllTasks",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/TaskManagementRepo.cs",
+          "Interfaces/ITaskManagement.cs"
+        ]
+      },
+      "module": "Task Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all tasks — calls ICommon.getUserByToken, ICommon.GetCrmUserWiseHierarchy, ITaskManagement.GetAllTasksAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.GetCrmUserWiseHierarchy",
+          "ITaskManagement.GetAllTasksAsync",
+          "ITaskManagement.GetTaskActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "TaskManagementRepo (Repository/TaskManagementRepo.cs) via ITaskManagement"
+        ],
+        "stored_procedures": [
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "task_management_get_task_by_id",
+      "name": "Get Task By Id",
+      "action_method": "GetTaskById",
+      "http_method": "GET",
+      "route": "api/TaskManagement/{id}",
+      "business_purpose": "Retrieve task by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve task by ID",
+      "detailed_description": "Retrieve task by ID. It validates the request, then calls ICommon.getUserByToken, ITaskManagement.GetTaskByIdAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid task ID [when id <= 0]",
+        "not_found": "404: Task not found [when task == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve task by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/TaskManagement",
+          "GET api/TaskManagement/{id}",
+          "GET api/TaskManagement/user/{userId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "task_management_get_task_by_id",
+        "description": "Retrieve task by ID",
+        "http_method": "GET",
+        "endpoint": "api/TaskManagement/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/TaskManagementController.cs",
+        "action_method": "GetTaskById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/TaskManagementRepo.cs",
+          "Interfaces/ITaskManagement.cs"
+        ]
+      },
+      "module": "Task Management",
+      "business_logic": {
+        "operation_summary": "Retrieve task by ID — validates the request, calls ICommon.getUserByToken, ITaskManagement.GetTaskByIdAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Invalid task ID",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ITaskManagement.GetTaskByIdAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "TaskManagementRepo (Repository/TaskManagementRepo.cs) via ITaskManagement"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid task ID",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Task not found",
+            "when": "task == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "task_management_create_task",
+      "name": "Create Task",
+      "action_method": "CreateTask",
+      "http_method": "POST",
+      "route": "api/TaskManagement",
+      "business_purpose": "Create task",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "TaskManagementCreateDto",
+        "properties": [
+          {
+            "name": "title",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "due_date",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "progress_percentage",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "status",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "related_id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "assigned_user_id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "assigned_user_ids",
+            "type": "List<int>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Create task",
+      "detailed_description": "Create task. It validates the request, then calls ICommon.getUserByToken, ICommon.GetUserById, ITaskManagement.CreateTaskAsync. Persists changes to: TaskManagement: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Task title is required [when string.IsNullOrWhiteSpace(dto.title)]; At least one assigned user is required [when dto.assigned_user_ids == null || !dto.assigned_user_ids.Any()]; Assigned user with id {userId} not found [when assignedUser == null]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create task",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body TaskManagementCreateDto"
+        ],
+        "follow_up_apis": [
+          "GET api/TaskManagement",
+          "GET api/TaskManagement/CRMUserWiseHierarchy"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "task_management_create_task",
+        "description": "Create task",
+        "http_method": "POST",
+        "endpoint": "api/TaskManagement",
+        "parameters": {
+          "title": {
+            "type": "string",
+            "required": false,
+            "description": "title (body)"
+          },
+          "description": {
+            "type": "string",
+            "required": false,
+            "description": "description (body)"
+          },
+          "due_date": {
+            "type": "datetime",
+            "required": false,
+            "description": "due date (body)"
+          },
+          "progress_percentage": {
+            "type": "int",
+            "required": false,
+            "description": "progress percentage (body)"
+          },
+          "status": {
+            "type": "string",
+            "required": false,
+            "description": "status (body)"
+          },
+          "related_id": {
+            "type": "int",
+            "required": false,
+            "description": "related id (body)"
+          },
+          "assigned_user_id": {
+            "type": "int",
+            "required": false,
+            "description": "assigned user id (body)"
+          },
+          "assigned_user_ids": {
+            "type": "List<int>",
+            "required": false,
+            "description": "assigned user ids (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/TaskManagementController.cs",
+        "action_method": "CreateTask",
+        "related_dto_files": [
+          "DTOs/Request/TaskManagementDto.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/TaskManagementRepo.cs",
+          "Interfaces/ITaskManagement.cs"
+        ]
+      },
+      "module": "Task Management",
+      "business_logic": {
+        "operation_summary": "Create task — validates the request, calls ICommon.getUserByToken, ICommon.GetUserById, ITaskManagement.CreateTaskAsync",
+        "preconditions": "Valid Bearer JWT; request body of type TaskManagementCreateDto; passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "TaskManagement: INSERT",
+        "validations": "Task title is required; At least one assigned user is required; Assigned user with id {userId} not found",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.GetUserById",
+          "ITaskManagement.CreateTaskAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "TaskManagementRepo (Repository/TaskManagementRepo.cs) via ITaskManagement"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Task title is required",
+            "when": "string.IsNullOrWhiteSpace(dto.title)"
+          },
+          {
+            "returns": 400,
+            "message": "At least one assigned user is required",
+            "when": "dto.assigned_user_ids == null || !dto.assigned_user_ids.Any()"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Assigned user with id {userId} not found",
+            "when": "assignedUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "task_management_update_task",
+      "name": "Update Task",
+      "action_method": "UpdateTask",
+      "http_method": "PUT",
+      "route": "api/TaskManagement/{id}",
+      "business_purpose": "Update task",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "TaskManagementUpdateDto",
+        "properties": [
+          {
+            "name": "title",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "due_date",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "progress_percentage",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "status",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "assigned_user_id",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Update task",
+      "detailed_description": "Update task. It validates the request, then calls ICommon.getUserByToken, ITaskManagement.GetTaskByIdAsync, ITaskManagement.UpdateTaskAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid task ID [when id <= 0]",
+        "not_found": "404: Task not found [when existingTask == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update task",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "request body TaskManagementUpdateDto"
+        ],
+        "follow_up_apis": [
+          "GET api/TaskManagement/{id}",
+          "GET api/TaskManagement/user/{userId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "task_management_update_task",
+        "description": "Update task",
+        "http_method": "PUT",
+        "endpoint": "api/TaskManagement/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "title": {
+            "type": "string",
+            "required": false,
+            "description": "title (body)"
+          },
+          "description": {
+            "type": "string",
+            "required": false,
+            "description": "description (body)"
+          },
+          "due_date": {
+            "type": "datetime",
+            "required": false,
+            "description": "due date (body)"
+          },
+          "progress_percentage": {
+            "type": "int",
+            "required": false,
+            "description": "progress percentage (body)"
+          },
+          "status": {
+            "type": "string",
+            "required": false,
+            "description": "status (body)"
+          },
+          "assigned_user_id": {
+            "type": "int",
+            "required": false,
+            "description": "assigned user id (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/TaskManagementController.cs",
+        "action_method": "UpdateTask",
+        "related_dto_files": [
+          "DTOs/Request/TaskManagementDto.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/TaskManagementRepo.cs",
+          "Interfaces/ITaskManagement.cs"
+        ]
+      },
+      "module": "Task Management",
+      "business_logic": {
+        "operation_summary": "Update task — validates the request, calls ICommon.getUserByToken, ITaskManagement.GetTaskByIdAsync, ITaskManagement.UpdateTaskAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); request body of type TaskManagementUpdateDto; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets existingTask.due_date, existingTask.title, existingTask.description, existingTask.progress_percentage, existingTask.status, existingTask.assigned_user_id",
+        "validations": "Invalid task ID",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ITaskManagement.GetTaskByIdAsync",
+          "ITaskManagement.UpdateTaskAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "TaskManagementRepo (Repository/TaskManagementRepo.cs) via ITaskManagement"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid task ID",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Task not found",
+            "when": "existingTask == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "task_management_delete_task",
+      "name": "Delete Task",
+      "action_method": "DeleteTask",
+      "http_method": "DELETE",
+      "route": "api/TaskManagement/{id}",
+      "business_purpose": "Delete task",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Delete task",
+      "detailed_description": "Delete task. It validates the request, then calls ICommon.getUserByToken, ITaskManagement.GetTaskByIdAsync, ITaskManagement.DeleteTaskAsync. Persists changes to: soft delete (is_deleted flag). Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid task ID [when id <= 0]",
+        "not_found": "404: Task not found [when existingTask == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete task",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/TaskManagement/{id}",
+          "GET api/TaskManagement/user/{userId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "task_management_delete_task",
+        "description": "Delete task",
+        "http_method": "DELETE",
+        "endpoint": "api/TaskManagement/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/TaskManagementController.cs",
+        "action_method": "DeleteTask",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/TaskManagementRepo.cs",
+          "Interfaces/ITaskManagement.cs"
+        ]
+      },
+      "module": "Task Management",
+      "business_logic": {
+        "operation_summary": "Delete task — validates the request, calls ICommon.getUserByToken, ITaskManagement.GetTaskByIdAsync, ITaskManagement.DeleteTaskAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "soft delete (is_deleted flag)",
+        "validations": "Invalid task ID",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ITaskManagement.GetTaskByIdAsync",
+          "ITaskManagement.DeleteTaskAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "TaskManagementRepo (Repository/TaskManagementRepo.cs) via ITaskManagement"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid task ID",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Task not found",
+            "when": "existingTask == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "task_management_get_tasks_by_user",
+      "name": "Get Tasks By User",
+      "action_method": "GetTasksByUser",
+      "http_method": "GET",
+      "route": "api/TaskManagement/user/{userId}",
+      "business_purpose": "Retrieve tasks by user",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "userId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve tasks by user",
+      "detailed_description": "Retrieve tasks by user. It validates the request, then calls ICommon.getUserByToken, ITaskManagement.GetTasksByUserAsync. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid user ID [when userId <= 0]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve tasks by user",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "userId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/TaskManagement",
+          "GET api/TaskManagement/{id}",
+          "GET api/TaskManagement/user/{userId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "task_management_get_tasks_by_user",
+        "description": "Retrieve tasks by user",
+        "http_method": "GET",
+        "endpoint": "api/TaskManagement/user/{userId}",
+        "parameters": {
+          "userId": {
+            "type": "int",
+            "required": true,
+            "description": "user Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/TaskManagementController.cs",
+        "action_method": "GetTasksByUser",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/TaskManagementRepo.cs",
+          "Interfaces/ITaskManagement.cs"
+        ]
+      },
+      "module": "Task Management",
+      "business_logic": {
+        "operation_summary": "Retrieve tasks by user — validates the request, calls ICommon.getUserByToken, ITaskManagement.GetTasksByUserAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) userId; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Invalid user ID",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ITaskManagement.GetTasksByUserAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "TaskManagementRepo (Repository/TaskManagementRepo.cs) via ITaskManagement"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid user ID",
+            "when": "userId <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "task_management_get_tasks_by_status",
+      "name": "Get Tasks By Status",
+      "action_method": "GetTasksByStatus",
+      "http_method": "GET",
+      "route": "api/TaskManagement/status/{status}",
+      "business_purpose": "Retrieve tasks by status",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "status",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve tasks by status",
+      "detailed_description": "Retrieve tasks by status. It validates the request, then calls ICommon.getUserByToken, ITaskManagement.GetTasksByStatusAsync. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Status is required [when string.IsNullOrWhiteSpace(status)]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve tasks by status",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "status (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/TaskManagement",
+          "GET api/TaskManagement/{id}",
+          "GET api/TaskManagement/user/{userId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "task_management_get_tasks_by_status",
+        "description": "Retrieve tasks by status",
+        "http_method": "GET",
+        "endpoint": "api/TaskManagement/status/{status}",
+        "parameters": {
+          "status": {
+            "type": "string",
+            "required": true,
+            "description": "status (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/TaskManagementController.cs",
+        "action_method": "GetTasksByStatus",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/TaskManagementRepo.cs",
+          "Interfaces/ITaskManagement.cs"
+        ]
+      },
+      "module": "Task Management",
+      "business_logic": {
+        "operation_summary": "Retrieve tasks by status — validates the request, calls ICommon.getUserByToken, ITaskManagement.GetTasksByStatusAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) status; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Status is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ITaskManagement.GetTasksByStatusAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "TaskManagementRepo (Repository/TaskManagementRepo.cs) via ITaskManagement"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Status is required",
+            "when": "string.IsNullOrWhiteSpace(status)"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "task_management_get_crm_user_wise_hierarchy",
+      "name": "Get CRM User Wise Hierarchy",
+      "action_method": "GetCRMUserWiseHierarchy",
+      "http_method": "GET",
+      "route": "api/TaskManagement/CRMUserWiseHierarchy",
+      "business_purpose": "Retrieve CRM user wise hierarchy",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "searchText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve CRM user wise hierarchy",
+      "detailed_description": "Retrieve CRM user wise hierarchy. It calls ICommon.getUserByToken, ICommon.GetCrmUserWiseHierarchy. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve CRM user wise hierarchy",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/TaskManagement",
+          "GET api/TaskManagement/{id}",
+          "GET api/TaskManagement/user/{userId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "task_management_get_crm_user_wise_hierarchy",
+        "description": "Retrieve CRM user wise hierarchy",
+        "http_method": "GET",
+        "endpoint": "api/TaskManagement/CRMUserWiseHierarchy",
+        "parameters": {
+          "searchText": {
+            "type": "string",
+            "required": false,
+            "description": "search Text (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/TaskManagementController.cs",
+        "action_method": "GetCRMUserWiseHierarchy",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Task Management",
+      "business_logic": {
+        "operation_summary": "Retrieve CRM user wise hierarchy — calls ICommon.getUserByToken, ICommon.GetCrmUserWiseHierarchy",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.GetCrmUserWiseHierarchy"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    }
+  ]
+}

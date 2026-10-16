@@ -1,0 +1,258 @@
+{
+  "controller": "IndentDetailsController",
+  "file": "Controllers/IndentDetailsController.cs",
+  "module": "Reporting",
+  "base_route": "api/IndentDetails",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles indent details: get indent details report",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "rpt/indents-reports/indent-details-report",
+        "module_code": "rpt",
+        "section": "indents-reports",
+        "sub_section": "indent-details-report",
+        "frontend_routes": [
+          "/rpt/indents-reports/indent-details-report"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "IndentDetails"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "indent_details_get_indent_details_report",
+      "name": "Get Indent Details Report",
+      "action_method": "GetIndentDetailsReport",
+      "http_method": "GET",
+      "route": "api/IndentDetails",
+      "business_purpose": "Retrieve indent details report",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "product",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "thickness",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "category",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "partial",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "dRegion",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        },
+        {
+          "name": "dBranch",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        },
+        {
+          "name": "fromdate_str",
+          "type": "string",
+          "required": false,
+          "default": "\"\""
+        },
+        {
+          "name": "dateStatus",
+          "type": "string",
+          "required": false,
+          "default": "\"This Month\""
+        },
+        {
+          "name": "todate_str",
+          "type": "string",
+          "required": false,
+          "default": "\"\""
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/indents-reports/indent-details-report:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve indent details report",
+      "detailed_description": "Retrieve indent details report. It calls ICommon.getUserByToken, ICommon.GetDateRange, IIndentDetailsReportRepository.GetAllIndentSummaries. Data access uses stored procedure(s): GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve indent details report",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/IndentDetails"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "indent_details_get_indent_details_report",
+        "description": "Retrieve indent details report",
+        "http_method": "GET",
+        "endpoint": "api/IndentDetails",
+        "parameters": {
+          "product": {
+            "type": "string",
+            "required": false,
+            "description": "product (query)"
+          },
+          "size": {
+            "type": "string",
+            "required": false,
+            "description": "size (query)"
+          },
+          "thickness": {
+            "type": "string",
+            "required": false,
+            "description": "thickness (query)"
+          },
+          "category": {
+            "type": "string",
+            "required": false,
+            "description": "category (query)"
+          },
+          "partial": {
+            "type": "string",
+            "required": false,
+            "description": "partial (query)"
+          },
+          "status": {
+            "type": "string",
+            "required": false,
+            "description": "status (query)"
+          },
+          "dRegion": {
+            "type": "int",
+            "required": false,
+            "description": "d Region (query)"
+          },
+          "dBranch": {
+            "type": "int",
+            "required": false,
+            "description": "d Branch (query)"
+          },
+          "fromdate_str": {
+            "type": "string",
+            "required": false,
+            "description": "fromdate str (query)"
+          },
+          "dateStatus": {
+            "type": "string",
+            "required": false,
+            "description": "date Status (query)"
+          },
+          "todate_str": {
+            "type": "string",
+            "required": false,
+            "description": "todate str (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IndentDetailsController.cs",
+        "action_method": "GetIndentDetailsReport",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/IndentDetailsReportRepository.cs",
+          "Interfaces/IIndentDetailsReportRepository.cs"
+        ]
+      },
+      "module": "Reporting",
+      "business_logic": {
+        "operation_summary": "Retrieve indent details report — calls ICommon.getUserByToken, ICommon.GetDateRange, IIndentDetailsReportRepository.GetAllIndentSummaries",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.GetDateRange",
+          "IIndentDetailsReportRepository.GetAllIndentSummaries",
+          "IIndentDetailsReportRepository.GetAllProduct",
+          "IIndentDetailsReportRepository.GetAllCategories",
+          "IIndentDetailsReportRepository.GetAllThickness",
+          "IIndentDetailsReportRepository.GetAllSize",
+          "IIndentDetailsReportRepository.GetAllIndentStatuses",
+          "IIndentDetailsReportRepository.GetAllRegions",
+          "IIndentDetailsReportRepository.GetBranchByRegion",
+          "IIndentDetailsReportRepository.GetActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IndentDetailsReportRepository (Repositories/IndentDetailsReportRepository.cs) via IIndentDetailsReportRepository"
+        ],
+        "stored_procedures": [
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    }
+  ]
+}

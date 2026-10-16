@@ -1,0 +1,514 @@
+{
+  "controller": "GSTController",
+  "file": "Controllers/GstController.cs",
+  "base_route": "api/GST",
+  "description": "GST configuration",
+  "menu_permission": {
+    "status": "not referenced by frontend",
+    "menu_keys": [],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "gst_001",
+      "name": "GetAll",
+      "http_method": "GET",
+      "route": "api/GST",
+      "business_purpose": "GET operation for GSTController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [
+          "GetGST",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/GstController.cs",
+        "action_method": "GetAll"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "GET operation for GSTController",
+      "detailed_description": "GET operation for GSTController. It calls ICommon.getUserByToken, IGst.GetGstData, IGst.GetGstActions. Data access uses stored procedure(s): GetGST, GetSectionActions. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to GET operation for gstcontroller",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/GST",
+          "GET api/GST/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "gst_get_all",
+        "description": "GET operation for GSTController",
+        "http_method": "GET",
+        "endpoint": "api/GST",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "gst_002",
+      "name": "GetGSTById",
+      "http_method": "GET",
+      "route": "api/GST/{id}",
+      "business_purpose": "GET operation for GSTController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid GST ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "GST not found.",
+            "when": "Gst == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/GstController.cs",
+        "action_method": "GetGSTById"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "GET operation for GSTController",
+      "detailed_description": "GET operation for GSTController. It validates the request, then calls IGst.GetGstById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid GST ID is required. [when id <= 0]",
+        "not_found": "404: GST not found. [when Gst == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to GET operation for gstcontroller",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/GST",
+          "GET api/GST/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "gst_get_gst_by_id",
+        "description": "GET operation for GSTController",
+        "http_method": "GET",
+        "endpoint": "api/GST/{id}",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "gst_003",
+      "name": "CreateGST",
+      "http_method": "POST",
+      "route": "api/GST",
+      "business_purpose": "POST operation for GSTController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "CREATE/UPDATE/DELETE",
+      "business_logic": {
+        "operation_summary": "POST operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "GST: INSERT",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "GST name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.GST_name)"
+          },
+          {
+            "returns": 400,
+            "message": "GST with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/GstController.cs",
+        "action_method": "CreateGST"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "delete",
+        "add",
+        "edit"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "POST operation for GSTController",
+      "detailed_description": "POST operation for GSTController. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IGst.IsGstDuplicateAsync, IGst.CreateGstAsync. Persists changes to: GST: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; GST name is required. [when string.IsNullOrWhiteSpace(request.GST_name)]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "GST with this name already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to POST operation for gstcontroller",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/GST"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "gst_create_gst",
+        "description": "POST operation for GSTController",
+        "http_method": "POST",
+        "endpoint": "api/GST",
+        "parameters": {},
+        "operation_type": "CREATE/UPDATE/DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "gst_004",
+      "name": "UpdateGST",
+      "http_method": "PUT",
+      "route": "api/GST/{gstId}",
+      "business_purpose": "PUT operation for GSTController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "CREATE/UPDATE/DELETE",
+      "business_logic": {
+        "operation_summary": "PUT operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "GST: UPDATE",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid GST ID is required.",
+            "when": "gstId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "GST with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/GstController.cs",
+        "action_method": "UpdateGST"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "delete",
+        "add",
+        "edit"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "PUT operation for GSTController",
+      "detailed_description": "PUT operation for GSTController. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IGst.IsGstDuplicateAsync, IGst.UpdateGstAsync. Persists changes to: GST: UPDATE. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid GST ID is required. [when gstId <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "GST with this name already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to PUT operation for gstcontroller",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/GST"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "gst_update_gst",
+        "description": "PUT operation for GSTController",
+        "http_method": "PUT",
+        "endpoint": "api/GST/{gstId}",
+        "parameters": {},
+        "operation_type": "CREATE/UPDATE/DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "gst_005",
+      "name": "Delete",
+      "http_method": "DELETE",
+      "route": "api/GST/{id}",
+      "business_purpose": "DELETE operation for GSTController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "CREATE/UPDATE/DELETE",
+      "business_logic": {
+        "operation_summary": "DELETE operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "GST: UPDATE; soft delete (is_deleted flag)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid GST ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/GstController.cs",
+        "action_method": "Delete"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "delete",
+        "add",
+        "edit"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "DELETE operation for GSTController",
+      "detailed_description": "DELETE operation for GSTController. It validates the request, then calls ICommon.getUserByToken, IGst.DeleteGst. Persists changes to: GST: UPDATE, soft delete (is_deleted flag). Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid GST ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to DELETE operation for gstcontroller",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/GST"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "gst_delete",
+        "description": "DELETE operation for GSTController",
+        "http_method": "DELETE",
+        "endpoint": "api/GST/{id}",
+        "parameters": {},
+        "operation_type": "CREATE/UPDATE/DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    }
+  ]
+}

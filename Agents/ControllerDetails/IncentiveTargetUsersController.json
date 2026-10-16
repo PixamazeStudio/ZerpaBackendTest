@@ -1,0 +1,991 @@
+{
+  "controller": "IncentiveTargetUsersController",
+  "file": "Controllers/IncentiveTargetUsersController.cs",
+  "module": "Incentive Management",
+  "base_route": "api/IncentiveTargetUsers",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages incentive target users records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/incentive-settings/incentive-target-users",
+        "module_code": "settings",
+        "section": "incentive-settings",
+        "sub_section": "incentive-target-users",
+        "frontend_routes": [
+          "/settings/incentive-settings/incentive-target-users"
+        ],
+        "menu_route_confirmed": true,
+        "display_names": {
+          "module": "Settings",
+          "section": "Incentive Settings",
+          "sub_section": "Incentive Target Users"
+        }
+      }
+    ],
+    "section_configuration_keys": [
+      "IncentiveTargetUsers"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Settings",
+        "section": "Incentive Settings",
+        "sub_section": "Incentive Target Users"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "incentive_target_users_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/IncentiveTargetUsers",
+      "business_purpose": "Retrieve all incentive target users records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/incentive-settings/incentive-target-users:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all incentive target users records",
+      "detailed_description": "Retrieve all incentive target users records. It calls ICommon.getUserByToken, IIncentiveTargetUsers.GetIncentiveTargetUsersData, IIncentiveTargetUsers.GetActions. Data access uses stored procedure(s): GetIncentiveTargetUsers, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all incentive target users records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveTargetUsers",
+          "GET api/IncentiveTargetUsers/{id}",
+          "GET api/IncentiveTargetUsers/users"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_target_users_get_all",
+        "description": "Retrieve all incentive target users records",
+        "http_method": "GET",
+        "endpoint": "api/IncentiveTargetUsers",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveTargetUsersController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/IncentiveTargetUsers_repo.cs",
+          "Interfaces/IIncentiveTargetUsers.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all incentive target users records — calls ICommon.getUserByToken, IIncentiveTargetUsers.GetIncentiveTargetUsersData, IIncentiveTargetUsers.GetActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIncentiveTargetUsers.GetIncentiveTargetUsersData",
+          "IIncentiveTargetUsers.GetActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IncentiveTargetUsers_repo (Repositories/IncentiveTargetUsers_repo.cs) via IIncentiveTargetUsers"
+        ],
+        "stored_procedures": [
+          "GetIncentiveTargetUsers",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "incentive_target_users_get_incentive_target_users_by_id",
+      "name": "Get Incentive Target Users By Id",
+      "action_method": "GetIncentiveTargetUsersById",
+      "http_method": "GET",
+      "route": "api/IncentiveTargetUsers/{id}",
+      "business_purpose": "Retrieve incentive target users by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/incentive-settings/incentive-target-users:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve incentive target users by ID",
+      "detailed_description": "Retrieve incentive target users by ID. It validates the request, then calls ICommon.getUserByToken, IIncentiveTargetUsers.GetById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required [when id <= 0]",
+        "not_found": "404: Incentive Target User not found [when data == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve incentive target users by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveTargetUsers",
+          "GET api/IncentiveTargetUsers/{id}",
+          "GET api/IncentiveTargetUsers/users"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_target_users_get_incentive_target_users_by_id",
+        "description": "Retrieve incentive target users by ID",
+        "http_method": "GET",
+        "endpoint": "api/IncentiveTargetUsers/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveTargetUsersController.cs",
+        "action_method": "GetIncentiveTargetUsersById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/IncentiveTargetUsers_repo.cs",
+          "Interfaces/IIncentiveTargetUsers.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Retrieve incentive target users by ID — validates the request, calls ICommon.getUserByToken, IIncentiveTargetUsers.GetById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIncentiveTargetUsers.GetById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IncentiveTargetUsers_repo (Repositories/IncentiveTargetUsers_repo.cs) via IIncentiveTargetUsers"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Incentive Target User not found",
+            "when": "data == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "incentive_target_users_delete_incentive_target_users",
+      "name": "Delete Incentive Target Users",
+      "action_method": "DeleteIncentiveTargetUsers",
+      "http_method": "DELETE",
+      "route": "api/IncentiveTargetUsers/{id}",
+      "business_purpose": "Delete incentive target users",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "settings/incentive-settings/incentive-target-users:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete incentive target users",
+      "detailed_description": "Delete incentive target users. It validates the request, then calls ICommon.getUserByToken, IIncentiveTargetUsers.GetById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: IncentiveTargetUsers: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Incentive Target Users not found. [when existingIncentiveTargetUsers == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete incentive target users",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveTargetUsers/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_target_users_delete_incentive_target_users",
+        "description": "Delete incentive target users",
+        "http_method": "DELETE",
+        "endpoint": "api/IncentiveTargetUsers/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveTargetUsersController.cs",
+        "action_method": "DeleteIncentiveTargetUsers",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/IncentiveTargetUsers_repo.cs",
+          "Interfaces/IIncentiveTargetUsers.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Delete incentive target users — validates the request, calls ICommon.getUserByToken, IIncentiveTargetUsers.GetById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "IncentiveTargetUsers: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "validations": "Valid ID is required.",
+        "side_effects": "AuditLog DELETE (Settings > Incentive Settings > Incentive Target Users)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIncentiveTargetUsers.GetById",
+          "ICommon.ToJsonString",
+          "IIncentiveTargetUsers.Delete",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IncentiveTargetUsers_repo (Repositories/IncentiveTargetUsers_repo.cs) via IIncentiveTargetUsers"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Incentive Target Users not found.",
+            "when": "existingIncentiveTargetUsers == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "incentive_target_users_update_incentive_target_users",
+      "name": "Update Incentive Target Users",
+      "action_method": "UpdateIncentiveTargetUsers",
+      "http_method": "PUT",
+      "route": "api/IncentiveTargetUsers/{id}",
+      "business_purpose": "Update incentive target users",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateIncentiveTargetUsersDto (inline)",
+        "properties": [
+          {
+            "name": "UserId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "target_sheets",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "minimum_sheets",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "pvc_sheets",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "fl_conversion_target",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "minimum_fl_conversion",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values; each call writes another audit log entry"
+      },
+      "required_permission": "settings/incentive-settings/incentive-target-users:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update incentive target users",
+      "detailed_description": "Update incentive target users. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IIncentiveTargetUsers.GetById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: IncentiveTargetUsers: UPDATE, AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required. [when id <= 0]; At least one field must be provided for update. [when request.UserId == null && request.target_sheets == null && request.minimum_sheets == null ]; User not found. [when userEntity == null]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Incentive Target Users not found. [when existingIncentiveTargetUsers == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "User already exists. [when isDuplicate]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update incentive target users",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "request body UpdateIncentiveTargetUsersDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveTargetUsers/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_target_users_update_incentive_target_users",
+        "description": "Update incentive target users",
+        "http_method": "PUT",
+        "endpoint": "api/IncentiveTargetUsers/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "UserId": {
+            "type": "int",
+            "required": false,
+            "description": "User Id (body)"
+          },
+          "target_sheets": {
+            "type": "int",
+            "required": false,
+            "description": "target sheets (body)"
+          },
+          "minimum_sheets": {
+            "type": "int",
+            "required": false,
+            "description": "minimum sheets (body)"
+          },
+          "pvc_sheets": {
+            "type": "int",
+            "required": false,
+            "description": "pvc sheets (body)"
+          },
+          "fl_conversion_target": {
+            "type": "int",
+            "required": false,
+            "description": "fl conversion target (body)"
+          },
+          "minimum_fl_conversion": {
+            "type": "int",
+            "required": false,
+            "description": "minimum fl conversion (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveTargetUsersController.cs",
+        "action_method": "UpdateIncentiveTargetUsers",
+        "related_dto_files": [
+          "Controllers/IncentiveTargetUsersController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/IncentiveTargetUsers_repo.cs",
+          "Interfaces/IIncentiveTargetUsers.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Update incentive target users — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, IIncentiveTargetUsers.GetById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); request body of type UpdateIncentiveTargetUsersDto (inline); passes 6 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "IncentiveTargetUsers: UPDATE; AuditLog: INSERT",
+        "validations": "Valid ID is required.; At least one field must be provided for update.; User not found.",
+        "side_effects": "AuditLog UPDATE (Settings > Incentive Settings > Incentive Target Users)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIncentiveTargetUsers.GetById",
+          "ICommon.ToJsonString",
+          "IIncentiveTargetUsers.GetUserByIdAsync",
+          "IIncentiveTargetUsers.IsDuplicate",
+          "IIncentiveTargetUsers.UpdateAsync",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IncentiveTargetUsers_repo (Repositories/IncentiveTargetUsers_repo.cs) via IIncentiveTargetUsers"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field must be provided for update.",
+            "when": "request.UserId == null && request.target_sheets == null && request.minimum_sheets == null && request.pvc_sheets == null && request.fl_conversion_target == null && request.minimum_fl_conversion == null"
+          },
+          {
+            "returns": 404,
+            "message": "Incentive Target Users not found.",
+            "when": "existingIncentiveTargetUsers == null"
+          },
+          {
+            "returns": 400,
+            "message": "User not found.",
+            "when": "userEntity == null"
+          },
+          {
+            "returns": 400,
+            "message": "User already exists.",
+            "when": "isDuplicate"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "incentive_target_users_create_incentive_target_users",
+      "name": "Create Incentive Target Users",
+      "action_method": "CreateIncentiveTargetUsers",
+      "http_method": "POST",
+      "route": "api/IncentiveTargetUsers",
+      "business_purpose": "Create incentive target users",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateIncentiveTargetUsersDto (inline)",
+        "properties": [
+          {
+            "name": "UserId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "target_sheets",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "minimum_sheets",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "pvc_sheets",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "fl_conversion_target",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "minimum_fl_conversion",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; a duplicate check exists so repeating usually fails with a conflict/validation message"
+      },
+      "required_permission": "settings/incentive-settings/incentive-target-users:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create incentive target users",
+      "detailed_description": "Create incentive target users. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IIncentiveTargetUsers.GetUserByIdAsync, IIncentiveTargetUsers.IsDuplicate, then writes an audit log entry. Persists changes to: IncentiveTargetUsers: INSERT, AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid UserId is required. [when request.UserId <= 0]; Target sheets must be valid. [when request.target_sheets < 0]; User not found. [when user == null]; Failed to save data.",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "Target already exists for this user. [when isDuplicate]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create incentive target users",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateIncentiveTargetUsersDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveTargetUsers",
+          "GET api/IncentiveTargetUsers/users"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_target_users_create_incentive_target_users",
+        "description": "Create incentive target users",
+        "http_method": "POST",
+        "endpoint": "api/IncentiveTargetUsers",
+        "parameters": {
+          "UserId": {
+            "type": "int",
+            "required": false,
+            "description": "User Id (body)"
+          },
+          "target_sheets": {
+            "type": "int",
+            "required": false,
+            "description": "target sheets (body)"
+          },
+          "minimum_sheets": {
+            "type": "int",
+            "required": false,
+            "description": "minimum sheets (body)"
+          },
+          "pvc_sheets": {
+            "type": "int",
+            "required": false,
+            "description": "pvc sheets (body)"
+          },
+          "fl_conversion_target": {
+            "type": "int",
+            "required": false,
+            "description": "fl conversion target (body)"
+          },
+          "minimum_fl_conversion": {
+            "type": "int",
+            "required": false,
+            "description": "minimum fl conversion (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveTargetUsersController.cs",
+        "action_method": "CreateIncentiveTargetUsers",
+        "related_dto_files": [
+          "Controllers/IncentiveTargetUsersController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/IncentiveTargetUsers_repo.cs",
+          "Interfaces/IIncentiveTargetUsers.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Create incentive target users — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, IIncentiveTargetUsers.GetUserByIdAsync, IIncentiveTargetUsers.IsDuplicate, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; request body of type CreateIncentiveTargetUsersDto (inline); passes 5 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "IncentiveTargetUsers: INSERT; AuditLog: INSERT",
+        "validations": "Valid UserId is required.; Target sheets must be valid.; User not found.; Failed to save data.",
+        "side_effects": "AuditLog CREATE (Settings > Incentive Settings > Incentive Target Users)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIncentiveTargetUsers.GetUserByIdAsync",
+          "IIncentiveTargetUsers.IsDuplicate",
+          "IIncentiveTargetUsers.CreateAsync",
+          "ICommon.ToJsonString",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IncentiveTargetUsers_repo (Repositories/IncentiveTargetUsers_repo.cs) via IIncentiveTargetUsers"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid UserId is required.",
+            "when": "request.UserId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Target sheets must be valid.",
+            "when": "request.target_sheets < 0"
+          },
+          {
+            "returns": 400,
+            "message": "User not found.",
+            "when": "user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Target already exists for this user.",
+            "when": "isDuplicate"
+          },
+          {
+            "returns": 400,
+            "message": "Failed to save data.",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "incentive_target_users_get_users",
+      "name": "Get Users",
+      "action_method": "GetUsers",
+      "http_method": "GET",
+      "route": "api/IncentiveTargetUsers/users",
+      "business_purpose": "Retrieve users",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/incentive-settings/incentive-target-users:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve users",
+      "detailed_description": "Retrieve users. It calls ICommon.getUserByToken, IIncentiveTargetUsers.GetUsers. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve users",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/IncentiveTargetUsers",
+          "GET api/IncentiveTargetUsers/{id}",
+          "GET api/IncentiveTargetUsers/users"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "incentive_target_users_get_users",
+        "description": "Retrieve users",
+        "http_method": "GET",
+        "endpoint": "api/IncentiveTargetUsers/users",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IncentiveTargetUsersController.cs",
+        "action_method": "GetUsers",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/IncentiveTargetUsers_repo.cs",
+          "Interfaces/IIncentiveTargetUsers.cs"
+        ]
+      },
+      "module": "Incentive Management",
+      "business_logic": {
+        "operation_summary": "Retrieve users — calls ICommon.getUserByToken, IIncentiveTargetUsers.GetUsers",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIncentiveTargetUsers.GetUsers"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IncentiveTargetUsers_repo (Repositories/IncentiveTargetUsers_repo.cs) via IIncentiveTargetUsers"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    }
+  ]
+}

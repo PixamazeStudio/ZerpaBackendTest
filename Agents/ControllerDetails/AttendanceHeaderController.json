@@ -1,0 +1,2528 @@
+{
+  "controller": "AttendanceHeaderController",
+  "file": "Controllers/AttendanceHeaderController.cs",
+  "module": "Attendance and Leave Management",
+  "base_route": "api/AttendanceHeader",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages attendance header records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "crm/attendance",
+        "module_code": "crm",
+        "section": "attendance",
+        "sub_section": null,
+        "frontend_routes": [
+          "/crm/attendance",
+          "/crm/attendance/create-attendance",
+          "/crm/attendance/edit-attendance/:id",
+          "/crm/attendance/view-attendance/:id"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "hrp/attendance",
+        "module_code": "hrp",
+        "section": "attendance",
+        "sub_section": null,
+        "frontend_routes": [
+          "/hrp/attendance",
+          "/hrp/attendance/create-attendance",
+          "/hrp/attendance/edit-attendance/:id",
+          "/hrp/attendance/view-attendance/:id"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "crm/leaves",
+        "module_code": "crm",
+        "section": "leaves",
+        "sub_section": null,
+        "frontend_routes": [
+          "/crm/leaves/create-leaves",
+          "/crm/leaves/view-leaves/:id"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Customer Relationship Management",
+        "section": "Attendance Header",
+        "sub_section": "Attendance Header"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "attendance_header_get_attendance_header_data",
+      "name": "Get Attendance Header Data",
+      "action_method": "GetAttendanceHeaderData",
+      "http_method": "GET",
+      "route": "api/AttendanceHeader/attendance",
+      "business_purpose": "Retrieve attendance header data",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "leave_typeId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "leave_sub_typeId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "userId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/attendance:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "hrp/attendance",
+        "crm/leaves"
+      ],
+      "short_description": "Retrieve attendance header data",
+      "detailed_description": "Retrieve attendance header data. It calls ICommon.getUserByToken, IIndent.BuildFilterContext, IAttendanceHeader.GetAttendanceHeaderData. Data access uses stored procedure(s): GetAttendanceHeader. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve attendance header data",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/AttendanceHeader/attendance",
+          "GET api/AttendanceHeader/leaves",
+          "GET api/AttendanceHeader/others"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "attendance_header_get_attendance_header_data",
+        "description": "Retrieve attendance header data",
+        "http_method": "GET",
+        "endpoint": "api/AttendanceHeader/attendance",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "leave_typeId": {
+            "type": "int",
+            "required": false,
+            "description": "leave type Id (query)"
+          },
+          "leave_sub_typeId": {
+            "type": "int",
+            "required": false,
+            "description": "leave sub type Id (query)"
+          },
+          "userId": {
+            "type": "int",
+            "required": false,
+            "description": "user Id (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AttendanceHeaderController.cs",
+        "action_method": "GetAttendanceHeaderData",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs",
+          "Repositories/AttendanceHeaderRepo.cs",
+          "Interfaces/IAttendanceHeader.cs"
+        ]
+      },
+      "module": "Attendance and Leave Management",
+      "business_logic": {
+        "operation_summary": "Retrieve attendance header data — calls ICommon.getUserByToken, IIndent.BuildFilterContext, IAttendanceHeader.GetAttendanceHeaderData",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndent.BuildFilterContext",
+          "IAttendanceHeader.GetAttendanceHeaderData",
+          "IAttendanceHeader.GetAllLeaveTypesAsync",
+          "IAttendanceHeader.GetAllUsersAsync",
+          "IAttendanceHeader.GetAttendanceHeaderActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent",
+          "AttendanceHeaderRepo (Repositories/AttendanceHeaderRepo.cs) via IAttendanceHeader"
+        ],
+        "stored_procedures": [
+          "GetAttendanceHeader"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "attendance_header_get_attendance_types",
+      "name": "Get Attendance Types",
+      "action_method": "GetAttendanceTypes",
+      "http_method": "GET",
+      "route": "api/AttendanceHeader/leaves",
+      "business_purpose": "Retrieve attendance types",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "leave_sub_typeId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "userId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/attendance:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "hrp/attendance",
+        "crm/leaves"
+      ],
+      "short_description": "Retrieve attendance types",
+      "detailed_description": "Retrieve attendance types. It calls ICommon.getUserByToken, ICommon.GetDateRange, IAttendanceHeader.GetLeaveTypesData. Data access uses stored procedure(s): GetAttendanceHeaderLeaveTypes. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve attendance types",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/AttendanceHeader/attendance",
+          "GET api/AttendanceHeader/leaves",
+          "GET api/AttendanceHeader/others"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "attendance_header_get_attendance_types",
+        "description": "Retrieve attendance types",
+        "http_method": "GET",
+        "endpoint": "api/AttendanceHeader/leaves",
+        "parameters": {
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "date range (query)"
+          },
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "leave_sub_typeId": {
+            "type": "int",
+            "required": false,
+            "description": "leave sub type Id (query)"
+          },
+          "userId": {
+            "type": "int",
+            "required": false,
+            "description": "user Id (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AttendanceHeaderController.cs",
+        "action_method": "GetAttendanceTypes",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/AttendanceHeaderRepo.cs",
+          "Interfaces/IAttendanceHeader.cs"
+        ]
+      },
+      "module": "Attendance and Leave Management",
+      "business_logic": {
+        "operation_summary": "Retrieve attendance types — calls ICommon.getUserByToken, ICommon.GetDateRange, IAttendanceHeader.GetLeaveTypesData",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.GetDateRange",
+          "IAttendanceHeader.GetLeaveTypesData",
+          "IAttendanceHeader.GetAllUsersByCurrentUserAsync",
+          "IAttendanceHeader.GetAllLeaveSubTypesAsync",
+          "IAttendanceHeader.GetAttendanceHeaderActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AttendanceHeaderRepo (Repositories/AttendanceHeaderRepo.cs) via IAttendanceHeader"
+        ],
+        "stored_procedures": [
+          "GetAttendanceHeaderLeaveTypes"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "attendance_header_get_attendance_sub_types",
+      "name": "Get Attendance Sub Types",
+      "action_method": "GetAttendanceSubTypes",
+      "http_method": "GET",
+      "route": "api/AttendanceHeader/others",
+      "business_purpose": "Retrieve attendance sub types",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/attendance:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "hrp/attendance",
+        "crm/leaves"
+      ],
+      "short_description": "Retrieve attendance sub types",
+      "detailed_description": "Retrieve attendance sub types. It calls ICommon.getUserByToken, IAttendanceHeader.GetAttendanceLeaveSubTypes, IAttendanceHeader.GetAttendanceHeaderActions. Data access uses stored procedure(s): GetAttendanceLeaveSubTypes. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve attendance sub types",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/AttendanceHeader/attendance",
+          "GET api/AttendanceHeader/leaves",
+          "GET api/AttendanceHeader/others"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "attendance_header_get_attendance_sub_types",
+        "description": "Retrieve attendance sub types",
+        "http_method": "GET",
+        "endpoint": "api/AttendanceHeader/others",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AttendanceHeaderController.cs",
+        "action_method": "GetAttendanceSubTypes",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/AttendanceHeaderRepo.cs",
+          "Interfaces/IAttendanceHeader.cs"
+        ]
+      },
+      "module": "Attendance and Leave Management",
+      "business_logic": {
+        "operation_summary": "Retrieve attendance sub types — calls ICommon.getUserByToken, IAttendanceHeader.GetAttendanceLeaveSubTypes, IAttendanceHeader.GetAttendanceHeaderActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAttendanceHeader.GetAttendanceLeaveSubTypes",
+          "IAttendanceHeader.GetAttendanceHeaderActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AttendanceHeaderRepo (Repositories/AttendanceHeaderRepo.cs) via IAttendanceHeader"
+        ],
+        "stored_procedures": [
+          "GetAttendanceLeaveSubTypes"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "attendance_header_get_by_id",
+      "name": "Get By Id",
+      "action_method": "GetByIdAsync",
+      "http_method": "GET",
+      "route": "api/AttendanceHeader/{id}",
+      "business_purpose": "Retrieve a attendance header record by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/attendance:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "hrp/attendance",
+        "crm/leaves"
+      ],
+      "short_description": "Retrieve a attendance header record by ID",
+      "detailed_description": "Retrieve a attendance header record by ID. It calls ICommon.getUserByToken, IAttendanceHeader.GetByIdAsync, IAttendanceHeader.GetAttendanceHeaderActions. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Attendance header not found [when attendanceHeader == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve a attendance header record by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/AttendanceHeader/attendance",
+          "GET api/AttendanceHeader/leaves",
+          "GET api/AttendanceHeader/others"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "attendance_header_get_by_id",
+        "description": "Retrieve a attendance header record by ID",
+        "http_method": "GET",
+        "endpoint": "api/AttendanceHeader/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AttendanceHeaderController.cs",
+        "action_method": "GetByIdAsync",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/AttendanceHeaderRepo.cs",
+          "Interfaces/IAttendanceHeader.cs"
+        ]
+      },
+      "module": "Attendance and Leave Management",
+      "business_logic": {
+        "operation_summary": "Retrieve a attendance header record by ID — calls ICommon.getUserByToken, IAttendanceHeader.GetByIdAsync, IAttendanceHeader.GetAttendanceHeaderActions",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAttendanceHeader.GetByIdAsync",
+          "IAttendanceHeader.GetAttendanceHeaderActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AttendanceHeaderRepo (Repositories/AttendanceHeaderRepo.cs) via IAttendanceHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Attendance header not found",
+            "when": "attendanceHeader == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "attendance_header_create",
+      "name": "Create",
+      "action_method": "CreateAsync",
+      "http_method": "POST",
+      "route": "api/AttendanceHeader/create-attendance",
+      "business_purpose": "Create a new attendance header record",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "AttendanceHeaderDto",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "LeaveTypeId",
+            "type": "int",
+            "required": true
+          },
+          {
+            "name": "LeaveSubTypeId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "HalfOrFull",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "FromDate",
+            "type": "datetime",
+            "required": true
+          },
+          {
+            "name": "ToDate",
+            "type": "datetime",
+            "required": true
+          },
+          {
+            "name": "Reason",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Location",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "OtherLocation",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "hrp/attendance:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/attendance"
+      ],
+      "short_description": "Create a new attendance header record",
+      "detailed_description": "Create a new attendance header record. It validates the request, then calls ICommon.getUserByToken, IAttendanceHeader.GetLeaveTypeByIdAsync, IAttendanceHeader.GetLeaveSubTypeByIdAsync. Persists changes to: AttendanceHeaders: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid LeaveTypeId [when leaveTypeExists == null]; Invalid LeaveSubTypeId [when leaveSubTypeExists == null]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create a new attendance header record",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body AttendanceHeaderDto"
+        ],
+        "follow_up_apis": [
+          "GET api/AttendanceHeader/attendance",
+          "GET api/AttendanceHeader/leaves",
+          "GET api/AttendanceHeader/others"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "attendance_header_create",
+        "description": "Create a new attendance header record",
+        "http_method": "POST",
+        "endpoint": "api/AttendanceHeader/create-attendance",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "LeaveTypeId": {
+            "type": "int",
+            "required": true,
+            "description": "Leave Type Id (body)"
+          },
+          "LeaveSubTypeId": {
+            "type": "int",
+            "required": false,
+            "description": "Leave Sub Type Id (body)"
+          },
+          "HalfOrFull": {
+            "type": "string",
+            "required": false,
+            "description": "Half Or Full (body)"
+          },
+          "FromDate": {
+            "type": "datetime",
+            "required": true,
+            "description": "From Date (body)"
+          },
+          "ToDate": {
+            "type": "datetime",
+            "required": true,
+            "description": "To Date (body)"
+          },
+          "Reason": {
+            "type": "string",
+            "required": true,
+            "description": "Reason (body)"
+          },
+          "Location": {
+            "type": "string",
+            "required": false,
+            "description": "Location (body)"
+          },
+          "OtherLocation": {
+            "type": "string",
+            "required": false,
+            "description": "Other Location (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/AttendanceHeaderController.cs",
+        "action_method": "CreateAsync",
+        "related_dto_files": [
+          "DTOs/Request/AttendanceHeaderDto.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/AttendanceHeaderRepo.cs",
+          "Interfaces/IAttendanceHeader.cs"
+        ]
+      },
+      "module": "Attendance and Leave Management",
+      "business_logic": {
+        "operation_summary": "Create a new attendance header record — validates the request, calls ICommon.getUserByToken, IAttendanceHeader.GetLeaveTypeByIdAsync, IAttendanceHeader.GetLeaveSubTypeByIdAsync",
+        "preconditions": "Valid Bearer JWT; request body of type AttendanceHeaderDto; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "AttendanceHeaders: INSERT",
+        "validations": "Invalid LeaveTypeId; Invalid LeaveSubTypeId",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAttendanceHeader.GetLeaveTypeByIdAsync",
+          "IAttendanceHeader.GetLeaveSubTypeByIdAsync",
+          "IAttendanceHeader.CreateAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AttendanceHeaderRepo (Repositories/AttendanceHeaderRepo.cs) via IAttendanceHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid LeaveTypeId",
+            "when": "leaveTypeExists == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid LeaveSubTypeId",
+            "when": "leaveSubTypeExists == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "attendance_header_update",
+      "name": "Update",
+      "action_method": "UpdateAsync",
+      "http_method": "PUT",
+      "route": "api/AttendanceHeader/{id}",
+      "business_purpose": "Update an existing attendance header record",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "AttendanceHeaderDto",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "LeaveTypeId",
+            "type": "int",
+            "required": true
+          },
+          {
+            "name": "LeaveSubTypeId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "HalfOrFull",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "FromDate",
+            "type": "datetime",
+            "required": true
+          },
+          {
+            "name": "ToDate",
+            "type": "datetime",
+            "required": true
+          },
+          {
+            "name": "Reason",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Location",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "OtherLocation",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "crm/attendance:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "hrp/attendance",
+        "crm/leaves"
+      ],
+      "short_description": "Update an existing attendance header record",
+      "detailed_description": "Update an existing attendance header record. It calls ICommon.getUserByToken, IAttendanceHeader.GetByIdAsync, IAttendanceHeader.GetLeaveTypeByIdAsync. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Attendance header not found [when existingAttendanceHeader == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update an existing attendance header record",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "request body AttendanceHeaderDto"
+        ],
+        "follow_up_apis": [
+          "GET api/AttendanceHeader/{id}",
+          "GET api/AttendanceHeader/attendance-subtypes/{leaveTypeId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "attendance_header_update",
+        "description": "Update an existing attendance header record",
+        "http_method": "PUT",
+        "endpoint": "api/AttendanceHeader/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "LeaveTypeId": {
+            "type": "int",
+            "required": true,
+            "description": "Leave Type Id (body)"
+          },
+          "LeaveSubTypeId": {
+            "type": "int",
+            "required": false,
+            "description": "Leave Sub Type Id (body)"
+          },
+          "HalfOrFull": {
+            "type": "string",
+            "required": false,
+            "description": "Half Or Full (body)"
+          },
+          "FromDate": {
+            "type": "datetime",
+            "required": true,
+            "description": "From Date (body)"
+          },
+          "ToDate": {
+            "type": "datetime",
+            "required": true,
+            "description": "To Date (body)"
+          },
+          "Reason": {
+            "type": "string",
+            "required": true,
+            "description": "Reason (body)"
+          },
+          "Location": {
+            "type": "string",
+            "required": false,
+            "description": "Location (body)"
+          },
+          "OtherLocation": {
+            "type": "string",
+            "required": false,
+            "description": "Other Location (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/AttendanceHeaderController.cs",
+        "action_method": "UpdateAsync",
+        "related_dto_files": [
+          "DTOs/Request/AttendanceHeaderDto.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/AttendanceHeaderRepo.cs",
+          "Interfaces/IAttendanceHeader.cs"
+        ]
+      },
+      "module": "Attendance and Leave Management",
+      "business_logic": {
+        "operation_summary": "Update an existing attendance header record — calls ICommon.getUserByToken, IAttendanceHeader.GetByIdAsync, IAttendanceHeader.GetLeaveTypeByIdAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); request body of type AttendanceHeaderDto; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets existingAttendanceHeader.LeaveType, existingAttendanceHeader.Leave_sub_Type, existingAttendanceHeader.half_or_full, existingAttendanceHeader.FromDate, existingAttendanceHeader.ToDate, existingAttendanceHeader.Reason and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAttendanceHeader.GetByIdAsync",
+          "IAttendanceHeader.GetLeaveTypeByIdAsync",
+          "IAttendanceHeader.GetLeaveSubTypeByIdAsync",
+          "IAttendanceHeader.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AttendanceHeaderRepo (Repositories/AttendanceHeaderRepo.cs) via IAttendanceHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Attendance header not found",
+            "when": "existingAttendanceHeader == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "attendance_header_get_attendance_type",
+      "name": "Get Attendance Type",
+      "action_method": "GetAttendanceTypeAsync",
+      "http_method": "GET",
+      "route": "api/AttendanceHeader/attendance-types",
+      "business_purpose": "Retrieve attendance type",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/attendance:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "hrp/attendance",
+        "crm/leaves"
+      ],
+      "short_description": "Retrieve attendance type",
+      "detailed_description": "Retrieve attendance type. It calls ICommon.getUserByToken, IAttendanceHeader.GetAttendanceTypeAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve attendance type",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/AttendanceHeader/attendance",
+          "GET api/AttendanceHeader/leaves",
+          "GET api/AttendanceHeader/others"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "attendance_header_get_attendance_type",
+        "description": "Retrieve attendance type",
+        "http_method": "GET",
+        "endpoint": "api/AttendanceHeader/attendance-types",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AttendanceHeaderController.cs",
+        "action_method": "GetAttendanceTypeAsync",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/AttendanceHeaderRepo.cs",
+          "Interfaces/IAttendanceHeader.cs"
+        ]
+      },
+      "module": "Attendance and Leave Management",
+      "business_logic": {
+        "operation_summary": "Retrieve attendance type — calls ICommon.getUserByToken, IAttendanceHeader.GetAttendanceTypeAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAttendanceHeader.GetAttendanceTypeAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AttendanceHeaderRepo (Repositories/AttendanceHeaderRepo.cs) via IAttendanceHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "attendance_header_get_attendance_sub_type",
+      "name": "Get Attendance Sub Type",
+      "action_method": "GetAttendanceSubTypeAsync",
+      "http_method": "GET",
+      "route": "api/AttendanceHeader/attendance-subtypes/{leaveTypeId}",
+      "business_purpose": "Retrieve attendance sub type",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "leaveTypeId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/leaves:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve attendance sub type",
+      "detailed_description": "Retrieve attendance sub type. It validates the request, then calls ICommon.getUserByToken, IAttendanceHeader.GetAttendanceTypeAsync, IAttendanceHeader.GetAttendanceSubTypeAsync. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid leave type ID [when selectedLeaveType == null]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve attendance sub type",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "leaveTypeId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/AttendanceHeader/attendance",
+          "GET api/AttendanceHeader/leaves",
+          "GET api/AttendanceHeader/others"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "attendance_header_get_attendance_sub_type",
+        "description": "Retrieve attendance sub type",
+        "http_method": "GET",
+        "endpoint": "api/AttendanceHeader/attendance-subtypes/{leaveTypeId}",
+        "parameters": {
+          "leaveTypeId": {
+            "type": "int",
+            "required": true,
+            "description": "leave Type Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AttendanceHeaderController.cs",
+        "action_method": "GetAttendanceSubTypeAsync",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/AttendanceHeaderRepo.cs",
+          "Interfaces/IAttendanceHeader.cs"
+        ]
+      },
+      "module": "Attendance and Leave Management",
+      "business_logic": {
+        "operation_summary": "Retrieve attendance sub type — validates the request, calls ICommon.getUserByToken, IAttendanceHeader.GetAttendanceTypeAsync, IAttendanceHeader.GetAttendanceSubTypeAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) leaveTypeId; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Invalid leave type ID",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAttendanceHeader.GetAttendanceTypeAsync",
+          "IAttendanceHeader.GetAttendanceSubTypeAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AttendanceHeaderRepo (Repositories/AttendanceHeaderRepo.cs) via IAttendanceHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid leave type ID",
+            "when": "selectedLeaveType == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "attendance_header_approve",
+      "name": "Approve",
+      "action_method": "Approve",
+      "http_method": "POST",
+      "route": "api/AttendanceHeader/approve",
+      "business_purpose": "Approve",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "ApproveLeaveRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_approved",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "crm/leaves:approve",
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "hrp/attendance",
+        "crm/attendance"
+      ],
+      "short_description": "Approve",
+      "detailed_description": "Approve. It calls ICommon.getUserByToken, IAttendanceHeader.GetByIdAsync, IAttendanceHeader.UpdateAsync. Persists changes to: AttendanceHeaders: UPDATE. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Leave not found [when leaveHeader == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to approve",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body ApproveLeaveRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/AttendanceHeader/attendance",
+          "GET api/AttendanceHeader/leaves",
+          "GET api/AttendanceHeader/others"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "attendance_header_approve",
+        "description": "Approve",
+        "http_method": "POST",
+        "endpoint": "api/AttendanceHeader/approve",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "is_approved": {
+            "type": "bool",
+            "required": false,
+            "description": "is approved (body)"
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Approves the record and advances its workflow"
+      },
+      "source": {
+        "controller_file": "Controllers/AttendanceHeaderController.cs",
+        "action_method": "Approve",
+        "related_dto_files": [
+          "Controllers/AttendanceHeaderController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/AttendanceHeaderRepo.cs",
+          "Interfaces/IAttendanceHeader.cs"
+        ]
+      },
+      "module": "Attendance and Leave Management",
+      "business_logic": {
+        "operation_summary": "Approve — calls ICommon.getUserByToken, IAttendanceHeader.GetByIdAsync, IAttendanceHeader.UpdateAsync",
+        "preconditions": "Valid Bearer JWT; request body of type ApproveLeaveRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "AttendanceHeaders: UPDATE; sets leaveHeader.IsApproved, leaveHeader.IsRejected, leaveHeader.OperatedDate, leaveHeader.OperatedBy and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAttendanceHeader.GetByIdAsync",
+          "IAttendanceHeader.UpdateAsync",
+          "IAttendanceHeader.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AttendanceHeaderRepo (Repositories/AttendanceHeaderRepo.cs) via IAttendanceHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Leave not found",
+            "when": "leaveHeader == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "attendance_header_bulk_approve",
+      "name": "Bulk Approve",
+      "action_method": "BulkApprove",
+      "http_method": "POST",
+      "route": "api/AttendanceHeader/approve-bulk",
+      "business_purpose": "Handle bulk approve",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "BulkApproveLeaveRequest (inline)",
+        "properties": [
+          {
+            "name": "Ids",
+            "type": "List<int>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "crm/attendance:approve",
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "hrp/attendance"
+      ],
+      "short_description": "Handle bulk approve",
+      "detailed_description": "Handle bulk approve. It validates the request, then calls ICommon.getUserByToken, IAttendanceHeader.GetByIdAsync, IAttendanceHeader.UpdateAsync. Persists changes to: AttendanceHeaders: UPDATE. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: No attendance records selected. [when request?.Ids == null || request.Ids.Count == 0]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle bulk approve",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body BulkApproveLeaveRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/AttendanceHeader/attendance",
+          "GET api/AttendanceHeader/leaves",
+          "GET api/AttendanceHeader/others"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "attendance_header_bulk_approve",
+        "description": "Handle bulk approve",
+        "http_method": "POST",
+        "endpoint": "api/AttendanceHeader/approve-bulk",
+        "parameters": {
+          "Ids": {
+            "type": "List<int>",
+            "required": false,
+            "description": "Ids (body)"
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Approves the record and advances its workflow"
+      },
+      "source": {
+        "controller_file": "Controllers/AttendanceHeaderController.cs",
+        "action_method": "BulkApprove",
+        "related_dto_files": [
+          "Controllers/AttendanceHeaderController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/AttendanceHeaderRepo.cs",
+          "Interfaces/IAttendanceHeader.cs"
+        ]
+      },
+      "module": "Attendance and Leave Management",
+      "business_logic": {
+        "operation_summary": "Handle bulk approve — validates the request, calls ICommon.getUserByToken, IAttendanceHeader.GetByIdAsync, IAttendanceHeader.UpdateAsync",
+        "preconditions": "Valid Bearer JWT; request body of type BulkApproveLeaveRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "AttendanceHeaders: UPDATE; sets leaveHeader.IsApproved, leaveHeader.IsRejected, leaveHeader.OperatedDate, leaveHeader.OperatedBy",
+        "validations": "No attendance records selected.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAttendanceHeader.GetByIdAsync",
+          "IAttendanceHeader.UpdateAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AttendanceHeaderRepo (Repositories/AttendanceHeaderRepo.cs) via IAttendanceHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "No attendance records selected.",
+            "when": "request?.Ids == null || request.Ids.Count == 0"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "attendance_header_cancel_approval",
+      "name": "Cancel Approval",
+      "action_method": "CancelApproval",
+      "http_method": "POST",
+      "route": "api/AttendanceHeader/cancel-approval",
+      "business_purpose": "Handle cancel approval",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CancelApprovalRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_approved",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "crm/leaves:approve",
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "hrp/attendance",
+        "crm/attendance"
+      ],
+      "short_description": "Handle cancel approval",
+      "detailed_description": "Handle cancel approval. It calls ICommon.getUserByToken, IAttendanceHeader.GetByIdAsync, IAttendanceHeader.UpdateAsync. Persists changes to: AttendanceHeaders: UPDATE. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Leave not found [when leaveHeader == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle cancel approval",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CancelApprovalRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/AttendanceHeader/attendance",
+          "GET api/AttendanceHeader/leaves",
+          "GET api/AttendanceHeader/others"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "attendance_header_cancel_approval",
+        "description": "Handle cancel approval",
+        "http_method": "POST",
+        "endpoint": "api/AttendanceHeader/cancel-approval",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "is_approved": {
+            "type": "bool",
+            "required": false,
+            "description": "is approved (body)"
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Approves the record and advances its workflow"
+      },
+      "source": {
+        "controller_file": "Controllers/AttendanceHeaderController.cs",
+        "action_method": "CancelApproval",
+        "related_dto_files": [
+          "Controllers/AttendanceHeaderController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/AttendanceHeaderRepo.cs",
+          "Interfaces/IAttendanceHeader.cs"
+        ]
+      },
+      "module": "Attendance and Leave Management",
+      "business_logic": {
+        "operation_summary": "Handle cancel approval — calls ICommon.getUserByToken, IAttendanceHeader.GetByIdAsync, IAttendanceHeader.UpdateAsync",
+        "preconditions": "Valid Bearer JWT; request body of type CancelApprovalRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "AttendanceHeaders: UPDATE; sets leaveHeader.IsRejected, leaveHeader.OperatedDate, leaveHeader.OperatedBy and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAttendanceHeader.GetByIdAsync",
+          "IAttendanceHeader.UpdateAsync",
+          "IAttendanceHeader.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AttendanceHeaderRepo (Repositories/AttendanceHeaderRepo.cs) via IAttendanceHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Leave not found",
+            "when": "leaveHeader == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "attendance_header_reject",
+      "name": "Reject",
+      "action_method": "Reject",
+      "http_method": "POST",
+      "route": "api/AttendanceHeader/reject",
+      "business_purpose": "Reject",
+      "data_effect": "REJECTION",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "RejectLeaveRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_rejected",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "REJECTION",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "reject"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "crm/attendance",
+        "hrp/attendance",
+        "crm/leaves"
+      ],
+      "short_description": "Reject",
+      "detailed_description": "Reject. It calls ICommon.getUserByToken, IAttendanceHeader.GetByIdAsync, IAttendanceHeader.UpdateAsync. Persists changes to: AttendanceHeaders: UPDATE. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Leave not found [when leaveHeader == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to reject",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body RejectLeaveRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/AttendanceHeader/attendance",
+          "GET api/AttendanceHeader/leaves",
+          "GET api/AttendanceHeader/others"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "attendance_header_reject",
+        "description": "Reject",
+        "http_method": "POST",
+        "endpoint": "api/AttendanceHeader/reject",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "is_rejected": {
+            "type": "bool",
+            "required": false,
+            "description": "is rejected (body)"
+          }
+        },
+        "operation_type": "REJECTION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Rejects the record"
+      },
+      "source": {
+        "controller_file": "Controllers/AttendanceHeaderController.cs",
+        "action_method": "Reject",
+        "related_dto_files": [
+          "Controllers/AttendanceHeaderController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/AttendanceHeaderRepo.cs",
+          "Interfaces/IAttendanceHeader.cs"
+        ]
+      },
+      "module": "Attendance and Leave Management",
+      "business_logic": {
+        "operation_summary": "Reject — calls ICommon.getUserByToken, IAttendanceHeader.GetByIdAsync, IAttendanceHeader.UpdateAsync",
+        "preconditions": "Valid Bearer JWT; request body of type RejectLeaveRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "AttendanceHeaders: UPDATE; sets leaveHeader.IsRejected, leaveHeader.IsApproved, leaveHeader.OperatedDate, leaveHeader.OperatedBy and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAttendanceHeader.GetByIdAsync",
+          "IAttendanceHeader.UpdateAsync",
+          "IAttendanceHeader.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AttendanceHeaderRepo (Repositories/AttendanceHeaderRepo.cs) via IAttendanceHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Leave not found",
+            "when": "leaveHeader == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "attendance_header_bulk_reject",
+      "name": "Bulk Reject",
+      "action_method": "BulkReject",
+      "http_method": "POST",
+      "route": "api/AttendanceHeader/reject-bulk",
+      "business_purpose": "Handle bulk reject",
+      "data_effect": "REJECTION",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "BulkRejectLeaveRequest (inline)",
+        "properties": [
+          {
+            "name": "Ids",
+            "type": "List<int>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "REJECTION",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "crm/attendance:reject",
+      "permission_flags": [
+        "reject"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "hrp/attendance"
+      ],
+      "short_description": "Handle bulk reject",
+      "detailed_description": "Handle bulk reject. It validates the request, then calls ICommon.getUserByToken, IAttendanceHeader.GetByIdAsync, IAttendanceHeader.UpdateAsync. Persists changes to: AttendanceHeaders: UPDATE. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: No attendance records selected. [when request?.Ids == null || request.Ids.Count == 0]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle bulk reject",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body BulkRejectLeaveRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/AttendanceHeader/attendance",
+          "GET api/AttendanceHeader/leaves",
+          "GET api/AttendanceHeader/others"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "attendance_header_bulk_reject",
+        "description": "Handle bulk reject",
+        "http_method": "POST",
+        "endpoint": "api/AttendanceHeader/reject-bulk",
+        "parameters": {
+          "Ids": {
+            "type": "List<int>",
+            "required": false,
+            "description": "Ids (body)"
+          }
+        },
+        "operation_type": "REJECTION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Rejects the record"
+      },
+      "source": {
+        "controller_file": "Controllers/AttendanceHeaderController.cs",
+        "action_method": "BulkReject",
+        "related_dto_files": [
+          "Controllers/AttendanceHeaderController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/AttendanceHeaderRepo.cs",
+          "Interfaces/IAttendanceHeader.cs"
+        ]
+      },
+      "module": "Attendance and Leave Management",
+      "business_logic": {
+        "operation_summary": "Handle bulk reject — validates the request, calls ICommon.getUserByToken, IAttendanceHeader.GetByIdAsync, IAttendanceHeader.UpdateAsync",
+        "preconditions": "Valid Bearer JWT; request body of type BulkRejectLeaveRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "AttendanceHeaders: UPDATE; sets leaveHeader.IsRejected, leaveHeader.IsApproved, leaveHeader.OperatedDate, leaveHeader.OperatedBy",
+        "validations": "No attendance records selected.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAttendanceHeader.GetByIdAsync",
+          "IAttendanceHeader.UpdateAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AttendanceHeaderRepo (Repositories/AttendanceHeaderRepo.cs) via IAttendanceHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "No attendance records selected.",
+            "when": "request?.Ids == null || request.Ids.Count == 0"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "attendance_header_revoke_rejection",
+      "name": "Revoke Rejection",
+      "action_method": "RevokeRejection",
+      "http_method": "POST",
+      "route": "api/AttendanceHeader/revoke-rejection",
+      "business_purpose": "Revoke rejection",
+      "data_effect": "REJECTION",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "RejectLeaveRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_rejected",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "REJECTION",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "reject"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "crm/attendance",
+        "hrp/attendance",
+        "crm/leaves"
+      ],
+      "short_description": "Revoke rejection",
+      "detailed_description": "Revoke rejection. It calls ICommon.getUserByToken, IAttendanceHeader.GetByIdAsync, IAttendanceHeader.UpdateAsync. Persists changes to: AttendanceHeaders: UPDATE. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Leave not found [when leaveHeader == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to revoke rejection",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body RejectLeaveRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/AttendanceHeader/attendance",
+          "GET api/AttendanceHeader/leaves",
+          "GET api/AttendanceHeader/others"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "attendance_header_revoke_rejection",
+        "description": "Revoke rejection",
+        "http_method": "POST",
+        "endpoint": "api/AttendanceHeader/revoke-rejection",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "is_rejected": {
+            "type": "bool",
+            "required": false,
+            "description": "is rejected (body)"
+          }
+        },
+        "operation_type": "REJECTION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Rejects the record"
+      },
+      "source": {
+        "controller_file": "Controllers/AttendanceHeaderController.cs",
+        "action_method": "RevokeRejection",
+        "related_dto_files": [
+          "Controllers/AttendanceHeaderController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/AttendanceHeaderRepo.cs",
+          "Interfaces/IAttendanceHeader.cs"
+        ]
+      },
+      "module": "Attendance and Leave Management",
+      "business_logic": {
+        "operation_summary": "Revoke rejection — calls ICommon.getUserByToken, IAttendanceHeader.GetByIdAsync, IAttendanceHeader.UpdateAsync",
+        "preconditions": "Valid Bearer JWT; request body of type RejectLeaveRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "AttendanceHeaders: UPDATE; sets leaveHeader.IsRejected, leaveHeader.OperatedDate, leaveHeader.OperatedBy and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAttendanceHeader.GetByIdAsync",
+          "IAttendanceHeader.UpdateAsync",
+          "IAttendanceHeader.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AttendanceHeaderRepo (Repositories/AttendanceHeaderRepo.cs) via IAttendanceHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Leave not found",
+            "when": "leaveHeader == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "attendance_header_delete_attendance_header",
+      "name": "Delete Attendance Header",
+      "action_method": "DeleteAttendanceHeader",
+      "http_method": "DELETE",
+      "route": "api/AttendanceHeader/attendance/{id}",
+      "business_purpose": "Delete attendance header",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "crm/attendance",
+        "hrp/attendance",
+        "crm/leaves"
+      ],
+      "short_description": "Delete attendance header",
+      "detailed_description": "Delete attendance header. It validates the request, then calls ICommon.getUserByToken, IAttendanceHeader.GetByIdAsync, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: AttendanceHeaders: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid lead ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Attendance Header not found. [when existingAttendanceHeader == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete attendance header",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/AttendanceHeader/{id}",
+          "GET api/AttendanceHeader/attendance-subtypes/{leaveTypeId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "attendance_header_delete_attendance_header",
+        "description": "Delete attendance header",
+        "http_method": "DELETE",
+        "endpoint": "api/AttendanceHeader/attendance/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/AttendanceHeaderController.cs",
+        "action_method": "DeleteAttendanceHeader",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/AttendanceHeaderRepo.cs",
+          "Interfaces/IAttendanceHeader.cs"
+        ]
+      },
+      "module": "Attendance and Leave Management",
+      "business_logic": {
+        "operation_summary": "Delete attendance header — validates the request, calls ICommon.getUserByToken, IAttendanceHeader.GetByIdAsync, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "AttendanceHeaders: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "validations": "Valid lead ID is required.",
+        "side_effects": "AuditLog DELETE (Customer Relationship Management > Attendance Header > Attendance Header)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAttendanceHeader.GetByIdAsync",
+          "ICommon.ToJsonString",
+          "IAttendanceHeader.DeleteAttendanceHeader",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AttendanceHeaderRepo (Repositories/AttendanceHeaderRepo.cs) via IAttendanceHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid lead ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Attendance Header not found.",
+            "when": "existingAttendanceHeader == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "attendance_header_get_pjp_locations",
+      "name": "Get Pjp Locations",
+      "action_method": "GetPjpLocations",
+      "http_method": "GET",
+      "route": "api/AttendanceHeader/pjp-locations",
+      "business_purpose": "Retrieve pjp locations",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/attendance:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "hrp/attendance",
+        "crm/leaves"
+      ],
+      "short_description": "Retrieve pjp locations",
+      "detailed_description": "Retrieve pjp locations. It calls ICommon.getUserByToken, IAttendanceHeader.GetPjpLocationsAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve pjp locations",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/AttendanceHeader/attendance",
+          "GET api/AttendanceHeader/leaves",
+          "GET api/AttendanceHeader/others"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "attendance_header_get_pjp_locations",
+        "description": "Retrieve pjp locations",
+        "http_method": "GET",
+        "endpoint": "api/AttendanceHeader/pjp-locations",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AttendanceHeaderController.cs",
+        "action_method": "GetPjpLocations",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/AttendanceHeaderRepo.cs",
+          "Interfaces/IAttendanceHeader.cs"
+        ]
+      },
+      "module": "Attendance and Leave Management",
+      "business_logic": {
+        "operation_summary": "Retrieve pjp locations — calls ICommon.getUserByToken, IAttendanceHeader.GetPjpLocationsAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAttendanceHeader.GetPjpLocationsAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AttendanceHeaderRepo (Repositories/AttendanceHeaderRepo.cs) via IAttendanceHeader"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    }
+  ]
+}

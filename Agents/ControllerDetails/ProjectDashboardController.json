@@ -1,0 +1,202 @@
+{
+  "controller": "ProjectDashboardController",
+  "file": "Controllers/ProjectDashboardController.cs",
+  "module": "Dashboards",
+  "base_route": "api/ProjectDashboard",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles project dashboard: get project dashboard overview",
+  "menu_permission": {
+    "status": "lookup-only",
+    "menu_keys": [],
+    "also_called_from_menus": [
+      "analysis/projects-dashboard"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "project_dashboard_get_project_dashboard_overview",
+      "name": "Get Project Dashboard Overview",
+      "action_method": "GetProjectDashboardOverview",
+      "http_method": "GET",
+      "route": "api/ProjectDashboard/overview",
+      "business_purpose": "Retrieve project dashboard overview",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "status",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        },
+        {
+          "name": "pRegion",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        },
+        {
+          "name": "pBranch",
+          "type": "string",
+          "required": false,
+          "default": "\"\""
+        },
+        {
+          "name": "fromDate",
+          "type": "string",
+          "required": false,
+          "default": "\"\""
+        },
+        {
+          "name": "period",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "toDate",
+          "type": "string",
+          "required": false,
+          "default": "\"\""
+        },
+        {
+          "name": "user",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "analysis/projects-dashboard:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve project dashboard overview",
+      "detailed_description": "Retrieve project dashboard overview. It calls ICommon.getUserByToken, IProjectDashboard.GetUserById, IProjectDashboard.GetAllCrmProjects. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve project dashboard overview",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/ProjectDashboard/overview"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "project_dashboard_get_project_dashboard_overview",
+        "description": "Retrieve project dashboard overview",
+        "http_method": "GET",
+        "endpoint": "api/ProjectDashboard/overview",
+        "parameters": {
+          "status": {
+            "type": "int",
+            "required": false,
+            "description": "status (query)"
+          },
+          "pRegion": {
+            "type": "int",
+            "required": false,
+            "description": "p Region (query)"
+          },
+          "pBranch": {
+            "type": "string",
+            "required": false,
+            "description": "p Branch (query)"
+          },
+          "fromDate": {
+            "type": "string",
+            "required": false,
+            "description": "from Date (query)"
+          },
+          "period": {
+            "type": "string",
+            "required": false,
+            "description": "period (query)"
+          },
+          "toDate": {
+            "type": "string",
+            "required": false,
+            "description": "to Date (query)"
+          },
+          "user": {
+            "type": "int",
+            "required": false,
+            "description": "user (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ProjectDashboardController.cs",
+        "action_method": "GetProjectDashboardOverview",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/ProjectDashboardRepo.cs",
+          "Interfaces/IProjectDashboard.cs"
+        ]
+      },
+      "module": "Dashboards",
+      "business_logic": {
+        "operation_summary": "Retrieve project dashboard overview — calls ICommon.getUserByToken, IProjectDashboard.GetUserById, IProjectDashboard.GetAllCrmProjects",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IProjectDashboard.GetUserById",
+          "IProjectDashboard.GetAllCrmProjects",
+          "IProjectDashboard.GetAllUsersByCurrentUser",
+          "IProjectDashboard.GetAllRegions",
+          "IProjectDashboard.GetAllProjectStatuses"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ProjectDashboardRepo (Repository/ProjectDashboardRepo.cs) via IProjectDashboard"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    }
+  ]
+}

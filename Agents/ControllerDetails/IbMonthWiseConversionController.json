@@ -1,0 +1,195 @@
+{
+  "controller": "IbMonthWiseConversionController",
+  "file": "Controllers/IbMonthWiseConversionController.cs",
+  "module": "Reporting",
+  "base_route": "api/IbMonthWiseConversion",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles ib month wise conversion: get ib month wise conversion",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "rpt/ib-reports/ib-monthwise-conversion",
+        "module_code": "rpt",
+        "section": "ib-reports",
+        "sub_section": "ib-monthwise-conversion",
+        "frontend_routes": [
+          "/rpt/ib-reports/ib-monthwise-conversion"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "IbMonthWiseConversionReport"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "ib_month_wise_conversion_get_ib_month_wise_conversion",
+      "name": "Get Ib Month Wise Conversion",
+      "action_method": "GetIbMonthWiseConversion",
+      "http_method": "GET",
+      "route": "api/IbMonthWiseConversion",
+      "business_purpose": "Retrieve ib month wise conversion",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "month_name",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "year",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/ib-reports/ib-monthwise-conversion:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve ib month wise conversion",
+      "detailed_description": "Retrieve ib month wise conversion. It validates the request, then calls ICommon.getUserByToken, IIbMonthWiseConversion.GetIbMonthWiseConversionData. Data access uses stored procedure(s): GetIbMonthWiseConversion. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid month [when monthIndex < 0]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid user [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve ib month wise conversion",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/IbMonthWiseConversion"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "ib_month_wise_conversion_get_ib_month_wise_conversion",
+        "description": "Retrieve ib month wise conversion",
+        "http_method": "GET",
+        "endpoint": "api/IbMonthWiseConversion",
+        "parameters": {
+          "month_name": {
+            "type": "string",
+            "required": false,
+            "description": "month name (query)"
+          },
+          "year": {
+            "type": "int",
+            "required": false,
+            "description": "year (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IbMonthWiseConversionController.cs",
+        "action_method": "GetIbMonthWiseConversion",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/IbMonthWiseConversion_repo.cs",
+          "Interfaces/IIbMonthWiseConversion.cs"
+        ]
+      },
+      "module": "Reporting",
+      "business_logic": {
+        "operation_summary": "Retrieve ib month wise conversion — validates the request, calls ICommon.getUserByToken, IIbMonthWiseConversion.GetIbMonthWiseConversionData",
+        "preconditions": "Valid Bearer JWT; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Invalid month",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIbMonthWiseConversion.GetIbMonthWiseConversionData"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IbMonthWiseConversion_repo (Repositories/IbMonthWiseConversion_repo.cs) via IIbMonthWiseConversion"
+        ],
+        "stored_procedures": [
+          "GetIbMonthWiseConversion"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid user",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid month",
+            "when": "monthIndex < 0"
+          }
+        ]
+      }
+    }
+  ]
+}
