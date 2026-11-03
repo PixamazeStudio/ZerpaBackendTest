@@ -1,0 +1,718 @@
+{
+  "controller": "FactoryController",
+  "file": "Controllers/FactoryController.cs",
+  "base_route": "api/Factory",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/company-settings/factories",
+        "module_code": "settings",
+        "section": "company-settings",
+        "sub_section": "factories",
+        "frontend_routes": [
+          "/settings/company-settings/factories"
+        ],
+        "menu_route_confirmed": true,
+        "display_names": {
+          "module": "Settings",
+          "section": "Company Settings",
+          "sub_section": "Factories"
+        }
+      }
+    ],
+    "section_configuration_keys": [
+      "factories"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Settings",
+        "section": "Company Settings",
+        "sub_section": "Factories"
+      },
+      {
+        "module": "Settings",
+        "section": "Location Settings",
+        "sub_section": "Region"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "f_001",
+      "name": "GetAllFactories",
+      "http_method": "GET",
+      "route": "api/Factory",
+      "business_purpose": "Retrieve paginated list of factories with optional filtering by date and search text.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "DateTime?",
+          "required": false
+        },
+        {
+          "name": "todate",
+          "type": "DateTime?",
+          "required": false
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": 10
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": 0
+        }
+      ],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          500
+        ],
+        "dto_name": "FactoryListResponse"
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "Retrieves paginated factory list with optional date range and text search filters.",
+        "preconditions": "Valid JWT token.",
+        "validations": "Token extraction and validation.",
+        "side_effects": "Fetches pagination info and actions.",
+        "calls_services": [
+          "IFactory",
+          "ICommon"
+        ],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [
+          "GetFactory"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "notes": "Read-only operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FactoryController.cs",
+        "action_method": "GetAllFactories"
+      },
+      "required_permission": "settings/company-settings/factories:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve paginated list of factories with optional filtering by date and search text.",
+      "detailed_description": "Retrieve paginated list of factories with optional filtering by date and search text. It calls IFactory.GetFactoryData, IFactory.GetFactoryActions, ICommon.GetPagination. Data access uses stored procedure(s): GetFactory. Possible responses: 200, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve paginated list of factories with optional filtering by date and search text.",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Factory",
+          "GET api/Factory/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "factory_get_all_factories",
+        "description": "Retrieve paginated list of factories with optional filtering by date and search text.",
+        "http_method": "GET",
+        "endpoint": "api/Factory",
+        "parameters": {
+          "fromdate": {
+            "type": "DateTime?",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "DateTime?",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "f_002",
+      "name": "GetFactoryById",
+      "http_method": "GET",
+      "route": "api/Factory/{id}",
+      "business_purpose": "Retrieve single factory details by ID.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          404,
+          500
+        ],
+        "dto_name": "FactoryDetailsResponse"
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "Retrieves factory record by ID from database.",
+        "preconditions": "Factory ID > 0. Factory must exist.",
+        "validations": "Factory ID must be > 0.",
+        "side_effects": "None",
+        "calls_services": [
+          "IFactory"
+        ],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid factory ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Factory not found.",
+            "when": "factory == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "notes": "Read-only operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FactoryController.cs",
+        "action_method": "GetFactoryById"
+      },
+      "required_permission": "settings/company-settings/factories:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve single factory details by ID.",
+      "detailed_description": "Retrieve single factory details by ID. It validates the request, then calls IFactory.GetFactoryById. Possible responses: 200, 400, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid factory ID is required. [when id <= 0]",
+        "not_found": "404: Factory not found. [when factory == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve single factory details by ID.",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Factory",
+          "GET api/Factory/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "factory_get_factory_by_id",
+        "description": "Retrieve single factory details by ID.",
+        "http_method": "GET",
+        "endpoint": "api/Factory/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "f_003",
+      "name": "CreateFactory",
+      "http_method": "POST",
+      "route": "api/Factory",
+      "business_purpose": "Create a new factory record with name, description, address, and phone number.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateFactoryRequest",
+        "properties": [
+          "factoryName",
+          "Description",
+          "factory_address",
+          "factory_phoneNumber"
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ],
+        "dto_name": "FactoryCreateResponse"
+      },
+      "data_effect": "CREATE",
+      "business_logic": {
+        "operation_summary": "Creates new factory record. Validates factory name uniqueness. Creates audit log.",
+        "preconditions": "Valid token. User exists. Factory name required and must be unique.",
+        "validations": "ModelState valid. Factory name non-empty and unique.",
+        "side_effects": "Audit log created. User tracked in context.",
+        "calls_services": [
+          "IFactory",
+          "ICommon"
+        ],
+        "calls_repositories": [
+          "Factories"
+        ],
+        "state_changes": "Factories: INSERT; AuditLog: INSERT",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "Factory name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.factoryName)"
+          },
+          {
+            "returns": 400,
+            "message": "Factory with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "HIGH",
+        "notes": "Name uniqueness check means repeated calls fail. Recommend idempotency key on client."
+      },
+      "source": {
+        "controller_file": "Controllers/FactoryController.cs",
+        "action_method": "CreateFactory"
+      },
+      "required_permission": "settings/company-settings/factories:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create a new factory record with name, description, address, and phone number.",
+      "detailed_description": "Create a new factory record with name, description, address, and phone number. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IFactory.IsFactoryNameDuplicateAsync, IFactory.CreateFactoryAsync, then writes an audit log entry. Persists changes to: Factories: INSERT, AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; Factory name is required. [when string.IsNullOrWhiteSpace(request.factoryName)]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "Factory with this name already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create a new factory record with name, description, address, and phone number.",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateFactoryRequest"
+        ],
+        "follow_up_apis": [
+          "GET api/Factory"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "factory_create_factory",
+        "description": "Create a new factory record with name, description, address, and phone number.",
+        "http_method": "POST",
+        "endpoint": "api/Factory",
+        "parameters": {
+          "factoryName": {
+            "type": "string",
+            "required": false,
+            "description": "factory Name (body)"
+          },
+          "Description": {
+            "type": "string",
+            "required": false,
+            "description": "Description (body)"
+          },
+          "factory_address": {
+            "type": "string",
+            "required": false,
+            "description": "factory address (body)"
+          },
+          "factory_phoneNumber": {
+            "type": "string",
+            "required": false,
+            "description": "factory phone Number (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "f_004",
+      "name": "UpdateFactory",
+      "http_method": "PUT",
+      "route": "api/Factory/{factoryId}",
+      "business_purpose": "Update existing factory details (name, description, address, phone).",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "factoryId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateFactoryRequest",
+        "properties": [
+          "factoryName",
+          "Description",
+          "factory_address",
+          "factory_phoneNumber"
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ],
+        "dto_name": "FactoryUpdateResponse"
+      },
+      "data_effect": "UPDATE",
+      "business_logic": {
+        "operation_summary": "Updates existing factory record. Validates name uniqueness (excluding current ID). Creates audit log with old/new values.",
+        "preconditions": "Valid token. User exists. Factory ID > 0. Factory must exist. At least one field must be provided.",
+        "validations": "Factory ID > 0. Factory exists. Factory name unique (excluding current). At least one field provided.",
+        "side_effects": "Audit log created with old and new values.",
+        "calls_services": [
+          "IFactory",
+          "ICommon"
+        ],
+        "calls_repositories": [
+          "Factories"
+        ],
+        "state_changes": "Factories: UPDATE; AuditLog: INSERT",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid factory ID is required.",
+            "when": "factoryId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field (factoryName or Description) must be provided for update.",
+            "when": "string.IsNullOrWhiteSpace(request.factoryName) && request.Description == null"
+          },
+          {
+            "returns": 404,
+            "message": "Factory not found.",
+            "when": "existingFactory == null"
+          },
+          {
+            "returns": 400,
+            "message": "Factory with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Name uniqueness check per ID reduces risk. Audit log tracks changes."
+      },
+      "source": {
+        "controller_file": "Controllers/FactoryController.cs",
+        "action_method": "UpdateFactory"
+      },
+      "required_permission": "settings/company-settings/factories:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update existing factory details (name, description, address, phone).",
+      "detailed_description": "Update existing factory details (name, description, address, phone). It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IFactory.GetFactoryById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: Factories: UPDATE, AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid factory ID is required. [when factoryId <= 0]; At least one field (factoryName or Description) must be provided for update. [when string.IsNullOrWhiteSpace(request.factoryName) && request.Description == null]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Factory not found. [when existingFactory == null]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "Factory with this name already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update existing factory details (name, description, address, phone).",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "factoryId (route)",
+          "request body UpdateFactoryRequest"
+        ],
+        "follow_up_apis": [
+          "GET api/Factory/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "factory_update_factory",
+        "description": "Update existing factory details (name, description, address, phone).",
+        "http_method": "PUT",
+        "endpoint": "api/Factory/{factoryId}",
+        "parameters": {
+          "factoryId": {
+            "type": "int",
+            "required": true,
+            "description": "factory Id (route)"
+          },
+          "factoryName": {
+            "type": "string",
+            "required": false,
+            "description": "factory Name (body)"
+          },
+          "Description": {
+            "type": "string",
+            "required": false,
+            "description": "Description (body)"
+          },
+          "factory_address": {
+            "type": "string",
+            "required": false,
+            "description": "factory address (body)"
+          },
+          "factory_phoneNumber": {
+            "type": "string",
+            "required": false,
+            "description": "factory phone Number (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "f_005",
+      "name": "DeleteFactory",
+      "http_method": "DELETE",
+      "route": "api/Factory/{factoryId}",
+      "business_purpose": "Delete (soft delete) a factory record.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "factoryId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ],
+        "dto_name": "FactoryDeleteResponse"
+      },
+      "data_effect": "DELETE",
+      "business_logic": {
+        "operation_summary": "Soft deletes factory record by setting is_deleted flag. Creates audit log.",
+        "preconditions": "Valid token. User exists. Factory ID > 0. Factory must exist.",
+        "validations": "Factory ID > 0. Factory exists.",
+        "side_effects": "Audit log created. Factory marked as deleted.",
+        "calls_services": [
+          "IFactory",
+          "ICommon"
+        ],
+        "calls_repositories": [
+          "Factories"
+        ],
+        "state_changes": "Factories: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid factory ID is required.",
+            "when": "factoryId <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Factory not found.",
+            "when": "existingFactory == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "HIGH",
+        "notes": "Repeated DELETE calls fail once deleted. Audit log needed for idempotency detection."
+      },
+      "source": {
+        "controller_file": "Controllers/FactoryController.cs",
+        "action_method": "DeleteFactory"
+      },
+      "required_permission": "settings/company-settings/factories:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete (soft delete) a factory record.",
+      "detailed_description": "Delete (soft delete) a factory record. It validates the request, then calls ICommon.getUserByToken, IFactory.GetFactoryById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: Factories: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid factory ID is required. [when factoryId <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Factory not found. [when existingFactory == null]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete (soft delete) a factory record.",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "factoryId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Factory/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "factory_delete_factory",
+        "description": "Delete (soft delete) a factory record.",
+        "http_method": "DELETE",
+        "endpoint": "api/Factory/{factoryId}",
+        "parameters": {
+          "factoryId": {
+            "type": "int",
+            "required": true,
+            "description": "factory Id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "module": "General"
+    }
+  ]
+}

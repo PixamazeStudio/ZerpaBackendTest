@@ -1,0 +1,882 @@
+{
+  "controller": "MergeInfluencersController",
+  "file": "Controllers/MergeInfluencersController.cs",
+  "module": "Influencer Management",
+  "base_route": "api/MergeInfluencers",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles merge influencers: get properties, load duplicates, get influencer details, get influencers, get influencers by type, get users and 1 more",
+  "menu_permission": {
+    "status": "not referenced by frontend",
+    "menu_keys": [],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "merge_influencers_get_properties",
+      "name": "Get Properties",
+      "action_method": "GetProperties",
+      "http_method": "GET",
+      "route": "api/MergeInfluencers/getProperties",
+      "business_purpose": "Retrieve properties",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve properties",
+      "detailed_description": "Retrieve properties. It calls ICommon.getUserByToken. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve properties",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/MergeInfluencers/getProperties",
+          "GET api/MergeInfluencers/{id}",
+          "GET api/MergeInfluencers/get-influencers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "merge_influencers_get_properties",
+        "description": "Retrieve properties",
+        "http_method": "GET",
+        "endpoint": "api/MergeInfluencers/getProperties",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/MergeInfluencersController.cs",
+        "action_method": "GetProperties",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Retrieve properties — calls ICommon.getUserByToken",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "merge_influencers_load_duplicates",
+      "name": "Load Duplicates",
+      "action_method": "LoadDuplicates",
+      "http_method": "POST",
+      "route": "api/MergeInfluencers/load-duplicates",
+      "business_purpose": "Load duplicates",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "LoadDuplicatesDto (inline)",
+        "properties": [
+          {
+            "name": "SelectedProperties",
+            "type": "string[]",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Load duplicates",
+      "detailed_description": "Load duplicates. It validates the request, then calls ICommon.getUserByToken, IMergeInfluencer.GetDuplicatesByPropertiesAsync. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Please select at least one property. [when dto == null || dto.SelectedProperties == null || !dto.SelectedProperties.Any()]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to load duplicates",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body LoadDuplicatesDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/MergeInfluencers/getProperties",
+          "GET api/MergeInfluencers/{id}",
+          "GET api/MergeInfluencers/get-influencers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "merge_influencers_load_duplicates",
+        "description": "Load duplicates",
+        "http_method": "POST",
+        "endpoint": "api/MergeInfluencers/load-duplicates",
+        "parameters": {
+          "SelectedProperties": {
+            "type": "string[]",
+            "required": false,
+            "description": "Selected Properties (body)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/MergeInfluencersController.cs",
+        "action_method": "LoadDuplicates",
+        "related_dto_files": [
+          "Controllers/MergeInfluencersController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/MergeInfluencers_repo.cs",
+          "Interfaces/IMergeInfluencers.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Load duplicates — validates the request, calls ICommon.getUserByToken, IMergeInfluencer.GetDuplicatesByPropertiesAsync",
+        "preconditions": "Valid Bearer JWT; request body of type LoadDuplicatesDto (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Please select at least one property.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMergeInfluencer.GetDuplicatesByPropertiesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MergeInfluencer_repo (Repositories/MergeInfluencers_repo.cs) via IMergeInfluencer"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Please select at least one property.",
+            "when": "dto == null || dto.SelectedProperties == null || !dto.SelectedProperties.Any()"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "merge_influencers_get_influencer_details",
+      "name": "Get Influencer Details",
+      "action_method": "GetInfluencerDetails",
+      "http_method": "GET",
+      "route": "api/MergeInfluencers/{id}",
+      "business_purpose": "Retrieve influencer details",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve influencer details",
+      "detailed_description": "Retrieve influencer details. It calls ICommon.getUserByToken, IMergeInfluencer.GetClientByIdAsync. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Influencer not found [when influencer == null]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve influencer details",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/MergeInfluencers/getProperties",
+          "GET api/MergeInfluencers/{id}",
+          "GET api/MergeInfluencers/get-influencers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "merge_influencers_get_influencer_details",
+        "description": "Retrieve influencer details",
+        "http_method": "GET",
+        "endpoint": "api/MergeInfluencers/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/MergeInfluencersController.cs",
+        "action_method": "GetInfluencerDetails",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/MergeInfluencers_repo.cs",
+          "Interfaces/IMergeInfluencers.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Retrieve influencer details — calls ICommon.getUserByToken, IMergeInfluencer.GetClientByIdAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMergeInfluencer.GetClientByIdAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MergeInfluencer_repo (Repositories/MergeInfluencers_repo.cs) via IMergeInfluencer"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Influencer not found",
+            "when": "influencer == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "merge_influencers_get_influencers",
+      "name": "Get Influencers",
+      "action_method": "GetInfluencers",
+      "http_method": "GET",
+      "route": "api/MergeInfluencers/get-influencers",
+      "business_purpose": "Retrieve influencers",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "searchText",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve influencers",
+      "detailed_description": "Retrieve influencers. It calls ICommon.getUserByToken, IMergeInfluencer.GetAllClientsBysearchTextAsync. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: No Influencer found [when influencers == null || !influencers.Any()]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve influencers",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "searchText (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/MergeInfluencers/getProperties",
+          "GET api/MergeInfluencers/{id}",
+          "GET api/MergeInfluencers/get-influencers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "merge_influencers_get_influencers",
+        "description": "Retrieve influencers",
+        "http_method": "GET",
+        "endpoint": "api/MergeInfluencers/get-influencers",
+        "parameters": {
+          "searchText": {
+            "type": "string",
+            "required": true,
+            "description": "search Text (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/MergeInfluencersController.cs",
+        "action_method": "GetInfluencers",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/MergeInfluencers_repo.cs",
+          "Interfaces/IMergeInfluencers.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Retrieve influencers — calls ICommon.getUserByToken, IMergeInfluencer.GetAllClientsBysearchTextAsync",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): searchText; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMergeInfluencer.GetAllClientsBysearchTextAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MergeInfluencer_repo (Repositories/MergeInfluencers_repo.cs) via IMergeInfluencer"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "No Influencer found",
+            "when": "influencers == null || !influencers.Any()"
+          }
+        ]
+      }
+    },
+    {
+      "id": "merge_influencers_get_influencers_by_type",
+      "name": "Get Influencers By Type",
+      "action_method": "GetInfluencersByType",
+      "http_method": "GET",
+      "route": "api/MergeInfluencers/get-influencers-by-type",
+      "business_purpose": "Retrieve influencers by type",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "searchText",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve influencers by type",
+      "detailed_description": "Retrieve influencers by type. It validates the request, then calls ICommon.getUserByToken, IMergeInfluencer.GetAllClientByTextAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Search text cannot be empty [when string.IsNullOrWhiteSpace(searchText)]",
+        "not_found": "404: No Influencer found [when clients == null || !clients.Any()]",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve influencers by type",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "searchText (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/MergeInfluencers/getProperties",
+          "GET api/MergeInfluencers/{id}",
+          "GET api/MergeInfluencers/get-influencers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "merge_influencers_get_influencers_by_type",
+        "description": "Retrieve influencers by type",
+        "http_method": "GET",
+        "endpoint": "api/MergeInfluencers/get-influencers-by-type",
+        "parameters": {
+          "searchText": {
+            "type": "string",
+            "required": true,
+            "description": "search Text (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/MergeInfluencersController.cs",
+        "action_method": "GetInfluencersByType",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/MergeInfluencers_repo.cs",
+          "Interfaces/IMergeInfluencers.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Retrieve influencers by type — validates the request, calls ICommon.getUserByToken, IMergeInfluencer.GetAllClientByTextAsync",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): searchText; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Search text cannot be empty",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMergeInfluencer.GetAllClientByTextAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MergeInfluencer_repo (Repositories/MergeInfluencers_repo.cs) via IMergeInfluencer"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Search text cannot be empty",
+            "when": "string.IsNullOrWhiteSpace(searchText)"
+          },
+          {
+            "returns": 404,
+            "message": "No Influencer found",
+            "when": "clients == null || !clients.Any()"
+          }
+        ]
+      }
+    },
+    {
+      "id": "merge_influencers_get_users",
+      "name": "Get Users",
+      "action_method": "GetUsers",
+      "http_method": "GET",
+      "route": "api/MergeInfluencers/get-users",
+      "business_purpose": "Retrieve users",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve users",
+      "detailed_description": "Retrieve users. It calls ICommon.getUserByToken, ICommon.GetCrmUserWiseHierarchy. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve users",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/MergeInfluencers/getProperties",
+          "GET api/MergeInfluencers/{id}",
+          "GET api/MergeInfluencers/get-influencers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "merge_influencers_get_users",
+        "description": "Retrieve users",
+        "http_method": "GET",
+        "endpoint": "api/MergeInfluencers/get-users",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/MergeInfluencersController.cs",
+        "action_method": "GetUsers",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Retrieve users — calls ICommon.getUserByToken, ICommon.GetCrmUserWiseHierarchy",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.GetCrmUserWiseHierarchy"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "merge_influencers_merge_influencers",
+      "name": "Merge Influencers",
+      "action_method": "MergeInfluencers",
+      "http_method": "POST",
+      "route": "api/MergeInfluencers/merge-influencers",
+      "business_purpose": "Merge influencers",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "MergeInfluencersDto (inline)",
+        "properties": [
+          {
+            "name": "FieldMappings",
+            "type": "List<FieldMapping>",
+            "required": false
+          },
+          {
+            "name": "ClientStringIds",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Merge influencers",
+      "detailed_description": "Merge influencers. It validates the request, then calls ICommon.getUserByToken, IMergeInfluencer.GetListedClientsByIdsAsync, IMergeInfluencer.GetClientByIdAsync. Data access uses stored procedure(s): sp_UpdateClientInfluencerMappingForMerging. Persists changes to: Client: INSERT, soft delete (is_deleted flag). Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Please provide at least one field mapping [when dto == null || dto.FieldMappings == null || !dto.FieldMappings.Any()]; No valid influencer IDs provided [when !selectedInfluencerIds.Any()]",
+        "not_found": "404: Could not retrieve selected influencer data [when selectedInfluencers == null || !selectedInfluencers.Any()]; Could not retrieve influencer data [when influencerList == null || !influencerList.Any()]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to merge influencers",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body MergeInfluencersDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/MergeInfluencers/getProperties",
+          "GET api/MergeInfluencers/get-influencers",
+          "GET api/MergeInfluencers/get-influencers-by-type"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "merge_influencers_merge_influencers",
+        "description": "Merge influencers",
+        "http_method": "POST",
+        "endpoint": "api/MergeInfluencers/merge-influencers",
+        "parameters": {
+          "FieldMappings": {
+            "type": "List<FieldMapping>",
+            "required": false,
+            "description": "Field Mappings (body)"
+          },
+          "ClientStringIds": {
+            "type": "string",
+            "required": false,
+            "description": "Client String Ids (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/MergeInfluencersController.cs",
+        "action_method": "MergeInfluencers",
+        "related_dto_files": [
+          "Controllers/MergeInfluencersController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/MergeInfluencers_repo.cs",
+          "Interfaces/IMergeInfluencers.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Merge influencers — validates the request, calls ICommon.getUserByToken, IMergeInfluencer.GetListedClientsByIdsAsync, IMergeInfluencer.GetClientByIdAsync",
+        "preconditions": "Valid Bearer JWT; request body of type MergeInfluencersDto (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Client: INSERT; soft delete (is_deleted flag); via stored procedure sp_UpdateClientInfluencerMappingForMerging",
+        "validations": "Please provide at least one field mapping; No valid influencer IDs provided",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMergeInfluencer.GetListedClientsByIdsAsync",
+          "IMergeInfluencer.GetClientByIdAsync",
+          "IMergeInfluencer.GetAreaByAreaNameAsync",
+          "IMergeInfluencer.GetAreaByIdAsync",
+          "IMergeInfluencer.GetRegionByRegionNameAsync",
+          "IMergeInfluencer.GetRegionByIdAsync",
+          "IMergeInfluencer.GetBuyingTriggerByNameAsync",
+          "IMergeInfluencer.GetWorkTypeByIdAsync",
+          "IMergeInfluencer.GetKindOfProjectsByIdAsync",
+          "IMergeInfluencer.CreateClientAsync",
+          "IMergeInfluencer.SaveChangesAsync",
+          "IMergeInfluencer.UpdateClientInfluencerMappingAsync",
+          "IMergeInfluencer.DeleteClientAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MergeInfluencer_repo (Repositories/MergeInfluencers_repo.cs) via IMergeInfluencer"
+        ],
+        "stored_procedures": [
+          "sp_UpdateClientInfluencerMappingForMerging"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Please provide at least one field mapping",
+            "when": "dto == null || dto.FieldMappings == null || !dto.FieldMappings.Any()"
+          },
+          {
+            "returns": 400,
+            "message": "No valid influencer IDs provided",
+            "when": "!selectedInfluencerIds.Any()"
+          },
+          {
+            "returns": 404,
+            "message": "Could not retrieve selected influencer data",
+            "when": "selectedInfluencers == null || !selectedInfluencers.Any()"
+          },
+          {
+            "returns": 404,
+            "message": "Could not retrieve influencer data",
+            "when": "influencerList == null || !influencerList.Any()"
+          }
+        ]
+      }
+    }
+  ]
+}

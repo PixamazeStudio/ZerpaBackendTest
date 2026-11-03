@@ -1,0 +1,284 @@
+{
+  "controller": "IndividualTransferController",
+  "file": "Controllers/IndividualTransferController.cs",
+  "module": "Lead and Client Management",
+  "base_route": "api/IndividualTransfer",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles individual transfer: load client, transfer client",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "crm/individual-transfer",
+        "module_code": "crm",
+        "section": "individual-transfer",
+        "sub_section": null,
+        "frontend_routes": [
+          "/crm/individual-transfer"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "IndividualTransfer"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "individual_transfer_load_client",
+      "name": "Load Client",
+      "action_method": "LoadClient",
+      "http_method": "POST",
+      "route": "api/IndividualTransfer/load-client",
+      "business_purpose": "Load client",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "LoadClientByPhoneDto (inline)",
+        "properties": [
+          {
+            "name": "Contact",
+            "type": "long",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/individual-transfer:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Load client",
+      "detailed_description": "Load client. It validates the request, then calls ICommon.getUserByToken, IClient.GetInfluencerByContact. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Contact number is required [when dto == null || dto.Contact == 0]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to load client",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body LoadClientByPhoneDto (inline)"
+        ],
+        "follow_up_apis": []
+      },
+      "llm_tool_definition": {
+        "name": "individual_transfer_load_client",
+        "description": "Load client",
+        "http_method": "POST",
+        "endpoint": "api/IndividualTransfer/load-client",
+        "parameters": {
+          "Contact": {
+            "type": "long",
+            "required": false,
+            "description": "Contact (body)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IndividualTransferController.cs",
+        "action_method": "LoadClient",
+        "related_dto_files": [
+          "Controllers/IndividualTransferController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Client_repo.cs",
+          "Interfaces/IClient.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Load client — validates the request, calls ICommon.getUserByToken, IClient.GetInfluencerByContact",
+        "preconditions": "Valid Bearer JWT; request body of type LoadClientByPhoneDto (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Contact number is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IClient.GetInfluencerByContact"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Client_repo (Repository/Client_repo.cs) via IClient"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Contact number is required",
+            "when": "dto == null || dto.Contact == 0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "individual_transfer_transfer_client",
+      "name": "Transfer Client",
+      "action_method": "TransferClient",
+      "http_method": "POST",
+      "route": "api/IndividualTransfer/transfer",
+      "business_purpose": "Transfer client",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "TransferClientDto (inline)",
+        "properties": [
+          {
+            "name": "ClientId",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "crm/individual-transfer:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Transfer client",
+      "detailed_description": "Transfer client. It validates the request, then calls ICommon.getUserByToken, IClient.GetClientById, IClient.SaveChangesAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: ClientId is required [when dto == null || dto.ClientId == 0]",
+        "not_found": "404: Client not found [when client == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to transfer client",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body TransferClientDto (inline)"
+        ],
+        "follow_up_apis": []
+      },
+      "llm_tool_definition": {
+        "name": "individual_transfer_transfer_client",
+        "description": "Transfer client",
+        "http_method": "POST",
+        "endpoint": "api/IndividualTransfer/transfer",
+        "parameters": {
+          "ClientId": {
+            "type": "int",
+            "required": false,
+            "description": "Client Id (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/IndividualTransferController.cs",
+        "action_method": "TransferClient",
+        "related_dto_files": [
+          "Controllers/IndividualTransferController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Client_repo.cs",
+          "Interfaces/IClient.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Transfer client — validates the request, calls ICommon.getUserByToken, IClient.GetClientById, IClient.SaveChangesAsync",
+        "preconditions": "Valid Bearer JWT; request body of type TransferClientDto (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets client.modified_date and saves changes",
+        "validations": "ClientId is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IClient.GetClientById",
+          "IClient.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Client_repo (Repository/Client_repo.cs) via IClient"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "ClientId is required",
+            "when": "dto == null || dto.ClientId == 0"
+          },
+          {
+            "returns": 404,
+            "message": "Client not found",
+            "when": "client == null"
+          }
+        ]
+      }
+    }
+  ]
+}

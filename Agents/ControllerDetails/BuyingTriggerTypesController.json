@@ -1,0 +1,810 @@
+{
+  "controller": "BuyingTriggerTypesController",
+  "file": "Controllers/BuyingTriggerTypesController.cs",
+  "module": "Lead and Client Management",
+  "base_route": "api/BuyingTriggerTypes",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages buying trigger types records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/crm-settings/buying-trigger-types",
+        "module_code": "settings",
+        "section": "crm-settings",
+        "sub_section": "buying-trigger-types",
+        "frontend_routes": [
+          "/settings/crm-settings/buying-trigger-types"
+        ],
+        "menu_route_confirmed": true,
+        "display_names": {
+          "module": "Settings",
+          "section": "CRM Settings",
+          "sub_section": "Buying Trigger Types"
+        }
+      }
+    ],
+    "section_configuration_keys": [
+      "buyingTriggerTypes"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Settings",
+        "section": "CRM Settings",
+        "sub_section": "Buying Trigger Types"
+      },
+      {
+        "module": "Settings",
+        "section": "Buying Settings",
+        "sub_section": "Buying Trigger Types"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "buying_trigger_types_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/BuyingTriggerTypes",
+      "business_purpose": "Retrieve all buying trigger types records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/crm-settings/buying-trigger-types:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all buying trigger types records",
+      "detailed_description": "Retrieve all buying trigger types records. It calls IBuyingTriggerTypesRepository.GetBuyingTriggerTypesData, IBuyingTriggerTypesRepository.GetBuyingTriggerTypesActions, ICommon.GetPagination. Data access uses stored procedure(s): GetBuyingTriggerTypes, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all buying trigger types records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/BuyingTriggerTypes",
+          "GET api/BuyingTriggerTypes/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "buying_trigger_types_get_all",
+        "description": "Retrieve all buying trigger types records",
+        "http_method": "GET",
+        "endpoint": "api/BuyingTriggerTypes",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/BuyingTriggerTypesController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/BuyingTriggerTypesRepository.cs",
+          "Interfaces/IBuyingTriggerTypesRepository.cs",
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all buying trigger types records — calls IBuyingTriggerTypesRepository.GetBuyingTriggerTypesData, IBuyingTriggerTypesRepository.GetBuyingTriggerTypesActions, ICommon.GetPagination",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IBuyingTriggerTypesRepository.GetBuyingTriggerTypesData",
+          "IBuyingTriggerTypesRepository.GetBuyingTriggerTypesActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "BuyingTriggerTypesRepository (Repositories/BuyingTriggerTypesRepository.cs) via IBuyingTriggerTypesRepository",
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [
+          "GetBuyingTriggerTypes",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "buying_trigger_types_get_buying_trigger_type_by_id",
+      "name": "Get Buying Trigger Type By Id",
+      "action_method": "GetBuyingTriggerTypeById",
+      "http_method": "GET",
+      "route": "api/BuyingTriggerTypes/{id}",
+      "business_purpose": "Retrieve buying trigger type by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/crm-settings/buying-trigger-types:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve buying trigger type by ID",
+      "detailed_description": "Retrieve buying trigger type by ID. It validates the request, then calls IBuyingTriggerTypesRepository.GetBuyingTriggerTypeById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid buying trigger type ID is required. [when id <= 0]",
+        "not_found": "404: Buying trigger type not found. [when buyingTriggerType == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve buying trigger type by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/BuyingTriggerTypes",
+          "GET api/BuyingTriggerTypes/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "buying_trigger_types_get_buying_trigger_type_by_id",
+        "description": "Retrieve buying trigger type by ID",
+        "http_method": "GET",
+        "endpoint": "api/BuyingTriggerTypes/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/BuyingTriggerTypesController.cs",
+        "action_method": "GetBuyingTriggerTypeById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/BuyingTriggerTypesRepository.cs",
+          "Interfaces/IBuyingTriggerTypesRepository.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Retrieve buying trigger type by ID — validates the request, calls IBuyingTriggerTypesRepository.GetBuyingTriggerTypeById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid buying trigger type ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IBuyingTriggerTypesRepository.GetBuyingTriggerTypeById"
+        ],
+        "calls_repositories": [
+          "BuyingTriggerTypesRepository (Repositories/BuyingTriggerTypesRepository.cs) via IBuyingTriggerTypesRepository"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid buying trigger type ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Buying trigger type not found.",
+            "when": "buyingTriggerType == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "buying_trigger_types_create_buying_trigger_type",
+      "name": "Create Buying Trigger Type",
+      "action_method": "CreateBuyingTriggerType",
+      "http_method": "POST",
+      "route": "api/BuyingTriggerTypes",
+      "business_purpose": "Create buying trigger type",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateBuyingTriggerTypeRequest (inline)",
+        "properties": [
+          {
+            "name": "buying_trigger_type",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "userid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Description",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "is_default",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; a duplicate check exists so repeating usually fails with a conflict/validation message"
+      },
+      "required_permission": "settings/crm-settings/buying-trigger-types:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create buying trigger type",
+      "detailed_description": "Create buying trigger type. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IBuyingTriggerTypesRepository.IsBuyingTriggerTypesDuplicateAsync, IBuyingTriggerTypesRepository.CreateBuyingTriggerTypesAsync, then writes an audit log entry. Persists changes to: BuyingTriggerTypes: INSERT, AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; Buying trigger type is required. [when string.IsNullOrWhiteSpace(request.buying_trigger_type)]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "Buying trigger type with this name already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create buying trigger type",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateBuyingTriggerTypeRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/BuyingTriggerTypes"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "buying_trigger_types_create_buying_trigger_type",
+        "description": "Create buying trigger type",
+        "http_method": "POST",
+        "endpoint": "api/BuyingTriggerTypes",
+        "parameters": {
+          "buying_trigger_type": {
+            "type": "string",
+            "required": true,
+            "description": "buying trigger type (body)"
+          },
+          "userid": {
+            "type": "int",
+            "required": false,
+            "description": "userid (body)"
+          },
+          "Description": {
+            "type": "string",
+            "required": false,
+            "description": "Description (body)"
+          },
+          "is_default": {
+            "type": "bool",
+            "required": false,
+            "description": "is default (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/BuyingTriggerTypesController.cs",
+        "action_method": "CreateBuyingTriggerType",
+        "related_dto_files": [
+          "Controllers/BuyingTriggerTypesController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/BuyingTriggerTypesRepository.cs",
+          "Interfaces/IBuyingTriggerTypesRepository.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Create buying trigger type — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, IBuyingTriggerTypesRepository.IsBuyingTriggerTypesDuplicateAsync, IBuyingTriggerTypesRepository.CreateBuyingTriggerTypesAsync, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; request body of type CreateBuyingTriggerTypeRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "BuyingTriggerTypes: INSERT; AuditLog: INSERT",
+        "validations": "ModelState (DTO data-annotation) validation; Invalid data provided.; Buying trigger type is required.",
+        "side_effects": "AuditLog CREATE (Settings > CRM Settings > Buying Trigger Types)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBuyingTriggerTypesRepository.IsBuyingTriggerTypesDuplicateAsync",
+          "IBuyingTriggerTypesRepository.CreateBuyingTriggerTypesAsync",
+          "ICommon.ToJsonString",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "BuyingTriggerTypesRepository (Repositories/BuyingTriggerTypesRepository.cs) via IBuyingTriggerTypesRepository"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "Buying trigger type is required.",
+            "when": "string.IsNullOrWhiteSpace(request.buying_trigger_type)"
+          },
+          {
+            "returns": 400,
+            "message": "Buying trigger type with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "buying_trigger_types_update_buying_trigger_type",
+      "name": "Update Buying Trigger Type",
+      "action_method": "UpdateBuyingTriggerType",
+      "http_method": "PUT",
+      "route": "api/BuyingTriggerTypes/{buyingTriggerTypeId}",
+      "business_purpose": "Update buying trigger type",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "buyingTriggerTypeId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateBuyingTriggerTypeRequest (inline)",
+        "properties": [
+          {
+            "name": "buying_trigger_type",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "userid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Description",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "is_default",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values; each call writes another audit log entry"
+      },
+      "required_permission": "settings/crm-settings/buying-trigger-types:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update buying trigger type",
+      "detailed_description": "Update buying trigger type. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IBuyingTriggerTypesRepository.IsBuyingTriggerTypesDuplicateAsync, IBuyingTriggerTypesRepository.GetBuyingTriggerTypeById, then writes an audit log entry. Persists changes to: BuyingTriggerTypes: UPDATE, AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid buying trigger type ID is required. [when buyingTriggerTypeId <= 0]; Buying trigger type is required for update. [when string.IsNullOrWhiteSpace(request.buying_trigger_type)]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "Buying trigger type with this name already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update buying trigger type",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "buyingTriggerTypeId (route)",
+          "request body UpdateBuyingTriggerTypeRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/BuyingTriggerTypes/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "buying_trigger_types_update_buying_trigger_type",
+        "description": "Update buying trigger type",
+        "http_method": "PUT",
+        "endpoint": "api/BuyingTriggerTypes/{buyingTriggerTypeId}",
+        "parameters": {
+          "buyingTriggerTypeId": {
+            "type": "int",
+            "required": true,
+            "description": "buying Trigger Type Id (route)"
+          },
+          "buying_trigger_type": {
+            "type": "string",
+            "required": true,
+            "description": "buying trigger type (body)"
+          },
+          "userid": {
+            "type": "int",
+            "required": false,
+            "description": "userid (body)"
+          },
+          "Description": {
+            "type": "string",
+            "required": false,
+            "description": "Description (body)"
+          },
+          "is_default": {
+            "type": "bool",
+            "required": false,
+            "description": "is default (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/BuyingTriggerTypesController.cs",
+        "action_method": "UpdateBuyingTriggerType",
+        "related_dto_files": [
+          "Controllers/BuyingTriggerTypesController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/BuyingTriggerTypesRepository.cs",
+          "Interfaces/IBuyingTriggerTypesRepository.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Update buying trigger type — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, IBuyingTriggerTypesRepository.IsBuyingTriggerTypesDuplicateAsync, IBuyingTriggerTypesRepository.GetBuyingTriggerTypeById, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) buyingTriggerTypeId; request body of type UpdateBuyingTriggerTypeRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "BuyingTriggerTypes: UPDATE; AuditLog: INSERT",
+        "validations": "Valid buying trigger type ID is required.; Buying trigger type is required for update.",
+        "side_effects": "AuditLog UPDATE (Settings > CRM Settings > Buying Trigger Types)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBuyingTriggerTypesRepository.IsBuyingTriggerTypesDuplicateAsync",
+          "IBuyingTriggerTypesRepository.GetBuyingTriggerTypeById",
+          "ICommon.ToJsonString",
+          "IBuyingTriggerTypesRepository.UpdateBuyingTriggerTypesAsync",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "BuyingTriggerTypesRepository (Repositories/BuyingTriggerTypesRepository.cs) via IBuyingTriggerTypesRepository"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid buying trigger type ID is required.",
+            "when": "buyingTriggerTypeId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Buying trigger type is required for update.",
+            "when": "string.IsNullOrWhiteSpace(request.buying_trigger_type)"
+          },
+          {
+            "returns": 400,
+            "message": "Buying trigger type with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "buying_trigger_types_delete",
+      "name": "Delete",
+      "action_method": "Delete",
+      "http_method": "DELETE",
+      "route": "api/BuyingTriggerTypes/{id}",
+      "business_purpose": "Delete a buying trigger types record",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "settings/crm-settings/buying-trigger-types:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete a buying trigger types record",
+      "detailed_description": "Delete a buying trigger types record. It validates the request, then calls ICommon.getUserByToken, IBuyingTriggerTypesRepository.GetBuyingTriggerTypeById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: BuyingTriggerTypes: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid buying trigger type ID is required. [when id <= 0]; Valid user ID is required. [when current_user == null]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete a buying trigger types record",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/BuyingTriggerTypes/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "buying_trigger_types_delete",
+        "description": "Delete a buying trigger types record",
+        "http_method": "DELETE",
+        "endpoint": "api/BuyingTriggerTypes/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/BuyingTriggerTypesController.cs",
+        "action_method": "Delete",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/BuyingTriggerTypesRepository.cs",
+          "Interfaces/IBuyingTriggerTypesRepository.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Delete a buying trigger types record — validates the request, calls ICommon.getUserByToken, IBuyingTriggerTypesRepository.GetBuyingTriggerTypeById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "BuyingTriggerTypes: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "validations": "Valid buying trigger type ID is required.; Valid user ID is required.",
+        "side_effects": "AuditLog DELETE (Settings > Buying Settings > Buying Trigger Types)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBuyingTriggerTypesRepository.GetBuyingTriggerTypeById",
+          "ICommon.ToJsonString",
+          "IBuyingTriggerTypesRepository.DeleteBuyingTriggerType",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "BuyingTriggerTypesRepository (Repositories/BuyingTriggerTypesRepository.cs) via IBuyingTriggerTypesRepository"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid buying trigger type ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Valid user ID is required.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,911 @@
+{
+  "controller": "ExpenseTripsController",
+  "file": "Controllers/ExpenseTripsController.cs",
+  "module": "Expense Management",
+  "base_route": "api/ExpenseTrips",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages expense trips with members and expense details; supports CRUD operations with audit logging",
+  "menu_permission": {
+    "status": "not referenced by frontend",
+    "menu_keys": [],
+    "audit_log_labels": [
+      {
+        "module": "Accounts",
+        "section": "Expense Trips",
+        "sub_section": "ExpenseTrips"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "expense_trips_categories",
+      "name": "Get Expense Categories",
+      "action_method": "GetExpenseCategories",
+      "http_method": "GET",
+      "route": "api/ExpenseTrips/categories",
+      "business_purpose": "Retrieve list of predefined expense categories for trips",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve list of predefined expense categories for trips",
+      "detailed_description": "Retrieve list of predefined expense categories for trips. Possible responses: 200, 401.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve list of predefined expense categories for trips",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/ExpenseTrips/categories",
+          "GET api/ExpenseTrips",
+          "GET api/ExpenseTrips/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "expense_trips_get_expense_categories",
+        "description": "Retrieve list of predefined expense categories for trips",
+        "http_method": "GET",
+        "endpoint": "api/ExpenseTrips/categories",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ExpenseTripsController.cs",
+        "action_method": "GetExpenseCategories",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": []
+      },
+      "module": "Expense Management",
+      "business_logic": {
+        "operation_summary": "Retrieve list of predefined expense categories for trips",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [],
+        "calls_repositories": [],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "expense_trips_get_all",
+      "name": "Get All Expense Trips",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/ExpenseTrips",
+      "business_purpose": "Retrieve paginated list of expense trips with member counts",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "DateTime",
+          "required": false
+        },
+        {
+          "name": "todate",
+          "type": "DateTime",
+          "required": false
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve paginated list of expense trips with member counts",
+      "detailed_description": "Retrieve paginated list of expense trips with member counts. It calls IExpenseTrips.GetExpenseTripsAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve paginated list of expense trips with member counts",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/ExpenseTrips/categories",
+          "GET api/ExpenseTrips",
+          "GET api/ExpenseTrips/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "expense_trips_get_all",
+        "description": "Retrieve paginated list of expense trips with member counts",
+        "http_method": "GET",
+        "endpoint": "api/ExpenseTrips",
+        "parameters": {
+          "fromdate": {
+            "type": "DateTime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "DateTime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ExpenseTripsController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/ExpenseTripsRepository.cs",
+          "Interfaces/IExpenseTrips.cs"
+        ]
+      },
+      "module": "Expense Management",
+      "business_logic": {
+        "operation_summary": "Retrieve paginated list of expense trips with member counts — calls IExpenseTrips.GetExpenseTripsAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IExpenseTrips.GetExpenseTripsAsync"
+        ],
+        "calls_repositories": [
+          "ExpenseTripsRepository (Repositories/ExpenseTripsRepository.cs) via IExpenseTrips"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "expense_trips_get_by_id",
+      "name": "Get Expense Trip By ID",
+      "action_method": "GetById",
+      "http_method": "GET",
+      "route": "api/ExpenseTrips/{id}",
+      "business_purpose": "Retrieve complete expense trip details with members and expenses",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve complete expense trip details with members and expenses",
+      "detailed_description": "Retrieve complete expense trip details with members and expenses. It validates the request, then calls IExpenseTrips.GetExpenseTripByIdAsync, IExpenseTrips.GetMembersByTripIdAsync, IExpenseTrips.GetDetailsByTripIdAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid expense trip ID is required. [when id <= 0]",
+        "not_found": "404: Expense trip not found. [when trip == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve complete expense trip details with members and expenses",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/ExpenseTrips/categories",
+          "GET api/ExpenseTrips",
+          "GET api/ExpenseTrips/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "expense_trips_get_by_id",
+        "description": "Retrieve complete expense trip details with members and expenses",
+        "http_method": "GET",
+        "endpoint": "api/ExpenseTrips/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ExpenseTripsController.cs",
+        "action_method": "GetById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/ExpenseTripsRepository.cs",
+          "Interfaces/IExpenseTrips.cs"
+        ]
+      },
+      "module": "Expense Management",
+      "business_logic": {
+        "operation_summary": "Retrieve complete expense trip details with members and expenses — validates the request, calls IExpenseTrips.GetExpenseTripByIdAsync, IExpenseTrips.GetMembersByTripIdAsync, IExpenseTrips.GetDetailsByTripIdAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid expense trip ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IExpenseTrips.GetExpenseTripByIdAsync",
+          "IExpenseTrips.GetMembersByTripIdAsync",
+          "IExpenseTrips.GetDetailsByTripIdAsync"
+        ],
+        "calls_repositories": [
+          "ExpenseTripsRepository (Repositories/ExpenseTripsRepository.cs) via IExpenseTrips"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid expense trip ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Expense trip not found.",
+            "when": "trip == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "expense_trips_create",
+      "name": "Create Expense Trip",
+      "action_method": "CreateExpenseTrip",
+      "http_method": "POST",
+      "route": "api/ExpenseTrips",
+      "business_purpose": "Create new expense trip with members and expense details",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "request_body": {
+        "dto_name": "CreateExpenseTripDto (inline)",
+        "properties": [
+          {
+            "name": "Location",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "FromDate",
+            "type": "DateTime",
+            "required": false
+          },
+          {
+            "name": "ToDate",
+            "type": "DateTime",
+            "required": false
+          },
+          {
+            "name": "TripTo",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "TripFrom",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "MemberUserIds",
+            "type": "List<int>",
+            "required": false
+          },
+          {
+            "name": "Details",
+            "type": "List<ExpenseTripDetailDto>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again; each call writes another audit log entry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Create new expense trip with members and expense details",
+      "detailed_description": "Create new expense trip with members and expense details. It validates the request, then calls ICommon.ToJsonString, ICommon.AddAsync, then writes an audit log entry. Persists changes to: AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Location is required. [when string.IsNullOrWhiteSpace(request.Location)]; To date cannot be before from date. [when request.FromDate.HasValue && request.ToDate.HasValue && request.ToDate.Value < request.Fro]; Invalid expense category '{invalidCategory.Category}'. [when invalidCategory != null]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create new expense trip with members and expense details",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateExpenseTripDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/ExpenseTrips/categories",
+          "GET api/ExpenseTrips"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "expense_trips_create_expense_trip",
+        "description": "Create new expense trip with members and expense details",
+        "http_method": "POST",
+        "endpoint": "api/ExpenseTrips",
+        "parameters": {
+          "Location": {
+            "type": "string",
+            "required": true,
+            "description": "Location (body)"
+          },
+          "FromDate": {
+            "type": "DateTime",
+            "required": false,
+            "description": "From Date (body)"
+          },
+          "ToDate": {
+            "type": "DateTime",
+            "required": false,
+            "description": "To Date (body)"
+          },
+          "TripTo": {
+            "type": "string",
+            "required": false,
+            "description": "Trip To (body)"
+          },
+          "TripFrom": {
+            "type": "string",
+            "required": false,
+            "description": "Trip From (body)"
+          },
+          "MemberUserIds": {
+            "type": "List<int>",
+            "required": false,
+            "description": "Member User Ids (body)"
+          },
+          "Details": {
+            "type": "List<ExpenseTripDetailDto>",
+            "required": false,
+            "description": "Details (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/ExpenseTripsController.cs",
+        "action_method": "CreateExpenseTrip",
+        "related_dto_files": [
+          "Controllers/ExpenseTripsController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Expense Management",
+      "business_logic": {
+        "operation_summary": "Create new expense trip with members and expense details — validates the request, calls ICommon.ToJsonString, ICommon.AddAsync, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; request body of type CreateExpenseTripDto (inline); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "AuditLog: INSERT",
+        "validations": "Location is required.; To date cannot be before from date.; Invalid expense category '{invalidCategory.Category}'.",
+        "side_effects": "AuditLog CREATE (Accounts > Expense Trips > ExpenseTrips)",
+        "calls_services": [
+          "ICommon.ToJsonString",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Location is required.",
+            "when": "string.IsNullOrWhiteSpace(request.Location)"
+          },
+          {
+            "returns": 400,
+            "message": "To date cannot be before from date.",
+            "when": "request.FromDate.HasValue && request.ToDate.HasValue && request.ToDate.Value < request.FromDate.Value"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid expense category '{invalidCategory.Category}'.",
+            "when": "invalidCategory != null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "expense_trips_update",
+      "name": "Update Expense Trip",
+      "action_method": "UpdateExpenseTrip",
+      "http_method": "PUT",
+      "route": "api/ExpenseTrips/{id}",
+      "business_purpose": "Update expense trip details including members and expenses",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "request_body": {
+        "dto_name": "UpdateExpenseTripDto (inline)",
+        "properties": [
+          {
+            "name": "Location",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "FromDate",
+            "type": "DateTime",
+            "required": false
+          },
+          {
+            "name": "ToDate",
+            "type": "DateTime",
+            "required": false
+          },
+          {
+            "name": "TripTo",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "TripFrom",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Status",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "MemberUserIds",
+            "type": "List<int>",
+            "required": false
+          },
+          {
+            "name": "Details",
+            "type": "List<ExpenseTripDetailDto>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values; each call writes another audit log entry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Update expense trip details including members and expenses",
+      "detailed_description": "Update expense trip details including members and expenses. It validates the request, then calls ICommon.ToJsonString, ICommon.AddAsync, then writes an audit log entry. Persists changes to: AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid expense trip ID is required. [when id <= 0]; Invalid expense category '{invalidCategory.Category}'. [when invalidCategory != null]",
+        "not_found": "404: Expense trip not found. [when existing == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update expense trip details including members and expenses",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "request body UpdateExpenseTripDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/ExpenseTrips/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "expense_trips_update_expense_trip",
+        "description": "Update expense trip details including members and expenses",
+        "http_method": "PUT",
+        "endpoint": "api/ExpenseTrips/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "Location": {
+            "type": "string",
+            "required": false,
+            "description": "Location (body)"
+          },
+          "FromDate": {
+            "type": "DateTime",
+            "required": false,
+            "description": "From Date (body)"
+          },
+          "ToDate": {
+            "type": "DateTime",
+            "required": false,
+            "description": "To Date (body)"
+          },
+          "TripTo": {
+            "type": "string",
+            "required": false,
+            "description": "Trip To (body)"
+          },
+          "TripFrom": {
+            "type": "string",
+            "required": false,
+            "description": "Trip From (body)"
+          },
+          "Status": {
+            "type": "string",
+            "required": false,
+            "description": "Status (body)"
+          },
+          "MemberUserIds": {
+            "type": "List<int>",
+            "required": false,
+            "description": "Member User Ids (body)"
+          },
+          "Details": {
+            "type": "List<ExpenseTripDetailDto>",
+            "required": false,
+            "description": "Details (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/ExpenseTripsController.cs",
+        "action_method": "UpdateExpenseTrip",
+        "related_dto_files": [
+          "Controllers/ExpenseTripsController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Expense Management",
+      "business_logic": {
+        "operation_summary": "Update expense trip details including members and expenses — validates the request, calls ICommon.ToJsonString, ICommon.AddAsync, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); request body of type UpdateExpenseTripDto (inline); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "AuditLog: INSERT; sets existing.location, existing.trip_to, existing.trip_from, existing.from_date, existing.to_date, existing.status and saves changes",
+        "validations": "Valid expense trip ID is required.; Invalid expense category '{invalidCategory.Category}'.",
+        "side_effects": "AuditLog UPDATE (Accounts > Expense Trips > ExpenseTrips)",
+        "calls_services": [
+          "ICommon.ToJsonString",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid expense trip ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Expense trip not found.",
+            "when": "existing == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid expense category '{invalidCategory.Category}'.",
+            "when": "invalidCategory != null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "expense_trips_delete",
+      "name": "Delete Expense Trip",
+      "action_method": "DeleteExpenseTrip",
+      "http_method": "DELETE",
+      "route": "api/ExpenseTrips/{id}",
+      "business_purpose": "Delete expense trip and all associated members and details",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Delete expense trip and all associated members and details",
+      "detailed_description": "Delete expense trip and all associated members and details. It validates the request, then calls ICommon.ToJsonString, ICommon.AddAsync, then writes an audit log entry. Persists changes to: AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid expense trip ID is required. [when id <= 0]",
+        "not_found": "404: Expense trip not found. [when existing == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete expense trip and all associated members and details",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/ExpenseTrips/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "expense_trips_delete_expense_trip",
+        "description": "Delete expense trip and all associated members and details",
+        "http_method": "DELETE",
+        "endpoint": "api/ExpenseTrips/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/ExpenseTripsController.cs",
+        "action_method": "DeleteExpenseTrip",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Expense Management",
+      "business_logic": {
+        "operation_summary": "Delete expense trip and all associated members and details — validates the request, calls ICommon.ToJsonString, ICommon.AddAsync, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "AuditLog: INSERT",
+        "validations": "Valid expense trip ID is required.",
+        "side_effects": "AuditLog DELETE (Accounts > Expense Trips > ExpenseTrips)",
+        "calls_services": [
+          "ICommon.ToJsonString",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid expense trip ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Expense trip not found.",
+            "when": "existing == null"
+          }
+        ]
+      }
+    }
+  ]
+}

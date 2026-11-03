@@ -1,0 +1,792 @@
+{
+  "controller": "AnnouncementsController",
+  "file": "Controllers/AnnouncementsController.cs",
+  "module": "Common and Utilities",
+  "base_route": "api/Announcements",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles announcements: get all announcements, create announcement, update announcement, delete announcement",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/company-settings/announcements",
+        "module_code": "settings",
+        "section": "company-settings",
+        "sub_section": "announcements",
+        "frontend_routes": [
+          "/settings/company-settings/announcements",
+          "/settings/company-settings/announcements/create-announcements"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "announcements"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "announcements_get_all_announcements",
+      "name": "Get All Announcements",
+      "action_method": "GetAllAnnouncements",
+      "http_method": "GET",
+      "route": "api/Announcements",
+      "business_purpose": "Retrieve all announcements",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/company-settings/announcements:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all announcements",
+      "detailed_description": "Retrieve all announcements. It calls IAnnouncements.GetAnnouncementsData, IAnnouncements.GetAnnouncementsActions, ICommon.GetPagination. Data access uses stored procedure(s): GetAnnouncements, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all announcements",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Announcements"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "announcements_get_all_announcements",
+        "description": "Retrieve all announcements",
+        "http_method": "GET",
+        "endpoint": "api/Announcements",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/AnnouncementsController.cs",
+        "action_method": "GetAllAnnouncements",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/Announcements_repo.cs",
+          "Interfaces/IAnnouncements.cs",
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Common and Utilities",
+      "business_logic": {
+        "operation_summary": "Retrieve all announcements — calls IAnnouncements.GetAnnouncementsData, IAnnouncements.GetAnnouncementsActions, ICommon.GetPagination",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IAnnouncements.GetAnnouncementsData",
+          "IAnnouncements.GetAnnouncementsActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Announcements_repo (Repositories/Announcements_repo.cs) via IAnnouncements",
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [
+          "GetAnnouncements",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "announcements_create_announcement",
+      "name": "Create Announcement",
+      "action_method": "CreateAnnouncement",
+      "http_method": "POST",
+      "route": "api/Announcements",
+      "business_purpose": "Create announcement",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateAnnouncementRequest (inline)",
+        "properties": [
+          {
+            "name": "userid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "regionid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "areaid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "subareaid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "branchid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "content",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "level",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "link",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "userlevelid",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; a duplicate check exists so repeating usually fails with a conflict/validation message"
+      },
+      "required_permission": "settings/company-settings/announcements:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create announcement",
+      "detailed_description": "Create announcement. It validates the request, then checks for an existing/duplicate record, then calls IAnnouncements.GetUserById, IAnnouncements.GetRegionById, IAnnouncements.GetAreaById. Persists changes to: Announcements: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; Valid user ID is required. [when request.userid <= 0]; Title is required. [when string.IsNullOrWhiteSpace(request.title)]; Content is required. [when string.IsNullOrWhiteSpace(request.content)]; User not found or inactive. [when user == null]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "Announcement with this title already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create announcement",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateAnnouncementRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Announcements"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "announcements_create_announcement",
+        "description": "Create announcement",
+        "http_method": "POST",
+        "endpoint": "api/Announcements",
+        "parameters": {
+          "userid": {
+            "type": "int",
+            "required": false,
+            "description": "userid (body)"
+          },
+          "regionid": {
+            "type": "int",
+            "required": false,
+            "description": "regionid (body)"
+          },
+          "areaid": {
+            "type": "int",
+            "required": false,
+            "description": "areaid (body)"
+          },
+          "subareaid": {
+            "type": "int",
+            "required": false,
+            "description": "subareaid (body)"
+          },
+          "branchid": {
+            "type": "int",
+            "required": false,
+            "description": "branchid (body)"
+          },
+          "title": {
+            "type": "string",
+            "required": false,
+            "description": "title (body)"
+          },
+          "content": {
+            "type": "string",
+            "required": false,
+            "description": "content (body)"
+          },
+          "level": {
+            "type": "string",
+            "required": false,
+            "description": "level (body)"
+          },
+          "link": {
+            "type": "string",
+            "required": false,
+            "description": "link (body)"
+          },
+          "userlevelid": {
+            "type": "int",
+            "required": false,
+            "description": "userlevelid (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/AnnouncementsController.cs",
+        "action_method": "CreateAnnouncement",
+        "related_dto_files": [
+          "Controllers/AnnouncementsController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/Announcements_repo.cs",
+          "Interfaces/IAnnouncements.cs"
+        ]
+      },
+      "module": "Common and Utilities",
+      "business_logic": {
+        "operation_summary": "Create announcement — validates the request, checks for an existing/duplicate record, calls IAnnouncements.GetUserById, IAnnouncements.GetRegionById, IAnnouncements.GetAreaById",
+        "preconditions": "Valid Bearer JWT; request body of type CreateAnnouncementRequest (inline); passes 7 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Announcements: INSERT",
+        "validations": "ModelState (DTO data-annotation) validation; Invalid data provided.; Valid user ID is required.; Title is required.; Content is required.; User not found or inactive.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IAnnouncements.GetUserById",
+          "IAnnouncements.GetRegionById",
+          "IAnnouncements.GetAreaById",
+          "IAnnouncements.GetSubAreaById",
+          "IAnnouncements.GetBranchById",
+          "IAnnouncements.GetUserLevelById",
+          "IAnnouncements.IsAnnouncementTitleDuplicateAsync",
+          "IAnnouncements.CreateAnnouncementAsync"
+        ],
+        "calls_repositories": [
+          "Announcements_repo (Repositories/Announcements_repo.cs) via IAnnouncements"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "Valid user ID is required.",
+            "when": "request.userid <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Title is required.",
+            "when": "string.IsNullOrWhiteSpace(request.title)"
+          },
+          {
+            "returns": 400,
+            "message": "Content is required.",
+            "when": "string.IsNullOrWhiteSpace(request.content)"
+          },
+          {
+            "returns": 400,
+            "message": "User not found or inactive.",
+            "when": "user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Announcement with this title already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "announcements_update_announcement",
+      "name": "Update Announcement",
+      "action_method": "UpdateAnnouncement",
+      "http_method": "PUT",
+      "route": "api/Announcements/{announcementId}",
+      "business_purpose": "Update announcement",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "announcementId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateAnnouncementRequest (inline)",
+        "properties": [
+          {
+            "name": "userid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "regionid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "areaid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "subareaid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "branchid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "content",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "level",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "link",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "userlevelid",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "settings/company-settings/announcements:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update announcement",
+      "detailed_description": "Update announcement. It validates the request, then checks for an existing/duplicate record, then calls IAnnouncements.GetUserById, IAnnouncements.IsAnnouncementTitleDuplicateAsync, IAnnouncements.UpdateAnnouncementAsync. Persists changes to: Announcements: UPDATE. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid announcement ID is required. [when announcementId <= 0]; Valid User ID is required. [when request.userid <= 0]; At least one field must be provided for update. [when string.IsNullOrWhiteSpace(request.title) && string.IsNullOrWhiteSpace(request.content) && ]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "Announcement with this title already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update announcement",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "announcementId (route)",
+          "request body UpdateAnnouncementRequest (inline)"
+        ],
+        "follow_up_apis": []
+      },
+      "llm_tool_definition": {
+        "name": "announcements_update_announcement",
+        "description": "Update announcement",
+        "http_method": "PUT",
+        "endpoint": "api/Announcements/{announcementId}",
+        "parameters": {
+          "announcementId": {
+            "type": "int",
+            "required": true,
+            "description": "announcement Id (route)"
+          },
+          "userid": {
+            "type": "int",
+            "required": false,
+            "description": "userid (body)"
+          },
+          "regionid": {
+            "type": "int",
+            "required": false,
+            "description": "regionid (body)"
+          },
+          "areaid": {
+            "type": "int",
+            "required": false,
+            "description": "areaid (body)"
+          },
+          "subareaid": {
+            "type": "int",
+            "required": false,
+            "description": "subareaid (body)"
+          },
+          "branchid": {
+            "type": "int",
+            "required": false,
+            "description": "branchid (body)"
+          },
+          "title": {
+            "type": "string",
+            "required": false,
+            "description": "title (body)"
+          },
+          "content": {
+            "type": "string",
+            "required": false,
+            "description": "content (body)"
+          },
+          "level": {
+            "type": "string",
+            "required": false,
+            "description": "level (body)"
+          },
+          "link": {
+            "type": "string",
+            "required": false,
+            "description": "link (body)"
+          },
+          "userlevelid": {
+            "type": "int",
+            "required": false,
+            "description": "userlevelid (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/AnnouncementsController.cs",
+        "action_method": "UpdateAnnouncement",
+        "related_dto_files": [
+          "Controllers/AnnouncementsController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/Announcements_repo.cs",
+          "Interfaces/IAnnouncements.cs"
+        ]
+      },
+      "module": "Common and Utilities",
+      "business_logic": {
+        "operation_summary": "Update announcement — validates the request, checks for an existing/duplicate record, calls IAnnouncements.GetUserById, IAnnouncements.IsAnnouncementTitleDuplicateAsync, IAnnouncements.UpdateAnnouncementAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) announcementId; request body of type UpdateAnnouncementRequest (inline); passes 5 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Announcements: UPDATE",
+        "validations": "Valid announcement ID is required.; Valid User ID is required.; At least one field must be provided for update.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IAnnouncements.GetUserById",
+          "IAnnouncements.IsAnnouncementTitleDuplicateAsync",
+          "IAnnouncements.UpdateAnnouncementAsync"
+        ],
+        "calls_repositories": [
+          "Announcements_repo (Repositories/Announcements_repo.cs) via IAnnouncements"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid announcement ID is required.",
+            "when": "announcementId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Valid User ID is required.",
+            "when": "request.userid <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field must be provided for update.",
+            "when": "string.IsNullOrWhiteSpace(request.title) && string.IsNullOrWhiteSpace(request.content) && string.IsNullOrWhiteSpace(request.level) && string.IsNullOrWhiteSpace(request.link) && !request.regionid.HasValue && !request.areaid.HasValue && !request.subareaid.HasValue && !request.branchid.HasValue && !request.userlevelid.HasValue"
+          },
+          {
+            "returns": 400,
+            "message": "Announcement with this title already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "announcements_delete_announcement",
+      "name": "Delete Announcement",
+      "action_method": "DeleteAnnouncement",
+      "http_method": "DELETE",
+      "route": "api/Announcements/{announcementId}",
+      "business_purpose": "Delete announcement",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "announcementId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "settings/company-settings/announcements:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete announcement",
+      "detailed_description": "Delete announcement. It validates the request, then calls ICommon.getUserByToken, IAnnouncements.DeleteAnnouncement. Persists changes to: Announcements: UPDATE, soft delete (is_deleted flag). Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid announcement ID is required. [when announcementId <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete announcement",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "announcementId (route)"
+        ],
+        "follow_up_apis": []
+      },
+      "llm_tool_definition": {
+        "name": "announcements_delete_announcement",
+        "description": "Delete announcement",
+        "http_method": "DELETE",
+        "endpoint": "api/Announcements/{announcementId}",
+        "parameters": {
+          "announcementId": {
+            "type": "int",
+            "required": true,
+            "description": "announcement Id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/AnnouncementsController.cs",
+        "action_method": "DeleteAnnouncement",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Announcements_repo.cs",
+          "Interfaces/IAnnouncements.cs"
+        ]
+      },
+      "module": "Common and Utilities",
+      "business_logic": {
+        "operation_summary": "Delete announcement — validates the request, calls ICommon.getUserByToken, IAnnouncements.DeleteAnnouncement",
+        "preconditions": "Valid Bearer JWT; route parameter(s) announcementId; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Announcements: UPDATE; soft delete (is_deleted flag)",
+        "validations": "Valid announcement ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAnnouncements.DeleteAnnouncement"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Announcements_repo (Repositories/Announcements_repo.cs) via IAnnouncements"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid announcement ID is required.",
+            "when": "announcementId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    }
+  ]
+}

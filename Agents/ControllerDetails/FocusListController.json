@@ -1,0 +1,1264 @@
+{
+  "controller": "FocusListController",
+  "file": "Controllers/FocusListController.cs",
+  "base_route": "api/FocusList",
+  "description": "Focus list tracking",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "crm/focus-list",
+        "module_code": "crm",
+        "section": "focus-list",
+        "sub_section": null,
+        "frontend_routes": [
+          "/crm/focus-list/view-focus-list/:id"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "crm/my-focuslist",
+        "module_code": "crm",
+        "section": "my-focuslist",
+        "sub_section": null,
+        "frontend_routes": [
+          "/crm/my-focuslist"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "foc_001",
+      "name": "GetAll",
+      "http_method": "GET",
+      "route": "api/FocusList",
+      "business_purpose": "GET operation for FocusListController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [
+          "GetFocusList"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FocusListController.cs",
+        "action_method": "GetAll"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "crm/focus-list",
+        "crm/my-focuslist"
+      ],
+      "short_description": "GET operation for FocusListController",
+      "detailed_description": "GET operation for FocusListController. It calls ICommon.getUserByToken, IFocusList.GetFocusListData, ICommon.GetBranchesByRegionIdAsync. Data access uses stored procedure(s): GetFocusList. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to GET operation for focuslistcontroller",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/FocusList",
+          "GET api/FocusList/users/{searchtext?}",
+          "GET api/FocusList/api/focuslist/{userId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "focus_list_get_all",
+        "description": "GET operation for FocusListController",
+        "http_method": "GET",
+        "endpoint": "api/FocusList",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "foc_002",
+      "name": "GetUsers",
+      "http_method": "GET",
+      "route": "api/FocusList/users/{searchtext?}",
+      "business_purpose": "GET operation for FocusListController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FocusListController.cs",
+        "action_method": "GetUsers"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "crm/focus-list",
+        "crm/my-focuslist"
+      ],
+      "short_description": "GET operation for FocusListController",
+      "detailed_description": "GET operation for FocusListController. It calls ICommon.getUserByToken, IFocusList.GetAllUsersByCurrentUserAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to GET operation for focuslistcontroller",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/FocusList",
+          "GET api/FocusList/users/{searchtext?}",
+          "GET api/FocusList/api/focuslist/{userId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "focus_list_get_users",
+        "description": "GET operation for FocusListController",
+        "http_method": "GET",
+        "endpoint": "api/FocusList/users/{searchtext?}",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "foc_003",
+      "name": "GetFocusListDashboard",
+      "http_method": "GET",
+      "route": "api/FocusList/api/focuslist/{userId}",
+      "business_purpose": "GET operation for FocusListController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": []
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FocusListController.cs",
+        "action_method": "GetFocusListDashboard"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "crm/focus-list",
+        "crm/my-focuslist"
+      ]
+    },
+    {
+      "id": "foc_004",
+      "name": "GetFocusListDashboard",
+      "http_method": "GET",
+      "route": "api/FocusList/{id}",
+      "business_purpose": "GET operation for FocusListController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [
+          "GetInfluencersKYCPercentByUser"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid user token",
+            "when": "loggedInUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "User not found",
+            "when": "selectedUser == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FocusListController.cs",
+        "action_method": "GetFocusListDashboard"
+      },
+      "required_permission": "crm/focus-list:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/my-focuslist"
+      ],
+      "short_description": "GET operation for FocusListController",
+      "detailed_description": "GET operation for FocusListController. It calls ICommon.getUserByToken, IFocusList.GetUserByIdAsync, IFocusList.GetFocusListByUserAsync. Data access uses stored procedure(s): GetInfluencersKYCPercentByUser. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: User not found [when selectedUser == null]",
+        "unauthorized": "401/403: Invalid user token [when loggedInUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to GET operation for focuslistcontroller",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/FocusList",
+          "GET api/FocusList/users/{searchtext?}",
+          "GET api/FocusList/api/focuslist/{userId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "focus_list_get_focus_list_dashboard",
+        "description": "GET operation for FocusListController",
+        "http_method": "GET",
+        "endpoint": "api/FocusList/{id}",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "foc_005",
+      "name": "GetInfluencersByInfluencerType",
+      "http_method": "GET",
+      "route": "api/FocusList/influencers-by-type",
+      "business_purpose": "GET operation for FocusListController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FocusListController.cs",
+        "action_method": "GetInfluencersByInfluencerType"
+      },
+      "required_permission": "crm/focus-list:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/my-focuslist"
+      ],
+      "short_description": "GET operation for FocusListController",
+      "detailed_description": "GET operation for FocusListController. It calls ICommon.getUserByToken, IFocusList.GetUserByIdAsync, IFocusList.GetFocusListByUserAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to GET operation for focuslistcontroller",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/FocusList",
+          "GET api/FocusList/users/{searchtext?}",
+          "GET api/FocusList/api/focuslist/{userId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "focus_list_get_influencers_by_influencer_type",
+        "description": "GET operation for FocusListController",
+        "http_method": "GET",
+        "endpoint": "api/FocusList/influencers-by-type",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "foc_006",
+      "name": "AddFocusList",
+      "http_method": "POST",
+      "route": "api/FocusList/add",
+      "business_purpose": "POST operation for FocusListController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "CREATE/UPDATE/DELETE",
+      "business_logic": {
+        "operation_summary": "POST operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "FocusList: INSERT; sets influencer.is_fl",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "User not found",
+            "when": "user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Influencer Not Found: {dto.InfluencerId}",
+            "when": "influencer == null"
+          },
+          {
+            "returns": 404,
+            "message": "Influencer Not Found",
+            "when": "influencer == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FocusListController.cs",
+        "action_method": "AddFocusList"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "delete",
+        "add",
+        "edit"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "crm/focus-list",
+        "crm/my-focuslist"
+      ],
+      "short_description": "POST operation for FocusListController",
+      "detailed_description": "POST operation for FocusListController. It calls ICommon.getUserByToken, IFocusList.GetUserByIdAsync, IFocusList.GetFocusListActions. Persists changes to: FocusList: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: User not found [when user == null]; Influencer Not Found: {dto.InfluencerId} [when influencer == null]; Influencer Not Found [when influencer == null]",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to POST operation for focuslistcontroller",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/FocusList",
+          "GET api/FocusList/influencers-by-type",
+          "GET api/FocusList/influencers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "focus_list_add_focus_list",
+        "description": "POST operation for FocusListController",
+        "http_method": "POST",
+        "endpoint": "api/FocusList/add",
+        "parameters": {},
+        "operation_type": "CREATE/UPDATE/DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "foc_007",
+      "name": "FocusListApproval",
+      "http_method": "POST",
+      "route": "api/FocusList/FocusListApproval",
+      "business_purpose": "POST operation for FocusListController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "CREATE/UPDATE/DELETE",
+      "business_logic": {
+        "operation_summary": "POST operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "sets focusList.is_approved, focusList.is_canceled, focusList.approved_by, focusList.approved_date, focusList.deleted_by, focusList.deleted_date and saves changes",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "FocusList entry not found",
+            "when": "focusList == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FocusListController.cs",
+        "action_method": "FocusListApproval"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "delete",
+        "add",
+        "edit"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "crm/focus-list",
+        "crm/my-focuslist"
+      ],
+      "short_description": "POST operation for FocusListController",
+      "detailed_description": "POST operation for FocusListController. It calls ICommon.getUserByToken, IFocusList.GetFocusListByClientIdAsync, IFocusList.SaveChangesAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: FocusList entry not found [when focusList == null]",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]; Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to POST operation for focuslistcontroller",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/FocusList",
+          "GET api/FocusList/influencers-by-type",
+          "GET api/FocusList/influencers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "focus_list_focus_list_approval",
+        "description": "POST operation for FocusListController",
+        "http_method": "POST",
+        "endpoint": "api/FocusList/FocusListApproval",
+        "parameters": {},
+        "operation_type": "CREATE/UPDATE/DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "foc_008",
+      "name": "FocusListReject",
+      "http_method": "POST",
+      "route": "api/FocusList/FocusListReject",
+      "business_purpose": "POST operation for FocusListController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "CREATE/UPDATE/DELETE",
+      "business_logic": {
+        "operation_summary": "POST operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "sets focusList.is_canceled, focusList.is_approved, focusList.deleted_by, focusList.deleted_date, focusList.reject_remark, focusList.operated_by and saves changes",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "FocusList entry not found",
+            "when": "focusList == null"
+          },
+          {
+            "returns": 400,
+            "message": "A remark is required to reject this influencer.",
+            "when": "string.IsNullOrWhiteSpace(trimmedRemark)"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FocusListController.cs",
+        "action_method": "FocusListReject"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "delete",
+        "add",
+        "edit"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "crm/focus-list",
+        "crm/my-focuslist"
+      ],
+      "short_description": "POST operation for FocusListController",
+      "detailed_description": "POST operation for FocusListController. It validates the request, then calls ICommon.getUserByToken, IFocusList.GetFocusListByClientIdAsync, IFocusList.SaveChangesAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: A remark is required to reject this influencer. [when string.IsNullOrWhiteSpace(trimmedRemark)]",
+        "not_found": "404: FocusList entry not found [when focusList == null]",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to POST operation for focuslistcontroller",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/FocusList",
+          "GET api/FocusList/influencers-by-type",
+          "GET api/FocusList/influencers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "focus_list_focus_list_reject",
+        "description": "POST operation for FocusListController",
+        "http_method": "POST",
+        "endpoint": "api/FocusList/FocusListReject",
+        "parameters": {},
+        "operation_type": "CREATE/UPDATE/DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "foc_009",
+      "name": "FocusClientDelete",
+      "http_method": "DELETE",
+      "route": "api/FocusList/FocusClientDelete/{id}",
+      "business_purpose": "DELETE operation for FocusListController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "CREATE/UPDATE/DELETE",
+      "business_logic": {
+        "operation_summary": "DELETE operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "sets focusList.is_deleted, focusList.modified_date, focusList.modified_by, focusList.deleted_date, focusList.deleted_by and saves changes",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "FocusList entry not found",
+            "when": "focusList == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FocusListController.cs",
+        "action_method": "FocusClientDelete"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "delete",
+        "add",
+        "edit"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "crm/focus-list",
+        "crm/my-focuslist"
+      ],
+      "short_description": "DELETE operation for FocusListController",
+      "detailed_description": "DELETE operation for FocusListController. It calls ICommon.getUserByToken, IFocusList.GetFocusListByIdAsync, IFocusList.SaveChangesAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: FocusList entry not found [when focusList == null]",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to DELETE operation for focuslistcontroller",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/FocusList",
+          "GET api/FocusList/influencers-by-type",
+          "GET api/FocusList/influencers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "focus_list_focus_client_delete",
+        "description": "DELETE operation for FocusListController",
+        "http_method": "DELETE",
+        "endpoint": "api/FocusList/FocusClientDelete/{id}",
+        "parameters": {},
+        "operation_type": "CREATE/UPDATE/DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "foc_010",
+      "name": "DeleteFocusListByUser",
+      "http_method": "DELETE",
+      "route": "api/FocusList/focuslist/{id}",
+      "business_purpose": "DELETE operation for FocusListController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "CREATE/UPDATE/DELETE",
+      "business_logic": {
+        "operation_summary": "DELETE operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "User not found.",
+            "when": "user == null"
+          },
+          {
+            "returns": 404,
+            "message": "No focus list entries found for this user.",
+            "when": "deleteList == null || !deleteList.Any()"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FocusListController.cs",
+        "action_method": "DeleteFocusListByUser"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "delete",
+        "add",
+        "edit"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "crm/focus-list",
+        "crm/my-focuslist"
+      ],
+      "short_description": "DELETE operation for FocusListController",
+      "detailed_description": "DELETE operation for FocusListController. It calls ICommon.getUserByToken, IFocusList.GetUserByIdAsync, IFocusList.GetFocusListByUserAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: User not found. [when user == null]; No focus list entries found for this user. [when deleteList == null || !deleteList.Any()]",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to DELETE operation for focuslistcontroller",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/FocusList",
+          "GET api/FocusList/influencers-by-type",
+          "GET api/FocusList/influencers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "focus_list_delete_focus_list_by_user",
+        "description": "DELETE operation for FocusListController",
+        "http_method": "DELETE",
+        "endpoint": "api/FocusList/focuslist/{id}",
+        "parameters": {},
+        "operation_type": "CREATE/UPDATE/DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "foc_011",
+      "name": "UpdateFocusList",
+      "http_method": "PUT",
+      "route": "api/FocusList/{focusListId}",
+      "business_purpose": "PUT operation for FocusListController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "CREATE/UPDATE/DELETE",
+      "business_logic": {
+        "operation_summary": "PUT operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid FocusList ID is required.",
+            "when": "focusListId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field must be provided for update.",
+            "when": "request.InfluencerTypeId == null && request.InfluencerId == null && request.AssignedTo == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": "!result.Success"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FocusListController.cs",
+        "action_method": "UpdateFocusList"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "delete",
+        "add",
+        "edit"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "crm/focus-list",
+        "crm/my-focuslist"
+      ],
+      "short_description": "PUT operation for FocusListController",
+      "detailed_description": "PUT operation for FocusListController. It validates the request, then calls ICommon.getUserByToken, IFocusList.UpdateFocusListAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid FocusList ID is required. [when focusListId <= 0]; At least one field must be provided for update. [when request.InfluencerTypeId == null && request.InfluencerId == null && request.AssignedTo == ]; message returned by the called service/repository (result.Message) [when !result.Success]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to PUT operation for focuslistcontroller",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/FocusList",
+          "GET api/FocusList/influencers-by-type",
+          "GET api/FocusList/influencers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "focus_list_update_focus_list",
+        "description": "PUT operation for FocusListController",
+        "http_method": "PUT",
+        "endpoint": "api/FocusList/{focusListId}",
+        "parameters": {},
+        "operation_type": "CREATE/UPDATE/DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "foc_012",
+      "name": "GetInfluencersBySearchText",
+      "http_method": "GET",
+      "route": "api/FocusList/influencers/{searchText}",
+      "business_purpose": "GET operation for FocusListController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Search text is required",
+            "when": "string.IsNullOrWhiteSpace(searchText)"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid user",
+            "when": "targetUser == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FocusListController.cs",
+        "action_method": "GetInfluencersBySearchText"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "crm/focus-list",
+        "crm/my-focuslist"
+      ],
+      "short_description": "GET operation for FocusListController",
+      "detailed_description": "GET operation for FocusListController. It validates the request, then calls ICommon.getUserByToken, IFocusList.GetUserByIdAsync, IFocusList.GetFocusListByUserAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Search text is required [when string.IsNullOrWhiteSpace(searchText)]; Invalid user [when targetUser == null]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to GET operation for focuslistcontroller",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/FocusList",
+          "GET api/FocusList/users/{searchtext?}",
+          "GET api/FocusList/api/focuslist/{userId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "focus_list_get_influencers_by_search_text",
+        "description": "GET operation for FocusListController",
+        "http_method": "GET",
+        "endpoint": "api/FocusList/influencers/{searchText}",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "foc_013",
+      "name": "GetInfluencers",
+      "http_method": "GET",
+      "route": "api/FocusList/influencers",
+      "business_purpose": "GET operation for FocusListController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": []
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FocusListController.cs",
+        "action_method": "GetInfluencers"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "crm/focus-list",
+        "crm/my-focuslist"
+      ]
+    }
+  ]
+}

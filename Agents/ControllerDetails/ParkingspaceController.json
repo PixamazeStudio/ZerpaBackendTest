@@ -1,0 +1,891 @@
+{
+  "controller": "ParkingspaceController",
+  "file": "Controllers/ParkingspaceController.cs",
+  "module": "Stock and Logistics Management",
+  "base_route": "api/Parkingspace",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages parkingspace records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/factory-settings/parking-space",
+        "module_code": "settings",
+        "section": "factory-settings",
+        "sub_section": "parking-space",
+        "frontend_routes": [
+          "/settings/factory-settings/parking-space"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "ParkingSpace"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "parkingspace_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/Parkingspace",
+      "business_purpose": "Retrieve all parkingspace records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/factory-settings/parking-space:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all parkingspace records",
+      "detailed_description": "Retrieve all parkingspace records. It calls ICommon.getUserByToken, IParkingspace.GetParkingspaceData, IParkingspace.GetParkingspaceActions. Data access uses stored procedure(s): GetParkingspace. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all parkingspace records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Parkingspace",
+          "GET api/Parkingspace/{id}",
+          "GET api/Parkingspace/department"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "parkingspace_get_all",
+        "description": "Retrieve all parkingspace records",
+        "http_method": "GET",
+        "endpoint": "api/Parkingspace",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ParkingspaceController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Parkingspace_repo.cs",
+          "Interfaces/IParkingspace.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all parkingspace records — calls ICommon.getUserByToken, IParkingspace.GetParkingspaceData, IParkingspace.GetParkingspaceActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IParkingspace.GetParkingspaceData",
+          "IParkingspace.GetParkingspaceActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Parkingspace_repo (Repositories/Parkingspace_repo.cs) via IParkingspace"
+        ],
+        "stored_procedures": [
+          "GetParkingspace"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "parkingspace_get_parking_space_by_id",
+      "name": "Get Parking Space By Id",
+      "action_method": "GetParkingSpaceById",
+      "http_method": "GET",
+      "route": "api/Parkingspace/{id}",
+      "business_purpose": "Retrieve parking space by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/factory-settings/parking-space:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve parking space by ID",
+      "detailed_description": "Retrieve parking space by ID. It validates the request, then calls ICommon.getUserByToken, IParkingspace.GetParkingspaceById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid scheduler ID is required [when id <= 0]",
+        "not_found": "404: Parkingspace not found [when parkingspace == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve parking space by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Parkingspace",
+          "GET api/Parkingspace/{id}",
+          "GET api/Parkingspace/department"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "parkingspace_get_parking_space_by_id",
+        "description": "Retrieve parking space by ID",
+        "http_method": "GET",
+        "endpoint": "api/Parkingspace/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ParkingspaceController.cs",
+        "action_method": "GetParkingSpaceById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Parkingspace_repo.cs",
+          "Interfaces/IParkingspace.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Retrieve parking space by ID — validates the request, calls ICommon.getUserByToken, IParkingspace.GetParkingspaceById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid scheduler ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IParkingspace.GetParkingspaceById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Parkingspace_repo (Repositories/Parkingspace_repo.cs) via IParkingspace"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid scheduler ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Parkingspace not found",
+            "when": "parkingspace == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "parkingspace_delete_parkingspace",
+      "name": "Delete Parkingspace",
+      "action_method": "DeleteParkingspace",
+      "http_method": "DELETE",
+      "route": "api/Parkingspace/{id}",
+      "business_purpose": "Delete parkingspace",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "settings/factory-settings/parking-space:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete parkingspace",
+      "detailed_description": "Delete parkingspace. It validates the request, then calls ICommon.getUserByToken, IParkingspace.DeleteParkingspace. Persists changes to: ParkingSpace: UPDATE, soft delete (is_deleted flag). Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid lead ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete parkingspace",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Parkingspace/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "parkingspace_delete_parkingspace",
+        "description": "Delete parkingspace",
+        "http_method": "DELETE",
+        "endpoint": "api/Parkingspace/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/ParkingspaceController.cs",
+        "action_method": "DeleteParkingspace",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Parkingspace_repo.cs",
+          "Interfaces/IParkingspace.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Delete parkingspace — validates the request, calls ICommon.getUserByToken, IParkingspace.DeleteParkingspace",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "ParkingSpace: UPDATE; soft delete (is_deleted flag)",
+        "validations": "Valid lead ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IParkingspace.DeleteParkingspace"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Parkingspace_repo (Repositories/Parkingspace_repo.cs) via IParkingspace"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid lead ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "parkingspace_create_parking_space",
+      "name": "Create Parking Space",
+      "action_method": "CreateParkingSpace",
+      "http_method": "POST",
+      "route": "api/Parkingspace",
+      "business_purpose": "Create parking space",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateParkingSpaceDto (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "ParkingSpace",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "ParkingSpaceCode",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "DepartmentId",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; a duplicate check exists so repeating usually fails with a conflict/validation message"
+      },
+      "required_permission": "settings/factory-settings/parking-space:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create parking space",
+      "detailed_description": "Create parking space. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IParkingspace.GetDepartmentById, IParkingspace.DuplicateCheck. Persists changes to: ParkingSpace: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Parking Space is required. [when string.IsNullOrWhiteSpace(request.ParkingSpace)]; Parking Space Code is required. [when string.IsNullOrWhiteSpace(request.ParkingSpaceCode)]; Valid Department ID is required. [when request.DepartmentId <= 0]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "Duplicate Parking Space Found. [when duplicate]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create parking space",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateParkingSpaceDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Parkingspace",
+          "GET api/Parkingspace/department"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "parkingspace_create_parking_space",
+        "description": "Create parking space",
+        "http_method": "POST",
+        "endpoint": "api/Parkingspace",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "ParkingSpace": {
+            "type": "string",
+            "required": false,
+            "description": "Parking Space (body)"
+          },
+          "ParkingSpaceCode": {
+            "type": "string",
+            "required": false,
+            "description": "Parking Space Code (body)"
+          },
+          "DepartmentId": {
+            "type": "int",
+            "required": false,
+            "description": "Department Id (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/ParkingspaceController.cs",
+        "action_method": "CreateParkingSpace",
+        "related_dto_files": [
+          "Controllers/ParkingspaceController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Parkingspace_repo.cs",
+          "Interfaces/IParkingspace.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Create parking space — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, IParkingspace.GetDepartmentById, IParkingspace.DuplicateCheck",
+        "preconditions": "Valid Bearer JWT; request body of type CreateParkingSpaceDto (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "ParkingSpace: INSERT",
+        "validations": "Parking Space is required.; Parking Space Code is required.; Valid Department ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IParkingspace.GetDepartmentById",
+          "IParkingspace.DuplicateCheck",
+          "IParkingspace.CreateParkingspaceAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Parkingspace_repo (Repositories/Parkingspace_repo.cs) via IParkingspace"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Parking Space is required.",
+            "when": "string.IsNullOrWhiteSpace(request.ParkingSpace)"
+          },
+          {
+            "returns": 400,
+            "message": "Parking Space Code is required.",
+            "when": "string.IsNullOrWhiteSpace(request.ParkingSpaceCode)"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Department ID is required.",
+            "when": "request.DepartmentId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Duplicate Parking Space Found.",
+            "when": "duplicate"
+          }
+        ]
+      }
+    },
+    {
+      "id": "parkingspace_get_department",
+      "name": "Get Department",
+      "action_method": "GetDepartment",
+      "http_method": "GET",
+      "route": "api/Parkingspace/department",
+      "business_purpose": "Retrieve department",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/factory-settings/parking-space:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve department",
+      "detailed_description": "Retrieve department. It calls ICommon.getUserByToken, IParkingspace.GetDepartment. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve department",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Parkingspace",
+          "GET api/Parkingspace/{id}",
+          "GET api/Parkingspace/department"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "parkingspace_get_department",
+        "description": "Retrieve department",
+        "http_method": "GET",
+        "endpoint": "api/Parkingspace/department",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ParkingspaceController.cs",
+        "action_method": "GetDepartment",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Parkingspace_repo.cs",
+          "Interfaces/IParkingspace.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Retrieve department — calls ICommon.getUserByToken, IParkingspace.GetDepartment",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IParkingspace.GetDepartment"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Parkingspace_repo (Repositories/Parkingspace_repo.cs) via IParkingspace"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "parkingspace_update_parking_space",
+      "name": "Update Parking Space",
+      "action_method": "UpdateParkingSpace",
+      "http_method": "PUT",
+      "route": "api/Parkingspace/{parkingSpaceId}",
+      "business_purpose": "Update parking space",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "parkingSpaceId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateParkingSpaceDto (inline)",
+        "properties": [
+          {
+            "name": "ParkingSpace",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "ParkingSpaceCode",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "DepartmentId",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "settings/factory-settings/parking-space:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update parking space",
+      "detailed_description": "Update parking space. It validates the request, then calls ICommon.getUserByToken, IParkingspace.UpdateParkingSpaceAsync. Persists changes to: ParkingSpace: UPDATE. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid Parking Space ID is required. [when parkingSpaceId <= 0]; At least one field must be provided for update. [when string.IsNullOrWhiteSpace(request.ParkingSpace) && string.IsNullOrWhiteSpace(request.Parki]; message returned by the called service/repository (result.Message) [when !result.Success]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update parking space",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "parkingSpaceId (route)",
+          "request body UpdateParkingSpaceDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Parkingspace/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "parkingspace_update_parking_space",
+        "description": "Update parking space",
+        "http_method": "PUT",
+        "endpoint": "api/Parkingspace/{parkingSpaceId}",
+        "parameters": {
+          "parkingSpaceId": {
+            "type": "int",
+            "required": true,
+            "description": "parking Space Id (route)"
+          },
+          "ParkingSpace": {
+            "type": "string",
+            "required": false,
+            "description": "Parking Space (body)"
+          },
+          "ParkingSpaceCode": {
+            "type": "string",
+            "required": false,
+            "description": "Parking Space Code (body)"
+          },
+          "DepartmentId": {
+            "type": "int",
+            "required": false,
+            "description": "Department Id (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/ParkingspaceController.cs",
+        "action_method": "UpdateParkingSpace",
+        "related_dto_files": [
+          "Controllers/ParkingspaceController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/Parkingspace_repo.cs",
+          "Interfaces/IParkingspace.cs"
+        ]
+      },
+      "module": "Stock and Logistics Management",
+      "business_logic": {
+        "operation_summary": "Update parking space — validates the request, calls ICommon.getUserByToken, IParkingspace.UpdateParkingSpaceAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) parkingSpaceId; request body of type UpdateParkingSpaceDto (inline); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "ParkingSpace: UPDATE",
+        "validations": "Valid Parking Space ID is required.; At least one field must be provided for update.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IParkingspace.UpdateParkingSpaceAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Parkingspace_repo (Repositories/Parkingspace_repo.cs) via IParkingspace"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Parking Space ID is required.",
+            "when": "parkingSpaceId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field must be provided for update.",
+            "when": "string.IsNullOrWhiteSpace(request.ParkingSpace) && string.IsNullOrWhiteSpace(request.ParkingSpaceCode) && request.DepartmentId == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": "!result.Success"
+          }
+        ]
+      }
+    }
+  ]
+}

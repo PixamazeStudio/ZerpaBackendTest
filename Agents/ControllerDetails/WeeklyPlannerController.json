@@ -1,0 +1,1859 @@
+{
+  "controller": "WeeklyPlannerController",
+  "file": "Controllers/WeeklyPlannerController.cs",
+  "module": "Planning and Visit Management",
+  "base_route": "api/WeeklyPlanner",
+  "class_level_auth": "none found",
+  "purpose": "Handles weekly planner: get all weekly planners, get weeklyplanner, get users, get weeks, get weekly planner by id, weekly planner detailed and 6 more",
+  "notes": "No [Authorize] at class level; authentication requirements vary per action",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "crm/weekly-planner",
+        "module_code": "crm",
+        "section": "weekly-planner",
+        "sub_section": null,
+        "frontend_routes": [
+          "/crm/weekly-planner",
+          "/crm/weekly-planner/create-weekly-planner",
+          "/crm/weekly-planner/edit-weekly-planner/:id",
+          "/crm/weekly-planner/view-weekly-planner/:id"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "crm/weeklyplanner",
+        "module_code": "crm",
+        "section": "weeklyplanner",
+        "sub_section": null,
+        "frontend_routes": [
+          "/crm/weeklyplanner/view/:id"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "weekly_planner_get_all_weekly_planners",
+      "name": "Get All Weekly Planners",
+      "action_method": "GetAllWeeklyPlanners",
+      "http_method": "GET",
+      "route": "api/WeeklyPlanner",
+      "business_purpose": "Retrieve all weekly planners",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "month",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "year",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/weekly-planner:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all weekly planners",
+      "detailed_description": "Retrieve all weekly planners. It calls ICommon.getUserByToken, IWeeklyPlanner.GetWeeklyPlannerData, IWeeklyPlanner.GetWeeklyPlannerActions. Data access uses stored procedure(s): GetWeeklyPlanner, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all weekly planners",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [],
+        "follow_up_apis": [
+          "GET api/WeeklyPlanner",
+          "GET api/WeeklyPlanner/get",
+          "GET api/WeeklyPlanner/Users"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "weekly_planner_get_all_weekly_planners",
+        "description": "Retrieve all weekly planners",
+        "http_method": "GET",
+        "endpoint": "api/WeeklyPlanner",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "month": {
+            "type": "string",
+            "required": false,
+            "description": "month (query)"
+          },
+          "year": {
+            "type": "int",
+            "required": false,
+            "description": "year (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          },
+          "status": {
+            "type": "string",
+            "required": false,
+            "description": "status (query)"
+          },
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "date range (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/WeeklyPlannerController.cs",
+        "action_method": "GetAllWeeklyPlanners",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/WeeklyPlanner_repo.cs",
+          "Interfaces/IWeeklyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all weekly planners — calls ICommon.getUserByToken, IWeeklyPlanner.GetWeeklyPlannerData, IWeeklyPlanner.GetWeeklyPlannerActions",
+        "preconditions": "No authentication required",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IWeeklyPlanner.GetWeeklyPlannerData",
+          "IWeeklyPlanner.GetWeeklyPlannerActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WeeklyPlanner_repo (Repository/WeeklyPlanner_repo.cs) via IWeeklyPlanner"
+        ],
+        "stored_procedures": [
+          "GetWeeklyPlanner",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "weekly_planner_get_weeklyplanner",
+      "name": "Get Weeklyplanner",
+      "action_method": "GetWeeklyplanner",
+      "http_method": "GET",
+      "route": "api/WeeklyPlanner/get",
+      "business_purpose": "Retrieve weeklyplanner",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "Month",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "year",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/weekly-planner:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/weeklyplanner"
+      ],
+      "short_description": "Retrieve weeklyplanner",
+      "detailed_description": "Retrieve weeklyplanner. It calls ICommon.getUserByToken, IWeeklyPlanner.GetCurrentMonth, IWeeklyPlanner.GetAllWeaklyPlannerByUser. Possible responses: 200, 401.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve weeklyplanner",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Month (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/WeeklyPlanner",
+          "GET api/WeeklyPlanner/get",
+          "GET api/WeeklyPlanner/Users"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "weekly_planner_get_weeklyplanner",
+        "description": "Retrieve weeklyplanner",
+        "http_method": "GET",
+        "endpoint": "api/WeeklyPlanner/get",
+        "parameters": {
+          "Month": {
+            "type": "string",
+            "required": true,
+            "description": "Month (query)"
+          },
+          "year": {
+            "type": "int",
+            "required": false,
+            "description": "year (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/WeeklyPlannerController.cs",
+        "action_method": "GetWeeklyplanner",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/WeeklyPlanner_repo.cs",
+          "Interfaces/IWeeklyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve weeklyplanner — calls ICommon.getUserByToken, IWeeklyPlanner.GetCurrentMonth, IWeeklyPlanner.GetAllWeaklyPlannerByUser",
+        "preconditions": "No authentication required; required query parameter(s): Month",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IWeeklyPlanner.GetCurrentMonth",
+          "IWeeklyPlanner.GetAllWeaklyPlannerByUser"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WeeklyPlanner_repo (Repository/WeeklyPlanner_repo.cs) via IWeeklyPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "weekly_planner_get_users",
+      "name": "Get Users",
+      "action_method": "GetUsers",
+      "http_method": "GET",
+      "route": "api/WeeklyPlanner/Users",
+      "business_purpose": "Retrieve users",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/weekly-planner:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/weeklyplanner"
+      ],
+      "short_description": "Retrieve users",
+      "detailed_description": "Retrieve users. It calls ICommon.getUserByToken, IWeeklyPlanner.GetUsers. Possible responses: 200, 401.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve users",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [],
+        "follow_up_apis": [
+          "GET api/WeeklyPlanner",
+          "GET api/WeeklyPlanner/get",
+          "GET api/WeeklyPlanner/Users"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "weekly_planner_get_users",
+        "description": "Retrieve users",
+        "http_method": "GET",
+        "endpoint": "api/WeeklyPlanner/Users",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/WeeklyPlannerController.cs",
+        "action_method": "GetUsers",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/WeeklyPlanner_repo.cs",
+          "Interfaces/IWeeklyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve users — calls ICommon.getUserByToken, IWeeklyPlanner.GetUsers",
+        "preconditions": "No authentication required",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IWeeklyPlanner.GetUsers"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WeeklyPlanner_repo (Repository/WeeklyPlanner_repo.cs) via IWeeklyPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "weekly_planner_get_weeks",
+      "name": "Get Weeks",
+      "action_method": "GetWeeks",
+      "http_method": "GET",
+      "route": "api/WeeklyPlanner/weeks",
+      "business_purpose": "Retrieve weeks",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/weekly-planner:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/weeklyplanner"
+      ],
+      "short_description": "Retrieve weeks",
+      "detailed_description": "Retrieve weeks. Possible responses: 200.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "None found in controller code",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve weeks",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [],
+        "follow_up_apis": [
+          "GET api/WeeklyPlanner",
+          "GET api/WeeklyPlanner/get",
+          "GET api/WeeklyPlanner/Users"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "weekly_planner_get_weeks",
+        "description": "Retrieve weeks",
+        "http_method": "GET",
+        "endpoint": "api/WeeklyPlanner/weeks",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/WeeklyPlannerController.cs",
+        "action_method": "GetWeeks",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": []
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve weeks",
+        "preconditions": "No authentication required",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [],
+        "calls_repositories": [],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "weekly_planner_get_weekly_planner_by_id",
+      "name": "Get Weekly Planner By Id",
+      "action_method": "GetWeeklyPlannerById",
+      "http_method": "GET",
+      "route": "api/WeeklyPlanner/{id}",
+      "business_purpose": "Retrieve weekly planner by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/weekly-planner:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/weeklyplanner"
+      ],
+      "short_description": "Retrieve weekly planner by ID",
+      "detailed_description": "Retrieve weekly planner by ID. It validates the request, then calls ICommon.getUserByToken, IWeeklyPlanner.GetWeaklyPlannerById, IWeeklyPlanner.GetSecondaryOrdersByUserAndWeek. Data access uses stored procedure(s): sp_GetInfluencerSupplySummaryByUserAndDate, sp_projectSupply, sp_GetUserWeeklyKpiSummary, GetSectionActions. Possible responses: 200, 400, 401.",
+      "error_handling": {
+        "validation_errors": "400: Invalid planner ID [when id == null || id == 0]; Planner end date not found. [when plan == null || !plan.end_date.HasValue]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve weekly planner by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/WeeklyPlanner",
+          "GET api/WeeklyPlanner/get",
+          "GET api/WeeklyPlanner/Users"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "weekly_planner_get_weekly_planner_by_id",
+        "description": "Retrieve weekly planner by ID",
+        "http_method": "GET",
+        "endpoint": "api/WeeklyPlanner/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/WeeklyPlannerController.cs",
+        "action_method": "GetWeeklyPlannerById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/WeeklyPlanner_repo.cs",
+          "Interfaces/IWeeklyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve weekly planner by ID — validates the request, calls ICommon.getUserByToken, IWeeklyPlanner.GetWeaklyPlannerById, IWeeklyPlanner.GetSecondaryOrdersByUserAndWeek",
+        "preconditions": "No authentication required; route parameter(s) id; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Invalid planner ID; Planner end date not found.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IWeeklyPlanner.GetWeaklyPlannerById",
+          "IWeeklyPlanner.GetSecondaryOrdersByUserAndWeek",
+          "IWeeklyPlanner.GetUserLasstWeaklyPlanner",
+          "IWeeklyPlanner.GetInfluencerSupplySummary",
+          "IWeeklyPlanner.GetProjectSupplySummary",
+          "IWeeklyPlanner.GetUsers",
+          "IWeeklyPlanner.GetUserWeeklyKpiSummary",
+          "IWeeklyPlanner.SaveChanges",
+          "IWeeklyPlanner.GetWeeklyPlannerActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WeeklyPlanner_repo (Repository/WeeklyPlanner_repo.cs) via IWeeklyPlanner"
+        ],
+        "stored_procedures": [
+          "sp_GetInfluencerSupplySummaryByUserAndDate",
+          "sp_projectSupply",
+          "sp_GetUserWeeklyKpiSummary",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid planner ID",
+            "when": "id == null || id == 0"
+          },
+          {
+            "returns": 400,
+            "message": "Planner end date not found.",
+            "when": "plan == null || !plan.end_date.HasValue"
+          }
+        ]
+      }
+    },
+    {
+      "id": "weekly_planner_weekly_planner_detailed",
+      "name": "Weekly Planner Detailed",
+      "action_method": "WeeklyPlannerDetailed",
+      "http_method": "GET",
+      "route": "api/WeeklyPlanner/get_weekly_planner_details",
+      "business_purpose": "Handle weekly planner detailed",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "startDate",
+          "type": "datetime",
+          "required": false
+        },
+        {
+          "name": "endDate",
+          "type": "datetime",
+          "required": false
+        },
+        {
+          "name": "week",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/weekly-planner:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/weeklyplanner"
+      ],
+      "short_description": "Handle weekly planner detailed",
+      "detailed_description": "Handle weekly planner detailed. It validates the request, then calls ICommon.getUserByToken, IWeeklyPlanner.GetSecondaryOrdersByUserAndWeek, IWeeklyPlanner.GetUserLasstWeaklyPlanner. Data access uses stored procedure(s): sp_GetInfluencerSupplySummaryByUserAndDate, sp_projectSupply, sp_GetUserWeeklyKpiSummary. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid week selected [when weekItem == null]; Provide either week or startDate and endDate.",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle weekly planner detailed",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [],
+        "follow_up_apis": [
+          "GET api/WeeklyPlanner",
+          "GET api/WeeklyPlanner/get",
+          "GET api/WeeklyPlanner/Users"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "weekly_planner_weekly_planner_detailed",
+        "description": "Handle weekly planner detailed",
+        "http_method": "GET",
+        "endpoint": "api/WeeklyPlanner/get_weekly_planner_details",
+        "parameters": {
+          "startDate": {
+            "type": "datetime",
+            "required": false,
+            "description": "start Date (query)"
+          },
+          "endDate": {
+            "type": "datetime",
+            "required": false,
+            "description": "end Date (query)"
+          },
+          "week": {
+            "type": "int",
+            "required": false,
+            "description": "week (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/WeeklyPlannerController.cs",
+        "action_method": "WeeklyPlannerDetailed",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/WeeklyPlanner_repo.cs",
+          "Interfaces/IWeeklyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Handle weekly planner detailed — validates the request, calls ICommon.getUserByToken, IWeeklyPlanner.GetSecondaryOrdersByUserAndWeek, IWeeklyPlanner.GetUserLasstWeaklyPlanner",
+        "preconditions": "No authentication required; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Invalid week selected; Provide either week or startDate and endDate.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IWeeklyPlanner.GetSecondaryOrdersByUserAndWeek",
+          "IWeeklyPlanner.GetUserLasstWeaklyPlanner",
+          "IWeeklyPlanner.GetInfluencerSupplySummary",
+          "IWeeklyPlanner.GetProjectSupplySummary",
+          "IWeeklyPlanner.GetUsers",
+          "IWeeklyPlanner.GetUserWeeklyKpiSummary"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WeeklyPlanner_repo (Repository/WeeklyPlanner_repo.cs) via IWeeklyPlanner"
+        ],
+        "stored_procedures": [
+          "sp_GetInfluencerSupplySummaryByUserAndDate",
+          "sp_projectSupply",
+          "sp_GetUserWeeklyKpiSummary"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid week selected",
+            "when": "weekItem == null"
+          },
+          {
+            "returns": 400,
+            "message": "Provide either week or startDate and endDate.",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "weekly_planner_create_plan",
+      "name": "Create Plan",
+      "action_method": "CreatePlan",
+      "http_method": "POST",
+      "route": "api/WeeklyPlanner",
+      "business_purpose": "Create plan",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateWeeklyPlanDto (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "WeekId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "SelectedUserId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "StartDate",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "EndDate",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "Influencers",
+            "type": "List<InfluencerPlanDto>",
+            "required": false
+          },
+          {
+            "name": "Projects",
+            "type": "List<ProjectPlanDto>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "crm/weekly-planner:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create plan",
+      "detailed_description": "Create plan. It validates the request, then calls ICommon.getUserByToken, IWeeklyPlanner.GetWeaklyPlannerById, ICommon.ToJsonString. Data access uses stored procedure(s): sp_GetUserWeeklyKpiSummary. Persists changes to: weaklyPlannerDetails: DELETE, weaklyPlannerProjectDetails: DELETE, weaklyPlannerHeaders: INSERT, AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid WeekId is required. [when request.WeekId <= 0]; Valid SelectedUserId is required. [when request.SelectedUserId <= 0]; Selected user not found. [when selectedUser == null]; Invalid WeekId. [when weekItem == null]",
+        "not_found": "404: Plan not found. [when planheader == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create plan",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "request body CreateWeeklyPlanDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/WeeklyPlanner",
+          "GET api/WeeklyPlanner/get",
+          "GET api/WeeklyPlanner/Users"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "weekly_planner_create_plan",
+        "description": "Create plan",
+        "http_method": "POST",
+        "endpoint": "api/WeeklyPlanner",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "WeekId": {
+            "type": "int",
+            "required": false,
+            "description": "Week Id (body)"
+          },
+          "SelectedUserId": {
+            "type": "int",
+            "required": false,
+            "description": "Selected User Id (body)"
+          },
+          "StartDate": {
+            "type": "datetime",
+            "required": false,
+            "description": "Start Date (body)"
+          },
+          "EndDate": {
+            "type": "datetime",
+            "required": false,
+            "description": "End Date (body)"
+          },
+          "Influencers": {
+            "type": "List<InfluencerPlanDto>",
+            "required": false,
+            "description": "Influencers (body)"
+          },
+          "Projects": {
+            "type": "List<ProjectPlanDto>",
+            "required": false,
+            "description": "Projects (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/WeeklyPlannerController.cs",
+        "action_method": "CreatePlan",
+        "related_dto_files": [
+          "Controllers/WeeklyPlannerController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/WeeklyPlanner_repo.cs",
+          "Interfaces/IWeeklyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Create plan — validates the request, calls ICommon.getUserByToken, IWeeklyPlanner.GetWeaklyPlannerById, ICommon.ToJsonString",
+        "preconditions": "No authentication required; request body of type CreateWeeklyPlanDto (inline); passes 5 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "weaklyPlannerDetails: DELETE; weaklyPlannerProjectDetails: DELETE; weaklyPlannerHeaders: INSERT; AuditLog: INSERT",
+        "validations": "Valid WeekId is required.; Valid SelectedUserId is required.; Selected user not found.; Invalid WeekId.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IWeeklyPlanner.GetWeaklyPlannerById",
+          "ICommon.ToJsonString",
+          "IWeeklyPlanner.RemoveRangeWeaklyPlanningDetails",
+          "IWeeklyPlanner.RemoveRangeWeaklyPlanningProjectsDetails",
+          "IWeeklyPlanner.GetUserWeeklyKpiSummary",
+          "IWeeklyPlanner.GetClientById",
+          "IWeeklyPlanner.GetProjectById",
+          "IWeeklyPlanner.CreateWeaklyPlanner",
+          "IWeeklyPlanner.SaveChanges",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WeeklyPlanner_repo (Repository/WeeklyPlanner_repo.cs) via IWeeklyPlanner"
+        ],
+        "stored_procedures": [
+          "sp_GetUserWeeklyKpiSummary"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid WeekId is required.",
+            "when": "request.WeekId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Valid SelectedUserId is required.",
+            "when": "request.SelectedUserId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Selected user not found.",
+            "when": "selectedUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Plan not found.",
+            "when": "planheader == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid WeekId.",
+            "when": "weekItem == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "weekly_planner_update_plan",
+      "name": "Update Plan",
+      "action_method": "UpdatePlan",
+      "http_method": "PUT",
+      "route": "api/WeeklyPlanner/{id}",
+      "business_purpose": "Update plan",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateWeeklyPlanDto (inline)",
+        "properties": [
+          {
+            "name": "WeekId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "SelectedUserId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Influencers",
+            "type": "List<InfluencerPlanDto>",
+            "required": false
+          },
+          {
+            "name": "Projects",
+            "type": "List<ProjectPlanDto>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "crm/weekly-planner:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update plan",
+      "detailed_description": "Update plan. It validates the request, then calls ICommon.getUserByToken, IWeeklyPlanner.GetWeaklyPlannerById, ICommon.ToJsonString. Data access uses stored procedure(s): sp_GetUserWeeklyKpiSummary. Persists changes to: weaklyPlannerDetails: DELETE, weaklyPlannerProjectDetails: DELETE, AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid Plan ID is required. [when id <= 0]; Valid SelectedUserId is required. [when request.SelectedUserId <= 0]; Selected user not found. [when selectedUser == null]; Invalid WeekId. [when weekItem == null]",
+        "not_found": "404: Weekly plan not found. [when planheader == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update plan",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "id (route)",
+          "request body UpdateWeeklyPlanDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/WeeklyPlanner/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "weekly_planner_update_plan",
+        "description": "Update plan",
+        "http_method": "PUT",
+        "endpoint": "api/WeeklyPlanner/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "WeekId": {
+            "type": "int",
+            "required": false,
+            "description": "Week Id (body)"
+          },
+          "SelectedUserId": {
+            "type": "int",
+            "required": false,
+            "description": "Selected User Id (body)"
+          },
+          "Influencers": {
+            "type": "List<InfluencerPlanDto>",
+            "required": false,
+            "description": "Influencers (body)"
+          },
+          "Projects": {
+            "type": "List<ProjectPlanDto>",
+            "required": false,
+            "description": "Projects (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/WeeklyPlannerController.cs",
+        "action_method": "UpdatePlan",
+        "related_dto_files": [
+          "Controllers/WeeklyPlannerController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/WeeklyPlanner_repo.cs",
+          "Interfaces/IWeeklyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Update plan — validates the request, calls ICommon.getUserByToken, IWeeklyPlanner.GetWeaklyPlannerById, ICommon.ToJsonString",
+        "preconditions": "No authentication required; route parameter(s) id must reference existing record(s); request body of type UpdateWeeklyPlanDto (inline); passes 5 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "weaklyPlannerDetails: DELETE; weaklyPlannerProjectDetails: DELETE; AuditLog: INSERT; sets planheader.start_date, planheader.end_date, planheader.month, planheader.year, planheader.week_name, planheader.selectedUser and saves changes",
+        "validations": "Valid Plan ID is required.; Valid SelectedUserId is required.; Selected user not found.; Invalid WeekId.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IWeeklyPlanner.GetWeaklyPlannerById",
+          "ICommon.ToJsonString",
+          "IWeeklyPlanner.RemoveRangeWeaklyPlanningDetails",
+          "IWeeklyPlanner.RemoveRangeWeaklyPlanningProjectsDetails",
+          "IWeeklyPlanner.GetUserWeeklyKpiSummary",
+          "IWeeklyPlanner.GetClientById",
+          "IWeeklyPlanner.GetProjectById",
+          "IWeeklyPlanner.SaveChanges",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WeeklyPlanner_repo (Repository/WeeklyPlanner_repo.cs) via IWeeklyPlanner"
+        ],
+        "stored_procedures": [
+          "sp_GetUserWeeklyKpiSummary"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Plan ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Valid SelectedUserId is required.",
+            "when": "request.SelectedUserId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Selected user not found.",
+            "when": "selectedUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Weekly plan not found.",
+            "when": "planheader == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid WeekId.",
+            "when": "weekItem == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "weekly_planner_approve_plan",
+      "name": "Approve Plan",
+      "action_method": "ApprovePlan",
+      "http_method": "POST",
+      "route": "api/WeeklyPlanner/approve/{id}",
+      "business_purpose": "Approve plan",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [
+        {
+          "name": "remark",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "crm/weekly-planner:approve",
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/weeklyplanner"
+      ],
+      "short_description": "Approve plan",
+      "detailed_description": "Approve plan. It validates the request, then calls ICommon.getUserByToken, IWeeklyPlanner.GetWeaklyPlannerById, IWeeklyPlanner.SaveChanges. Persists changes to: AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid Plan ID is required. [when id <= 0]",
+        "not_found": "404: Weekly plan not found. [when planheader == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to approve plan",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/WeeklyPlanner/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "weekly_planner_approve_plan",
+        "description": "Approve plan",
+        "http_method": "POST",
+        "endpoint": "api/WeeklyPlanner/approve/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "remark": {
+            "type": "string",
+            "required": false,
+            "description": "remark (query)"
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Approves the record and advances its workflow"
+      },
+      "source": {
+        "controller_file": "Controllers/WeeklyPlannerController.cs",
+        "action_method": "ApprovePlan",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/WeeklyPlanner_repo.cs",
+          "Interfaces/IWeeklyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Approve plan — validates the request, calls ICommon.getUserByToken, IWeeklyPlanner.GetWeaklyPlannerById, IWeeklyPlanner.SaveChanges",
+        "preconditions": "No authentication required; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "AuditLog: INSERT; sets planheader.is_approved, planheader.remarks, planheader.modified_by, planheader.modified_date and saves changes",
+        "validations": "Valid Plan ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IWeeklyPlanner.GetWeaklyPlannerById",
+          "IWeeklyPlanner.SaveChanges",
+          "ICommon.AddAsync",
+          "ICommon.ToJsonString"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WeeklyPlanner_repo (Repository/WeeklyPlanner_repo.cs) via IWeeklyPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Plan ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Weekly plan not found.",
+            "when": "planheader == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "weekly_planner_reject_plan",
+      "name": "Reject Plan",
+      "action_method": "RejectPlan",
+      "http_method": "POST",
+      "route": "api/WeeklyPlanner/reject/{id}",
+      "business_purpose": "Reject plan",
+      "data_effect": "REJECTION",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "REJECTION",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "crm/weekly-planner:reject",
+      "permission_flags": [
+        "reject"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/weeklyplanner"
+      ],
+      "short_description": "Reject plan",
+      "detailed_description": "Reject plan. It validates the request, then calls ICommon.getUserByToken, IWeeklyPlanner.GetWeaklyPlannerById, IWeeklyPlanner.SaveChanges. Persists changes to: AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid Plan ID is required. [when id <= 0]",
+        "not_found": "404: Weekly plan not found. [when planheader == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to reject plan",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/WeeklyPlanner/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "weekly_planner_reject_plan",
+        "description": "Reject plan",
+        "http_method": "POST",
+        "endpoint": "api/WeeklyPlanner/reject/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "REJECTION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Rejects the record"
+      },
+      "source": {
+        "controller_file": "Controllers/WeeklyPlannerController.cs",
+        "action_method": "RejectPlan",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/WeeklyPlanner_repo.cs",
+          "Interfaces/IWeeklyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Reject plan — validates the request, calls ICommon.getUserByToken, IWeeklyPlanner.GetWeaklyPlannerById, IWeeklyPlanner.SaveChanges",
+        "preconditions": "No authentication required; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "AuditLog: INSERT; sets planheader.is_rejected, planheader.modified_by, planheader.modified_date and saves changes",
+        "validations": "Valid Plan ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IWeeklyPlanner.GetWeaklyPlannerById",
+          "IWeeklyPlanner.SaveChanges",
+          "ICommon.AddAsync",
+          "ICommon.ToJsonString"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WeeklyPlanner_repo (Repository/WeeklyPlanner_repo.cs) via IWeeklyPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Plan ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Weekly plan not found.",
+            "when": "planheader == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "weekly_planner_get_current_week",
+      "name": "Get Current Week",
+      "action_method": "GetCurrentWeek",
+      "http_method": "GET",
+      "route": "api/WeeklyPlanner/GetWeek",
+      "business_purpose": "Retrieve current week",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "userId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/weekly-planner:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/weeklyplanner"
+      ],
+      "short_description": "Retrieve current week",
+      "detailed_description": "Retrieve current week. It calls ICommon.getUserByToken, IWeeklyPlanner.GetAllWeaklyPlannerHeadersByUserAndMonth. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve current week",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "userId (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/WeeklyPlanner",
+          "GET api/WeeklyPlanner/get",
+          "GET api/WeeklyPlanner/Users"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "weekly_planner_get_current_week",
+        "description": "Retrieve current week",
+        "http_method": "GET",
+        "endpoint": "api/WeeklyPlanner/GetWeek",
+        "parameters": {
+          "userId": {
+            "type": "int",
+            "required": true,
+            "description": "user Id (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/WeeklyPlannerController.cs",
+        "action_method": "GetCurrentWeek",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/WeeklyPlanner_repo.cs",
+          "Interfaces/IWeeklyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve current week — calls ICommon.getUserByToken, IWeeklyPlanner.GetAllWeaklyPlannerHeadersByUserAndMonth",
+        "preconditions": "No authentication required; required query parameter(s): userId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IWeeklyPlanner.GetAllWeaklyPlannerHeadersByUserAndMonth"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WeeklyPlanner_repo (Repository/WeeklyPlanner_repo.cs) via IWeeklyPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "weekly_planner_create_task",
+      "name": "Create Task",
+      "action_method": "CreateTask",
+      "http_method": "POST",
+      "route": "api/WeeklyPlanner/create-task",
+      "business_purpose": "Create task",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": false,
+        "attributes": []
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "TaskManagementCreateDto",
+        "properties": [
+          {
+            "name": "title",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "due_date",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "progress_percentage",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "status",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "related_id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "assigned_user_id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "assigned_user_ids",
+            "type": "List<int>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "crm/weekly-planner",
+        "crm/weeklyplanner"
+      ],
+      "short_description": "Create task",
+      "detailed_description": "Create task. It validates the request, then calls ICommon.getUserByToken, ICommon.GetUserById, ITaskManagement.CreateTaskAsync. Persists changes to: TaskManagement: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Task title is required [when string.IsNullOrWhiteSpace(dto.title)]; At least one assigned user is required [when dto.assigned_user_ids == null || !dto.assigned_user_ids.Any()]; Assigned user with id {userId} not found [when assignedUser == null]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create task",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "request body TaskManagementCreateDto"
+        ],
+        "follow_up_apis": [
+          "GET api/WeeklyPlanner",
+          "GET api/WeeklyPlanner/get",
+          "GET api/WeeklyPlanner/Users"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "weekly_planner_create_task",
+        "description": "Create task",
+        "http_method": "POST",
+        "endpoint": "api/WeeklyPlanner/create-task",
+        "parameters": {
+          "title": {
+            "type": "string",
+            "required": false,
+            "description": "title (body)"
+          },
+          "description": {
+            "type": "string",
+            "required": false,
+            "description": "description (body)"
+          },
+          "due_date": {
+            "type": "datetime",
+            "required": false,
+            "description": "due date (body)"
+          },
+          "progress_percentage": {
+            "type": "int",
+            "required": false,
+            "description": "progress percentage (body)"
+          },
+          "status": {
+            "type": "string",
+            "required": false,
+            "description": "status (body)"
+          },
+          "related_id": {
+            "type": "int",
+            "required": false,
+            "description": "related id (body)"
+          },
+          "assigned_user_id": {
+            "type": "int",
+            "required": false,
+            "description": "assigned user id (body)"
+          },
+          "assigned_user_ids": {
+            "type": "List<int>",
+            "required": false,
+            "description": "assigned user ids (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/WeeklyPlannerController.cs",
+        "action_method": "CreateTask",
+        "related_dto_files": [
+          "DTOs/Request/TaskManagementDto.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/TaskManagementRepo.cs",
+          "Interfaces/ITaskManagement.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Create task — validates the request, calls ICommon.getUserByToken, ICommon.GetUserById, ITaskManagement.CreateTaskAsync",
+        "preconditions": "No authentication required; request body of type TaskManagementCreateDto; passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "TaskManagement: INSERT",
+        "validations": "Task title is required; At least one assigned user is required; Assigned user with id {userId} not found",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.GetUserById",
+          "ITaskManagement.CreateTaskAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "TaskManagementRepo (Repository/TaskManagementRepo.cs) via ITaskManagement"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Task title is required",
+            "when": "string.IsNullOrWhiteSpace(dto.title)"
+          },
+          {
+            "returns": 400,
+            "message": "At least one assigned user is required",
+            "when": "dto.assigned_user_ids == null || !dto.assigned_user_ids.Any()"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Assigned user with id {userId} not found",
+            "when": "assignedUser == null"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,208 @@
+{
+  "controller": "ZeroVisitReportController",
+  "file": "Controllers/ZeroVisitReportController.cs",
+  "module": "Reporting",
+  "base_route": "api/ZeroVisitReport",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles zero visit report: get",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "rpt/crm-reports/zero-visit-report",
+        "module_code": "rpt",
+        "section": "crm-reports",
+        "sub_section": "zero-visit-report",
+        "frontend_routes": [
+          "/rpt/crm-reports/zero-visit-report"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "zero_visit_report_get",
+      "name": "Get",
+      "action_method": "Get",
+      "http_method": "GET",
+      "route": "api/ZeroVisitReport",
+      "business_purpose": "Retrieve zero visit report data",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "\"this_month\""
+        },
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "selected_user_id",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        },
+        {
+          "name": "inputtext",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/crm-reports/zero-visit-report:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve zero visit report data",
+      "detailed_description": "Retrieve zero visit report data. It calls ICommon.getUserByToken, ICommon.GetDateRange, IZeroVisitReport.GetAllUsersByCurrentUserAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve zero visit report data",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/ZeroVisitReport"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "zero_visit_report_get",
+        "description": "Retrieve zero visit report data",
+        "http_method": "GET",
+        "endpoint": "api/ZeroVisitReport",
+        "parameters": {
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "date range (query)"
+          },
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "selected_user_id": {
+            "type": "int",
+            "required": false,
+            "description": "selected user id (query)"
+          },
+          "inputtext": {
+            "type": "string",
+            "required": false,
+            "description": "inputtext (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ZeroVisitReportController.cs",
+        "action_method": "Get",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/ZeroVisitReport_repo.cs",
+          "Interfaces/IZeroVisitReport.cs"
+        ]
+      },
+      "module": "Reporting",
+      "business_logic": {
+        "operation_summary": "Retrieve zero visit report data — calls ICommon.getUserByToken, ICommon.GetDateRange, IZeroVisitReport.GetAllUsersByCurrentUserAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.GetDateRange",
+          "IZeroVisitReport.GetAllUsersByCurrentUserAsync",
+          "IZeroVisitReport.GetZeroVisitReportAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ZeroVisitReport_repo (Repository/ZeroVisitReport_repo.cs) via IZeroVisitReport"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,755 @@
+{
+  "controller": "UserLevelController",
+  "file": "Controllers/UserLevelController.cs",
+  "module": "User and Access Management",
+  "base_route": "api/UserLevel",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages user level records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/user-settings/user-levels",
+        "module_code": "settings",
+        "section": "user-settings",
+        "sub_section": "user-levels",
+        "frontend_routes": [
+          "/settings/user-settings/user-levels"
+        ],
+        "menu_route_confirmed": true,
+        "display_names": {
+          "module": "Settings",
+          "section": "User Settings",
+          "sub_section": "User Levels"
+        }
+      }
+    ],
+    "section_configuration_keys": [
+      "UserLevel"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Settings",
+        "section": "User Settings",
+        "sub_section": "User Levels"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "user_level_get_all_user_levels",
+      "name": "Get All User Levels",
+      "action_method": "GetAllUserLevels",
+      "http_method": "GET",
+      "route": "api/UserLevel",
+      "business_purpose": "Retrieve all user levels",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "UserLevel[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/user-settings/user-levels:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all user levels",
+      "detailed_description": "Retrieve all user levels. It calls ICommon.getUserByToken, IUserLevel.GetUserLevelData, IUserLevel.GetUserLevelActions. Data access uses stored procedure(s): GetUserLevel, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all user levels",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/UserLevel",
+          "GET api/UserLevel/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "user_level_get_all_user_levels",
+        "description": "Retrieve all user levels",
+        "http_method": "GET",
+        "endpoint": "api/UserLevel",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/UserLevelController.cs",
+        "action_method": "GetAllUserLevels",
+        "related_dto_files": [
+          "Models/UserLevel.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/UserLevel_repo.cs",
+          "Interfaces/IUserLevel.cs"
+        ]
+      },
+      "module": "User and Access Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all user levels — calls ICommon.getUserByToken, IUserLevel.GetUserLevelData, IUserLevel.GetUserLevelActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IUserLevel.GetUserLevelData",
+          "IUserLevel.GetUserLevelActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "UserLevel_repo (Repositories/UserLevel_repo.cs) via IUserLevel"
+        ],
+        "stored_procedures": [
+          "GetUserLevel",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "user_level_get_user_level_by_id",
+      "name": "Get User Level By Id",
+      "action_method": "GetUserLevelById",
+      "http_method": "GET",
+      "route": "api/UserLevel/{id}",
+      "business_purpose": "Retrieve user level by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/user-settings/user-levels:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve user level by ID",
+      "detailed_description": "Retrieve user level by ID. It calls IUserLevel.GetUserLevelById. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: User level with ID {id} not found. [when userLevel == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve user level by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/UserLevel",
+          "GET api/UserLevel/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "user_level_get_user_level_by_id",
+        "description": "Retrieve user level by ID",
+        "http_method": "GET",
+        "endpoint": "api/UserLevel/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/UserLevelController.cs",
+        "action_method": "GetUserLevelById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/UserLevel_repo.cs",
+          "Interfaces/IUserLevel.cs"
+        ]
+      },
+      "module": "User and Access Management",
+      "business_logic": {
+        "operation_summary": "Retrieve user level by ID — calls IUserLevel.GetUserLevelById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IUserLevel.GetUserLevelById"
+        ],
+        "calls_repositories": [
+          "UserLevel_repo (Repositories/UserLevel_repo.cs) via IUserLevel"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 404,
+            "message": "User level with ID {id} not found.",
+            "when": "userLevel == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "user_level_create_user_level",
+      "name": "Create User Level",
+      "action_method": "CreateUserLevel",
+      "http_method": "POST",
+      "route": "api/UserLevel",
+      "business_purpose": "Create user level",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateUserLevelDto (inline)",
+        "properties": [
+          {
+            "name": "LevelName",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "LevelDescription",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; a duplicate check exists so repeating usually fails with a conflict/validation message"
+      },
+      "required_permission": "settings/user-settings/user-levels:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create user level",
+      "detailed_description": "Create user level. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IUserLevel.Duplicate_check, IUserLevel.CreateUserLevel. Persists changes to: UserLevel: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Level name is required. [when string.IsNullOrWhiteSpace(request.LevelName)]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "Duplicate User Level Found. [when duplicate]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create user level",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateUserLevelDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/UserLevel"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "user_level_create_user_level",
+        "description": "Create user level",
+        "http_method": "POST",
+        "endpoint": "api/UserLevel",
+        "parameters": {
+          "LevelName": {
+            "type": "string",
+            "required": false,
+            "description": "Level Name (body)"
+          },
+          "LevelDescription": {
+            "type": "string",
+            "required": false,
+            "description": "Level Description (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/UserLevelController.cs",
+        "action_method": "CreateUserLevel",
+        "related_dto_files": [
+          "Controllers/UserLevelController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/UserLevel_repo.cs",
+          "Interfaces/IUserLevel.cs"
+        ]
+      },
+      "module": "User and Access Management",
+      "business_logic": {
+        "operation_summary": "Create user level — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, IUserLevel.Duplicate_check, IUserLevel.CreateUserLevel",
+        "preconditions": "Valid Bearer JWT; request body of type CreateUserLevelDto (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "UserLevel: INSERT",
+        "validations": "Level name is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IUserLevel.Duplicate_check",
+          "IUserLevel.CreateUserLevel",
+          "IUserLevel.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "UserLevel_repo (Repositories/UserLevel_repo.cs) via IUserLevel"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Level name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.LevelName)"
+          },
+          {
+            "returns": 400,
+            "message": "Duplicate User Level Found.",
+            "when": "duplicate"
+          }
+        ]
+      }
+    },
+    {
+      "id": "user_level_delete_userlevel",
+      "name": "Delete Userlevel",
+      "action_method": "DeleteUserlevel",
+      "http_method": "DELETE",
+      "route": "api/UserLevel/{id}",
+      "business_purpose": "Delete userlevel",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "settings/user-settings/user-levels:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete userlevel",
+      "detailed_description": "Delete userlevel. It validates the request, then calls ICommon.getUserByToken, IUserLevel.GetUserLevelById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: UserLevel: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid lead ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: User Level not found. [when existingUserLevel == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete userlevel",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/UserLevel/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "user_level_delete_userlevel",
+        "description": "Delete userlevel",
+        "http_method": "DELETE",
+        "endpoint": "api/UserLevel/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/UserLevelController.cs",
+        "action_method": "DeleteUserlevel",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/UserLevel_repo.cs",
+          "Interfaces/IUserLevel.cs"
+        ]
+      },
+      "module": "User and Access Management",
+      "business_logic": {
+        "operation_summary": "Delete userlevel — validates the request, calls ICommon.getUserByToken, IUserLevel.GetUserLevelById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "UserLevel: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "validations": "Valid lead ID is required.",
+        "side_effects": "AuditLog DELETE (Settings > User Settings > User Levels)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IUserLevel.GetUserLevelById",
+          "ICommon.ToJsonString",
+          "IUserLevel.DeleteUserlevel",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "UserLevel_repo (Repositories/UserLevel_repo.cs) via IUserLevel"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid lead ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "User Level not found.",
+            "when": "existingUserLevel == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "user_level_update_user_level",
+      "name": "Update User Level",
+      "action_method": "UpdateUserLevel",
+      "http_method": "PUT",
+      "route": "api/UserLevel/{id}",
+      "business_purpose": "Update user level",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateUserLevelDto (inline)",
+        "properties": [
+          {
+            "name": "LevelName",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "LevelDescription",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "settings/user-settings/user-levels:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update user level",
+      "detailed_description": "Update user level. It validates the request, then calls ICommon.getUserByToken, IUserLevel.UpdateUserLevelAsync. Persists changes to: UserLevel: UPDATE. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid UserLevel ID is required. [when id <= 0]; At least one field must be provided for update. [when string.IsNullOrWhiteSpace(request.LevelName) && string.IsNullOrWhiteSpace(request.LevelDes]; message returned by the called service/repository (result.Message) [when !result.Success]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update user level",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "request body UpdateUserLevelDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/UserLevel/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "user_level_update_user_level",
+        "description": "Update user level",
+        "http_method": "PUT",
+        "endpoint": "api/UserLevel/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "LevelName": {
+            "type": "string",
+            "required": false,
+            "description": "Level Name (body)"
+          },
+          "LevelDescription": {
+            "type": "string",
+            "required": false,
+            "description": "Level Description (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/UserLevelController.cs",
+        "action_method": "UpdateUserLevel",
+        "related_dto_files": [
+          "Controllers/UserLevelController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/UserLevel_repo.cs",
+          "Interfaces/IUserLevel.cs"
+        ]
+      },
+      "module": "User and Access Management",
+      "business_logic": {
+        "operation_summary": "Update user level — validates the request, calls ICommon.getUserByToken, IUserLevel.UpdateUserLevelAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; request body of type UpdateUserLevelDto (inline); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "UserLevel: UPDATE",
+        "validations": "Valid UserLevel ID is required.; At least one field must be provided for update.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IUserLevel.UpdateUserLevelAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "UserLevel_repo (Repositories/UserLevel_repo.cs) via IUserLevel"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid UserLevel ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field must be provided for update.",
+            "when": "string.IsNullOrWhiteSpace(request.LevelName) && string.IsNullOrWhiteSpace(request.LevelDescription)"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": "!result.Success"
+          }
+        ]
+      }
+    }
+  ]
+}

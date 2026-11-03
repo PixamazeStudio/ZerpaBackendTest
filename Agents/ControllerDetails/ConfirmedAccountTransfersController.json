@@ -1,0 +1,717 @@
+{
+  "controller": "ConfirmedAccountTransfersController",
+  "file": "Controllers/ConfirmedAccountTransfersController.cs",
+  "module": "Account Management",
+  "base_route": "api/ConfirmedAccountTransfers",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles confirmed account transfers: get all, get account transfer by id, closed account transfer, closed account transfer revoke",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "acs/accounts/confirmed-account-transfers",
+        "module_code": "acs",
+        "section": "accounts",
+        "sub_section": "confirmed-account-transfers",
+        "frontend_routes": [
+          "/acs/accounts/confirmed-account-transfers/view-confirmed-account-transfer/:id"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "acs/account-transfer",
+        "module_code": "acs",
+        "section": "account-transfer",
+        "sub_section": null,
+        "frontend_routes": [
+          "/acs/account-transfer/view-account-transfer/:id"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "also_called_from_menus": [
+      "acs/accounts/all-account-transfers",
+      "acs/accounts/holding-account-transfers",
+      "acs/accounts/pending-account-transfers",
+      "settings/company-settings/account-transfer-head"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "confirmed_account_transfers_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/ConfirmedAccountTransfers",
+      "business_purpose": "Retrieve all confirmed account transfers records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "mainHeaderId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "subHeaderId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "acs/accounts/confirmed-account-transfers",
+        "acs/account-transfer"
+      ],
+      "short_description": "Retrieve all confirmed account transfers records",
+      "detailed_description": "Retrieve all confirmed account transfers records. It calls ICommon.getUserByToken, IIndent.BuildFilterContext, IConfirmedAccountTransfer.GetConfirmedAccountTransfersData. Data access uses stored procedure(s): GetConfirmedAccountTransfers, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all confirmed account transfers records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/ConfirmedAccountTransfers",
+          "GET api/ConfirmedAccountTransfers/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "confirmed_account_transfers_get_all",
+        "description": "Retrieve all confirmed account transfers records",
+        "http_method": "GET",
+        "endpoint": "api/ConfirmedAccountTransfers",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "mainHeaderId": {
+            "type": "int",
+            "required": false,
+            "description": "main Header Id (query)"
+          },
+          "subHeaderId": {
+            "type": "int",
+            "required": false,
+            "description": "sub Header Id (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ConfirmedAccountTransfersController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs",
+          "Repositories/ConfirmedAccountTransfer_repo.cs",
+          "Interfaces/IConfirmedAccountTransfer.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all confirmed account transfers records — calls ICommon.getUserByToken, IIndent.BuildFilterContext, IConfirmedAccountTransfer.GetConfirmedAccountTransfersData",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndent.BuildFilterContext",
+          "IConfirmedAccountTransfer.GetConfirmedAccountTransfersData",
+          "IConfirmedAccountTransfer.GetConfirmedAccountTransfersActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent",
+          "ConfirmedAccountTransfer_repo (Repositories/ConfirmedAccountTransfer_repo.cs) via IConfirmedAccountTransfer"
+        ],
+        "stored_procedures": [
+          "GetConfirmedAccountTransfers",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "confirmed_account_transfers_get_account_transfer_by_id",
+      "name": "Get Account Transfer By Id",
+      "action_method": "GetAccountTransferById",
+      "http_method": "GET",
+      "route": "api/ConfirmedAccountTransfers/{id}",
+      "business_purpose": "Retrieve account transfer by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "acs/accounts/confirmed-account-transfers",
+        "acs/account-transfer"
+      ],
+      "short_description": "Retrieve account transfer by ID",
+      "detailed_description": "Retrieve account transfer by ID. It validates the request, then calls ICommon.getUserByToken, IAccountTransfer.GetAccountTransferById, IAccountTransfer.GetAccountTransferFiles. Data access uses stored procedure(s): GetSectionActions. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid Account transfer ID is required [when id <= 0]",
+        "not_found": "404: Account transfer not found [when accTransfer == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve account transfer by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/ConfirmedAccountTransfers",
+          "GET api/ConfirmedAccountTransfers/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "confirmed_account_transfers_get_account_transfer_by_id",
+        "description": "Retrieve account transfer by ID",
+        "http_method": "GET",
+        "endpoint": "api/ConfirmedAccountTransfers/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/ConfirmedAccountTransfersController.cs",
+        "action_method": "GetAccountTransferById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/AccountTransfer_repo.cs",
+          "Interfaces/IAccountTransfer.cs",
+          "Repository/BranchRequest_repo.cs",
+          "Interfaces/IBranchRequest.cs",
+          "Repositories/ConfirmedAccountTransfer_repo.cs",
+          "Interfaces/IConfirmedAccountTransfer.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Retrieve account transfer by ID — validates the request, calls ICommon.getUserByToken, IAccountTransfer.GetAccountTransferById, IAccountTransfer.GetAccountTransferFiles",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid Account transfer ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IAccountTransfer.GetAccountTransferById",
+          "IAccountTransfer.GetAccountTransferFiles",
+          "IBranchRequest.GetBranchRequestById",
+          "ICommon.GetFilesById",
+          "ICommon.GetUserHierarchyLevels",
+          "IAccountTransfer.GetAllAssociateUsersByProjectId",
+          "IAccountTransfer.GetRelativeAccountTransfersByBaseId",
+          "IConfirmedAccountTransfer.GetConfirmedAccountTransfersActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "AccountTransfer_repo (Repository/AccountTransfer_repo.cs) via IAccountTransfer",
+          "BranchRequest_repo (Repository/BranchRequest_repo.cs) via IBranchRequest",
+          "ConfirmedAccountTransfer_repo (Repositories/ConfirmedAccountTransfer_repo.cs) via IConfirmedAccountTransfer"
+        ],
+        "stored_procedures": [
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Account transfer ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Account transfer not found",
+            "when": "accTransfer == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "confirmed_account_transfers_closed_account_transfer",
+      "name": "Closed Account Transfer",
+      "action_method": "ClosedAccountTransfer",
+      "http_method": "POST",
+      "route": "api/ConfirmedAccountTransfers/closed-account-transfer",
+      "business_purpose": "Handle closed account transfer",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CloseAccountTransferRequest (inline)",
+        "properties": [
+          {
+            "name": "id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_closed",
+            "type": "bool",
+            "required": false
+          },
+          {
+            "name": "ack_no",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "ded_amount",
+            "type": "float",
+            "required": false
+          },
+          {
+            "name": "deductions",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "net_amount",
+            "type": "float",
+            "required": false
+          },
+          {
+            "name": "payment_date",
+            "type": "datetime",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "acs/accounts/confirmed-account-transfers:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "settings/company-settings/account-transfer-head",
+        "acs/accounts/holding-account-transfers",
+        "acs/accounts/all-account-transfers",
+        "acs/accounts/pending-account-transfers",
+        "acs/account-transfer"
+      ],
+      "short_description": "Handle closed account transfer",
+      "detailed_description": "Handle closed account transfer. It calls ICommon.getUserByToken, IConfirmedAccountTransfer.GetAccountTransferById, IConfirmedAccountTransfer.GetSchemeOrderById. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Account transfer not found [when account == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle closed account transfer",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CloseAccountTransferRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/ConfirmedAccountTransfers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "confirmed_account_transfers_closed_account_transfer",
+        "description": "Handle closed account transfer",
+        "http_method": "POST",
+        "endpoint": "api/ConfirmedAccountTransfers/closed-account-transfer",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": false,
+            "description": "id (body)"
+          },
+          "is_closed": {
+            "type": "bool",
+            "required": false,
+            "description": "is closed (body)"
+          },
+          "ack_no": {
+            "type": "string",
+            "required": false,
+            "description": "ack no (body)"
+          },
+          "ded_amount": {
+            "type": "float",
+            "required": false,
+            "description": "ded amount (body)"
+          },
+          "deductions": {
+            "type": "string",
+            "required": false,
+            "description": "deductions (body)"
+          },
+          "net_amount": {
+            "type": "float",
+            "required": false,
+            "description": "net amount (body)"
+          },
+          "payment_date": {
+            "type": "datetime",
+            "required": false,
+            "description": "payment date (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/ConfirmedAccountTransfersController.cs",
+        "action_method": "ClosedAccountTransfer",
+        "related_dto_files": [
+          "Controllers/ConfirmedAccountTransfersController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ConfirmedAccountTransfer_repo.cs",
+          "Interfaces/IConfirmedAccountTransfer.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Handle closed account transfer — calls ICommon.getUserByToken, IConfirmedAccountTransfer.GetAccountTransferById, IConfirmedAccountTransfer.GetSchemeOrderById",
+        "preconditions": "Valid Bearer JWT; request body of type CloseAccountTransferRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets account.is_closed, account.closed_by, account.closed_date, account.acknowledge_no, account.deductions_amount, account.deductions and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IConfirmedAccountTransfer.GetAccountTransferById",
+          "IConfirmedAccountTransfer.GetSchemeOrderById",
+          "IConfirmedAccountTransfer.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ConfirmedAccountTransfer_repo (Repositories/ConfirmedAccountTransfer_repo.cs) via IConfirmedAccountTransfer"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Account transfer not found",
+            "when": "account == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "confirmed_account_transfers_closed_account_transfer_revoke",
+      "name": "Closed Account Transfer Revoke",
+      "action_method": "ClosedAccountTransferRevoke",
+      "http_method": "POST",
+      "route": "api/ConfirmedAccountTransfers/revoke",
+      "business_purpose": "Handle closed account transfer revoke",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CloseAccountTransferRevokeRequest (inline)",
+        "properties": [
+          {
+            "name": "id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "is_closed",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "acs/accounts/confirmed-account-transfers",
+        "acs/account-transfer"
+      ],
+      "short_description": "Handle closed account transfer revoke",
+      "detailed_description": "Handle closed account transfer revoke. It calls ICommon.getUserByToken, IConfirmedAccountTransfer.GetAccountTransferById, IConfirmedAccountTransfer.SaveChanges. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Account transfer not found [when account == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle closed account transfer revoke",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CloseAccountTransferRevokeRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/ConfirmedAccountTransfers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "confirmed_account_transfers_closed_account_transfer_revoke",
+        "description": "Handle closed account transfer revoke",
+        "http_method": "POST",
+        "endpoint": "api/ConfirmedAccountTransfers/revoke",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": false,
+            "description": "id (body)"
+          },
+          "is_closed": {
+            "type": "bool",
+            "required": false,
+            "description": "is closed (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/ConfirmedAccountTransfersController.cs",
+        "action_method": "ClosedAccountTransferRevoke",
+        "related_dto_files": [
+          "Controllers/ConfirmedAccountTransfersController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/ConfirmedAccountTransfer_repo.cs",
+          "Interfaces/IConfirmedAccountTransfer.cs"
+        ]
+      },
+      "module": "Account Management",
+      "business_logic": {
+        "operation_summary": "Handle closed account transfer revoke — calls ICommon.getUserByToken, IConfirmedAccountTransfer.GetAccountTransferById, IConfirmedAccountTransfer.SaveChanges",
+        "preconditions": "Valid Bearer JWT; request body of type CloseAccountTransferRevokeRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets account.is_closed, account.closed_by, account.closed_date, account.modified_by, account.modified_date and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IConfirmedAccountTransfer.GetAccountTransferById",
+          "IConfirmedAccountTransfer.SaveChanges"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "ConfirmedAccountTransfer_repo (Repositories/ConfirmedAccountTransfer_repo.cs) via IConfirmedAccountTransfer"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Account transfer not found",
+            "when": "account == null"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,325 @@
+{
+  "controller": "DealerWiseReportController",
+  "file": "Controllers/DealerWiseReportController.cs",
+  "module": "Reporting",
+  "base_route": "api/DealerWiseReport",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles dealer wise report: get dealer wise report, get dealer wise report by id",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "rpt/indents-reports/dealer-wise-report",
+        "module_code": "rpt",
+        "section": "indents-reports",
+        "sub_section": "dealer-wise-report",
+        "frontend_routes": [
+          "/rpt/indents-reports/dealer-wise-report"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "DealerWiseReport"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "dealer_wise_report_get_dealer_wise_report",
+      "name": "Get Dealer Wise Report",
+      "action_method": "GetDealerWiseReport",
+      "http_method": "GET",
+      "route": "api/DealerWiseReport",
+      "business_purpose": "Retrieve dealer wise report",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "month_name",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "year",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "branch",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "category",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/indents-reports/dealer-wise-report:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve dealer wise report",
+      "detailed_description": "Retrieve dealer wise report. It calls ICommon.getUserByToken, IDealerWiseReport.GetBranchByIdAsync, IDealerWiseReport.GetAllDealers. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid user [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve dealer wise report",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/DealerWiseReport",
+          "GET api/DealerWiseReport/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "dealer_wise_report_get_dealer_wise_report",
+        "description": "Retrieve dealer wise report",
+        "http_method": "GET",
+        "endpoint": "api/DealerWiseReport",
+        "parameters": {
+          "month_name": {
+            "type": "string",
+            "required": false,
+            "description": "month name (query)"
+          },
+          "year": {
+            "type": "int",
+            "required": false,
+            "description": "year (query)"
+          },
+          "branch": {
+            "type": "int",
+            "required": false,
+            "description": "branch (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "category": {
+            "type": "string",
+            "required": false,
+            "description": "category (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/DealerWiseReportController.cs",
+        "action_method": "GetDealerWiseReport",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/DealerWiseReport_repo.cs",
+          "Interfaces/IDealerWiseReport.cs"
+        ]
+      },
+      "module": "Reporting",
+      "business_logic": {
+        "operation_summary": "Retrieve dealer wise report — calls ICommon.getUserByToken, IDealerWiseReport.GetBranchByIdAsync, IDealerWiseReport.GetAllDealers",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IDealerWiseReport.GetBranchByIdAsync",
+          "IDealerWiseReport.GetAllDealers",
+          "IDealerWiseReport.GetAllBranches",
+          "IDealerWiseReport.GetDealerWiseReportData"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "DealerWiseReport_repo (Repositories/DealerWiseReport_repo.cs) via IDealerWiseReport"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid user",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "dealer_wise_report_get_dealer_wise_report_by_id",
+      "name": "Get Dealer Wise Report By Id",
+      "action_method": "GetDealerWiseReportById",
+      "http_method": "GET",
+      "route": "api/DealerWiseReport/{dealerId}",
+      "business_purpose": "Retrieve dealer wise report by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "dealerId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/indents-reports/dealer-wise-report:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve dealer wise report by ID",
+      "detailed_description": "Retrieve dealer wise report by ID. It calls IDealerWiseReport.GetDealerWiseReportById. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Dealer Wise Report not found [when data == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve dealer wise report by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "dealerId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/DealerWiseReport",
+          "GET api/DealerWiseReport/{dealerId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "dealer_wise_report_get_dealer_wise_report_by_id",
+        "description": "Retrieve dealer wise report by ID",
+        "http_method": "GET",
+        "endpoint": "api/DealerWiseReport/{dealerId}",
+        "parameters": {
+          "dealerId": {
+            "type": "int",
+            "required": true,
+            "description": "dealer Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/DealerWiseReportController.cs",
+        "action_method": "GetDealerWiseReportById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/DealerWiseReport_repo.cs",
+          "Interfaces/IDealerWiseReport.cs"
+        ]
+      },
+      "module": "Reporting",
+      "business_logic": {
+        "operation_summary": "Retrieve dealer wise report by ID — calls IDealerWiseReport.GetDealerWiseReportById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) dealerId must reference existing record(s); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IDealerWiseReport.GetDealerWiseReportById"
+        ],
+        "calls_repositories": [
+          "DealerWiseReport_repo (Repositories/DealerWiseReport_repo.cs) via IDealerWiseReport"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 404,
+            "message": "Dealer Wise Report not found",
+            "when": "data == null"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,831 @@
+{
+  "controller": "CategorymappingController",
+  "file": "Controllers/CategorymappingController.cs",
+  "module": "Master Data - Product",
+  "base_route": "api/Categorymapping",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages categorymapping records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/company-settings/category-mapping",
+        "module_code": "settings",
+        "section": "company-settings",
+        "sub_section": "category-mapping",
+        "frontend_routes": [
+          "/settings/company-settings/category-mapping",
+          "/settings/company-settings/category-mapping/create-category-mapping",
+          "/settings/company-settings/category-mapping/edit-category-mapping/:id"
+        ],
+        "menu_route_confirmed": true,
+        "display_names": {
+          "module": "Settings",
+          "section": "Company Settings",
+          "sub_section": "Category Mapping"
+        }
+      },
+      {
+        "path": "settings/user-settings/category-mapping",
+        "module_code": "settings",
+        "section": "user-settings",
+        "sub_section": "category-mapping",
+        "frontend_routes": [
+          "/settings/user-settings/category-mapping",
+          "/settings/user-settings/category-mapping/create-category-mapping"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "Categorymapping"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Settings",
+        "section": "Company Settings",
+        "sub_section": "Category Mapping"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "categorymapping_get_all_category_mappings",
+      "name": "Get All Category Mappings",
+      "action_method": "GetAllCategoryMappings",
+      "http_method": "GET",
+      "route": "api/Categorymapping",
+      "business_purpose": "Retrieve all category mappings",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "CategoryMapping[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/company-settings/category-mapping:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "settings/user-settings/category-mapping"
+      ],
+      "short_description": "Retrieve all category mappings",
+      "detailed_description": "Retrieve all category mappings. It calls ICategoryMapping.GetCategoryMappingData, ICategoryMapping.GetCategoryMappingActions, ICommon.GetPagination. Data access uses stored procedure(s): GetCategoryMapping, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all category mappings",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Categorymapping",
+          "GET api/Categorymapping/getCategoriesByUser/{userId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "categorymapping_get_all_category_mappings",
+        "description": "Retrieve all category mappings",
+        "http_method": "GET",
+        "endpoint": "api/Categorymapping",
+        "parameters": {
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CategorymappingController.cs",
+        "action_method": "GetAllCategoryMappings",
+        "related_dto_files": [
+          "Models/CategoryMapping.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/CategoryMapping_repo.cs",
+          "Interfaces/ICategoryMapping.cs",
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Master Data - Product",
+      "business_logic": {
+        "operation_summary": "Retrieve all category mappings — calls ICategoryMapping.GetCategoryMappingData, ICategoryMapping.GetCategoryMappingActions, ICommon.GetPagination",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICategoryMapping.GetCategoryMappingData",
+          "ICategoryMapping.GetCategoryMappingActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "CategoryMapping_repo (Repositories/CategoryMapping_repo.cs) via ICategoryMapping",
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [
+          "GetCategoryMapping",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "categorymapping_create_category_mapping",
+      "name": "Create Category Mapping",
+      "action_method": "CreateCategoryMapping",
+      "http_method": "POST",
+      "route": "api/Categorymapping",
+      "business_purpose": "Create category mapping",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateCategoryMappingRequest (inline)",
+        "properties": [
+          {
+            "name": "userid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "selecteduserId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "categoryid",
+            "type": "List<int>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again; each call writes another audit log entry"
+      },
+      "required_permission": "settings/company-settings/category-mapping:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "settings/user-settings/category-mapping"
+      ],
+      "short_description": "Create category mapping",
+      "detailed_description": "Create category mapping. It validates the request, then calls ICommon.getUserByToken, ICategoryMapping.GetUserById, ICategoryMapping.GetCategoriesByUserId, then writes an audit log entry. Persists changes to: CategoryMapping: DELETE, CategoryMapping: INSERT, AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; Valid selected user ID is required. [when request.selecteduserId <= 0]; At least one category ID is required. [when request.categoryid == null || request.categoryid.Count == 0]; User(s) not found or inactive. [when creator == null || selectedUser == null]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create category mapping",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateCategoryMappingRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Categorymapping"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "categorymapping_create_category_mapping",
+        "description": "Create category mapping",
+        "http_method": "POST",
+        "endpoint": "api/Categorymapping",
+        "parameters": {
+          "userid": {
+            "type": "int",
+            "required": false,
+            "description": "userid (body)"
+          },
+          "selecteduserId": {
+            "type": "int",
+            "required": false,
+            "description": "selecteduser Id (body)"
+          },
+          "categoryid": {
+            "type": "List<int>",
+            "required": false,
+            "description": "categoryid (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/CategorymappingController.cs",
+        "action_method": "CreateCategoryMapping",
+        "related_dto_files": [
+          "Controllers/CategorymappingController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/CategoryMapping_repo.cs",
+          "Interfaces/ICategoryMapping.cs"
+        ]
+      },
+      "module": "Master Data - Product",
+      "business_logic": {
+        "operation_summary": "Create category mapping — validates the request, calls ICommon.getUserByToken, ICategoryMapping.GetUserById, ICategoryMapping.GetCategoriesByUserId, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; request body of type CreateCategoryMappingRequest (inline); passes 5 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "CategoryMapping: DELETE; CategoryMapping: INSERT; AuditLog: INSERT",
+        "validations": "ModelState (DTO data-annotation) validation; Invalid data provided.; Valid selected user ID is required.; At least one category ID is required.; User(s) not found or inactive.",
+        "side_effects": "AuditLog CREATE (Settings > Company Settings > Category Mapping)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICategoryMapping.GetUserById",
+          "ICategoryMapping.GetCategoriesByUserId",
+          "ICategoryMapping.DeleteCategoryMapping",
+          "ICategoryMapping.GetCategoryById",
+          "ICategoryMapping.CreateCategoryMappingAsync",
+          "ICommon.ToJsonString",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "CategoryMapping_repo (Repositories/CategoryMapping_repo.cs) via ICategoryMapping"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid selected user ID is required.",
+            "when": "request.selecteduserId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one category ID is required.",
+            "when": "request.categoryid == null || request.categoryid.Count == 0"
+          },
+          {
+            "returns": 400,
+            "message": "User(s) not found or inactive.",
+            "when": "creator == null || selectedUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "categorymapping_update_category_mapping",
+      "name": "Update Category Mapping",
+      "action_method": "UpdateCategoryMapping",
+      "http_method": "PUT",
+      "route": "api/Categorymapping/{mappingId}",
+      "business_purpose": "Update category mapping",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "mappingId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateCategoryMappingRequest (inline)",
+        "properties": [
+          {
+            "name": "userid",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "selecteduserId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "categoryid",
+            "type": "List<int>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values; each call writes another audit log entry"
+      },
+      "required_permission": "settings/company-settings/category-mapping:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "settings/user-settings/category-mapping"
+      ],
+      "short_description": "Update category mapping",
+      "detailed_description": "Update category mapping. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, ICategoryMapping.GetUserById, ICategoryMapping.GetCategoryMappingById, then writes an audit log entry. Persists changes to: CategoryMapping: UPDATE, AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid mapping ID is required. [when mappingId <= 0]; At least one category ID is required. [when request.categoryid == null || request.categoryid.Count == 0]; User not found or inactive. [when user == null]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Category Mapping not found. [when existingCategoryMapping == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "No mappings were updated. Check category IDs or duplicates. [when updatedMappings.Count == 0]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update category mapping",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "mappingId (route)",
+          "request body UpdateCategoryMappingRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Categorymapping/getCategoriesByUser/{userId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "categorymapping_update_category_mapping",
+        "description": "Update category mapping",
+        "http_method": "PUT",
+        "endpoint": "api/Categorymapping/{mappingId}",
+        "parameters": {
+          "mappingId": {
+            "type": "int",
+            "required": true,
+            "description": "mapping Id (route)"
+          },
+          "userid": {
+            "type": "int",
+            "required": false,
+            "description": "userid (body)"
+          },
+          "selecteduserId": {
+            "type": "int",
+            "required": false,
+            "description": "selecteduser Id (body)"
+          },
+          "categoryid": {
+            "type": "List<int>",
+            "required": false,
+            "description": "categoryid (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/CategorymappingController.cs",
+        "action_method": "UpdateCategoryMapping",
+        "related_dto_files": [
+          "Controllers/CategorymappingController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/CategoryMapping_repo.cs",
+          "Interfaces/ICategoryMapping.cs"
+        ]
+      },
+      "module": "Master Data - Product",
+      "business_logic": {
+        "operation_summary": "Update category mapping — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, ICategoryMapping.GetUserById, ICategoryMapping.GetCategoryMappingById, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) mappingId must reference existing record(s); request body of type UpdateCategoryMappingRequest (inline); passes 6 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "CategoryMapping: UPDATE; AuditLog: INSERT",
+        "validations": "Valid mapping ID is required.; At least one category ID is required.; User not found or inactive.",
+        "side_effects": "AuditLog UPDATE (Settings > Company Settings > Category Mapping)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICategoryMapping.GetUserById",
+          "ICategoryMapping.GetCategoryMappingById",
+          "ICommon.ToJsonString",
+          "ICategoryMapping.GetCategoryById",
+          "ICategoryMapping.IsCategoryMappingDuplicateAsync",
+          "ICategoryMapping.UpdateCategoryMappingAsync",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "CategoryMapping_repo (Repositories/CategoryMapping_repo.cs) via ICategoryMapping"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid mapping ID is required.",
+            "when": "mappingId <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "At least one category ID is required.",
+            "when": "request.categoryid == null || request.categoryid.Count == 0"
+          },
+          {
+            "returns": 400,
+            "message": "User not found or inactive.",
+            "when": "user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Category Mapping not found.",
+            "when": "existingCategoryMapping == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          },
+          {
+            "returns": 400,
+            "message": "No mappings were updated. Check category IDs or duplicates.",
+            "when": "updatedMappings.Count == 0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "categorymapping_delete_category_mapping",
+      "name": "Delete Category Mapping",
+      "action_method": "DeleteCategoryMapping",
+      "http_method": "DELETE",
+      "route": "api/Categorymapping/{mappingId}",
+      "business_purpose": "Delete category mapping",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "mappingId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [
+        {
+          "name": "categoryId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "settings/company-settings/category-mapping:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "settings/user-settings/category-mapping"
+      ],
+      "short_description": "Delete category mapping",
+      "detailed_description": "Delete category mapping. It validates the request, then calls ICommon.getUserByToken, ICategoryMapping.GetCategoryMappingById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: CategoryMapping: DELETE, AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid mapping ID is required. [when mappingId <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Category Mapping not found. [when existingCategoryMapping == null]",
+        "unauthorized": "401/403: Unauthorized [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete category mapping",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "mappingId (route)",
+          "categoryId (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/Categorymapping/getCategoriesByUser/{userId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "categorymapping_delete_category_mapping",
+        "description": "Delete category mapping",
+        "http_method": "DELETE",
+        "endpoint": "api/Categorymapping/{mappingId}",
+        "parameters": {
+          "mappingId": {
+            "type": "int",
+            "required": true,
+            "description": "mapping Id (route)"
+          },
+          "categoryId": {
+            "type": "int",
+            "required": true,
+            "description": "category Id (query)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/CategorymappingController.cs",
+        "action_method": "DeleteCategoryMapping",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/CategoryMapping_repo.cs",
+          "Interfaces/ICategoryMapping.cs"
+        ]
+      },
+      "module": "Master Data - Product",
+      "business_logic": {
+        "operation_summary": "Delete category mapping — validates the request, calls ICommon.getUserByToken, ICategoryMapping.GetCategoryMappingById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) mappingId must reference existing record(s); required query parameter(s): categoryId; passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "CategoryMapping: DELETE; AuditLog: INSERT",
+        "validations": "Valid mapping ID is required.",
+        "side_effects": "AuditLog DELETE (Settings > Company Settings > Category Mapping)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICategoryMapping.GetCategoryMappingById",
+          "ICommon.ToJsonString",
+          "ICategoryMapping.DeleteCategoryMapping",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "CategoryMapping_repo (Repositories/CategoryMapping_repo.cs) via ICategoryMapping"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid mapping ID is required.",
+            "when": "mappingId <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Category Mapping not found.",
+            "when": "existingCategoryMapping == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "categorymapping_get_categories_by_user",
+      "name": "Get Categories By User",
+      "action_method": "GetCategoriesByUser",
+      "http_method": "GET",
+      "route": "api/Categorymapping/getCategoriesByUser/{userId}",
+      "business_purpose": "Retrieve categories by user",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "userId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "settings/company-settings/category-mapping",
+        "settings/user-settings/category-mapping"
+      ],
+      "short_description": "Retrieve categories by user",
+      "detailed_description": "Retrieve categories by user. It calls ICommon.getUserByToken, ICategoryMapping.GetCategoriesByUserId. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve categories by user",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "userId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Categorymapping",
+          "GET api/Categorymapping/getCategoriesByUser/{userId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "categorymapping_get_categories_by_user",
+        "description": "Retrieve categories by user",
+        "http_method": "GET",
+        "endpoint": "api/Categorymapping/getCategoriesByUser/{userId}",
+        "parameters": {
+          "userId": {
+            "type": "int",
+            "required": true,
+            "description": "user Id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CategorymappingController.cs",
+        "action_method": "GetCategoriesByUser",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/CategoryMapping_repo.cs",
+          "Interfaces/ICategoryMapping.cs"
+        ]
+      },
+      "module": "Master Data - Product",
+      "business_logic": {
+        "operation_summary": "Retrieve categories by user — calls ICommon.getUserByToken, ICategoryMapping.GetCategoriesByUserId",
+        "preconditions": "Valid Bearer JWT; route parameter(s) userId",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICategoryMapping.GetCategoriesByUserId"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "CategoryMapping_repo (Repositories/CategoryMapping_repo.cs) via ICategoryMapping"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,366 @@
+{
+  "controller": "IndividualAttendanceReportController",
+  "file": "Controllers/IndividualAttendanceReportController.cs",
+  "module": "Reporting",
+  "base_route": "api/IndividualAttendanceReport",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles individual attendance report: get, get by id",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "rpt/crm-reports/individual-attendance-report",
+        "module_code": "rpt",
+        "section": "crm-reports",
+        "sub_section": "individual-attendance-report",
+        "frontend_routes": [
+          "/rpt/crm-reports/individual-attendance-report"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "reports/accounts-reports/individual-attendance-report",
+        "module_code": "reports",
+        "section": "accounts-reports",
+        "sub_section": "individual-attendance-report",
+        "frontend_routes": [
+          "/reports/accounts-reports/individual-attendance-report"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "individual_attendance_report_get",
+      "name": "Get",
+      "action_method": "Get",
+      "http_method": "GET",
+      "route": "api/IndividualAttendanceReport",
+      "business_purpose": "Retrieve individual attendance report data",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "region",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "user",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          503
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/crm-reports/individual-attendance-report:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "reports/accounts-reports/individual-attendance-report"
+      ],
+      "short_description": "Retrieve individual attendance report data",
+      "detailed_description": "Retrieve individual attendance report data. It calls ICommon.getUserByToken, IIndividualAttendanceReport.GetAttendanceReportWithPagination, IIndividualAttendanceReport.GetAllUsers. Data access uses stored procedure(s): GetIndividualAttendanceReport. Possible responses: 200, 401, 503.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when string.IsNullOrEmpty(token)]; (no message) [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve individual attendance report data",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/IndividualAttendanceReport",
+          "GET api/IndividualAttendanceReport/{id}/{month}/{year}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "individual_attendance_report_get",
+        "description": "Retrieve individual attendance report data",
+        "http_method": "GET",
+        "endpoint": "api/IndividualAttendanceReport",
+        "parameters": {
+          "region": {
+            "type": "int",
+            "required": false,
+            "description": "region (query)"
+          },
+          "user": {
+            "type": "int",
+            "required": false,
+            "description": "user (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IndividualAttendanceReportController.cs",
+        "action_method": "Get",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/IndividualAttendanceReport_repo.cs",
+          "Interfaces/IIndividualAttendanceReport.cs"
+        ]
+      },
+      "module": "Reporting",
+      "business_logic": {
+        "operation_summary": "Retrieve individual attendance report data — calls ICommon.getUserByToken, IIndividualAttendanceReport.GetAttendanceReportWithPagination, IIndividualAttendanceReport.GetAllUsers",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndividualAttendanceReport.GetAttendanceReportWithPagination",
+          "IIndividualAttendanceReport.GetAllUsers",
+          "IIndividualAttendanceReport.GetAllRegions",
+          "IIndividualAttendanceReport.GetActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IndividualAttendanceReportRepo (Repositories/IndividualAttendanceReport_repo.cs) via IIndividualAttendanceReport"
+        ],
+        "stored_procedures": [
+          "GetIndividualAttendanceReport"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "string.IsNullOrEmpty(token)"
+          },
+          {
+            "returns": 401,
+            "message": null,
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 503,
+            "message": "Database is unavailable. Please verify MySQL host, port, and credentials in connection settings.",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "individual_attendance_report_get_by_id",
+      "name": "Get By Id",
+      "action_method": "GetById",
+      "http_method": "GET",
+      "route": "api/IndividualAttendanceReport/{id}/{month}/{year}",
+      "business_purpose": "Retrieve a individual attendance report record by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        },
+        {
+          "name": "month",
+          "type": "int",
+          "required": true
+        },
+        {
+          "name": "year",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "rpt/crm-reports/individual-attendance-report",
+        "reports/accounts-reports/individual-attendance-report"
+      ],
+      "short_description": "Retrieve a individual attendance report record by ID",
+      "detailed_description": "Retrieve a individual attendance report record by ID. It validates the request, then calls ICommon.getUserByToken, IIndividualAttendanceReport.GetById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid user id is required. [when id <= 0]",
+        "not_found": "404: Report not found. [when report == null || !report.Any()]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve a individual attendance report record by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "month (route)",
+          "year (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/IndividualAttendanceReport",
+          "GET api/IndividualAttendanceReport/{id}/{month}/{year}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "individual_attendance_report_get_by_id",
+        "description": "Retrieve a individual attendance report record by ID",
+        "http_method": "GET",
+        "endpoint": "api/IndividualAttendanceReport/{id}/{month}/{year}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "month": {
+            "type": "int",
+            "required": true,
+            "description": "month (route)"
+          },
+          "year": {
+            "type": "int",
+            "required": true,
+            "description": "year (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IndividualAttendanceReportController.cs",
+        "action_method": "GetById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/IndividualAttendanceReport_repo.cs",
+          "Interfaces/IIndividualAttendanceReport.cs"
+        ]
+      },
+      "module": "Reporting",
+      "business_logic": {
+        "operation_summary": "Retrieve a individual attendance report record by ID — validates the request, calls ICommon.getUserByToken, IIndividualAttendanceReport.GetById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id, month, year must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid user id is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndividualAttendanceReport.GetById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "IndividualAttendanceReportRepo (Repositories/IndividualAttendanceReport_repo.cs) via IIndividualAttendanceReport"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid user id is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Report not found.",
+            "when": "report == null || !report.Any()"
+          }
+        ]
+      }
+    }
+  ]
+}

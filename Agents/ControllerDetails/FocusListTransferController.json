@@ -1,0 +1,578 @@
+{
+  "controller": "FocusListTransferController",
+  "file": "Controllers/FocusListTransferController.cs",
+  "base_route": "api/FocusListTransfer",
+  "description": "Focus list transfers",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "crm/contact-transfer",
+        "module_code": "crm",
+        "section": "contact-transfer",
+        "sub_section": null,
+        "frontend_routes": [
+          "/crm/contact-transfer"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "foc_001",
+      "name": "GetAll",
+      "http_method": "GET",
+      "route": "api/FocusListTransfer",
+      "business_purpose": "GET operation for FocusListTransferController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": []
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FocusListTransferController.cs",
+        "action_method": "GetAll"
+      },
+      "required_permission": "crm/contact-transfer:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)"
+    },
+    {
+      "id": "foc_002",
+      "name": "TransferFocusList",
+      "http_method": "POST",
+      "route": "api/FocusListTransfer/Transfer",
+      "business_purpose": "POST operation for FocusListTransferController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "CREATE/UPDATE/DELETE",
+      "business_logic": {
+        "operation_summary": "POST operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "sets focusList.assigned_to, client.proposed_by and saves changes",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid source or destination user ID.",
+            "when": "request.SourceUserId <= 0 || request.DestinationUserId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "No focus list items selected for transfer.",
+            "when": "request.FocusListIds == null || !request.FocusListIds.Any()"
+          },
+          {
+            "returns": 404,
+            "message": "Destination user not found.",
+            "when": "assignedUser == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FocusListTransferController.cs",
+        "action_method": "TransferFocusList"
+      },
+      "required_permission": "crm/contact-transfer:delete",
+      "permission_flags": [
+        "delete",
+        "add",
+        "edit"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "POST operation for FocusListTransferController",
+      "detailed_description": "POST operation for FocusListTransferController. It validates the request, then calls ICommon.getUserByToken, IFocusList.GetUserByIdAsync, IFocusList.GetFocusListByIdAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid source or destination user ID. [when request.SourceUserId <= 0 || request.DestinationUserId <= 0]; No focus list items selected for transfer. [when request.FocusListIds == null || !request.FocusListIds.Any()]",
+        "not_found": "404: Destination user not found. [when assignedUser == null]",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to POST operation for focuslisttransfercontroller",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/FocusListTransfer",
+          "GET api/FocusListTransfer/users"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "focus_list_transfer_transfer_focus_list",
+        "description": "POST operation for FocusListTransferController",
+        "http_method": "POST",
+        "endpoint": "api/FocusListTransfer/Transfer",
+        "parameters": {},
+        "operation_type": "CREATE/UPDATE/DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "foc_003",
+      "name": "TransferInfluencerProposals",
+      "http_method": "POST",
+      "route": "api/FocusListTransfer/transfer-influencers",
+      "business_purpose": "POST operation for FocusListTransferController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "CREATE/UPDATE/DELETE",
+      "business_logic": {
+        "operation_summary": "POST operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "sets client.proposed_by and saves changes",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid source or destination user ID.",
+            "when": "request.SourceUserId <= 0 || request.DestinationUserId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "No clients selected for transfer.",
+            "when": "request.ClientIds == null || !request.ClientIds.Any()"
+          },
+          {
+            "returns": 404,
+            "message": "Destination user not found.",
+            "when": "destinationUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Source user not found.",
+            "when": "sourceUser == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FocusListTransferController.cs",
+        "action_method": "TransferInfluencerProposals"
+      },
+      "required_permission": "crm/contact-transfer:delete",
+      "permission_flags": [
+        "delete",
+        "add",
+        "edit"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "POST operation for FocusListTransferController",
+      "detailed_description": "POST operation for FocusListTransferController. It validates the request, then calls ICommon.getUserByToken, IFocusList.GetUserByIdAsync, IFocusList.GetClientByIdAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid source or destination user ID. [when request.SourceUserId <= 0 || request.DestinationUserId <= 0]; No clients selected for transfer. [when request.ClientIds == null || !request.ClientIds.Any()]",
+        "not_found": "404: Destination user not found. [when destinationUser == null]; Source user not found. [when sourceUser == null]",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to POST operation for focuslisttransfercontroller",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/FocusListTransfer",
+          "GET api/FocusListTransfer/users"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "focus_list_transfer_transfer_influencer_proposals",
+        "description": "POST operation for FocusListTransferController",
+        "http_method": "POST",
+        "endpoint": "api/FocusListTransfer/transfer-influencers",
+        "parameters": {},
+        "operation_type": "CREATE/UPDATE/DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "foc_004",
+      "name": "GetUsers",
+      "http_method": "GET",
+      "route": "api/FocusListTransfer/users",
+      "business_purpose": "GET operation for FocusListTransferController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FocusListTransferController.cs",
+        "action_method": "GetUsers"
+      },
+      "required_permission": "crm/contact-transfer:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "GET operation for FocusListTransferController",
+      "detailed_description": "GET operation for FocusListTransferController. It calls ICommon.getUserByToken, IFocusList.GetAllUsersByCurrentUser. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to GET operation for focuslisttransfercontroller",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/FocusListTransfer",
+          "GET api/FocusListTransfer/users",
+          "GET api/FocusListTransfer/focuslist/{userId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "focus_list_transfer_get_users",
+        "description": "GET operation for FocusListTransferController",
+        "http_method": "GET",
+        "endpoint": "api/FocusListTransfer/users",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "foc_005",
+      "name": "GetFocusListByUser",
+      "http_method": "GET",
+      "route": "api/FocusListTransfer/focuslist/{userId}",
+      "business_purpose": "GET operation for FocusListTransferController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid user ID.",
+            "when": "userId <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "User not found.",
+            "when": "targetUser == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FocusListTransferController.cs",
+        "action_method": "GetFocusListByUser"
+      },
+      "required_permission": "crm/contact-transfer:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "GET operation for FocusListTransferController",
+      "detailed_description": "GET operation for FocusListTransferController. It validates the request, then calls ICommon.getUserByToken, IFocusList.GetUserByIdAsync, IFocusList.GetFocusListByUserAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid user ID. [when userId <= 0]",
+        "not_found": "404: User not found. [when targetUser == null]",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to GET operation for focuslisttransfercontroller",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/FocusListTransfer",
+          "GET api/FocusListTransfer/users",
+          "GET api/FocusListTransfer/focuslist/{userId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "focus_list_transfer_get_focus_list_by_user",
+        "description": "GET operation for FocusListTransferController",
+        "http_method": "GET",
+        "endpoint": "api/FocusListTransfer/focuslist/{userId}",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "foc_006",
+      "name": "GetInfluencersByUser",
+      "http_method": "GET",
+      "route": "api/FocusListTransfer/influencers/{userId}",
+      "business_purpose": "GET operation for FocusListTransferController",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "GET operation",
+        "preconditions": "Valid JWT token",
+        "validations": "Token validation",
+        "side_effects": "None",
+        "calls_services": [],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid user ID.",
+            "when": "userId <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "User not found.",
+            "when": "targetUser == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Standard operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FocusListTransferController.cs",
+        "action_method": "GetInfluencersByUser"
+      },
+      "required_permission": "crm/contact-transfer:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "GET operation for FocusListTransferController",
+      "detailed_description": "GET operation for FocusListTransferController. It validates the request, then calls ICommon.getUserByToken, IFocusList.GetUserByIdAsync, IFocusList.GetInfluencersByUserAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid user ID. [when userId <= 0]",
+        "not_found": "404: User not found. [when targetUser == null]",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to GET operation for focuslisttransfercontroller",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/FocusListTransfer",
+          "GET api/FocusListTransfer/users",
+          "GET api/FocusListTransfer/focuslist/{userId}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "focus_list_transfer_get_influencers_by_user",
+        "description": "GET operation for FocusListTransferController",
+        "http_method": "GET",
+        "endpoint": "api/FocusListTransfer/influencers/{userId}",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    }
+  ]
+}

@@ -1,0 +1,1821 @@
+{
+  "controller": "InfluencerSchemeController",
+  "file": "Controllers/InfluencerSchemeController.cs",
+  "module": "Influencer Management",
+  "base_route": "api/InfluencerScheme",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages influencer scheme records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/crm-settings/influencer-scheme",
+        "module_code": "settings",
+        "section": "crm-settings",
+        "sub_section": "influencer-scheme",
+        "frontend_routes": [
+          "/settings/crm-settings/influencer-scheme",
+          "/settings/crm-settings/influencer-scheme/create-influencer-scheme",
+          "/settings/crm-settings/influencer-scheme/edit-influencer-scheme",
+          "/settings/crm-settings/influencer-scheme/view"
+        ],
+        "menu_route_confirmed": true,
+        "display_names": {
+          "module": "Settings",
+          "section": "CRM Settings",
+          "sub_section": "Influencer Scheme"
+        }
+      }
+    ],
+    "also_called_from_menus": [
+      "settings/incentive-settings/incentive-brand-rate"
+    ],
+    "section_configuration_keys": [
+      "influencerScheme"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Settings",
+        "section": "CRM Settings",
+        "sub_section": "Influencer Scheme"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "influencer_scheme_get_all_influencer_scheme",
+      "name": "Get All Influencer Scheme",
+      "action_method": "GetAllInfluencerScheme",
+      "http_method": "GET",
+      "route": "api/InfluencerScheme",
+      "business_purpose": "Retrieve all influencer scheme",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/crm-settings/influencer-scheme:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all influencer scheme",
+      "detailed_description": "Retrieve all influencer scheme. It calls ICommon.getUserByToken, IInfluencerScheme.GetInfluencerSchemeData, IInfluencerScheme.GetInfluencerSchemeActions. Data access uses stored procedure(s): GetInfluencerScheme, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all influencer scheme",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerScheme",
+          "GET api/InfluencerScheme/schemesInfluencers/{searchtext}",
+          "GET api/InfluencerScheme/brands"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_scheme_get_all_influencer_scheme",
+        "description": "Retrieve all influencer scheme",
+        "http_method": "GET",
+        "endpoint": "api/InfluencerScheme",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerSchemeController.cs",
+        "action_method": "GetAllInfluencerScheme",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/InfluencerScheme_repo.cs",
+          "Interfaces/IInfluencerScheme.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all influencer scheme — calls ICommon.getUserByToken, IInfluencerScheme.GetInfluencerSchemeData, IInfluencerScheme.GetInfluencerSchemeActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IInfluencerScheme.GetInfluencerSchemeData",
+          "IInfluencerScheme.GetInfluencerSchemeActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "InfluencerScheme_repo (Repositories/InfluencerScheme_repo.cs) via IInfluencerScheme"
+        ],
+        "stored_procedures": [
+          "GetInfluencerScheme",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "influencer_scheme_get_schemes_influencers",
+      "name": "Get Schemes Influencers",
+      "action_method": "GetSchemesInfluencers",
+      "http_method": "GET",
+      "route": "api/InfluencerScheme/schemesInfluencers/{searchtext}",
+      "business_purpose": "Retrieve schemes influencers",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "searchtext",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/crm-settings/influencer-scheme:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Retrieve schemes influencers",
+      "detailed_description": "Retrieve schemes influencers. It calls ICommon.getUserByToken, IInfluencerScheme.GetSchemesInfluencers. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve schemes influencers",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "searchtext (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerScheme",
+          "GET api/InfluencerScheme/schemesInfluencers/{searchtext}",
+          "GET api/InfluencerScheme/brands"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_scheme_get_schemes_influencers",
+        "description": "Retrieve schemes influencers",
+        "http_method": "GET",
+        "endpoint": "api/InfluencerScheme/schemesInfluencers/{searchtext}",
+        "parameters": {
+          "searchtext": {
+            "type": "string",
+            "required": true,
+            "description": "searchtext (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerSchemeController.cs",
+        "action_method": "GetSchemesInfluencers",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/InfluencerScheme_repo.cs",
+          "Interfaces/IInfluencerScheme.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Retrieve schemes influencers — calls ICommon.getUserByToken, IInfluencerScheme.GetSchemesInfluencers",
+        "preconditions": "Valid Bearer JWT; route parameter(s) searchtext",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IInfluencerScheme.GetSchemesInfluencers"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "InfluencerScheme_repo (Repositories/InfluencerScheme_repo.cs) via IInfluencerScheme"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "influencer_scheme_remove_influencer_from_scheme",
+      "name": "Remove Influencer From Scheme",
+      "action_method": "RemoveInfluencerFromScheme",
+      "http_method": "DELETE",
+      "route": "api/InfluencerScheme/influencerRemove/{schemeId}/{influencerId}",
+      "business_purpose": "Remove influencer from scheme",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "schemeId",
+          "type": "int",
+          "required": true
+        },
+        {
+          "name": "influencerId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "settings/crm-settings/influencer-scheme:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Remove influencer from scheme",
+      "detailed_description": "Remove influencer from scheme. It calls ICommon.getUserByToken, IInfluencerScheme.GetSchemeHeaderById, IInfluencerScheme.GetInfluencerById. Persists changes to: SchemeMapping: DELETE. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to remove influencer from scheme",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "schemeId (route)",
+          "influencerId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerScheme/schemesInfluencers/{searchtext}",
+          "GET api/InfluencerScheme/thickness/{product_name}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_scheme_remove_influencer_from_scheme",
+        "description": "Remove influencer from scheme",
+        "http_method": "DELETE",
+        "endpoint": "api/InfluencerScheme/influencerRemove/{schemeId}/{influencerId}",
+        "parameters": {
+          "schemeId": {
+            "type": "int",
+            "required": true,
+            "description": "scheme Id (route)"
+          },
+          "influencerId": {
+            "type": "int",
+            "required": true,
+            "description": "influencer Id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerSchemeController.cs",
+        "action_method": "RemoveInfluencerFromScheme",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/InfluencerScheme_repo.cs",
+          "Interfaces/IInfluencerScheme.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Remove influencer from scheme — calls ICommon.getUserByToken, IInfluencerScheme.GetSchemeHeaderById, IInfluencerScheme.GetInfluencerById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) schemeId, influencerId",
+        "state_changes": "SchemeMapping: DELETE",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IInfluencerScheme.GetSchemeHeaderById",
+          "IInfluencerScheme.GetInfluencerById",
+          "IInfluencerScheme.RemoveClientFromSchemeAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "InfluencerScheme_repo (Repositories/InfluencerScheme_repo.cs) via IInfluencerScheme"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "influencer_scheme_get_brands",
+      "name": "Get Brands",
+      "action_method": "GetBrands",
+      "http_method": "GET",
+      "route": "api/InfluencerScheme/brands",
+      "business_purpose": "Retrieve brands",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/crm-settings/influencer-scheme:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "settings/incentive-settings/incentive-brand-rate"
+      ],
+      "short_description": "Retrieve brands",
+      "detailed_description": "Retrieve brands. It calls ICommon.getUserByToken, IInfluencerScheme.GetAllBrands. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve brands",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerScheme",
+          "GET api/InfluencerScheme/schemesInfluencers/{searchtext}",
+          "GET api/InfluencerScheme/brands"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_scheme_get_brands",
+        "description": "Retrieve brands",
+        "http_method": "GET",
+        "endpoint": "api/InfluencerScheme/brands",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerSchemeController.cs",
+        "action_method": "GetBrands",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/InfluencerScheme_repo.cs",
+          "Interfaces/IInfluencerScheme.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Retrieve brands — calls ICommon.getUserByToken, IInfluencerScheme.GetAllBrands",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IInfluencerScheme.GetAllBrands"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "InfluencerScheme_repo (Repositories/InfluencerScheme_repo.cs) via IInfluencerScheme"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "influencer_scheme_get_thickness_by_product",
+      "name": "Get Thickness By Product",
+      "action_method": "GetThicknessByProduct",
+      "http_method": "GET",
+      "route": "api/InfluencerScheme/thickness/{product_name}",
+      "business_purpose": "Retrieve thickness by product",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "product_name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/crm-settings/influencer-scheme:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve thickness by product",
+      "detailed_description": "Retrieve thickness by product. It calls ICommon.getUserByToken, IInfluencerScheme.GetAllThickness. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve thickness by product",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "product_name (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerScheme",
+          "GET api/InfluencerScheme/schemesInfluencers/{searchtext}",
+          "GET api/InfluencerScheme/brands"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_scheme_get_thickness_by_product",
+        "description": "Retrieve thickness by product",
+        "http_method": "GET",
+        "endpoint": "api/InfluencerScheme/thickness/{product_name}",
+        "parameters": {
+          "product_name": {
+            "type": "string",
+            "required": true,
+            "description": "product name (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerSchemeController.cs",
+        "action_method": "GetThicknessByProduct",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/InfluencerScheme_repo.cs",
+          "Interfaces/IInfluencerScheme.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Retrieve thickness by product — calls ICommon.getUserByToken, IInfluencerScheme.GetAllThickness",
+        "preconditions": "Valid Bearer JWT; route parameter(s) product_name",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IInfluencerScheme.GetAllThickness"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "InfluencerScheme_repo (Repositories/InfluencerScheme_repo.cs) via IInfluencerScheme"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "influencer_scheme_get_influencer_scheme_by_id",
+      "name": "Get Influencer Scheme By Id",
+      "action_method": "GetInfluencerSchemeById",
+      "http_method": "GET",
+      "route": "api/InfluencerScheme/{id}",
+      "business_purpose": "Retrieve influencer scheme by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/crm-settings/influencer-scheme:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "settings/incentive-settings/incentive-brand-rate"
+      ],
+      "short_description": "Retrieve influencer scheme by ID",
+      "detailed_description": "Retrieve influencer scheme by ID. It validates the request, then calls ICommon.getUserByToken, IInfluencerScheme.GetInfluencerSchemeById, IInfluencerScheme.GetInfluencersBySchemeId. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid scheduler ID is required [when id <= 0]",
+        "not_found": "404: InfluencerScheme not found [when influencerScheme == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve influencer scheme by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerScheme",
+          "GET api/InfluencerScheme/schemesInfluencers/{searchtext}",
+          "GET api/InfluencerScheme/brands"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_scheme_get_influencer_scheme_by_id",
+        "description": "Retrieve influencer scheme by ID",
+        "http_method": "GET",
+        "endpoint": "api/InfluencerScheme/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerSchemeController.cs",
+        "action_method": "GetInfluencerSchemeById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/InfluencerScheme_repo.cs",
+          "Interfaces/IInfluencerScheme.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Retrieve influencer scheme by ID — validates the request, calls ICommon.getUserByToken, IInfluencerScheme.GetInfluencerSchemeById, IInfluencerScheme.GetInfluencersBySchemeId",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid scheduler ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IInfluencerScheme.GetInfluencerSchemeById",
+          "IInfluencerScheme.GetInfluencersBySchemeId"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "InfluencerScheme_repo (Repositories/InfluencerScheme_repo.cs) via IInfluencerScheme"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid scheduler ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "InfluencerScheme not found",
+            "when": "influencerScheme == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "influencer_scheme_delete_influencer_scheme",
+      "name": "Delete Influencer Scheme",
+      "action_method": "DeleteInfluencerScheme",
+      "http_method": "DELETE",
+      "route": "api/InfluencerScheme/{id}",
+      "business_purpose": "Delete influencer scheme",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "settings/crm-settings/influencer-scheme:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete influencer scheme",
+      "detailed_description": "Delete influencer scheme. It validates the request, then calls ICommon.getUserByToken, IInfluencerScheme.GetInfluencerSchemeById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: SchemeHeader: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid scheme ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Influencer Scheme not found. [when existingInfluencerScheme == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete influencer scheme",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerScheme/schemesInfluencers/{searchtext}",
+          "GET api/InfluencerScheme/thickness/{product_name}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_scheme_delete_influencer_scheme",
+        "description": "Delete influencer scheme",
+        "http_method": "DELETE",
+        "endpoint": "api/InfluencerScheme/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerSchemeController.cs",
+        "action_method": "DeleteInfluencerScheme",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/InfluencerScheme_repo.cs",
+          "Interfaces/IInfluencerScheme.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Delete influencer scheme — validates the request, calls ICommon.getUserByToken, IInfluencerScheme.GetInfluencerSchemeById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "SchemeHeader: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "validations": "Valid scheme ID is required.",
+        "side_effects": "AuditLog DELETE (Settings > CRM Settings > Influencer Scheme)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IInfluencerScheme.GetInfluencerSchemeById",
+          "ICommon.ToJsonString",
+          "IInfluencerScheme.DeleteInfluencerScheme",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "InfluencerScheme_repo (Repositories/InfluencerScheme_repo.cs) via IInfluencerScheme"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid scheme ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Influencer Scheme not found.",
+            "when": "existingInfluencerScheme == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "influencer_scheme_create_influencer_scheme",
+      "name": "Create Influencer Scheme",
+      "action_method": "CreateInfluencerScheme",
+      "http_method": "POST",
+      "route": "api/InfluencerScheme",
+      "business_purpose": "Create influencer scheme",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateInfluencerSchemeDto (inline)",
+        "properties": [
+          {
+            "name": "Title",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "SchemeTypeId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "BranchId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "no_of_slabs",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "SchemeProducts",
+            "type": "List<SchemeProductDto>",
+            "required": false
+          },
+          {
+            "name": "SchemeSlabs",
+            "type": "List<SchemeSlabDto>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "settings/crm-settings/influencer-scheme:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create influencer scheme",
+      "detailed_description": "Create influencer scheme. It validates the request, then calls ICommon.getUserByToken, IInfluencerScheme.GetSchemeTypeById, IInfluencerScheme.GetBranchById. Persists changes to: SchemeHeader: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Scheme title is required. [when string.IsNullOrWhiteSpace(request.Title)]; Valid Scheme Type ID is required. [when request.SchemeTypeId <= 0]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create influencer scheme",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateInfluencerSchemeDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerScheme",
+          "GET api/InfluencerScheme/brands",
+          "GET api/InfluencerScheme/influencers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_scheme_create_influencer_scheme",
+        "description": "Create influencer scheme",
+        "http_method": "POST",
+        "endpoint": "api/InfluencerScheme",
+        "parameters": {
+          "Title": {
+            "type": "string",
+            "required": false,
+            "description": "Title (body)"
+          },
+          "SchemeTypeId": {
+            "type": "int",
+            "required": false,
+            "description": "Scheme Type Id (body)"
+          },
+          "BranchId": {
+            "type": "int",
+            "required": false,
+            "description": "Branch Id (body)"
+          },
+          "no_of_slabs": {
+            "type": "int",
+            "required": false,
+            "description": "no of slabs (body)"
+          },
+          "SchemeProducts": {
+            "type": "List<SchemeProductDto>",
+            "required": false,
+            "description": "Scheme Products (body)"
+          },
+          "SchemeSlabs": {
+            "type": "List<SchemeSlabDto>",
+            "required": false,
+            "description": "Scheme Slabs (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerSchemeController.cs",
+        "action_method": "CreateInfluencerScheme",
+        "related_dto_files": [
+          "Controllers/InfluencerSchemeController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/InfluencerScheme_repo.cs",
+          "Interfaces/IInfluencerScheme.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Create influencer scheme — validates the request, calls ICommon.getUserByToken, IInfluencerScheme.GetSchemeTypeById, IInfluencerScheme.GetBranchById",
+        "preconditions": "Valid Bearer JWT; request body of type CreateInfluencerSchemeDto (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "SchemeHeader: INSERT",
+        "validations": "Scheme title is required.; Valid Scheme Type ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IInfluencerScheme.GetSchemeTypeById",
+          "IInfluencerScheme.GetBranchById",
+          "IInfluencerScheme.CreateInfluencerSchemeAsync",
+          "IInfluencerScheme.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "InfluencerScheme_repo (Repositories/InfluencerScheme_repo.cs) via IInfluencerScheme"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Scheme title is required.",
+            "when": "string.IsNullOrWhiteSpace(request.Title)"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Scheme Type ID is required.",
+            "when": "request.SchemeTypeId <= 0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "influencer_scheme_update_influencer_scheme",
+      "name": "Update Influencer Scheme",
+      "action_method": "UpdateInfluencerScheme",
+      "http_method": "PUT",
+      "route": "api/InfluencerScheme/{Id}",
+      "business_purpose": "Update influencer scheme",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "Id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateInfluencerSchemeDto (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Title",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "SchemeTypeId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "BranchId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "no_of_slabs",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "SchemeProducts",
+            "type": "List<SchemeProductDto>",
+            "required": false
+          },
+          {
+            "name": "SchemeSlabs",
+            "type": "List<SchemeSlabDto>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "settings/crm-settings/influencer-scheme:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update influencer scheme",
+      "detailed_description": "Update influencer scheme. It validates the request, then calls ICommon.getUserByToken, IInfluencerScheme.UpdateInfluencerSchemeAsync. Persists changes to: SchemeProducts: DELETE, SchemeSlab: DELETE, SchemeHeader: UPDATE. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid scheme ID is required. [when request.Id <= 0]; At least one field must be provided for update. [when request.Title == null && request.SchemeTypeId == null && request.BranchId == null && reque]; message built at runtime [when !result.Success]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update influencer scheme",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "Id (route)",
+          "request body UpdateInfluencerSchemeDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerScheme/schemesInfluencers/{searchtext}",
+          "GET api/InfluencerScheme/thickness/{product_name}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_scheme_update_influencer_scheme",
+        "description": "Update influencer scheme",
+        "http_method": "PUT",
+        "endpoint": "api/InfluencerScheme/{Id}",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "Title": {
+            "type": "string",
+            "required": false,
+            "description": "Title (body)"
+          },
+          "SchemeTypeId": {
+            "type": "int",
+            "required": false,
+            "description": "Scheme Type Id (body)"
+          },
+          "BranchId": {
+            "type": "int",
+            "required": false,
+            "description": "Branch Id (body)"
+          },
+          "no_of_slabs": {
+            "type": "int",
+            "required": false,
+            "description": "no of slabs (body)"
+          },
+          "SchemeProducts": {
+            "type": "List<SchemeProductDto>",
+            "required": false,
+            "description": "Scheme Products (body)"
+          },
+          "SchemeSlabs": {
+            "type": "List<SchemeSlabDto>",
+            "required": false,
+            "description": "Scheme Slabs (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerSchemeController.cs",
+        "action_method": "UpdateInfluencerScheme",
+        "related_dto_files": [
+          "Controllers/InfluencerSchemeController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/InfluencerScheme_repo.cs",
+          "Interfaces/IInfluencerScheme.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Update influencer scheme — validates the request, calls ICommon.getUserByToken, IInfluencerScheme.UpdateInfluencerSchemeAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) Id; request body of type UpdateInfluencerSchemeDto (inline); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "SchemeProducts: DELETE; SchemeSlab: DELETE; SchemeHeader: UPDATE",
+        "validations": "Valid scheme ID is required.; At least one field must be provided for update.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IInfluencerScheme.UpdateInfluencerSchemeAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "InfluencerScheme_repo (Repositories/InfluencerScheme_repo.cs) via IInfluencerScheme"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid scheme ID is required.",
+            "when": "request.Id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field must be provided for update.",
+            "when": "request.Title == null && request.SchemeTypeId == null && request.BranchId == null && request.no_of_slabs == null && (request.SchemeProducts == null || !request.SchemeProducts.Any()) && (request.SchemeSlabs == null || !request.SchemeSlabs.Any())"
+          },
+          {
+            "returns": 400,
+            "message": "message built at runtime",
+            "when": "!result.Success"
+          }
+        ]
+      }
+    },
+    {
+      "id": "influencer_scheme_get_influencers",
+      "name": "Get Influencers",
+      "action_method": "GetInfluencers",
+      "http_method": "GET",
+      "route": "api/InfluencerScheme/influencers",
+      "business_purpose": "Retrieve influencers",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "search_text",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "InfluencerDto[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/crm-settings/influencer-scheme:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve influencers",
+      "detailed_description": "Retrieve influencers. It calls ICommon.getUserByToken, IInfluencerScheme.GetInfluencersByName. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve influencers",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "search_text (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerScheme",
+          "GET api/InfluencerScheme/schemesInfluencers/{searchtext}",
+          "GET api/InfluencerScheme/brands"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_scheme_get_influencers",
+        "description": "Retrieve influencers",
+        "http_method": "GET",
+        "endpoint": "api/InfluencerScheme/influencers",
+        "parameters": {
+          "search_text": {
+            "type": "string",
+            "required": true,
+            "description": "search text (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerSchemeController.cs",
+        "action_method": "GetInfluencers",
+        "related_dto_files": [
+          "DTO/ReadDTO/InfluencerDto.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/InfluencerScheme_repo.cs",
+          "Interfaces/IInfluencerScheme.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Retrieve influencers — calls ICommon.getUserByToken, IInfluencerScheme.GetInfluencersByName",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): search_text",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IInfluencerScheme.GetInfluencersByName"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "InfluencerScheme_repo (Repositories/InfluencerScheme_repo.cs) via IInfluencerScheme"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "influencer_scheme_get_scheme_types",
+      "name": "Get Scheme Types",
+      "action_method": "GetSchemeTypes",
+      "http_method": "GET",
+      "route": "api/InfluencerScheme/schemetype",
+      "business_purpose": "Retrieve scheme types",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/crm-settings/influencer-scheme:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve scheme types",
+      "detailed_description": "Retrieve scheme types. It calls ICommon.getUserByToken, IInfluencerScheme.GetAllSchemeTypes. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve scheme types",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerScheme",
+          "GET api/InfluencerScheme/schemesInfluencers/{searchtext}",
+          "GET api/InfluencerScheme/brands"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_scheme_get_scheme_types",
+        "description": "Retrieve scheme types",
+        "http_method": "GET",
+        "endpoint": "api/InfluencerScheme/schemetype",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerSchemeController.cs",
+        "action_method": "GetSchemeTypes",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/InfluencerScheme_repo.cs",
+          "Interfaces/IInfluencerScheme.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Retrieve scheme types — calls ICommon.getUserByToken, IInfluencerScheme.GetAllSchemeTypes",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IInfluencerScheme.GetAllSchemeTypes"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "InfluencerScheme_repo (Repositories/InfluencerScheme_repo.cs) via IInfluencerScheme"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "influencer_scheme_get_branches",
+      "name": "Get Branches",
+      "action_method": "GetBranches",
+      "http_method": "GET",
+      "route": "api/InfluencerScheme/branch",
+      "business_purpose": "Retrieve branches",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/crm-settings/influencer-scheme:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve branches",
+      "detailed_description": "Retrieve branches. It calls ICommon.getUserByToken, IInfluencerScheme.GetAllBranches. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve branches",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerScheme",
+          "GET api/InfluencerScheme/schemesInfluencers/{searchtext}",
+          "GET api/InfluencerScheme/brands"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_scheme_get_branches",
+        "description": "Retrieve branches",
+        "http_method": "GET",
+        "endpoint": "api/InfluencerScheme/branch",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerSchemeController.cs",
+        "action_method": "GetBranches",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/InfluencerScheme_repo.cs",
+          "Interfaces/IInfluencerScheme.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Retrieve branches — calls ICommon.getUserByToken, IInfluencerScheme.GetAllBranches",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IInfluencerScheme.GetAllBranches"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "InfluencerScheme_repo (Repositories/InfluencerScheme_repo.cs) via IInfluencerScheme"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "influencer_scheme_create_influencer_mapping",
+      "name": "Create Influencer Mapping",
+      "action_method": "CreateInfluencerMapping",
+      "http_method": "POST",
+      "route": "api/InfluencerScheme/InfluencerMapping",
+      "business_purpose": "Create influencer mapping",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateInfluencerMapping (inline)",
+        "properties": [
+          {
+            "name": "influencerId",
+            "type": "List<int>",
+            "required": false
+          },
+          {
+            "name": "schemeHeaderId",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; a duplicate check exists so repeating usually fails with a conflict/validation message"
+      },
+      "required_permission": "settings/crm-settings/influencer-scheme:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create influencer mapping",
+      "detailed_description": "Create influencer mapping. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, IInfluencerScheme.GetSchemeHeaderById, IInfluencerScheme.GetInfluencerById. Persists changes to: SchemeMapping: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; At least one Influencer ID is required. [when request.influencerId == null || request.influencerId.Count == 0]; Valid dealer ID is required. [when request.schemeHeaderId <= 0]; Dealer not found. [when schemeHeader == null]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "No mappings were created. Check Influencer IDs or duplicates. [when createdMappings.Count == 0]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create influencer mapping",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateInfluencerMapping (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/InfluencerScheme",
+          "GET api/InfluencerScheme/brands",
+          "GET api/InfluencerScheme/influencers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "influencer_scheme_create_influencer_mapping",
+        "description": "Create influencer mapping",
+        "http_method": "POST",
+        "endpoint": "api/InfluencerScheme/InfluencerMapping",
+        "parameters": {
+          "influencerId": {
+            "type": "List<int>",
+            "required": false,
+            "description": "influencer Id (body)"
+          },
+          "schemeHeaderId": {
+            "type": "int",
+            "required": false,
+            "description": "scheme Header Id (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/InfluencerSchemeController.cs",
+        "action_method": "CreateInfluencerMapping",
+        "related_dto_files": [
+          "Controllers/InfluencerSchemeController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/InfluencerScheme_repo.cs",
+          "Interfaces/IInfluencerScheme.cs"
+        ]
+      },
+      "module": "Influencer Management",
+      "business_logic": {
+        "operation_summary": "Create influencer mapping — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, IInfluencerScheme.GetSchemeHeaderById, IInfluencerScheme.GetInfluencerById",
+        "preconditions": "Valid Bearer JWT; request body of type CreateInfluencerMapping (inline); passes 5 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "SchemeMapping: INSERT",
+        "validations": "ModelState (DTO data-annotation) validation; Invalid data provided.; At least one Influencer ID is required.; Valid dealer ID is required.; Dealer not found.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IInfluencerScheme.GetSchemeHeaderById",
+          "IInfluencerScheme.GetInfluencerById",
+          "IInfluencerScheme.IsInfluencerMappingDuplicateAsync",
+          "IInfluencerScheme.CreateInfluencerMappingAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "InfluencerScheme_repo (Repositories/InfluencerScheme_repo.cs) via IInfluencerScheme"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "At least one Influencer ID is required.",
+            "when": "request.influencerId == null || request.influencerId.Count == 0"
+          },
+          {
+            "returns": 400,
+            "message": "Valid dealer ID is required.",
+            "when": "request.schemeHeaderId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Dealer not found.",
+            "when": "schemeHeader == null"
+          },
+          {
+            "returns": 400,
+            "message": "No mappings were created. Check Influencer IDs or duplicates.",
+            "when": "createdMappings.Count == 0"
+          }
+        ]
+      }
+    }
+  ]
+}

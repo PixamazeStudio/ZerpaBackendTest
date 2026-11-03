@@ -1,0 +1,119 @@
+{
+  "controller": "BranchManagerDashboardController",
+  "file": "Controllers/BranchManagerDashboardController.cs",
+  "module": "Dashboards",
+  "base_route": "api/BranchManagerDashboard",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles branch manager dashboard: get branch oustanding",
+  "menu_permission": {
+    "status": "not referenced by frontend",
+    "menu_keys": [],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "branch_manager_dashboard_get_branch_oustanding",
+      "name": "Get Branch Oustanding",
+      "action_method": "GetBranchOustanding",
+      "http_method": "GET",
+      "route": "api/BranchManagerDashboard/branch-outstanding",
+      "business_purpose": "Retrieve branch oustanding",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve branch oustanding",
+      "detailed_description": "Retrieve branch oustanding. It calls ICommon.getUserByToken, IBranchManagerDashboard.GetUserBranchIds, IBranchManagerDashboard.GetBranchOutstanding. Data access uses stored procedure(s): GetBranchOutstanding. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve branch oustanding",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/BranchManagerDashboard/branch-outstanding"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "branch_manager_dashboard_get_branch_oustanding",
+        "description": "Retrieve branch oustanding",
+        "http_method": "GET",
+        "endpoint": "api/BranchManagerDashboard/branch-outstanding",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/BranchManagerDashboardController.cs",
+        "action_method": "GetBranchOustanding",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/BranchManagerDashboard_repo.cs",
+          "Interfaces/IBranchManagerDashboard.cs"
+        ]
+      },
+      "module": "Dashboards",
+      "business_logic": {
+        "operation_summary": "Retrieve branch oustanding — calls ICommon.getUserByToken, IBranchManagerDashboard.GetUserBranchIds, IBranchManagerDashboard.GetBranchOutstanding",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IBranchManagerDashboard.GetUserBranchIds",
+          "IBranchManagerDashboard.GetBranchOutstanding"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "BranchManagerDashboard_repo (Repositories/BranchManagerDashboard_repo.cs) via IBranchManagerDashboard"
+        ],
+        "stored_procedures": [
+          "GetBranchOutstanding"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    }
+  ]
+}

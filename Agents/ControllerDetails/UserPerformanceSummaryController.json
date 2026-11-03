@@ -1,0 +1,253 @@
+{
+  "controller": "UserPerformanceSummaryController",
+  "file": "Controllers/UserPerformanceSummaryController.cs",
+  "module": "Reporting",
+  "base_route": "api/UserPerformanceSummary",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles user performance summary: get",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "rpt/crm-projects-reports/user-performance-summary",
+        "module_code": "rpt",
+        "section": "crm-projects-reports",
+        "sub_section": "user-performance-summary",
+        "frontend_routes": [
+          "/rpt/crm-projects-reports/user-performance-summary"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "rpt/crm-reports/user-performance-summary",
+        "module_code": "rpt",
+        "section": "crm-reports",
+        "sub_section": "user-performance-summary",
+        "frontend_routes": [
+          "/rpt/crm-reports/user-performance-summary"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "UserPerformanceSummary"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "user_performance_summary_get",
+      "name": "Get",
+      "action_method": "Get",
+      "http_method": "GET",
+      "route": "api/UserPerformanceSummary",
+      "business_purpose": "Retrieve user performance summary data",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "\"this_month\""
+        },
+        {
+          "name": "user_id",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "regionId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputtext",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "rpt/crm-projects-reports/user-performance-summary:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "rpt/crm-reports/user-performance-summary"
+      ],
+      "short_description": "Retrieve user performance summary data",
+      "detailed_description": "Retrieve user performance summary data. It calls ICommon.getUserByToken, IUserPerformanceSummary.GetUserPerformanceSummaryReportWithPagination, IUserPerformanceSummary.GetAllRegions. Data access uses stored procedure(s): GetUserPerformanceSummaryReport. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when string.IsNullOrEmpty(token)]; (no message) [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve user performance summary data",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/UserPerformanceSummary"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "user_performance_summary_get",
+        "description": "Retrieve user performance summary data",
+        "http_method": "GET",
+        "endpoint": "api/UserPerformanceSummary",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "date range (query)"
+          },
+          "user_id": {
+            "type": "int",
+            "required": false,
+            "description": "user id (query)"
+          },
+          "regionId": {
+            "type": "int",
+            "required": false,
+            "description": "region Id (query)"
+          },
+          "branchId": {
+            "type": "int",
+            "required": false,
+            "description": "branch Id (query)"
+          },
+          "inputtext": {
+            "type": "string",
+            "required": false,
+            "description": "inputtext (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/UserPerformanceSummaryController.cs",
+        "action_method": "Get",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/UserPerformanceSummaryRepo.cs",
+          "Interfaces/IUserPerformanceSummary.cs"
+        ]
+      },
+      "module": "Reporting",
+      "business_logic": {
+        "operation_summary": "Retrieve user performance summary data — calls ICommon.getUserByToken, IUserPerformanceSummary.GetUserPerformanceSummaryReportWithPagination, IUserPerformanceSummary.GetAllRegions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IUserPerformanceSummary.GetUserPerformanceSummaryReportWithPagination",
+          "IUserPerformanceSummary.GetAllRegions",
+          "IUserPerformanceSummary.GetBranchesByRegion"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "UserPerformanceSummary_repo (Repositories/UserPerformanceSummaryRepo.cs) via IUserPerformanceSummary"
+        ],
+        "stored_procedures": [
+          "GetUserPerformanceSummaryReport"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "string.IsNullOrEmpty(token)"
+          },
+          {
+            "returns": 401,
+            "message": null,
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    }
+  ]
+}

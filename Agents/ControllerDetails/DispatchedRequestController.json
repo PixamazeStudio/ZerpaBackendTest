@@ -1,0 +1,788 @@
+{
+  "controller": "DispatchedRequestController",
+  "file": "Controllers/DispatchedRequestController.cs",
+  "module": "Dispatch Management",
+  "base_route": "api/DispatchedRequest",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages already-dispatched indents including viewing, cancellation, and revocation workflows",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "ims/factory/dispatched-requests",
+        "module_code": "ims",
+        "section": "factory",
+        "sub_section": "dispatched-requests",
+        "frontend_routes": [
+          "/ims/factory/dispatched-requests",
+          "/ims/factory/dispatched-requests/view-dispatched-requests/:indentId"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "dispatched_request_get_all",
+      "name": "Get All Dispatched Requests",
+      "action_method": "GetAllIndents",
+      "http_method": "GET",
+      "route": "api/DispatchedRequest",
+      "business_purpose": "Retrieve paginated list of dispatched indents with summary cards and filters",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "DateTime",
+          "required": false
+        },
+        {
+          "name": "todate",
+          "type": "DateTime",
+          "required": false
+        },
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "last_30_days"
+        },
+        {
+          "name": "regionId",
+          "type": "int",
+          "required": false
+        },
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": false
+        },
+        {
+          "name": "areaId",
+          "type": "int",
+          "required": false
+        },
+        {
+          "name": "categoryId",
+          "type": "int",
+          "required": false
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ims/factory/dispatched-requests:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve paginated list of dispatched indents with summary cards and filters",
+      "detailed_description": "Retrieve paginated list of dispatched indents with summary cards and filters. It validates the request, then calls ICommon.getUserByToken, IIndent.BuildFilterContext, IDispatchedRequest.GetDispatchedRequestData. Data access uses stored procedure(s): GetDispatchedRequest. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: fromdate and todate are required when date_range is 'custom' [when date_range == \"custom\"]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve paginated list of dispatched indents with summary cards and filters",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/DispatchedRequest",
+          "GET api/DispatchedRequest/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "dispatched_request_get_all_indents",
+        "description": "Retrieve paginated list of dispatched indents with summary cards and filters",
+        "http_method": "GET",
+        "endpoint": "api/DispatchedRequest",
+        "parameters": {
+          "fromdate": {
+            "type": "DateTime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "DateTime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "date range (query)"
+          },
+          "regionId": {
+            "type": "int",
+            "required": false,
+            "description": "region Id (query)"
+          },
+          "branchId": {
+            "type": "int",
+            "required": false,
+            "description": "branch Id (query)"
+          },
+          "areaId": {
+            "type": "int",
+            "required": false,
+            "description": "area Id (query)"
+          },
+          "categoryId": {
+            "type": "int",
+            "required": false,
+            "description": "category Id (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/DispatchedRequestController.cs",
+        "action_method": "GetAllIndents",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs",
+          "Repositories/DispatchedRequest_repo.cs",
+          "Interfaces/IDispatchedRequest.cs"
+        ]
+      },
+      "module": "Dispatch Management",
+      "business_logic": {
+        "operation_summary": "Retrieve paginated list of dispatched indents with summary cards and filters — validates the request, calls ICommon.getUserByToken, IIndent.BuildFilterContext, IDispatchedRequest.GetDispatchedRequestData",
+        "preconditions": "Valid Bearer JWT; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "fromdate and todate are required when date_range is 'custom'",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndent.BuildFilterContext",
+          "IDispatchedRequest.GetDispatchedRequestData",
+          "IDispatchedRequest.GetDispatchedRequestActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent",
+          "DispatchedRequest_repo (Repositories/DispatchedRequest_repo.cs) via IDispatchedRequest"
+        ],
+        "stored_procedures": [
+          "GetDispatchedRequest"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "fromdate and todate are required when date_range is 'custom'",
+            "when": "date_range == \"custom\""
+          }
+        ]
+      }
+    },
+    {
+      "id": "dispatched_request_get_by_id",
+      "name": "Get Dispatched Request By ID",
+      "action_method": "GetDispatchRequestById",
+      "http_method": "GET",
+      "route": "api/DispatchedRequest/{id}",
+      "business_purpose": "Retrieve complete dispatched indent details with invoice and shipping info",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ims/factory/dispatched-requests:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve complete dispatched indent details with invoice and shipping info",
+      "detailed_description": "Retrieve complete dispatched indent details with invoice and shipping info. It validates the request, then calls ICommon.getUserByToken, IIndent.GetIndentActions, IIndent.GetIndentHeaderByIdAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid indent ID is required. [when id <= 0]",
+        "not_found": "404: Indent not found. [when indent == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve complete dispatched indent details with invoice and shipping info",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/DispatchedRequest",
+          "GET api/DispatchedRequest/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "dispatched_request_get_dispatch_request_by_id",
+        "description": "Retrieve complete dispatched indent details with invoice and shipping info",
+        "http_method": "GET",
+        "endpoint": "api/DispatchedRequest/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/DispatchedRequestController.cs",
+        "action_method": "GetDispatchRequestById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs"
+        ]
+      },
+      "module": "Dispatch Management",
+      "business_logic": {
+        "operation_summary": "Retrieve complete dispatched indent details with invoice and shipping info — validates the request, calls ICommon.getUserByToken, IIndent.GetIndentActions, IIndent.GetIndentHeaderByIdAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid indent ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndent.GetIndentActions",
+          "IIndent.GetIndentHeaderByIdAsync",
+          "ICommon.GetComplaintFilesById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid indent ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Indent not found.",
+            "when": "indent == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "dispatched_request_cancel",
+      "name": "Cancel Dispatched Indent",
+      "action_method": "CancelIndent",
+      "http_method": "POST",
+      "route": "api/DispatchedRequest/CancelIndent",
+      "business_purpose": "Reset dispatched indent status back to 'Indent Approved from Control Center'",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "request_body": {
+        "dto_name": "CancelIndentRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": true
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "ims/factory/dispatched-requests:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Reset dispatched indent status back to 'Indent Approved from Control Center'",
+      "detailed_description": "Reset dispatched indent status back to 'Indent Approved from Control Center'. It calls ICommon.getUserByToken, IIndent.GetIndentHeaderByIdAsync, IIndent.UpdateIndentHeaderAsync. Persists changes to: IndentHeader: UPDATE. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Indent not found. [when indent == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to reset dispatched indent status back to 'indent approved from control center'",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CancelIndentRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/DispatchedRequest"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "dispatched_request_cancel_indent",
+        "description": "Reset dispatched indent status back to 'Indent Approved from Control Center'",
+        "http_method": "POST",
+        "endpoint": "api/DispatchedRequest/CancelIndent",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": true,
+            "description": "Id (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/DispatchedRequestController.cs",
+        "action_method": "CancelIndent",
+        "related_dto_files": [
+          "Controllers/DispatchController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs"
+        ]
+      },
+      "module": "Dispatch Management",
+      "business_logic": {
+        "operation_summary": "Reset dispatched indent status back to 'Indent Approved from Control Center' — calls ICommon.getUserByToken, IIndent.GetIndentHeaderByIdAsync, IIndent.UpdateIndentHeaderAsync",
+        "preconditions": "Valid Bearer JWT; request body of type CancelIndentRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "IndentHeader: UPDATE; sets indent.is_indent_dispatched, indent.dispatch_by, indent.dispatched_date, indent.factory_status, indent.indent_status, indent.modified_by and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndent.GetIndentHeaderByIdAsync",
+          "IIndent.UpdateIndentHeaderAsync",
+          "IIndent.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Indent not found.",
+            "when": "indent == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "dispatched_request_revoke",
+      "name": "Revoke Dispatched Indent",
+      "action_method": "RevokeIndent",
+      "http_method": "POST",
+      "route": "api/DispatchedRequest/revoke-indent/{id}",
+      "business_purpose": "Revoke dispatch confirmation and dispatched status; return indent to approved state",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "ims/factory/dispatched-requests:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Revoke dispatch confirmation and dispatched status; return indent to approved state",
+      "detailed_description": "Revoke dispatch confirmation and dispatched status; return indent to approved state. It calls ICommon.getUserByToken, IIndent.GetIndentHeaderByIdAsync, IIndent.UpdateIndentHeaderAsync. Persists changes to: IndentHeader: UPDATE. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Indent not found. [when indent == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to revoke dispatch confirmation and dispatched status; return indent to approved state",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/DispatchedRequest/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "dispatched_request_revoke_indent",
+        "description": "Revoke dispatch confirmation and dispatched status; return indent to approved state",
+        "http_method": "POST",
+        "endpoint": "api/DispatchedRequest/revoke-indent/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/DispatchedRequestController.cs",
+        "action_method": "RevokeIndent",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs"
+        ]
+      },
+      "module": "Dispatch Management",
+      "business_logic": {
+        "operation_summary": "Revoke dispatch confirmation and dispatched status; return indent to approved state — calls ICommon.getUserByToken, IIndent.GetIndentHeaderByIdAsync, IIndent.UpdateIndentHeaderAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "IndentHeader: UPDATE; sets indent.confirm_for_dispatch, indent.is_indent_dispatched, indent.dispatch_by, indent.dispatched_date, indent.factory_status, indent.indent_status",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndent.GetIndentHeaderByIdAsync",
+          "IIndent.UpdateIndentHeaderAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Indent not found.",
+            "when": "indent == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "dispatched_request_post",
+      "name": "Dispatch Indent (Alternative)",
+      "action_method": "IndentDispatch",
+      "http_method": "POST",
+      "route": "api/DispatchedRequest",
+      "business_purpose": "Update indent with dispatch details including invoice and factory remark",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "request_body": {
+        "dto_name": "IndentDispatchDto (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": true
+          },
+          {
+            "name": "InvoiceNo",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "InvoiceDate",
+            "type": "DateTime",
+            "required": true
+          },
+          {
+            "name": "FactoryRemark",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "ims/factory/dispatched-requests:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update indent with dispatch details including invoice and factory remark",
+      "detailed_description": "Update indent with dispatch details including invoice and factory remark. It validates the request, then calls ICommon.getUserByToken, IIndent.GetIndentHeaderByIdAsync, IIndent.SaveChangesAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid indent ID. [when request.Id <= 0]; Invoice number is required. [when string.IsNullOrWhiteSpace(request.InvoiceNo)]",
+        "not_found": "404: Indent not found. [when indent == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update indent with dispatch details including invoice and factory remark",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body IndentDispatchDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/DispatchedRequest"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "dispatched_request_indent_dispatch",
+        "description": "Update indent with dispatch details including invoice and factory remark",
+        "http_method": "POST",
+        "endpoint": "api/DispatchedRequest",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": true,
+            "description": "Id (body)"
+          },
+          "InvoiceNo": {
+            "type": "string",
+            "required": true,
+            "description": "Invoice No (body)"
+          },
+          "InvoiceDate": {
+            "type": "DateTime",
+            "required": true,
+            "description": "Invoice Date (body)"
+          },
+          "FactoryRemark": {
+            "type": "string",
+            "required": false,
+            "description": "Factory Remark (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/DispatchedRequestController.cs",
+        "action_method": "IndentDispatch",
+        "related_dto_files": [
+          "Controllers/DispatchedRequestController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs"
+        ]
+      },
+      "module": "Dispatch Management",
+      "business_logic": {
+        "operation_summary": "Update indent with dispatch details including invoice and factory remark — validates the request, calls ICommon.getUserByToken, IIndent.GetIndentHeaderByIdAsync, IIndent.SaveChangesAsync",
+        "preconditions": "Valid Bearer JWT; request body of type IndentDispatchDto (inline); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets indent.invoiceNo, indent.invoice_date, indent.factory_remark, indent.is_indent_dispatched, indent.dispatch_by, indent.dispatched_date and saves changes",
+        "validations": "Invalid indent ID.; Invoice number is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndent.GetIndentHeaderByIdAsync",
+          "IIndent.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid indent ID.",
+            "when": "request.Id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Invoice number is required.",
+            "when": "string.IsNullOrWhiteSpace(request.InvoiceNo)"
+          },
+          {
+            "returns": 404,
+            "message": "Indent not found.",
+            "when": "indent == null"
+          }
+        ]
+      }
+    }
+  ]
+}

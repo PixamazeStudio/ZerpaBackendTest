@@ -1,0 +1,2301 @@
+{
+  "controller": "WarrantyCardController",
+  "file": "Controllers/WarrantyCardController.cs",
+  "module": "Warranty Management",
+  "base_route": "api/WarrantyCard",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages warranty card records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "acs/warranty-card",
+        "module_code": "acs",
+        "section": "warranty-card",
+        "sub_section": null,
+        "frontend_routes": [
+          "/acs/warranty-card",
+          "/acs/warranty-card/create-warranty-card",
+          "/acs/warranty-card/edit-warranty-card/:id"
+        ],
+        "menu_route_confirmed": true
+      },
+      {
+        "path": "crm/warranty-card",
+        "module_code": "crm",
+        "section": "warranty-card",
+        "sub_section": null,
+        "frontend_routes": [
+          "/crm/warranty-card",
+          "/crm/warranty-card/create-warranty-card",
+          "/crm/warranty-card/edit-warranty-card/:id"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "WarrantyCard"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Coustomer Relationship Management",
+        "section": "Warranty Cards",
+        "sub_section": "Warranty Cards"
+      },
+      {
+        "module": "Customer Relationship Management",
+        "section": "Warranty Cards",
+        "sub_section": "Warranty Cards"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "warranty_card_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/WarrantyCard",
+      "business_purpose": "Retrieve all warranty card records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "\"this_month\""
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "acs/warranty-card:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/warranty-card"
+      ],
+      "short_description": "Retrieve all warranty card records",
+      "detailed_description": "Retrieve all warranty card records. It calls ICommon.getUserByToken, IWarrantyCard.GetWarrantyCardData, IWarrantyCard.GetWarrantyCardActions. Data access uses stored procedure(s): GetWarrantyCard. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all warranty card records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/WarrantyCard",
+          "GET api/WarrantyCard/{id}",
+          "GET api/WarrantyCard/dealer"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "warranty_card_get_all",
+        "description": "Retrieve all warranty card records",
+        "http_method": "GET",
+        "endpoint": "api/WarrantyCard",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "date range (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "status": {
+            "type": "string",
+            "required": false,
+            "description": "status (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/WarrantyCardController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/WarrantyCard_repo.cs",
+          "Interfaces/IWarrantyCard.cs"
+        ]
+      },
+      "module": "Warranty Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all warranty card records — calls ICommon.getUserByToken, IWarrantyCard.GetWarrantyCardData, IWarrantyCard.GetWarrantyCardActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IWarrantyCard.GetWarrantyCardData",
+          "IWarrantyCard.GetWarrantyCardActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WarrantyCard_repo (Repositories/WarrantyCard_repo.cs) via IWarrantyCard"
+        ],
+        "stored_procedures": [
+          "GetWarrantyCard"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "warranty_card_get_warranty_card_by_id",
+      "name": "Get Warranty Card By Id",
+      "action_method": "GetWarrantyCardById",
+      "http_method": "GET",
+      "route": "api/WarrantyCard/{id}",
+      "business_purpose": "Retrieve warranty card by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "acs/warranty-card:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/warranty-card"
+      ],
+      "short_description": "Retrieve warranty card by ID",
+      "detailed_description": "Retrieve warranty card by ID. It validates the request, then calls ICommon.getUserByToken, IWarrantyCard.GetWarrantyCardById, IWarrantyCard.GetWarrantyCardActions, then processes uploaded files. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid scheduler ID is required [when id <= 0]",
+        "not_found": "404: WarrantyCard not found [when warrantyCard == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve warranty card by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/WarrantyCard",
+          "GET api/WarrantyCard/{id}",
+          "GET api/WarrantyCard/dealer"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "warranty_card_get_warranty_card_by_id",
+        "description": "Retrieve warranty card by ID",
+        "http_method": "GET",
+        "endpoint": "api/WarrantyCard/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/WarrantyCardController.cs",
+        "action_method": "GetWarrantyCardById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/WarrantyCard_repo.cs",
+          "Interfaces/IWarrantyCard.cs"
+        ]
+      },
+      "module": "Warranty Management",
+      "business_logic": {
+        "operation_summary": "Retrieve warranty card by ID — validates the request, calls ICommon.getUserByToken, IWarrantyCard.GetWarrantyCardById, IWarrantyCard.GetWarrantyCardActions, processes uploaded files",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid scheduler ID is required",
+        "side_effects": "Handles file upload/storage",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IWarrantyCard.GetWarrantyCardById",
+          "IWarrantyCard.GetWarrantyCardActions",
+          "ICommon.GetDriveFileIdByPath"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WarrantyCard_repo (Repositories/WarrantyCard_repo.cs) via IWarrantyCard"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid scheduler ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "WarrantyCard not found",
+            "when": "warrantyCard == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "warranty_card_delete_warranty_card",
+      "name": "Delete Warranty Card",
+      "action_method": "DeleteWarrantyCard",
+      "http_method": "DELETE",
+      "route": "api/WarrantyCard/{id}",
+      "business_purpose": "Delete warranty card",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "acs/warranty-card:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/warranty-card"
+      ],
+      "short_description": "Delete warranty card",
+      "detailed_description": "Delete warranty card. It validates the request, then calls ICommon.getUserByToken, IWarrantyCard.GetWarrantyCardById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: WarrantyCard: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid lead ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Warranty Card not found. [when existingWarrantyCard == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete warranty card",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/WarrantyCard/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "warranty_card_delete_warranty_card",
+        "description": "Delete warranty card",
+        "http_method": "DELETE",
+        "endpoint": "api/WarrantyCard/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/WarrantyCardController.cs",
+        "action_method": "DeleteWarrantyCard",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/WarrantyCard_repo.cs",
+          "Interfaces/IWarrantyCard.cs"
+        ]
+      },
+      "module": "Warranty Management",
+      "business_logic": {
+        "operation_summary": "Delete warranty card — validates the request, calls ICommon.getUserByToken, IWarrantyCard.GetWarrantyCardById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "WarrantyCard: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "validations": "Valid lead ID is required.",
+        "side_effects": "AuditLog DELETE (Coustomer Relationship Management > Warranty Cards > Warranty Cards); AuditLog DELETE (Customer Relationship Management > Warranty Cards > Warranty Cards)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IWarrantyCard.GetWarrantyCardById",
+          "ICommon.ToJsonString",
+          "IWarrantyCard.DeleteWarrantyCard",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WarrantyCard_repo (Repositories/WarrantyCard_repo.cs) via IWarrantyCard"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid lead ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Warranty Card not found.",
+            "when": "existingWarrantyCard == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "warranty_card_create_warranty_card",
+      "name": "Create Warranty Card",
+      "action_method": "CreateWarrantyCard",
+      "http_method": "POST",
+      "route": "api/WarrantyCard",
+      "business_purpose": "Create warranty card",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateWarrantyCardDto (inline)",
+        "content_type": "multipart/form-data",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "DealerId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "other_dealer_name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "CustomerName",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "NameRequiredInCard",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "ContactNumber",
+            "type": "long",
+            "required": false
+          },
+          {
+            "name": "CustomerAddress",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "CustomerEmail",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "PurchasedDate",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "Remark",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "IsDefault",
+            "type": "bool",
+            "required": false
+          },
+          {
+            "name": "IsBranchApproved",
+            "type": "bool",
+            "required": false
+          },
+          {
+            "name": "IsSubDealer",
+            "type": "bool",
+            "required": false
+          },
+          {
+            "name": "SubdealerName",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "SubdealerNumber",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "SubdealerState",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "SubdealerDistrict",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "DealerName",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "DealerNumber",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "DealerState",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "DealerDistrict",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "File",
+            "type": "IFormFile",
+            "required": false
+          },
+          {
+            "name": "InvoiceDetail",
+            "type": "List<InvoiceDetailsDto>",
+            "required": false
+          },
+          {
+            "name": "WarrantyDetails",
+            "type": "List<WarrantyCardDetailsDto>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "acs/warranty-card:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/warranty-card"
+      ],
+      "short_description": "Create warranty card",
+      "detailed_description": "Create warranty card. It validates the request, then calls ICommon.getUserByToken, IWarrantyCard.GetDealerById, IWarrantyCard.GetUserById, then processes uploaded files. Persists changes to: WarrantyCard: INSERT, ComplaintsFile: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid dealer ID is required. [when request.DealerId <= 0]; Customer name is required. [when string.IsNullOrWhiteSpace(request.CustomerName)]; Valid contact number is required. [when request.ContactNumber <= 0]",
+        "not_found": "404: Dealer not found. [when dealer == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid token. [when currentUser == null]; Unauthorized: Invalid token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create warranty card",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateWarrantyCardDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/WarrantyCard",
+          "GET api/WarrantyCard/dealer",
+          "GET api/WarrantyCard/product"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "warranty_card_create_warranty_card",
+        "description": "Create warranty card",
+        "http_method": "POST",
+        "endpoint": "api/WarrantyCard",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "DealerId": {
+            "type": "int",
+            "required": false,
+            "description": "Dealer Id (body)"
+          },
+          "other_dealer_name": {
+            "type": "string",
+            "required": false,
+            "description": "other dealer name (body)"
+          },
+          "CustomerName": {
+            "type": "string",
+            "required": false,
+            "description": "Customer Name (body)"
+          },
+          "NameRequiredInCard": {
+            "type": "string",
+            "required": false,
+            "description": "Name Required In Card (body)"
+          },
+          "ContactNumber": {
+            "type": "long",
+            "required": false,
+            "description": "Contact Number (body)"
+          },
+          "CustomerAddress": {
+            "type": "string",
+            "required": false,
+            "description": "Customer Address (body)"
+          },
+          "CustomerEmail": {
+            "type": "string",
+            "required": false,
+            "description": "Customer Email (body)"
+          },
+          "PurchasedDate": {
+            "type": "datetime",
+            "required": false,
+            "description": "Purchased Date (body)"
+          },
+          "Remark": {
+            "type": "string",
+            "required": false,
+            "description": "Remark (body)"
+          },
+          "IsDefault": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Default (body)"
+          },
+          "IsBranchApproved": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Branch Approved (body)"
+          },
+          "IsSubDealer": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Sub Dealer (body)"
+          },
+          "SubdealerName": {
+            "type": "string",
+            "required": false,
+            "description": "Subdealer Name (body)"
+          },
+          "SubdealerNumber": {
+            "type": "string",
+            "required": false,
+            "description": "Subdealer Number (body)"
+          },
+          "SubdealerState": {
+            "type": "string",
+            "required": false,
+            "description": "Subdealer State (body)"
+          },
+          "SubdealerDistrict": {
+            "type": "string",
+            "required": false,
+            "description": "Subdealer District (body)"
+          },
+          "DealerName": {
+            "type": "string",
+            "required": false,
+            "description": "Dealer Name (body)"
+          },
+          "DealerNumber": {
+            "type": "string",
+            "required": false,
+            "description": "Dealer Number (body)"
+          },
+          "DealerState": {
+            "type": "string",
+            "required": false,
+            "description": "Dealer State (body)"
+          },
+          "DealerDistrict": {
+            "type": "string",
+            "required": false,
+            "description": "Dealer District (body)"
+          },
+          "File": {
+            "type": "IFormFile",
+            "required": false,
+            "description": "File (body)"
+          },
+          "InvoiceDetail": {
+            "type": "List<InvoiceDetailsDto>",
+            "required": false,
+            "description": "Invoice Detail (body)"
+          },
+          "WarrantyDetails": {
+            "type": "List<WarrantyCardDetailsDto>",
+            "required": false,
+            "description": "Warranty Details (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/WarrantyCardController.cs",
+        "action_method": "CreateWarrantyCard",
+        "related_dto_files": [
+          "Controllers/WarrantyCardController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/WarrantyCard_repo.cs",
+          "Interfaces/IWarrantyCard.cs"
+        ]
+      },
+      "module": "Warranty Management",
+      "business_logic": {
+        "operation_summary": "Create warranty card — validates the request, calls ICommon.getUserByToken, IWarrantyCard.GetDealerById, IWarrantyCard.GetUserById, processes uploaded files",
+        "preconditions": "Valid Bearer JWT; request body of type CreateWarrantyCardDto (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "WarrantyCard: INSERT; ComplaintsFile: INSERT; sets existingInvoice.invoice_no, existingInvoice.purchased_date and saves changes",
+        "validations": "Valid dealer ID is required.; Customer name is required.; Valid contact number is required.",
+        "side_effects": "Handles file upload/storage",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IWarrantyCard.GetDealerById",
+          "IWarrantyCard.GetUserById",
+          "IWarrantyCard.CreateWarrantycardAsync",
+          "IWarrantyCard.SaveChangesAsync",
+          "ICommon.CreateComplaintFilesRange"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WarrantyCard_repo (Repositories/WarrantyCard_repo.cs) via IWarrantyCard"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid dealer ID is required.",
+            "when": "request.DealerId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Customer name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.CustomerName)"
+          },
+          {
+            "returns": 400,
+            "message": "Valid contact number is required.",
+            "when": "request.ContactNumber <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Dealer not found.",
+            "when": "dealer == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "warranty_card_upload_invoice_file",
+      "name": "Upload Invoice File",
+      "action_method": "UploadInvoiceFile",
+      "http_method": "POST",
+      "route": "api/WarrantyCard/upload-invoice",
+      "business_purpose": "Upload invoice file",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UploadInvoiceFileDto (inline)",
+        "content_type": "multipart/form-data",
+        "properties": [
+          {
+            "name": "InvoiceNo",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "PurchasedDate",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "InvoiceFile",
+            "type": "IFormFile",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "crm/warranty-card:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Upload invoice file",
+      "detailed_description": "Upload invoice file. It validates the request, then calls ICommon.getUserByToken. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Bill No is required. [when string.IsNullOrWhiteSpace(request.InvoiceNo)]; Bill PDF file is required. [when request.InvoiceFile == null || request.InvoiceFile.Length == 0]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to upload invoice file",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body UploadInvoiceFileDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/WarrantyCard",
+          "GET api/WarrantyCard/dealer",
+          "GET api/WarrantyCard/product"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "warranty_card_upload_invoice_file",
+        "description": "Upload invoice file",
+        "http_method": "POST",
+        "endpoint": "api/WarrantyCard/upload-invoice",
+        "parameters": {
+          "InvoiceNo": {
+            "type": "string",
+            "required": false,
+            "description": "Invoice No (body)"
+          },
+          "PurchasedDate": {
+            "type": "datetime",
+            "required": false,
+            "description": "Purchased Date (body)"
+          },
+          "InvoiceFile": {
+            "type": "IFormFile",
+            "required": false,
+            "description": "Invoice File (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/WarrantyCardController.cs",
+        "action_method": "UploadInvoiceFile",
+        "related_dto_files": [
+          "Controllers/WarrantyCardController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Warranty Management",
+      "business_logic": {
+        "operation_summary": "Upload invoice file — validates the request, calls ICommon.getUserByToken",
+        "preconditions": "Valid Bearer JWT; request body of type UploadInvoiceFileDto (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "validations": "Bill No is required.; Bill PDF file is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Bill No is required.",
+            "when": "string.IsNullOrWhiteSpace(request.InvoiceNo)"
+          },
+          {
+            "returns": 400,
+            "message": "Bill PDF file is required.",
+            "when": "request.InvoiceFile == null || request.InvoiceFile.Length == 0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "warranty_card_get_dealer",
+      "name": "Get Dealer",
+      "action_method": "GetDealer",
+      "http_method": "GET",
+      "route": "api/WarrantyCard/dealer",
+      "business_purpose": "Retrieve dealer",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "acs/warranty-card:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/warranty-card"
+      ],
+      "short_description": "Retrieve dealer",
+      "detailed_description": "Retrieve dealer. It calls ICommon.getUserByToken, IWarrantyCard.GetDealers. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve dealer",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/WarrantyCard",
+          "GET api/WarrantyCard/{id}",
+          "GET api/WarrantyCard/dealer"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "warranty_card_get_dealer",
+        "description": "Retrieve dealer",
+        "http_method": "GET",
+        "endpoint": "api/WarrantyCard/dealer",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/WarrantyCardController.cs",
+        "action_method": "GetDealer",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/WarrantyCard_repo.cs",
+          "Interfaces/IWarrantyCard.cs"
+        ]
+      },
+      "module": "Warranty Management",
+      "business_logic": {
+        "operation_summary": "Retrieve dealer — calls ICommon.getUserByToken, IWarrantyCard.GetDealers",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IWarrantyCard.GetDealers"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WarrantyCard_repo (Repositories/WarrantyCard_repo.cs) via IWarrantyCard"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "warranty_card_get_product",
+      "name": "Get Product",
+      "action_method": "GetProduct",
+      "http_method": "GET",
+      "route": "api/WarrantyCard/product",
+      "business_purpose": "Retrieve product",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "acs/warranty-card:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/warranty-card"
+      ],
+      "short_description": "Retrieve product",
+      "detailed_description": "Retrieve product. It calls ICommon.getUserByToken, IWarrantyCard.GetProducts. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve product",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/WarrantyCard",
+          "GET api/WarrantyCard/{id}",
+          "GET api/WarrantyCard/dealer"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "warranty_card_get_product",
+        "description": "Retrieve product",
+        "http_method": "GET",
+        "endpoint": "api/WarrantyCard/product",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/WarrantyCardController.cs",
+        "action_method": "GetProduct",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/WarrantyCard_repo.cs",
+          "Interfaces/IWarrantyCard.cs"
+        ]
+      },
+      "module": "Warranty Management",
+      "business_logic": {
+        "operation_summary": "Retrieve product — calls ICommon.getUserByToken, IWarrantyCard.GetProducts",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IWarrantyCard.GetProducts"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WarrantyCard_repo (Repositories/WarrantyCard_repo.cs) via IWarrantyCard"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "warranty_card_update_warranty_card",
+      "name": "Update Warranty Card",
+      "action_method": "UpdateWarrantyCard",
+      "http_method": "PUT",
+      "route": "api/WarrantyCard/{id}",
+      "business_purpose": "Update warranty card",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateWarrantyCardDto (inline)",
+        "content_type": "multipart/form-data",
+        "properties": [
+          {
+            "name": "DealerId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "other_dealer_name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "CustomerName",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "NameRequiredInCard",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "CustomerAddress",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "CustomerEmail",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "ContactNumber",
+            "type": "long",
+            "required": false
+          },
+          {
+            "name": "PurchasedDate",
+            "type": "datetime",
+            "required": false
+          },
+          {
+            "name": "Remark",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "IsDefault",
+            "type": "bool",
+            "required": false
+          },
+          {
+            "name": "IsSubDealer",
+            "type": "bool",
+            "required": false
+          },
+          {
+            "name": "SubdealerName",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "SubdealerNumber",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "SubdealerState",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "SubdealerDistrict",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "InvoiceDetail",
+            "type": "List<InvoiceDetailDto>",
+            "required": false
+          },
+          {
+            "name": "WarrantyDetails",
+            "type": "List<WarrantyDetailDto>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "acs/warranty-card:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "crm/warranty-card"
+      ],
+      "short_description": "Update warranty card",
+      "detailed_description": "Update warranty card. It validates the request, then calls ICommon.getUserByToken, IWarrantyCard.GetWarrantyCardById, IWarrantyCard.GetDealerById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid WarrantyCard ID is required. [when id <= 0]",
+        "not_found": "404: Warranty Card not found. [when warrantyCard == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update warranty card",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "request body UpdateWarrantyCardDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/WarrantyCard/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "warranty_card_update_warranty_card",
+        "description": "Update warranty card",
+        "http_method": "PUT",
+        "endpoint": "api/WarrantyCard/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "DealerId": {
+            "type": "int",
+            "required": false,
+            "description": "Dealer Id (body)"
+          },
+          "other_dealer_name": {
+            "type": "string",
+            "required": false,
+            "description": "other dealer name (body)"
+          },
+          "CustomerName": {
+            "type": "string",
+            "required": false,
+            "description": "Customer Name (body)"
+          },
+          "NameRequiredInCard": {
+            "type": "string",
+            "required": false,
+            "description": "Name Required In Card (body)"
+          },
+          "CustomerAddress": {
+            "type": "string",
+            "required": false,
+            "description": "Customer Address (body)"
+          },
+          "CustomerEmail": {
+            "type": "string",
+            "required": false,
+            "description": "Customer Email (body)"
+          },
+          "ContactNumber": {
+            "type": "long",
+            "required": false,
+            "description": "Contact Number (body)"
+          },
+          "PurchasedDate": {
+            "type": "datetime",
+            "required": false,
+            "description": "Purchased Date (body)"
+          },
+          "Remark": {
+            "type": "string",
+            "required": false,
+            "description": "Remark (body)"
+          },
+          "IsDefault": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Default (body)"
+          },
+          "IsSubDealer": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Sub Dealer (body)"
+          },
+          "SubdealerName": {
+            "type": "string",
+            "required": false,
+            "description": "Subdealer Name (body)"
+          },
+          "SubdealerNumber": {
+            "type": "string",
+            "required": false,
+            "description": "Subdealer Number (body)"
+          },
+          "SubdealerState": {
+            "type": "string",
+            "required": false,
+            "description": "Subdealer State (body)"
+          },
+          "SubdealerDistrict": {
+            "type": "string",
+            "required": false,
+            "description": "Subdealer District (body)"
+          },
+          "InvoiceDetail": {
+            "type": "List<InvoiceDetailDto>",
+            "required": false,
+            "description": "Invoice Detail (body)"
+          },
+          "WarrantyDetails": {
+            "type": "List<WarrantyDetailDto>",
+            "required": false,
+            "description": "Warranty Details (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/WarrantyCardController.cs",
+        "action_method": "UpdateWarrantyCard",
+        "related_dto_files": [
+          "Controllers/WarrantyCardController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/WarrantyCard_repo.cs",
+          "Interfaces/IWarrantyCard.cs"
+        ]
+      },
+      "module": "Warranty Management",
+      "business_logic": {
+        "operation_summary": "Update warranty card — validates the request, calls ICommon.getUserByToken, IWarrantyCard.GetWarrantyCardById, IWarrantyCard.GetDealerById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); request body of type UpdateWarrantyCardDto (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets warrantyCard.customer_name, warrantyCard.name_required_in_card, warrantyCard.contact_number, warrantyCard.customer_address, warrantyCard.customer_email, warrantyCard.dealer and saves changes",
+        "validations": "Valid WarrantyCard ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IWarrantyCard.GetWarrantyCardById",
+          "IWarrantyCard.GetDealerById",
+          "IWarrantyCard.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WarrantyCard_repo (Repositories/WarrantyCard_repo.cs) via IWarrantyCard"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid WarrantyCard ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Warranty Card not found.",
+            "when": "warrantyCard == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "warranty_card_warranty_card_approval",
+      "name": "Warranty Card Approval",
+      "action_method": "WarrantyCardApproval",
+      "http_method": "POST",
+      "route": "api/WarrantyCard/approve-warranty-card",
+      "business_purpose": "Handle warranty card approval",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "WarrantyCardApprovalRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "IsApproved",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "acs/warranty-card",
+        "crm/warranty-card"
+      ],
+      "short_description": "Handle warranty card approval",
+      "detailed_description": "Handle warranty card approval. It calls ICommon.getUserByToken, IWarrantyCard.GetWarrantyCardById, IWarrantyCard.GetUserById. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Warranty Card not found [when warrantyCard == null]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle warranty card approval",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body WarrantyCardApprovalRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/WarrantyCard",
+          "GET api/WarrantyCard/dealer",
+          "GET api/WarrantyCard/product"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "warranty_card_warranty_card_approval",
+        "description": "Handle warranty card approval",
+        "http_method": "POST",
+        "endpoint": "api/WarrantyCard/approve-warranty-card",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "IsApproved": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Approved (body)"
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Approves the record and advances its workflow"
+      },
+      "source": {
+        "controller_file": "Controllers/WarrantyCardController.cs",
+        "action_method": "WarrantyCardApproval",
+        "related_dto_files": [
+          "Controllers/WarrantyCardController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/WarrantyCard_repo.cs",
+          "Interfaces/IWarrantyCard.cs"
+        ]
+      },
+      "module": "Warranty Management",
+      "business_logic": {
+        "operation_summary": "Handle warranty card approval — calls ICommon.getUserByToken, IWarrantyCard.GetWarrantyCardById, IWarrantyCard.GetUserById",
+        "preconditions": "Valid Bearer JWT; request body of type WarrantyCardApprovalRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets warrantyCard.is_branch_approved, warrantyCard.branch_operated_by, warrantyCard.branch_operated_date, warrantyCard.status, warrantyCard.modified_by, warrantyCard.modified_date and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IWarrantyCard.GetWarrantyCardById",
+          "IWarrantyCard.GetUserById",
+          "IWarrantyCard.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WarrantyCard_repo (Repositories/WarrantyCard_repo.cs) via IWarrantyCard"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Warranty Card not found",
+            "when": "warrantyCard == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "warranty_card_warranty_card_reject",
+      "name": "Warranty Card Reject",
+      "action_method": "WarrantyCardReject",
+      "http_method": "POST",
+      "route": "api/WarrantyCard/reject-warranty-card",
+      "business_purpose": "Handle warranty card reject",
+      "data_effect": "REJECTION",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "WarrantyCardRejectRequest (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "IsRejected",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "REJECTION",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "reject"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "acs/warranty-card",
+        "crm/warranty-card"
+      ],
+      "short_description": "Handle warranty card reject",
+      "detailed_description": "Handle warranty card reject. It calls ICommon.getUserByToken, IWarrantyCard.GetWarrantyCardById, IWarrantyCard.GetUserById. Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Warranty Card not found [when warrantyCard == null]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle warranty card reject",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body WarrantyCardRejectRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/WarrantyCard",
+          "GET api/WarrantyCard/dealer",
+          "GET api/WarrantyCard/product"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "warranty_card_warranty_card_reject",
+        "description": "Handle warranty card reject",
+        "http_method": "POST",
+        "endpoint": "api/WarrantyCard/reject-warranty-card",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "IsRejected": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Rejected (body)"
+          }
+        },
+        "operation_type": "REJECTION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Rejects the record"
+      },
+      "source": {
+        "controller_file": "Controllers/WarrantyCardController.cs",
+        "action_method": "WarrantyCardReject",
+        "related_dto_files": [
+          "Controllers/WarrantyCardController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/WarrantyCard_repo.cs",
+          "Interfaces/IWarrantyCard.cs"
+        ]
+      },
+      "module": "Warranty Management",
+      "business_logic": {
+        "operation_summary": "Handle warranty card reject — calls ICommon.getUserByToken, IWarrantyCard.GetWarrantyCardById, IWarrantyCard.GetUserById",
+        "preconditions": "Valid Bearer JWT; request body of type WarrantyCardRejectRequest (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets warrantyCard.is_branch_rejected, warrantyCard.branch_operated_by, warrantyCard.branch_operated_date, warrantyCard.status, warrantyCard.modified_by, warrantyCard.modified_date and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IWarrantyCard.GetWarrantyCardById",
+          "IWarrantyCard.GetUserById",
+          "IWarrantyCard.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WarrantyCard_repo (Repositories/WarrantyCard_repo.cs) via IWarrantyCard"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Warranty Card not found",
+            "when": "warrantyCard == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "warranty_card_approve_invoices_branch",
+      "name": "Approve Invoices Branch",
+      "action_method": "ApproveInvoicesBranch",
+      "http_method": "POST",
+      "route": "api/WarrantyCard/branch/approve-invoices",
+      "business_purpose": "Approve invoices branch",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "ApproveBranchInvoiceRequest (inline)",
+        "properties": [
+          {
+            "name": "InvoiceIds",
+            "type": "List<int>",
+            "required": false
+          },
+          {
+            "name": "WarrantyId",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "acs/warranty-card",
+        "crm/warranty-card"
+      ],
+      "short_description": "Approve invoices branch",
+      "detailed_description": "Approve invoices branch. It validates the request, then calls ICommon.getUserByToken, IWarrantyCard.GetInvoiceDetailsByIdAsync, IWarrantyCard.GetUserById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: No invoices provided [when request.InvoiceIds == null || !request.InvoiceIds.Any()]",
+        "not_found": "404: Warranty Card not found [when warrantyCard == null]",
+        "unauthorized": "401/403: Unauthorized request [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to approve invoices branch",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body ApproveBranchInvoiceRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/WarrantyCard",
+          "GET api/WarrantyCard/dealer",
+          "GET api/WarrantyCard/product"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "warranty_card_approve_invoices_branch",
+        "description": "Approve invoices branch",
+        "http_method": "POST",
+        "endpoint": "api/WarrantyCard/branch/approve-invoices",
+        "parameters": {
+          "InvoiceIds": {
+            "type": "List<int>",
+            "required": false,
+            "description": "Invoice Ids (body)"
+          },
+          "WarrantyId": {
+            "type": "int",
+            "required": false,
+            "description": "Warranty Id (body)"
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Approves the record and advances its workflow"
+      },
+      "source": {
+        "controller_file": "Controllers/WarrantyCardController.cs",
+        "action_method": "ApproveInvoicesBranch",
+        "related_dto_files": [
+          "Controllers/WarrantyCardController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/WarrantyCard_repo.cs",
+          "Interfaces/IWarrantyCard.cs"
+        ]
+      },
+      "module": "Warranty Management",
+      "business_logic": {
+        "operation_summary": "Approve invoices branch — validates the request, calls ICommon.getUserByToken, IWarrantyCard.GetInvoiceDetailsByIdAsync, IWarrantyCard.GetUserById",
+        "preconditions": "Valid Bearer JWT; request body of type ApproveBranchInvoiceRequest (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets invoice.is_branch_approved, invoice.is_branch_rejected, invoice.branch_operated_date, invoice.branch_operated_by, warrantyCard.is_branch_approved, warrantyCard.status and saves changes",
+        "validations": "No invoices provided",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IWarrantyCard.GetInvoiceDetailsByIdAsync",
+          "IWarrantyCard.GetUserById",
+          "IWarrantyCard.GetWarrantyCardById",
+          "IWarrantyCard.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WarrantyCard_repo (Repositories/WarrantyCard_repo.cs) via IWarrantyCard"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized request",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "No invoices provided",
+            "when": "request.InvoiceIds == null || !request.InvoiceIds.Any()"
+          },
+          {
+            "returns": 404,
+            "message": "Warranty Card not found",
+            "when": "warrantyCard == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "warranty_card_reject_invoices_branch",
+      "name": "Reject Invoices Branch",
+      "action_method": "RejectInvoicesBranch",
+      "http_method": "POST",
+      "route": "api/WarrantyCard/branch/reject-invoices",
+      "business_purpose": "Reject invoices branch",
+      "data_effect": "REJECTION",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "BranchInvoiceRejectRequest (inline)",
+        "properties": [
+          {
+            "name": "InvoiceIds",
+            "type": "List<int>",
+            "required": false
+          },
+          {
+            "name": "WarrantyId",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "REJECTION",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "reject"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "acs/warranty-card",
+        "crm/warranty-card"
+      ],
+      "short_description": "Reject invoices branch",
+      "detailed_description": "Reject invoices branch. It validates the request, then calls ICommon.getUserByToken, IWarrantyCard.GetInvoiceDetailsByIdAsync, IWarrantyCard.GetWarrantyCardById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: No invoice IDs provided [when request.InvoiceIds == null || request.InvoiceIds.Count == 0]",
+        "not_found": "404: Warranty card not found [when warrantyCard == null]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to reject invoices branch",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body BranchInvoiceRejectRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/WarrantyCard",
+          "GET api/WarrantyCard/dealer",
+          "GET api/WarrantyCard/product"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "warranty_card_reject_invoices_branch",
+        "description": "Reject invoices branch",
+        "http_method": "POST",
+        "endpoint": "api/WarrantyCard/branch/reject-invoices",
+        "parameters": {
+          "InvoiceIds": {
+            "type": "List<int>",
+            "required": false,
+            "description": "Invoice Ids (body)"
+          },
+          "WarrantyId": {
+            "type": "int",
+            "required": false,
+            "description": "Warranty Id (body)"
+          }
+        },
+        "operation_type": "REJECTION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Rejects the record"
+      },
+      "source": {
+        "controller_file": "Controllers/WarrantyCardController.cs",
+        "action_method": "RejectInvoicesBranch",
+        "related_dto_files": [
+          "Controllers/WarrantyCardController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/WarrantyCard_repo.cs",
+          "Interfaces/IWarrantyCard.cs"
+        ]
+      },
+      "module": "Warranty Management",
+      "business_logic": {
+        "operation_summary": "Reject invoices branch — validates the request, calls ICommon.getUserByToken, IWarrantyCard.GetInvoiceDetailsByIdAsync, IWarrantyCard.GetWarrantyCardById",
+        "preconditions": "Valid Bearer JWT; request body of type BranchInvoiceRejectRequest (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets invoice.is_branch_rejected, invoice.is_branch_approved, invoice.branch_operated_date, invoice.branch_operated_by, warrantyCard.is_branch_rejected, warrantyCard.status and saves changes",
+        "validations": "No invoice IDs provided",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IWarrantyCard.GetInvoiceDetailsByIdAsync",
+          "IWarrantyCard.GetWarrantyCardById",
+          "IWarrantyCard.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WarrantyCard_repo (Repositories/WarrantyCard_repo.cs) via IWarrantyCard"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "No invoice IDs provided",
+            "when": "request.InvoiceIds == null || request.InvoiceIds.Count == 0"
+          },
+          {
+            "returns": 404,
+            "message": "Warranty card not found",
+            "when": "warrantyCard == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "warranty_card_revoke_invoices_branch",
+      "name": "Revoke Invoices Branch",
+      "action_method": "RevokeInvoicesBranch",
+      "http_method": "POST",
+      "route": "api/WarrantyCard/RevokeAllInvoices",
+      "business_purpose": "Revoke invoices branch",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "RevokeInvoicesRequest (inline)",
+        "properties": [
+          {
+            "name": "WarrantyId",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "ambiguous: controller is used by several menus and no frontend call matches this endpoint",
+      "candidate_menus": [
+        "acs/warranty-card",
+        "crm/warranty-card"
+      ],
+      "short_description": "Revoke invoices branch",
+      "detailed_description": "Revoke invoices branch. It validates the request, then calls ICommon.getUserByToken, IWarrantyCard.GetWarrantyCardById, IWarrantyCard.GetInvoiceDetailsByIdAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: No invoices found for this warranty card [when invoiceIds == null || invoiceIds.Count == 0]",
+        "not_found": "404: Warranty card not found [when warrantyCard == null]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to revoke invoices branch",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body RevokeInvoicesRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/WarrantyCard",
+          "GET api/WarrantyCard/dealer",
+          "GET api/WarrantyCard/product"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "warranty_card_revoke_invoices_branch",
+        "description": "Revoke invoices branch",
+        "http_method": "POST",
+        "endpoint": "api/WarrantyCard/RevokeAllInvoices",
+        "parameters": {
+          "WarrantyId": {
+            "type": "int",
+            "required": false,
+            "description": "Warranty Id (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/WarrantyCardController.cs",
+        "action_method": "RevokeInvoicesBranch",
+        "related_dto_files": [
+          "Controllers/WarrantyCardController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/WarrantyCard_repo.cs",
+          "Interfaces/IWarrantyCard.cs"
+        ]
+      },
+      "module": "Warranty Management",
+      "business_logic": {
+        "operation_summary": "Revoke invoices branch — validates the request, calls ICommon.getUserByToken, IWarrantyCard.GetWarrantyCardById, IWarrantyCard.GetInvoiceDetailsByIdAsync",
+        "preconditions": "Valid Bearer JWT; request body of type RevokeInvoicesRequest (inline); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets warrantyCard.is_branch_rejected, warrantyCard.is_branch_approved, warrantyCard.status, warrantyCard.branch_operated_by, warrantyCard.branch_operated_date, invoice.is_branch_rejected and saves changes",
+        "validations": "No invoices found for this warranty card",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IWarrantyCard.GetWarrantyCardById",
+          "IWarrantyCard.GetInvoiceDetailsByIdAsync",
+          "IWarrantyCard.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "WarrantyCard_repo (Repositories/WarrantyCard_repo.cs) via IWarrantyCard"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Warranty card not found",
+            "when": "warrantyCard == null"
+          },
+          {
+            "returns": 400,
+            "message": "No invoices found for this warranty card",
+            "when": "invoiceIds == null || invoiceIds.Count == 0"
+          }
+        ]
+      }
+    }
+  ]
+}

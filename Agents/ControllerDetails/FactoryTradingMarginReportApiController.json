@@ -1,0 +1,233 @@
+{
+  "controller": "FactoryTradingMarginReportApiController",
+  "file": "Controllers/FactoryTradingMarginApiController.cs",
+  "base_route": "api/FactoryTradingMarginReportApi",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "rpt/factory-reports/factory-trading-marginreport",
+        "module_code": "rpt",
+        "section": "factory-reports",
+        "sub_section": "factory-trading-marginreport",
+        "frontend_routes": [
+          "/rpt/factory-reports/factory-trading-marginreport"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "FactoryTradingMarginReport"
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "ftmr_001",
+      "name": "GetAll",
+      "http_method": "GET",
+      "route": "api/FactoryTradingMarginReportApi",
+      "business_purpose": "Retrieve factory trading margin report with filters for region, branch, dealer, product, factory and date range. Returns summary cards and paginated data.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "region",
+          "type": "int?",
+          "required": false
+        },
+        {
+          "name": "branch",
+          "type": "int?",
+          "required": false
+        },
+        {
+          "name": "dealer",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "product",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "factory",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "inputtext",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "fromdate",
+          "type": "DateTime?",
+          "required": false
+        },
+        {
+          "name": "todate",
+          "type": "DateTime?",
+          "required": false
+        },
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "this_month"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": 10
+        },
+        {
+          "name": "page",
+          "type": "int",
+          "required": false,
+          "default": 1
+        }
+      ],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "TradingMarginReportResponse"
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "Retrieves trading margin report with dynamic date ranges (this_month, last_month, last_60_days, last_180_days). Returns cards (total orders, discounts, factory amount, margin) and paginated data with filter options.",
+        "preconditions": "Valid token. User exists.",
+        "validations": "Token validation from Authorization header.",
+        "side_effects": "Fetches filter options (regions, branches, dealers, products, factories).",
+        "calls_services": [
+          "IFactoryTradingMarginReportApi",
+          "ICommon"
+        ],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [
+          "GetFactoryTradingMarginReport"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": null,
+            "when": "currentUser == null"
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "notes": "Read-only operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FactoryTradingMarginApiController.cs",
+        "action_method": "GetAll"
+      },
+      "required_permission": "rpt/factory-reports/factory-trading-marginreport:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve factory trading margin report with filters for region, branch, dealer, product, factory and date range. Returns summary cards and paginated data.",
+      "detailed_description": "Retrieve factory trading margin report with filters for region, branch, dealer, product, factory and date range. Returns summary cards and paginated data. It calls ICommon.getUserByToken, IFactoryTradingMarginReportApi.GetFactoryTradingMarginReport, IFactoryTradingMarginReportApi.GetAllRegions. Data access uses stored procedure(s): GetFactoryTradingMarginReport. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: (no message) [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve factory trading margin report with filters for region, branch, dealer, product, factory and date range. returns summary cards and paginated data.",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/FactoryTradingMarginReportApi"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "factory_trading_margin_report_api_get_all",
+        "description": "Retrieve factory trading margin report with filters for region, branch, dealer, product, factory and date range. Returns summary cards and paginated data.",
+        "http_method": "GET",
+        "endpoint": "api/FactoryTradingMarginReportApi",
+        "parameters": {
+          "region": {
+            "type": "int?",
+            "required": false,
+            "description": "region (query)"
+          },
+          "branch": {
+            "type": "int?",
+            "required": false,
+            "description": "branch (query)"
+          },
+          "dealer": {
+            "type": "string",
+            "required": false,
+            "description": "dealer (query)"
+          },
+          "product": {
+            "type": "string",
+            "required": false,
+            "description": "product (query)"
+          },
+          "factory": {
+            "type": "string",
+            "required": false,
+            "description": "factory (query)"
+          },
+          "inputtext": {
+            "type": "string",
+            "required": false,
+            "description": "inputtext (query)"
+          },
+          "fromdate": {
+            "type": "DateTime?",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "DateTime?",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "date range (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page": {
+            "type": "int",
+            "required": false,
+            "description": "page (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    }
+  ]
+}

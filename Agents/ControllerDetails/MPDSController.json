@@ -1,0 +1,1478 @@
+{
+  "controller": "MPDSController",
+  "file": "Controllers/MPDSController.cs",
+  "module": "Planning and Visit Management",
+  "base_route": "api/MPDS",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages MPDS records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "planner/mpds",
+        "module_code": "planner",
+        "section": "mpds",
+        "sub_section": null,
+        "frontend_routes": [
+          "/planner/mpds",
+          "/planner/mpds/view-mpds/:id"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "mpds_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/MPDS",
+      "business_purpose": "Retrieve all MPDS records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        },
+        {
+          "name": "userId",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        },
+        {
+          "name": "financialYearId",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/mpds:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all MPDS records",
+      "detailed_description": "Retrieve all MPDS records. It calls ICommon.getUserByToken, IMPDS.GetMPDSData, IMPDS.GetMPDSActions. Data access uses stored procedure(s): GetMPDSList, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all MPDS records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/MPDS",
+          "GET api/MPDS/{id}",
+          "GET api/MPDS/masters"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "mpds_get_all",
+        "description": "Retrieve all MPDS records",
+        "http_method": "GET",
+        "endpoint": "api/MPDS",
+        "parameters": {
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          },
+          "userId": {
+            "type": "int",
+            "required": false,
+            "description": "user Id (query)"
+          },
+          "financialYearId": {
+            "type": "int",
+            "required": false,
+            "description": "financial Year Id (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/MPDSController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/MPDS_repo.cs",
+          "Interfaces/IMPDS.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all MPDS records — calls ICommon.getUserByToken, IMPDS.GetMPDSData, IMPDS.GetMPDSActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMPDS.GetMPDSData",
+          "IMPDS.GetMPDSActions",
+          "ICommon.GetPagination",
+          "ICommon.GetAllUsersByCurrentUser",
+          "IMPDS.GetAllFinancialYearsAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MPDS_repo (Repositories/MPDS_repo.cs) via IMPDS"
+        ],
+        "stored_procedures": [
+          "GetMPDSList",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mpds_get_by_id",
+      "name": "Get By Id",
+      "action_method": "GetById",
+      "http_method": "GET",
+      "route": "api/MPDS/{id}",
+      "business_purpose": "Retrieve a MPDS record by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/mpds:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve a MPDS record by ID",
+      "detailed_description": "Retrieve a MPDS record by ID. It validates the request, then calls ICommon.getUserByToken, IMPDS.GetMPDSHeaderByIdAsync, IMPDS.GetMPDSActions. Data access uses stored procedure(s): GetSectionActions. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid MPDS ID is required. [when id <= 0]",
+        "not_found": "404: MPDS not found. [when mpds == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve a MPDS record by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/MPDS",
+          "GET api/MPDS/{id}",
+          "GET api/MPDS/masters"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "mpds_get_by_id",
+        "description": "Retrieve a MPDS record by ID",
+        "http_method": "GET",
+        "endpoint": "api/MPDS/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/MPDSController.cs",
+        "action_method": "GetById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/MPDS_repo.cs",
+          "Interfaces/IMPDS.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve a MPDS record by ID — validates the request, calls ICommon.getUserByToken, IMPDS.GetMPDSHeaderByIdAsync, IMPDS.GetMPDSActions",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid MPDS ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMPDS.GetMPDSHeaderByIdAsync",
+          "IMPDS.GetMPDSActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MPDS_repo (Repositories/MPDS_repo.cs) via IMPDS"
+        ],
+        "stored_procedures": [
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid MPDS ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "MPDS not found.",
+            "when": "mpds == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mpds_get_masters",
+      "name": "Get Masters",
+      "action_method": "GetMasters",
+      "http_method": "GET",
+      "route": "api/MPDS/masters",
+      "business_purpose": "Retrieve masters",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/mpds:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve masters",
+      "detailed_description": "Retrieve masters. It calls IMPDS.GetGoalMastersAsync, IMPDS.GetAllFinancialYearsAsync, IMPDS.GetAllUsersAsync. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve masters",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/MPDS",
+          "GET api/MPDS/{id}",
+          "GET api/MPDS/masters"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "mpds_get_masters",
+        "description": "Retrieve masters",
+        "http_method": "GET",
+        "endpoint": "api/MPDS/masters",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/MPDSController.cs",
+        "action_method": "GetMasters",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/MPDS_repo.cs",
+          "Interfaces/IMPDS.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve masters — calls IMPDS.GetGoalMastersAsync, IMPDS.GetAllFinancialYearsAsync, IMPDS.GetAllUsersAsync",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IMPDS.GetGoalMastersAsync",
+          "IMPDS.GetAllFinancialYearsAsync",
+          "IMPDS.GetAllUsersAsync"
+        ],
+        "calls_repositories": [
+          "MPDS_repo (Repositories/MPDS_repo.cs) via IMPDS"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "mpds_create_data",
+      "name": "Create Data",
+      "action_method": "CreateData",
+      "http_method": "POST",
+      "route": "api/MPDS",
+      "business_purpose": "Create data",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateMPDSDto",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "UserId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "YearId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Remark",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "GoalTargets",
+            "type": "List<GoalTargetDto>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "planner/mpds:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create data",
+      "detailed_description": "Create data. It validates the request, then calls ICommon.getUserByToken, ICommon.GetUserById, IMPDS.GetFinancialYearByIdAsync. Persists changes to: MPDSHeader: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid User ID is required. [when request.UserId <= 0]; Valid Financial Year ID is required. [when request.YearId <= 0]; Selected financial year was not found. [when financialYear == null]",
+        "not_found": "404: User not found. [when selectedUser == null]; MPDS record not found. [when mpdsHeader == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]; Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create data",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateMPDSDto"
+        ],
+        "follow_up_apis": [
+          "GET api/MPDS",
+          "GET api/MPDS/masters",
+          "GET api/MPDS/goals"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "mpds_create_data",
+        "description": "Create data",
+        "http_method": "POST",
+        "endpoint": "api/MPDS",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "UserId": {
+            "type": "int",
+            "required": false,
+            "description": "User Id (body)"
+          },
+          "YearId": {
+            "type": "int",
+            "required": false,
+            "description": "Year Id (body)"
+          },
+          "Remark": {
+            "type": "string",
+            "required": false,
+            "description": "Remark (body)"
+          },
+          "GoalTargets": {
+            "type": "List<GoalTargetDto>",
+            "required": false,
+            "description": "Goal Targets (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/MPDSController.cs",
+        "action_method": "CreateData",
+        "related_dto_files": [
+          "DTOs/Request/MPDSCreateDto.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/MPDS_repo.cs",
+          "Interfaces/IMPDS.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Create data — validates the request, calls ICommon.getUserByToken, ICommon.GetUserById, IMPDS.GetFinancialYearByIdAsync",
+        "preconditions": "Valid Bearer JWT; request body of type CreateMPDSDto; passes 5 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "MPDSHeader: INSERT",
+        "validations": "Valid User ID is required.; Valid Financial Year ID is required.; Selected financial year was not found.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICommon.GetUserById",
+          "IMPDS.GetFinancialYearByIdAsync",
+          "IMPDS.GetGoalMastersByRoleLevelAsync",
+          "IMPDS.GetMPDSHeaderByIdAsync",
+          "IMPDS.CreateMPDSHeaderAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MPDS_repo (Repositories/MPDS_repo.cs) via IMPDS"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid User ID is required.",
+            "when": "request.UserId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Financial Year ID is required.",
+            "when": "request.YearId <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "User not found.",
+            "when": "selectedUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Selected financial year was not found.",
+            "when": "financialYear == null"
+          },
+          {
+            "returns": 404,
+            "message": "MPDS record not found.",
+            "when": "mpdsHeader == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mpds_update_data",
+      "name": "Update Data",
+      "action_method": "UpdateData",
+      "http_method": "PUT",
+      "route": "api/MPDS/{id}",
+      "business_purpose": "Update data",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateMPDSDto",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "UserId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "YearId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Remark",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "GoalTargets",
+            "type": "List<GoalTargetDto>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "planner/mpds:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update data",
+      "detailed_description": "Update data. It validates the request, then calls ICommon.getUserByToken, IMPDS.GetMPDSHeaderByIdAsync, ICommon.GetUserById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid User ID is required. [when request.UserId <= 0]; Valid Financial Year ID is required. [when request.YearId <= 0]",
+        "not_found": "404: MPDS record not found. [when mpdsHeader == null]; User not found. [when selectedUser == null]; Selected financial year was not found. [when financialYear == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update data",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "request body CreateMPDSDto"
+        ],
+        "follow_up_apis": [
+          "GET api/MPDS/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "mpds_update_data",
+        "description": "Update data",
+        "http_method": "PUT",
+        "endpoint": "api/MPDS/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "UserId": {
+            "type": "int",
+            "required": false,
+            "description": "User Id (body)"
+          },
+          "YearId": {
+            "type": "int",
+            "required": false,
+            "description": "Year Id (body)"
+          },
+          "Remark": {
+            "type": "string",
+            "required": false,
+            "description": "Remark (body)"
+          },
+          "GoalTargets": {
+            "type": "List<GoalTargetDto>",
+            "required": false,
+            "description": "Goal Targets (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/MPDSController.cs",
+        "action_method": "UpdateData",
+        "related_dto_files": [
+          "DTOs/Request/MPDSCreateDto.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/MPDS_repo.cs",
+          "Interfaces/IMPDS.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Update data — validates the request, calls ICommon.getUserByToken, IMPDS.GetMPDSHeaderByIdAsync, ICommon.GetUserById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); request body of type CreateMPDSDto; passes 5 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets mpdsHeader.user, mpdsHeader.financial_year, mpdsHeader.Remark, mpdsHeader.modified_by, mpdsHeader.modified_date, mpdsHeader.mpdsdetails and saves changes",
+        "validations": "Valid User ID is required.; Valid Financial Year ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMPDS.GetMPDSHeaderByIdAsync",
+          "ICommon.GetUserById",
+          "IMPDS.GetFinancialYearByIdAsync",
+          "IMPDS.GetGoalMastersByRoleLevelAsync",
+          "IMPDS.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MPDS_repo (Repositories/MPDS_repo.cs) via IMPDS"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid User ID is required.",
+            "when": "request.UserId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Financial Year ID is required.",
+            "when": "request.YearId <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "MPDS record not found.",
+            "when": "mpdsHeader == null"
+          },
+          {
+            "returns": 404,
+            "message": "User not found.",
+            "when": "selectedUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Selected financial year was not found.",
+            "when": "financialYear == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mpds_delete",
+      "name": "Delete",
+      "action_method": "Delete",
+      "http_method": "DELETE",
+      "route": "api/MPDS/{id}",
+      "business_purpose": "Delete a MPDS record",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "planner/mpds:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete a MPDS record",
+      "detailed_description": "Delete a MPDS record. It calls ICommon.getUserByToken, IMPDS.DeleteMPDSAsync. Persists changes to: soft delete (is_deleted flag). Possible responses: 200, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Not found [when !result]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete a MPDS record",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/MPDS/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "mpds_delete",
+        "description": "Delete a MPDS record",
+        "http_method": "DELETE",
+        "endpoint": "api/MPDS/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/MPDSController.cs",
+        "action_method": "Delete",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/MPDS_repo.cs",
+          "Interfaces/IMPDS.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Delete a MPDS record — calls ICommon.getUserByToken, IMPDS.DeleteMPDSAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "soft delete (is_deleted flag)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMPDS.DeleteMPDSAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MPDS_repo (Repositories/MPDS_repo.cs) via IMPDS"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 404,
+            "message": "Not found",
+            "when": "!result"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mpds_approve_mpds",
+      "name": "Approve MPDS",
+      "action_method": "ApproveMPDS",
+      "http_method": "POST",
+      "route": "api/MPDS/approve/{id}",
+      "business_purpose": "Approve MPDS",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [
+        {
+          "name": "remark",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "planner/mpds:approve",
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Approve MPDS",
+      "detailed_description": "Approve MPDS. It validates the request, then calls ICommon.getUserByToken, IMPDS.GetMPDSHeaderByIdAsync, IMPDS.SaveChangesAsync. Possible responses: 200, 400, 401, 404.",
+      "error_handling": {
+        "validation_errors": "400: message built at runtime",
+        "not_found": "404: MPDS not found [when mpds == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to approve MPDS",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/MPDS/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "mpds_approve_mpds",
+        "description": "Approve MPDS",
+        "http_method": "POST",
+        "endpoint": "api/MPDS/approve/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "remark": {
+            "type": "string",
+            "required": false,
+            "description": "remark (query)"
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Approves the record and advances its workflow"
+      },
+      "source": {
+        "controller_file": "Controllers/MPDSController.cs",
+        "action_method": "ApproveMPDS",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/MPDS_repo.cs",
+          "Interfaces/IMPDS.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Approve MPDS — validates the request, calls ICommon.getUserByToken, IMPDS.GetMPDSHeaderByIdAsync, IMPDS.SaveChangesAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets mpds.is_approved, mpds.is_rejected, mpds.operated_by, mpds.operated_date, mpds.modified_by, mpds.modified_date and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMPDS.GetMPDSHeaderByIdAsync",
+          "IMPDS.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MPDS_repo (Repositories/MPDS_repo.cs) via IMPDS"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "MPDS not found",
+            "when": "mpds == null"
+          },
+          {
+            "returns": 400,
+            "message": "message built at runtime",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "mpds_reject_mpds",
+      "name": "Reject MPDS",
+      "action_method": "RejectMPDS",
+      "http_method": "POST",
+      "route": "api/MPDS/reject/{id}",
+      "business_purpose": "Reject MPDS",
+      "data_effect": "REJECTION",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [
+        {
+          "name": "remark",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "REJECTION",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "planner/mpds:reject",
+      "permission_flags": [
+        "reject"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Reject MPDS",
+      "detailed_description": "Reject MPDS. It validates the request, then calls ICommon.getUserByToken, IMPDS.GetMPDSHeaderByIdAsync, IMPDS.SaveChangesAsync. Possible responses: 200, 400, 401, 404.",
+      "error_handling": {
+        "validation_errors": "400: message built at runtime",
+        "not_found": "404: MPDS not found [when mpds == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to reject MPDS",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/MPDS/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "mpds_reject_mpds",
+        "description": "Reject MPDS",
+        "http_method": "POST",
+        "endpoint": "api/MPDS/reject/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "remark": {
+            "type": "string",
+            "required": false,
+            "description": "remark (query)"
+          }
+        },
+        "operation_type": "REJECTION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Rejects the record"
+      },
+      "source": {
+        "controller_file": "Controllers/MPDSController.cs",
+        "action_method": "RejectMPDS",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/MPDS_repo.cs",
+          "Interfaces/IMPDS.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Reject MPDS — validates the request, calls ICommon.getUserByToken, IMPDS.GetMPDSHeaderByIdAsync, IMPDS.SaveChangesAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets mpds.is_rejected, mpds.is_approved, mpds.operated_by, mpds.operated_date, mpds.modified_by, mpds.modified_date and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMPDS.GetMPDSHeaderByIdAsync",
+          "IMPDS.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MPDS_repo (Repositories/MPDS_repo.cs) via IMPDS"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "MPDS not found",
+            "when": "mpds == null"
+          },
+          {
+            "returns": 400,
+            "message": "message built at runtime",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "mpds_revoke_mpds",
+      "name": "Revoke MPDS",
+      "action_method": "RevokeMPDS",
+      "http_method": "POST",
+      "route": "api/MPDS/revoke/{id}",
+      "business_purpose": "Revoke MPDS",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [
+        {
+          "name": "remark",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "planner/mpds:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Revoke MPDS",
+      "detailed_description": "Revoke MPDS. It validates the request, then calls ICommon.getUserByToken, IMPDS.GetMPDSHeaderByIdAsync, IMPDS.SaveChangesAsync. Possible responses: 200, 400, 401, 404.",
+      "error_handling": {
+        "validation_errors": "400: MPDS has no approval or rejection to revoke [when !mpds.is_approved && !mpds.is_rejected]; message built at runtime",
+        "not_found": "404: MPDS not found [when mpds == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to revoke MPDS",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/MPDS/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "mpds_revoke_mpds",
+        "description": "Revoke MPDS",
+        "http_method": "POST",
+        "endpoint": "api/MPDS/revoke/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "remark": {
+            "type": "string",
+            "required": false,
+            "description": "remark (query)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/MPDSController.cs",
+        "action_method": "RevokeMPDS",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/MPDS_repo.cs",
+          "Interfaces/IMPDS.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Revoke MPDS — validates the request, calls ICommon.getUserByToken, IMPDS.GetMPDSHeaderByIdAsync, IMPDS.SaveChangesAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets mpds.is_approved, mpds.is_rejected, mpds.operated_by, mpds.operated_date, mpds.modified_by, mpds.modified_date and saves changes",
+        "validations": "MPDS has no approval or rejection to revoke",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMPDS.GetMPDSHeaderByIdAsync",
+          "IMPDS.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MPDS_repo (Repositories/MPDS_repo.cs) via IMPDS"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "MPDS not found",
+            "when": "mpds == null"
+          },
+          {
+            "returns": 400,
+            "message": "MPDS has no approval or rejection to revoke",
+            "when": "!mpds.is_approved && !mpds.is_rejected"
+          },
+          {
+            "returns": 400,
+            "message": "message built at runtime",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "mpds_get_goals",
+      "name": "Get Goals",
+      "action_method": "GetGoals",
+      "http_method": "GET",
+      "route": "api/MPDS/goals",
+      "business_purpose": "Retrieve goals",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "userId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "planner/mpds:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve goals",
+      "detailed_description": "Retrieve goals. It validates the request, then calls ICommon.getUserByToken, IMPDS.GetUserByIdAsync, IMPDS.GetGoalMastersByRoleLevelAsync. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: User not found. [when selected_user == null]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve goals",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "userId (query)"
+        ],
+        "follow_up_apis": [
+          "GET api/MPDS",
+          "GET api/MPDS/{id}",
+          "GET api/MPDS/masters"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "mpds_get_goals",
+        "description": "Retrieve goals",
+        "http_method": "GET",
+        "endpoint": "api/MPDS/goals",
+        "parameters": {
+          "userId": {
+            "type": "int",
+            "required": true,
+            "description": "user Id (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/MPDSController.cs",
+        "action_method": "GetGoals",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/MPDS_repo.cs",
+          "Interfaces/IMPDS.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve goals — validates the request, calls ICommon.getUserByToken, IMPDS.GetUserByIdAsync, IMPDS.GetGoalMastersByRoleLevelAsync",
+        "preconditions": "Valid Bearer JWT; required query parameter(s): userId; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "User not found.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMPDS.GetUserByIdAsync",
+          "IMPDS.GetGoalMastersByRoleLevelAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MPDS_repo (Repositories/MPDS_repo.cs) via IMPDS"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "User not found.",
+            "when": "selected_user == null"
+          }
+        ]
+      }
+    }
+  ]
+}

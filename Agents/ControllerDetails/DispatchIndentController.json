@@ -1,0 +1,369 @@
+{
+  "controller": "DispatchIndentController",
+  "file": "Controllers/DispatchIndentController.cs",
+  "module": "Dispatch Management",
+  "base_route": "api/DispatchIndent",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Displays dispatch indents with filterable summary cards, dealer/indent counts, and dynamic filter options",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "ims/indents/dispatched-indents",
+        "module_code": "ims",
+        "section": "indents",
+        "sub_section": "dispatched-indents",
+        "frontend_routes": [
+          "/ims/indents/dispatched-indents"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "dispatch_indent_get_all",
+      "name": "Get All Dispatch Indents",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/DispatchIndent",
+      "business_purpose": "Retrieve paginated dispatch indent list with summary cards and dynamic filter options",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "DateTime",
+          "required": false
+        },
+        {
+          "name": "todate",
+          "type": "DateTime",
+          "required": false
+        },
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "last_30_days",
+          "allowed_values": "this_month|last_month|last_30_days|last_60_days|last_180_days|custom"
+        },
+        {
+          "name": "regionId",
+          "type": "int",
+          "required": false
+        },
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": false
+        },
+        {
+          "name": "areaId",
+          "type": "int",
+          "required": false
+        },
+        {
+          "name": "categoryId",
+          "type": "int",
+          "required": false
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "anonymous object with cards, filters, data, pagination"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ims/indents/dispatched-indents:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve paginated dispatch indent list with summary cards and dynamic filter options",
+      "detailed_description": "Retrieve paginated dispatch indent list with summary cards and dynamic filter options. It calls ICommon.getUserByToken, IIndent.BuildFilterContext, IDispatchIndents.GetDispatchIndentData. Data access uses stored procedure(s): GetDispatchIndent. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve paginated dispatch indent list with summary cards and dynamic filter options",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/DispatchIndent",
+          "GET api/DispatchIndent/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "dispatch_indent_get_all",
+        "description": "Retrieve paginated dispatch indent list with summary cards and dynamic filter options",
+        "http_method": "GET",
+        "endpoint": "api/DispatchIndent",
+        "parameters": {
+          "fromdate": {
+            "type": "DateTime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "DateTime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "date range (query)"
+          },
+          "regionId": {
+            "type": "int",
+            "required": false,
+            "description": "region Id (query)"
+          },
+          "branchId": {
+            "type": "int",
+            "required": false,
+            "description": "branch Id (query)"
+          },
+          "areaId": {
+            "type": "int",
+            "required": false,
+            "description": "area Id (query)"
+          },
+          "categoryId": {
+            "type": "int",
+            "required": false,
+            "description": "category Id (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/DispatchIndentController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs",
+          "Repositories/DispatchIndent_repo.cs",
+          "Interfaces/IDispatchIndents.cs"
+        ]
+      },
+      "module": "Dispatch Management",
+      "business_logic": {
+        "operation_summary": "Retrieve paginated dispatch indent list with summary cards and dynamic filter options — calls ICommon.getUserByToken, IIndent.BuildFilterContext, IDispatchIndents.GetDispatchIndentData",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndent.BuildFilterContext",
+          "IDispatchIndents.GetDispatchIndentData",
+          "IDispatchIndents.GetDispatchIndentActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent",
+          "DispatchIndent_repo (Repositories/DispatchIndent_repo.cs) via IDispatchIndents"
+        ],
+        "stored_procedures": [
+          "GetDispatchIndent"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "dispatch_indent_get_by_id",
+      "name": "Get Dispatch Indent By ID",
+      "action_method": "GetDispatchIndentById",
+      "http_method": "GET",
+      "route": "api/DispatchIndent/{id}",
+      "business_purpose": "Retrieve complete indent details with product breakdown and file links",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ims/indents/dispatched-indents:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve complete indent details with product breakdown and file links",
+      "detailed_description": "Retrieve complete indent details with product breakdown and file links. It validates the request, then calls ICommon.getUserByToken, IIndent.GetIndentActions, IIndent.GetIndentHeaderByIdAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid indent ID is required. [when id <= 0]",
+        "not_found": "404: Indent not found. [when indent == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve complete indent details with product breakdown and file links",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/DispatchIndent",
+          "GET api/DispatchIndent/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "dispatch_indent_get_dispatch_indent_by_id",
+        "description": "Retrieve complete indent details with product breakdown and file links",
+        "http_method": "GET",
+        "endpoint": "api/DispatchIndent/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/DispatchIndentController.cs",
+        "action_method": "GetDispatchIndentById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs"
+        ]
+      },
+      "module": "Dispatch Management",
+      "business_logic": {
+        "operation_summary": "Retrieve complete indent details with product breakdown and file links — validates the request, calls ICommon.getUserByToken, IIndent.GetIndentActions, IIndent.GetIndentHeaderByIdAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid indent ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IIndent.GetIndentActions",
+          "IIndent.GetIndentHeaderByIdAsync",
+          "ICommon.GetComplaintFilesById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid indent ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Indent not found.",
+            "when": "indent == null"
+          }
+        ]
+      }
+    }
+  ]
+}

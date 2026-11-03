@@ -1,0 +1,859 @@
+{
+  "controller": "IBStatusController",
+  "file": "Controllers/IBStatusController.cs",
+  "module": "Lead and Client Management",
+  "base_route": "api/IBStatus",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages IB status records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "lms/ibstatus",
+        "module_code": "lms",
+        "section": "ibstatus",
+        "sub_section": null,
+        "frontend_routes": [
+          "/lms/ibstatus",
+          "/lms/ibstatus/create-ib-status",
+          "/lms/ibstatus/edit-ib-status/:id"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "section_configuration_keys": [
+      "IBStatus"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "LMS",
+        "section": "IB Status",
+        "sub_section": "IBStatus"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "ib_status_get_all_ib_statuses",
+      "name": "Get All IB Statuses",
+      "action_method": "GetAllIBStatuses",
+      "http_method": "GET",
+      "route": "api/IBStatus",
+      "business_purpose": "Retrieve all IB statuses",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "IBStatus[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "lms/ibstatus:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all IB statuses",
+      "detailed_description": "Retrieve all IB statuses. It calls IIBStatus.GetIBStatusData, IIBStatus.GetIBStatusActions, IIBStatus.GetPagination. Data access uses stored procedure(s): GetIBStatus. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all IB statuses",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/IBStatus",
+          "GET api/IBStatus/options",
+          "GET api/IBStatus/{id:int}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "ib_status_get_all_ib_statuses",
+        "description": "Retrieve all IB statuses",
+        "http_method": "GET",
+        "endpoint": "api/IBStatus",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IBStatusController.cs",
+        "action_method": "GetAllIBStatuses",
+        "related_dto_files": [
+          "Models/IBStatus.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/IBStatus_repo.cs",
+          "Interfaces/IIBStatus.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all IB statuses — calls IIBStatus.GetIBStatusData, IIBStatus.GetIBStatusActions, IIBStatus.GetPagination",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IIBStatus.GetIBStatusData",
+          "IIBStatus.GetIBStatusActions",
+          "IIBStatus.GetPagination"
+        ],
+        "calls_repositories": [
+          "IBStatus_repo (Repository/IBStatus_repo.cs) via IIBStatus"
+        ],
+        "stored_procedures": [
+          "GetIBStatus"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "ib_status_get_ib_status_options",
+      "name": "Get IB Status Options",
+      "action_method": "GetIBStatusOptions",
+      "http_method": "GET",
+      "route": "api/IBStatus/options",
+      "business_purpose": "Retrieve IB status options",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "lms/ibstatus:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve IB status options",
+      "detailed_description": "Retrieve IB status options. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve IB status options",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/IBStatus",
+          "GET api/IBStatus/options",
+          "GET api/IBStatus/{id:int}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "ib_status_get_ib_status_options",
+        "description": "Retrieve IB status options",
+        "http_method": "GET",
+        "endpoint": "api/IBStatus/options",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IBStatusController.cs",
+        "action_method": "GetIBStatusOptions",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": []
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Retrieve IB status options",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [],
+        "calls_repositories": [],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "ib_status_get_ib_status_by_id",
+      "name": "Get IB Status By Id",
+      "action_method": "GetIBStatusById",
+      "http_method": "GET",
+      "route": "api/IBStatus/{id:int}",
+      "business_purpose": "Retrieve IB status by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "lms/ibstatus:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve IB status by ID",
+      "detailed_description": "Retrieve IB status by ID. It validates the request, then calls IIBStatus.getUserByToken, IIBStatus.GetIBStatusById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid IB status ID is required [when id <= 0]",
+        "not_found": "404: IB status not found [when ibstatus == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve IB status by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/IBStatus",
+          "GET api/IBStatus/options",
+          "GET api/IBStatus/{id:int}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "ib_status_get_ib_status_by_id",
+        "description": "Retrieve IB status by ID",
+        "http_method": "GET",
+        "endpoint": "api/IBStatus/{id:int}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/IBStatusController.cs",
+        "action_method": "GetIBStatusById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/IBStatus_repo.cs",
+          "Interfaces/IIBStatus.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Retrieve IB status by ID — validates the request, calls IIBStatus.getUserByToken, IIBStatus.GetIBStatusById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid IB status ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IIBStatus.getUserByToken",
+          "IIBStatus.GetIBStatusById"
+        ],
+        "calls_repositories": [
+          "IBStatus_repo (Repository/IBStatus_repo.cs) via IIBStatus"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid IB status ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "IB status not found",
+            "when": "ibstatus == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "ib_status_create_ib_status",
+      "name": "Create IB Status",
+      "action_method": "CreateIBStatus",
+      "http_method": "POST",
+      "route": "api/IBStatus",
+      "business_purpose": "Create IB status",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateIBStatusRequest (inline)",
+        "properties": [
+          {
+            "name": "status",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "is_default",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; a duplicate check exists so repeating usually fails with a conflict/validation message"
+      },
+      "required_permission": "lms/ibstatus:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create IB status",
+      "detailed_description": "Create IB status. It validates the request, then checks for an existing/duplicate record, then calls IIBStatus.getUserByToken, IIBStatus.ClearOtherDefaultStatusesAsync, IIBStatus.ToJsonString, then writes an audit log entry. Persists changes to: AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; Status is required. [when string.IsNullOrWhiteSpace(request.status)]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "IB status with this name already exists. [when duplicate]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create IB status",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateIBStatusRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/IBStatus",
+          "GET api/IBStatus/options"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "ib_status_create_ib_status",
+        "description": "Create IB status",
+        "http_method": "POST",
+        "endpoint": "api/IBStatus",
+        "parameters": {
+          "status": {
+            "type": "string",
+            "required": true,
+            "description": "status (body)"
+          },
+          "description": {
+            "type": "string",
+            "required": false,
+            "description": "description (body)"
+          },
+          "is_default": {
+            "type": "bool",
+            "required": false,
+            "description": "is default (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/IBStatusController.cs",
+        "action_method": "CreateIBStatus",
+        "related_dto_files": [
+          "Controllers/IBStatusController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/IBStatus_repo.cs",
+          "Interfaces/IIBStatus.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Create IB status — validates the request, checks for an existing/duplicate record, calls IIBStatus.getUserByToken, IIBStatus.ClearOtherDefaultStatusesAsync, IIBStatus.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; request body of type CreateIBStatusRequest (inline); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "AuditLog: INSERT",
+        "validations": "ModelState (DTO data-annotation) validation; Invalid data provided.; Status is required.",
+        "side_effects": "AuditLog CREATE (LMS > IB Status > IBStatus)",
+        "calls_services": [
+          "IIBStatus.getUserByToken",
+          "IIBStatus.ClearOtherDefaultStatusesAsync",
+          "IIBStatus.ToJsonString",
+          "IIBStatus.AddAsync"
+        ],
+        "calls_repositories": [
+          "IBStatus_repo (Repository/IBStatus_repo.cs) via IIBStatus"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Status is required.",
+            "when": "string.IsNullOrWhiteSpace(request.status)"
+          },
+          {
+            "returns": 400,
+            "message": "IB status with this name already exists.",
+            "when": "duplicate"
+          }
+        ]
+      }
+    },
+    {
+      "id": "ib_status_update_ib_status",
+      "name": "Update IB Status",
+      "action_method": "UpdateIBStatus",
+      "http_method": "PUT",
+      "route": "api/IBStatus/{id}",
+      "business_purpose": "Update IB status",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateIBStatusRequest (inline)",
+        "properties": [
+          {
+            "name": "status",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "is_default",
+            "type": "bool",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values; each call writes another audit log entry"
+      },
+      "required_permission": "lms/ibstatus:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update IB status",
+      "detailed_description": "Update IB status. It validates the request, then checks for an existing/duplicate record, then calls IIBStatus.getUserByToken, IIBStatus.ToJsonString, IIBStatus.ClearOtherDefaultStatusesAsync, then writes an audit log entry. Persists changes to: AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid IB status ID is required. [when id <= 0]; At least one field must be provided for update. [when string.IsNullOrWhiteSpace(request.status) && request.description == null && !request.is_de]",
+        "not_found": "404: IB status not found. [when ibStatus == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "IB status with this name already exists. [when duplicate]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update IB status",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "request body UpdateIBStatusRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/IBStatus/{id:int}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "ib_status_update_ib_status",
+        "description": "Update IB status",
+        "http_method": "PUT",
+        "endpoint": "api/IBStatus/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "status": {
+            "type": "string",
+            "required": false,
+            "description": "status (body)"
+          },
+          "description": {
+            "type": "string",
+            "required": false,
+            "description": "description (body)"
+          },
+          "is_default": {
+            "type": "bool",
+            "required": false,
+            "description": "is default (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/IBStatusController.cs",
+        "action_method": "UpdateIBStatus",
+        "related_dto_files": [
+          "Controllers/IBStatusController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/IBStatus_repo.cs",
+          "Interfaces/IIBStatus.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Update IB status — validates the request, checks for an existing/duplicate record, calls IIBStatus.getUserByToken, IIBStatus.ToJsonString, IIBStatus.ClearOtherDefaultStatusesAsync, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); request body of type UpdateIBStatusRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "AuditLog: INSERT; sets ibStatus.status, ibStatus.description, ibStatus.is_default, ibStatus.modified_by, ibStatus.modified_date and saves changes",
+        "validations": "Valid IB status ID is required.; At least one field must be provided for update.",
+        "side_effects": "AuditLog UPDATE (LMS > IB Status > IBStatus)",
+        "calls_services": [
+          "IIBStatus.getUserByToken",
+          "IIBStatus.ToJsonString",
+          "IIBStatus.ClearOtherDefaultStatusesAsync",
+          "IIBStatus.AddAsync"
+        ],
+        "calls_repositories": [
+          "IBStatus_repo (Repository/IBStatus_repo.cs) via IIBStatus"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid IB status ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field must be provided for update.",
+            "when": "string.IsNullOrWhiteSpace(request.status) && request.description == null && !request.is_default.HasValue"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "IB status not found.",
+            "when": "ibStatus == null"
+          },
+          {
+            "returns": 400,
+            "message": "IB status with this name already exists.",
+            "when": "duplicate"
+          }
+        ]
+      }
+    },
+    {
+      "id": "ib_status_delete_ib_status",
+      "name": "Delete IB Status",
+      "action_method": "DeleteIBStatus",
+      "http_method": "DELETE",
+      "route": "api/IBStatus/{id}",
+      "business_purpose": "Delete IB status",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "lms/ibstatus:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete IB status",
+      "detailed_description": "Delete IB status. It validates the request, then calls IIBStatus.getUserByToken, IIBStatus.ToJsonString, IIBStatus.AddAsync, then writes an audit log entry. Persists changes to: AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid IB status ID is required. [when id <= 0]",
+        "not_found": "404: IB status not found. [when ibStatus == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete IB status",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/IBStatus/{id:int}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "ib_status_delete_ib_status",
+        "description": "Delete IB status",
+        "http_method": "DELETE",
+        "endpoint": "api/IBStatus/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/IBStatusController.cs",
+        "action_method": "DeleteIBStatus",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/IBStatus_repo.cs",
+          "Interfaces/IIBStatus.cs"
+        ]
+      },
+      "module": "Lead and Client Management",
+      "business_logic": {
+        "operation_summary": "Delete IB status — validates the request, calls IIBStatus.getUserByToken, IIBStatus.ToJsonString, IIBStatus.AddAsync, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "AuditLog: INSERT; sets ibStatus.is_deleted, ibStatus.modified_by, ibStatus.modified_date and saves changes",
+        "validations": "Valid IB status ID is required.",
+        "side_effects": "AuditLog DELETE (LMS > IB Status > IBStatus)",
+        "calls_services": [
+          "IIBStatus.getUserByToken",
+          "IIBStatus.ToJsonString",
+          "IIBStatus.AddAsync"
+        ],
+        "calls_repositories": [
+          "IBStatus_repo (Repository/IBStatus_repo.cs) via IIBStatus"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid IB status ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "IB status not found.",
+            "when": "ibStatus == null"
+          }
+        ]
+      }
+    }
+  ]
+}

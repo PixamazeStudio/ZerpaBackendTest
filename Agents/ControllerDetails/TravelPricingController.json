@@ -1,0 +1,1435 @@
+{
+  "controller": "TravelPricingController",
+  "file": "Controllers/TravelPricingController.cs",
+  "module": "Expense Management",
+  "base_route": "api/TravelPricing",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages travel pricing records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/expense-settings/travel-pricing",
+        "module_code": "settings",
+        "section": "expense-settings",
+        "sub_section": "travel-pricing",
+        "frontend_routes": [
+          "/settings/expense-settings/travel-pricing"
+        ],
+        "menu_route_confirmed": true,
+        "display_names": {
+          "module": "Settings",
+          "section": "Expense Settings",
+          "sub_section": "Travel Pricing"
+        }
+      }
+    ],
+    "section_configuration_keys": [
+      "travelPricing"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Settings",
+        "section": "Expense Settings",
+        "sub_section": "Travel Pricing"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "travel_pricing_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/TravelPricing",
+      "business_purpose": "Retrieve all travel pricing records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/expense-settings/travel-pricing:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all travel pricing records",
+      "detailed_description": "Retrieve all travel pricing records. It calls ICommon.getUserByToken, ITravelPricing.GetTravelPricingData, ITravelPricing.GetTravelPricingActions. Data access uses stored procedure(s): GetTravelPricing, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all travel pricing records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/TravelPricing",
+          "GET api/TravelPricing/{id}",
+          "GET api/TravelPricing/modeoftravel"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "travel_pricing_get_all",
+        "description": "Retrieve all travel pricing records",
+        "http_method": "GET",
+        "endpoint": "api/TravelPricing",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/TravelPricingController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/TravelPricing_repo.cs",
+          "Interfaces/ITravelPricing.cs"
+        ]
+      },
+      "module": "Expense Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all travel pricing records — calls ICommon.getUserByToken, ITravelPricing.GetTravelPricingData, ITravelPricing.GetTravelPricingActions",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ITravelPricing.GetTravelPricingData",
+          "ITravelPricing.GetTravelPricingActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "TravelPricing_repo (Repositories/TravelPricing_repo.cs) via ITravelPricing"
+        ],
+        "stored_procedures": [
+          "GetTravelPricing",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "travel_pricing_get_travel_pricing_by_id",
+      "name": "Get Travel Pricing By Id",
+      "action_method": "GetTravelPricingById",
+      "http_method": "GET",
+      "route": "api/TravelPricing/{id}",
+      "business_purpose": "Retrieve travel pricing by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/expense-settings/travel-pricing:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve travel pricing by ID",
+      "detailed_description": "Retrieve travel pricing by ID. It validates the request, then calls ICommon.getUserByToken, ITravelPricing.GetTravelPricingById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid scheduler ID is required [when id <= 0]",
+        "not_found": "404: Travel pricing not found [when travelpricing == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve travel pricing by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/TravelPricing",
+          "GET api/TravelPricing/{id}",
+          "GET api/TravelPricing/modeoftravel"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "travel_pricing_get_travel_pricing_by_id",
+        "description": "Retrieve travel pricing by ID",
+        "http_method": "GET",
+        "endpoint": "api/TravelPricing/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/TravelPricingController.cs",
+        "action_method": "GetTravelPricingById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/TravelPricing_repo.cs",
+          "Interfaces/ITravelPricing.cs"
+        ]
+      },
+      "module": "Expense Management",
+      "business_logic": {
+        "operation_summary": "Retrieve travel pricing by ID — validates the request, calls ICommon.getUserByToken, ITravelPricing.GetTravelPricingById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid scheduler ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ITravelPricing.GetTravelPricingById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "TravelPricing_repo (Repositories/TravelPricing_repo.cs) via ITravelPricing"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid scheduler ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Travel pricing not found",
+            "when": "travelpricing == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "travel_pricing_create_travel_pricing",
+      "name": "Create Travel Pricing",
+      "action_method": "CreateTravelPricing",
+      "http_method": "POST",
+      "route": "api/TravelPricing",
+      "business_purpose": "Create travel pricing",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateTravelPricingDto (inline)",
+        "properties": [
+          {
+            "name": "Amount",
+            "type": "float",
+            "required": false
+          },
+          {
+            "name": "ModeOfTravelId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "FuelTypeId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "TravelTypeId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "AreaCategoryId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "VehicleTypeId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "JobGradeId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "UnitId",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          409,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; a duplicate check exists so repeating usually fails with a conflict/validation message"
+      },
+      "required_permission": "settings/expense-settings/travel-pricing:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create travel pricing",
+      "detailed_description": "Create travel pricing. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, ITravelPricing.GetModeOfTravelById, ITravelPricing.GetFuelTypeById. Persists changes to: TravelPricing: INSERT. Possible responses: 200, 400, 401, 409, 500.",
+      "error_handling": {
+        "validation_errors": "400: Amount must be greater than zero. [when request.Amount <= 0]; Invalid required fields. [when request.ModeOfTravelId <= 0 || request.TravelTypeId <= 0 || request.AreaCategoryId <= 0 ||]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "Duplicate Travel Pricing Found. [when duplicateCheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create travel pricing",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateTravelPricingDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/TravelPricing",
+          "GET api/TravelPricing/modeoftravel",
+          "GET api/TravelPricing/areacategory"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "travel_pricing_create_travel_pricing",
+        "description": "Create travel pricing",
+        "http_method": "POST",
+        "endpoint": "api/TravelPricing",
+        "parameters": {
+          "Amount": {
+            "type": "float",
+            "required": false,
+            "description": "Amount (body)"
+          },
+          "ModeOfTravelId": {
+            "type": "int",
+            "required": false,
+            "description": "Mode Of Travel Id (body)"
+          },
+          "FuelTypeId": {
+            "type": "int",
+            "required": false,
+            "description": "Fuel Type Id (body)"
+          },
+          "TravelTypeId": {
+            "type": "int",
+            "required": false,
+            "description": "Travel Type Id (body)"
+          },
+          "AreaCategoryId": {
+            "type": "int",
+            "required": false,
+            "description": "Area Category Id (body)"
+          },
+          "VehicleTypeId": {
+            "type": "int",
+            "required": false,
+            "description": "Vehicle Type Id (body)"
+          },
+          "JobGradeId": {
+            "type": "int",
+            "required": false,
+            "description": "Job Grade Id (body)"
+          },
+          "UnitId": {
+            "type": "int",
+            "required": false,
+            "description": "Unit Id (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/TravelPricingController.cs",
+        "action_method": "CreateTravelPricing",
+        "related_dto_files": [
+          "Controllers/TravelPricingController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/TravelPricing_repo.cs",
+          "Interfaces/ITravelPricing.cs"
+        ]
+      },
+      "module": "Expense Management",
+      "business_logic": {
+        "operation_summary": "Create travel pricing — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, ITravelPricing.GetModeOfTravelById, ITravelPricing.GetFuelTypeById",
+        "preconditions": "Valid Bearer JWT; request body of type CreateTravelPricingDto (inline); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "TravelPricing: INSERT",
+        "validations": "Amount must be greater than zero.; Invalid required fields.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ITravelPricing.GetModeOfTravelById",
+          "ITravelPricing.GetFuelTypeById",
+          "ITravelPricing.GetTravelTypeById",
+          "ITravelPricing.GetAreaCategoryById",
+          "ITravelPricing.GetVehicleTypeById",
+          "ITravelPricing.GetJobGradeById",
+          "ITravelPricing.GetUnitById",
+          "ITravelPricing.DuplicateCheckAsync",
+          "ITravelPricing.CreateTravelPricingAsync",
+          "ITravelPricing.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "TravelPricing_repo (Repositories/TravelPricing_repo.cs) via ITravelPricing"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Amount must be greater than zero.",
+            "when": "request.Amount <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid required fields.",
+            "when": "request.ModeOfTravelId <= 0 || request.TravelTypeId <= 0 || request.AreaCategoryId <= 0 || request.JobGradeId <= 0 || request.UnitId <= 0"
+          },
+          {
+            "returns": 409,
+            "message": "Duplicate Travel Pricing Found.",
+            "when": "duplicateCheck"
+          }
+        ]
+      }
+    },
+    {
+      "id": "travel_pricing_update_travel_pricing",
+      "name": "Update Travel Pricing",
+      "action_method": "UpdateTravelPricing",
+      "http_method": "PUT",
+      "route": "api/TravelPricing/{travelPricingId}",
+      "business_purpose": "Update travel pricing",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "travelPricingId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateTravelPricingDto (inline)",
+        "properties": [
+          {
+            "name": "Amount",
+            "type": "float",
+            "required": false
+          },
+          {
+            "name": "ModeOfTravelId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "FuelTypeId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "TravelTypeId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "AreaCategoryId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "VehicleTypeId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "JobGradeId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "UnitId",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          409,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "settings/expense-settings/travel-pricing:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update travel pricing",
+      "detailed_description": "Update travel pricing. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, ITravelPricing.GetTravelPricingById, ITravelPricing.DuplicateCheckAsync. Possible responses: 200, 400, 401, 404, 409, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid Travel Pricing ID is required. [when travelPricingId <= 0]; At least one field must be provided for update. [when request.Amount <= 0 && request.ModeOfTravelId == 0 && request.TravelTypeId == 0 && request]",
+        "not_found": "404: Travel pricing not found. [when travelPricing == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when currentUser == null]",
+        "business_rule_errors": "Duplicate Travel Pricing Found. [when isDuplicate]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update travel pricing",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "travelPricingId (route)",
+          "request body UpdateTravelPricingDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/TravelPricing/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "travel_pricing_update_travel_pricing",
+        "description": "Update travel pricing",
+        "http_method": "PUT",
+        "endpoint": "api/TravelPricing/{travelPricingId}",
+        "parameters": {
+          "travelPricingId": {
+            "type": "int",
+            "required": true,
+            "description": "travel Pricing Id (route)"
+          },
+          "Amount": {
+            "type": "float",
+            "required": false,
+            "description": "Amount (body)"
+          },
+          "ModeOfTravelId": {
+            "type": "int",
+            "required": false,
+            "description": "Mode Of Travel Id (body)"
+          },
+          "FuelTypeId": {
+            "type": "int",
+            "required": false,
+            "description": "Fuel Type Id (body)"
+          },
+          "TravelTypeId": {
+            "type": "int",
+            "required": false,
+            "description": "Travel Type Id (body)"
+          },
+          "AreaCategoryId": {
+            "type": "int",
+            "required": false,
+            "description": "Area Category Id (body)"
+          },
+          "VehicleTypeId": {
+            "type": "int",
+            "required": false,
+            "description": "Vehicle Type Id (body)"
+          },
+          "JobGradeId": {
+            "type": "int",
+            "required": false,
+            "description": "Job Grade Id (body)"
+          },
+          "UnitId": {
+            "type": "int",
+            "required": false,
+            "description": "Unit Id (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/TravelPricingController.cs",
+        "action_method": "UpdateTravelPricing",
+        "related_dto_files": [
+          "Controllers/TravelPricingController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/TravelPricing_repo.cs",
+          "Interfaces/ITravelPricing.cs"
+        ]
+      },
+      "module": "Expense Management",
+      "business_logic": {
+        "operation_summary": "Update travel pricing — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, ITravelPricing.GetTravelPricingById, ITravelPricing.DuplicateCheckAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) travelPricingId must reference existing record(s); request body of type UpdateTravelPricingDto (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets travelPricing.amount, travelPricing.mode_of_travel, travelPricing.fuel_type, travelPricing.travel_type, travelPricing.area_category, travelPricing.vehicle_type and saves changes",
+        "validations": "Valid Travel Pricing ID is required.; At least one field must be provided for update.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ITravelPricing.GetTravelPricingById",
+          "ITravelPricing.DuplicateCheckAsync",
+          "ITravelPricing.GetModeOfTravelById",
+          "ITravelPricing.GetFuelTypeById",
+          "ITravelPricing.GetTravelTypeById",
+          "ITravelPricing.GetAreaCategoryById",
+          "ITravelPricing.GetVehicleTypeById",
+          "ITravelPricing.GetJobGradeById",
+          "ITravelPricing.GetUnitById",
+          "ITravelPricing.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "TravelPricing_repo (Repositories/TravelPricing_repo.cs) via ITravelPricing"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid Travel Pricing ID is required.",
+            "when": "travelPricingId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "At least one field must be provided for update.",
+            "when": "request.Amount <= 0 && request.ModeOfTravelId == 0 && request.TravelTypeId == 0 && request.AreaCategoryId == 0 && request.JobGradeId == 0 && request.UnitId == 0 && request.FuelTypeId == null && request.VehicleTypeId == null"
+          },
+          {
+            "returns": 404,
+            "message": "Travel pricing not found.",
+            "when": "travelPricing == null"
+          },
+          {
+            "returns": 409,
+            "message": "Duplicate Travel Pricing Found.",
+            "when": "isDuplicate"
+          }
+        ]
+      }
+    },
+    {
+      "id": "travel_pricing_delete_travel_pricing",
+      "name": "Delete Travel Pricing",
+      "action_method": "DeleteTravelPricing",
+      "http_method": "DELETE",
+      "route": "api/TravelPricing/{id}",
+      "business_purpose": "Delete travel pricing",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "settings/expense-settings/travel-pricing:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete travel pricing",
+      "detailed_description": "Delete travel pricing. It validates the request, then calls ICommon.getUserByToken, ITravelPricing.GetTravelPricingById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: TravelPricing: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid lead ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Travel Pricing not found. [when existingTravelPricing == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete travel pricing",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/TravelPricing/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "travel_pricing_delete_travel_pricing",
+        "description": "Delete travel pricing",
+        "http_method": "DELETE",
+        "endpoint": "api/TravelPricing/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/TravelPricingController.cs",
+        "action_method": "DeleteTravelPricing",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/TravelPricing_repo.cs",
+          "Interfaces/ITravelPricing.cs"
+        ]
+      },
+      "module": "Expense Management",
+      "business_logic": {
+        "operation_summary": "Delete travel pricing — validates the request, calls ICommon.getUserByToken, ITravelPricing.GetTravelPricingById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "TravelPricing: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "validations": "Valid lead ID is required.",
+        "side_effects": "AuditLog DELETE (Settings > Expense Settings > Travel Pricing)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ITravelPricing.GetTravelPricingById",
+          "ICommon.ToJsonString",
+          "ITravelPricing.DeleteTravelPricing",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "TravelPricing_repo (Repositories/TravelPricing_repo.cs) via ITravelPricing"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid lead ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Travel Pricing not found.",
+            "when": "existingTravelPricing == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "travel_pricing_get_mode_of_travel",
+      "name": "Get Mode Of Travel",
+      "action_method": "GetModeOfTravel",
+      "http_method": "GET",
+      "route": "api/TravelPricing/modeoftravel",
+      "business_purpose": "Retrieve mode of travel",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/expense-settings/travel-pricing:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve mode of travel",
+      "detailed_description": "Retrieve mode of travel. It calls ICommon.getUserByToken, ITravelPricing.GetAllModeOfTravel. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve mode of travel",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/TravelPricing",
+          "GET api/TravelPricing/{id}",
+          "GET api/TravelPricing/modeoftravel"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "travel_pricing_get_mode_of_travel",
+        "description": "Retrieve mode of travel",
+        "http_method": "GET",
+        "endpoint": "api/TravelPricing/modeoftravel",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/TravelPricingController.cs",
+        "action_method": "GetModeOfTravel",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/TravelPricing_repo.cs",
+          "Interfaces/ITravelPricing.cs"
+        ]
+      },
+      "module": "Expense Management",
+      "business_logic": {
+        "operation_summary": "Retrieve mode of travel — calls ICommon.getUserByToken, ITravelPricing.GetAllModeOfTravel",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ITravelPricing.GetAllModeOfTravel"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "TravelPricing_repo (Repositories/TravelPricing_repo.cs) via ITravelPricing"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "travel_pricing_get_area_category",
+      "name": "Get Area Category",
+      "action_method": "GetAreaCategory",
+      "http_method": "GET",
+      "route": "api/TravelPricing/areacategory",
+      "business_purpose": "Retrieve area category",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/expense-settings/travel-pricing:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve area category",
+      "detailed_description": "Retrieve area category. It calls ICommon.getUserByToken, ITravelPricing.GetAllAreaCategory. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve area category",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/TravelPricing",
+          "GET api/TravelPricing/{id}",
+          "GET api/TravelPricing/modeoftravel"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "travel_pricing_get_area_category",
+        "description": "Retrieve area category",
+        "http_method": "GET",
+        "endpoint": "api/TravelPricing/areacategory",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/TravelPricingController.cs",
+        "action_method": "GetAreaCategory",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/TravelPricing_repo.cs",
+          "Interfaces/ITravelPricing.cs"
+        ]
+      },
+      "module": "Expense Management",
+      "business_logic": {
+        "operation_summary": "Retrieve area category — calls ICommon.getUserByToken, ITravelPricing.GetAllAreaCategory",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ITravelPricing.GetAllAreaCategory"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "TravelPricing_repo (Repositories/TravelPricing_repo.cs) via ITravelPricing"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "travel_pricing_get_travel_type",
+      "name": "Get Travel Type",
+      "action_method": "GetTravelType",
+      "http_method": "GET",
+      "route": "api/TravelPricing/traveltype",
+      "business_purpose": "Retrieve travel type",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/expense-settings/travel-pricing:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve travel type",
+      "detailed_description": "Retrieve travel type. It calls ICommon.getUserByToken, ITravelPricing.GetAllTravelType. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve travel type",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/TravelPricing",
+          "GET api/TravelPricing/{id}",
+          "GET api/TravelPricing/modeoftravel"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "travel_pricing_get_travel_type",
+        "description": "Retrieve travel type",
+        "http_method": "GET",
+        "endpoint": "api/TravelPricing/traveltype",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/TravelPricingController.cs",
+        "action_method": "GetTravelType",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/TravelPricing_repo.cs",
+          "Interfaces/ITravelPricing.cs"
+        ]
+      },
+      "module": "Expense Management",
+      "business_logic": {
+        "operation_summary": "Retrieve travel type — calls ICommon.getUserByToken, ITravelPricing.GetAllTravelType",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ITravelPricing.GetAllTravelType"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "TravelPricing_repo (Repositories/TravelPricing_repo.cs) via ITravelPricing"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "travel_pricing_get_job_grade",
+      "name": "Get Job Grade",
+      "action_method": "GetJobGrade",
+      "http_method": "GET",
+      "route": "api/TravelPricing/jobgrade",
+      "business_purpose": "Retrieve job grade",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/expense-settings/travel-pricing:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve job grade",
+      "detailed_description": "Retrieve job grade. It calls ICommon.getUserByToken, ITravelPricing.GetAllJobGrade. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve job grade",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/TravelPricing",
+          "GET api/TravelPricing/{id}",
+          "GET api/TravelPricing/modeoftravel"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "travel_pricing_get_job_grade",
+        "description": "Retrieve job grade",
+        "http_method": "GET",
+        "endpoint": "api/TravelPricing/jobgrade",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/TravelPricingController.cs",
+        "action_method": "GetJobGrade",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/TravelPricing_repo.cs",
+          "Interfaces/ITravelPricing.cs"
+        ]
+      },
+      "module": "Expense Management",
+      "business_logic": {
+        "operation_summary": "Retrieve job grade — calls ICommon.getUserByToken, ITravelPricing.GetAllJobGrade",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ITravelPricing.GetAllJobGrade"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "TravelPricing_repo (Repositories/TravelPricing_repo.cs) via ITravelPricing"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "travel_pricing_get_unit",
+      "name": "Get Unit",
+      "action_method": "GetUnit",
+      "http_method": "GET",
+      "route": "api/TravelPricing/unit",
+      "business_purpose": "Retrieve unit",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/expense-settings/travel-pricing:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve unit",
+      "detailed_description": "Retrieve unit. It calls ICommon.getUserByToken, ITravelPricing.GetAllUnit. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve unit",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/TravelPricing",
+          "GET api/TravelPricing/{id}",
+          "GET api/TravelPricing/modeoftravel"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "travel_pricing_get_unit",
+        "description": "Retrieve unit",
+        "http_method": "GET",
+        "endpoint": "api/TravelPricing/unit",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/TravelPricingController.cs",
+        "action_method": "GetUnit",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/TravelPricing_repo.cs",
+          "Interfaces/ITravelPricing.cs"
+        ]
+      },
+      "module": "Expense Management",
+      "business_logic": {
+        "operation_summary": "Retrieve unit — calls ICommon.getUserByToken, ITravelPricing.GetAllUnit",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ITravelPricing.GetAllUnit"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "TravelPricing_repo (Repositories/TravelPricing_repo.cs) via ITravelPricing"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    }
+  ]
+}

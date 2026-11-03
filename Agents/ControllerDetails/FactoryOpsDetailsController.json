@@ -1,0 +1,620 @@
+{
+  "controller": "FactoryOpsDetailsController",
+  "file": "Controllers/FactoryOpsDetailsController.cs",
+  "base_route": "api/FactoryOpsDetails",
+  "menu_permission": {
+    "status": "not referenced by frontend",
+    "menu_keys": [],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "fod_001",
+      "name": "GetAll",
+      "http_method": "GET",
+      "route": "api/FactoryOpsDetails",
+      "business_purpose": "Retrieve paginated list of factory operations details with optional filtering.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "DateTime?",
+          "required": false
+        },
+        {
+          "name": "todate",
+          "type": "DateTime?",
+          "required": false
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": 100
+        },
+        {
+          "name": "offset",
+          "type": "int",
+          "required": false,
+          "default": 0
+        }
+      ],
+      "request_body": {},
+      "response": {
+        "status_codes": [
+          200,
+          500
+        ],
+        "dto_name": "FactoryOpsDetailsList"
+      },
+      "data_effect": "READ_ONLY",
+      "business_logic": {
+        "operation_summary": "Retrieves factory ops details with date range and text filtering.",
+        "preconditions": "UNKNOWN - NOT DETERMINED FROM SOURCE",
+        "validations": "UNKNOWN - NOT DETERMINED FROM SOURCE",
+        "side_effects": "None",
+        "calls_services": [
+          "IFactoryOpsDetailsRepository"
+        ],
+        "calls_repositories": [],
+        "state_changes": "None (read-only)",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "notes": "Read-only operation"
+      },
+      "source": {
+        "controller_file": "Controllers/FactoryOpsDetailsController.cs",
+        "action_method": "GetAll"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve paginated list of factory operations details with optional filtering.",
+      "detailed_description": "Retrieve paginated list of factory operations details with optional filtering. It calls IFactoryOpsDetailsRepository.GetFactoryOpsDetailsData. Possible responses: 200, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve paginated list of factory operations details with optional filtering.",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/FactoryOpsDetails"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "factory_ops_details_get_all",
+        "description": "Retrieve paginated list of factory operations details with optional filtering.",
+        "http_method": "GET",
+        "endpoint": "api/FactoryOpsDetails",
+        "parameters": {
+          "fromdate": {
+            "type": "DateTime?",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "DateTime?",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "offset": {
+            "type": "int",
+            "required": false,
+            "description": "offset (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "module": "General"
+    },
+    {
+      "id": "fod_002",
+      "name": "Create",
+      "http_method": "POST",
+      "route": "api/FactoryOpsDetails",
+      "business_purpose": "Create factory operations detail record with production metrics (temperature, pressure, load/unload times, quality details).",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateFactoryOpsDetailsRequest",
+        "properties": [
+          "temperature",
+          "pressure",
+          "load",
+          "unload",
+          "total_time",
+          "products",
+          "product",
+          "grade",
+          "size",
+          "thickness",
+          "hp_production",
+          "dd_saw_cutting",
+          "variance",
+          "no_of_pieces",
+          "ply",
+          "FA",
+          "NA",
+          "GL",
+          "quality_remarks",
+          "output_lot",
+          "input_lot"
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          500
+        ],
+        "dto_name": "FactoryOpsDetailsCreateResponse"
+      },
+      "data_effect": "CREATE",
+      "business_logic": {
+        "operation_summary": "Creates factory ops detail record. Checks for duplicates on product + grade + size + thickness + load.",
+        "preconditions": "ModelState valid. No duplicate exists for product+grade+size+thickness+load.",
+        "validations": "ModelState validation. Duplicate check.",
+        "side_effects": "New record persisted to DB.",
+        "calls_services": [
+          "IFactoryOpsDetailsRepository"
+        ],
+        "calls_repositories": [],
+        "state_changes": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 400,
+            "message": "Duplicate entry exists for this factory operation detail.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "HIGH",
+        "notes": "Duplicate check prevents re-creation. Multiple calls fail on second attempt."
+      },
+      "source": {
+        "controller_file": "Controllers/FactoryOpsDetailsController.cs",
+        "action_method": "Create"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Create factory operations detail record with production metrics (temperature, pressure, load/unload times, quality details).",
+      "detailed_description": "Create factory operations detail record with production metrics (temperature, pressure, load/unload times, quality details). It validates the request, then checks for an existing/duplicate record, then calls IFactoryOpsDetailsRepository.IsFactoryOpsDetailsDuplicateAsync, IFactoryOpsDetailsRepository.CreateFactoryOpsDetailsAsync. Possible responses: 200, 400, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "Duplicate entry exists for this factory operation detail. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create factory operations detail record with production metrics (temperature, pressure, load/unload times, quality details).",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateFactoryOpsDetailsRequest"
+        ],
+        "follow_up_apis": [
+          "GET api/FactoryOpsDetails"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "factory_ops_details_create",
+        "description": "Create factory operations detail record with production metrics (temperature, pressure, load/unload times, quality details).",
+        "http_method": "POST",
+        "endpoint": "api/FactoryOpsDetails",
+        "parameters": {
+          "temperature": {
+            "type": "string",
+            "required": false,
+            "description": "temperature (body)"
+          },
+          "pressure": {
+            "type": "string",
+            "required": false,
+            "description": "pressure (body)"
+          },
+          "load": {
+            "type": "string",
+            "required": false,
+            "description": "load (body)"
+          },
+          "unload": {
+            "type": "string",
+            "required": false,
+            "description": "unload (body)"
+          },
+          "total_time": {
+            "type": "string",
+            "required": false,
+            "description": "total time (body)"
+          },
+          "products": {
+            "type": "string",
+            "required": false,
+            "description": "products (body)"
+          },
+          "product": {
+            "type": "string",
+            "required": false,
+            "description": "product (body)"
+          },
+          "grade": {
+            "type": "string",
+            "required": false,
+            "description": "grade (body)"
+          },
+          "size": {
+            "type": "string",
+            "required": false,
+            "description": "size (body)"
+          },
+          "thickness": {
+            "type": "string",
+            "required": false,
+            "description": "thickness (body)"
+          },
+          "hp_production": {
+            "type": "string",
+            "required": false,
+            "description": "hp production (body)"
+          },
+          "dd_saw_cutting": {
+            "type": "string",
+            "required": false,
+            "description": "dd saw cutting (body)"
+          },
+          "variance": {
+            "type": "string",
+            "required": false,
+            "description": "variance (body)"
+          },
+          "no_of_pieces": {
+            "type": "string",
+            "required": false,
+            "description": "no of pieces (body)"
+          },
+          "ply": {
+            "type": "string",
+            "required": false,
+            "description": "ply (body)"
+          },
+          "FA": {
+            "type": "string",
+            "required": false,
+            "description": "FA (body)"
+          },
+          "NA": {
+            "type": "string",
+            "required": false,
+            "description": "NA (body)"
+          },
+          "GL": {
+            "type": "string",
+            "required": false,
+            "description": "GL (body)"
+          },
+          "quality_remarks": {
+            "type": "string",
+            "required": false,
+            "description": "quality remarks (body)"
+          },
+          "output_lot": {
+            "type": "string",
+            "required": false,
+            "description": "output lot (body)"
+          },
+          "input_lot": {
+            "type": "string",
+            "required": false,
+            "description": "input lot (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "module": "General"
+    },
+    {
+      "id": "fod_003",
+      "name": "Update",
+      "http_method": "PUT",
+      "route": "api/FactoryOpsDetails/{id}",
+      "business_purpose": "Update factory operations detail record.",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateFactoryOpsDetailsRequest",
+        "properties": [
+          "temperature",
+          "pressure",
+          "load",
+          "unload",
+          "total_time",
+          "products",
+          "product",
+          "grade",
+          "size",
+          "thickness",
+          "hp_production",
+          "dd_saw_cutting",
+          "variance",
+          "no_of_pieces",
+          "ply",
+          "FA",
+          "NA",
+          "GL",
+          "quality_remarks",
+          "output_lot",
+          "input_lot"
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          500
+        ],
+        "dto_name": "FactoryOpsDetailsUpdateResponse"
+      },
+      "data_effect": "UPDATE",
+      "business_logic": {
+        "operation_summary": "Updates factory ops detail record. Checks for duplicate excluding current ID.",
+        "preconditions": "ID > 0. No duplicate exists for product+grade+size+thickness+load (excluding current ID).",
+        "validations": "ID > 0. Duplicate check (excluding current ID).",
+        "side_effects": "Record updated in DB.",
+        "calls_services": [
+          "IFactoryOpsDetailsRepository"
+        ],
+        "calls_repositories": [],
+        "state_changes": "UNKNOWN — NOT DETERMINED FROM SOURCE",
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Duplicate entry exists for this factory operation detail.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "notes": "Duplicate check per ID reduces risk."
+      },
+      "source": {
+        "controller_file": "Controllers/FactoryOpsDetailsController.cs",
+        "action_method": "Update"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Update factory operations detail record.",
+      "detailed_description": "Update factory operations detail record. It validates the request, then checks for an existing/duplicate record, then calls IFactoryOpsDetailsRepository.IsFactoryOpsDetailsDuplicateAsync, IFactoryOpsDetailsRepository.UpdateFactoryOpsDetailsAsync. Possible responses: 200, 400, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "Duplicate entry exists for this factory operation detail. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update factory operations detail record.",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "request body UpdateFactoryOpsDetailsRequest"
+        ],
+        "follow_up_apis": []
+      },
+      "llm_tool_definition": {
+        "name": "factory_ops_details_update",
+        "description": "Update factory operations detail record.",
+        "http_method": "PUT",
+        "endpoint": "api/FactoryOpsDetails/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "temperature": {
+            "type": "string",
+            "required": false,
+            "description": "temperature (body)"
+          },
+          "pressure": {
+            "type": "string",
+            "required": false,
+            "description": "pressure (body)"
+          },
+          "load": {
+            "type": "string",
+            "required": false,
+            "description": "load (body)"
+          },
+          "unload": {
+            "type": "string",
+            "required": false,
+            "description": "unload (body)"
+          },
+          "total_time": {
+            "type": "string",
+            "required": false,
+            "description": "total time (body)"
+          },
+          "products": {
+            "type": "string",
+            "required": false,
+            "description": "products (body)"
+          },
+          "product": {
+            "type": "string",
+            "required": false,
+            "description": "product (body)"
+          },
+          "grade": {
+            "type": "string",
+            "required": false,
+            "description": "grade (body)"
+          },
+          "size": {
+            "type": "string",
+            "required": false,
+            "description": "size (body)"
+          },
+          "thickness": {
+            "type": "string",
+            "required": false,
+            "description": "thickness (body)"
+          },
+          "hp_production": {
+            "type": "string",
+            "required": false,
+            "description": "hp production (body)"
+          },
+          "dd_saw_cutting": {
+            "type": "string",
+            "required": false,
+            "description": "dd saw cutting (body)"
+          },
+          "variance": {
+            "type": "string",
+            "required": false,
+            "description": "variance (body)"
+          },
+          "no_of_pieces": {
+            "type": "string",
+            "required": false,
+            "description": "no of pieces (body)"
+          },
+          "ply": {
+            "type": "string",
+            "required": false,
+            "description": "ply (body)"
+          },
+          "FA": {
+            "type": "string",
+            "required": false,
+            "description": "FA (body)"
+          },
+          "NA": {
+            "type": "string",
+            "required": false,
+            "description": "NA (body)"
+          },
+          "GL": {
+            "type": "string",
+            "required": false,
+            "description": "GL (body)"
+          },
+          "quality_remarks": {
+            "type": "string",
+            "required": false,
+            "description": "quality remarks (body)"
+          },
+          "output_lot": {
+            "type": "string",
+            "required": false,
+            "description": "output lot (body)"
+          },
+          "input_lot": {
+            "type": "string",
+            "required": false,
+            "description": "input lot (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "module": "General"
+    }
+  ]
+}

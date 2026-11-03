@@ -1,0 +1,819 @@
+{
+  "controller": "CategoryController",
+  "file": "Controllers/CategoryController.cs",
+  "module": "Master Data - Product",
+  "base_route": "api/Category",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages category records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "settings/product-settings/category",
+        "module_code": "settings",
+        "section": "product-settings",
+        "sub_section": "category",
+        "frontend_routes": [
+          "/settings/product-settings/category"
+        ],
+        "menu_route_confirmed": true,
+        "display_names": {
+          "module": "Settings",
+          "section": "Product Settings",
+          "sub_section": "Category"
+        }
+      }
+    ],
+    "also_called_from_menus": [
+      "settings/product-settings/products"
+    ],
+    "section_configuration_keys": [
+      "Category"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Settings",
+        "section": "Product Settings",
+        "sub_section": "Category"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "category_get_all_categories",
+      "name": "Get All Categories",
+      "action_method": "GetAllCategories",
+      "http_method": "GET",
+      "route": "api/Category",
+      "business_purpose": "Retrieve all categories",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "0"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ],
+        "dto_name": "Category[]"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/product-settings/category:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "settings/product-settings/products"
+      ],
+      "short_description": "Retrieve all categories",
+      "detailed_description": "Retrieve all categories. It calls ICategory.GetCategoryData, ICategory.GetCategoryActions, ICommon.GetPagination. Data access uses stored procedure(s): GetCategory, GetSectionActions. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all categories",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/Category",
+          "GET api/Category/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "category_get_all_categories",
+        "description": "Retrieve all categories",
+        "http_method": "GET",
+        "endpoint": "api/Category",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CategoryController.cs",
+        "action_method": "GetAllCategories",
+        "related_dto_files": [
+          "Models/Category.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Category_repo.cs",
+          "Interfaces/ICategory.cs",
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs"
+        ]
+      },
+      "module": "Master Data - Product",
+      "business_logic": {
+        "operation_summary": "Retrieve all categories — calls ICategory.GetCategoryData, ICategory.GetCategoryActions, ICommon.GetPagination",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICategory.GetCategoryData",
+          "ICategory.GetCategoryActions",
+          "ICommon.GetPagination"
+        ],
+        "calls_repositories": [
+          "Category_repo (Repository/Category_repo.cs) via ICategory",
+          "Common_repo (Repository/Common_repo.cs) via ICommon"
+        ],
+        "stored_procedures": [
+          "GetCategory",
+          "GetSectionActions"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": []
+      }
+    },
+    {
+      "id": "category_get_category_by_id",
+      "name": "Get Category By Id",
+      "action_method": "GetCategoryById",
+      "http_method": "GET",
+      "route": "api/Category/{id}",
+      "business_purpose": "Retrieve category by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "settings/product-settings/category:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve category by ID",
+      "detailed_description": "Retrieve category by ID. It validates the request, then calls ICommon.getUserByToken, ICategory.GetCategoryById. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid scheduler ID is required [when id <= 0]",
+        "not_found": "404: Category not found [when category == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve category by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Category",
+          "GET api/Category/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "category_get_category_by_id",
+        "description": "Retrieve category by ID",
+        "http_method": "GET",
+        "endpoint": "api/Category/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/CategoryController.cs",
+        "action_method": "GetCategoryById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Category_repo.cs",
+          "Interfaces/ICategory.cs"
+        ]
+      },
+      "module": "Master Data - Product",
+      "business_logic": {
+        "operation_summary": "Retrieve category by ID — validates the request, calls ICommon.getUserByToken, ICategory.GetCategoryById",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid scheduler ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICategory.GetCategoryById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Category_repo (Repository/Category_repo.cs) via ICategory"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid scheduler ID is required",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Category not found",
+            "when": "category == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "category_create_category",
+      "name": "Create Category",
+      "action_method": "CreateCategory",
+      "http_method": "POST",
+      "route": "api/Category",
+      "business_purpose": "Create category",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "CreateCategoryRequest (inline)",
+        "properties": [
+          {
+            "name": "category_name",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "units",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "category_description",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; a duplicate check exists so repeating usually fails with a conflict/validation message"
+      },
+      "required_permission": "settings/product-settings/category:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create category",
+      "detailed_description": "Create category. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, ICategory.IsCategoryNameDuplicateAsync, ICategory.CreateCategoryAsync, then writes an audit log entry. Persists changes to: Category: INSERT, AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Invalid data provided. [when !ModelState.IsValid]; Category name is required. [when string.IsNullOrWhiteSpace(request.category_name)]; Units are required. [when string.IsNullOrWhiteSpace(request.units)]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "Category with this name already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create category",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body CreateCategoryRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Category"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "category_create_category",
+        "description": "Create category",
+        "http_method": "POST",
+        "endpoint": "api/Category",
+        "parameters": {
+          "category_name": {
+            "type": "string",
+            "required": true,
+            "description": "category name (body)"
+          },
+          "units": {
+            "type": "string",
+            "required": true,
+            "description": "units (body)"
+          },
+          "category_description": {
+            "type": "string",
+            "required": false,
+            "description": "category description (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/CategoryController.cs",
+        "action_method": "CreateCategory",
+        "related_dto_files": [
+          "Controllers/CategoryController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Category_repo.cs",
+          "Interfaces/ICategory.cs"
+        ]
+      },
+      "module": "Master Data - Product",
+      "business_logic": {
+        "operation_summary": "Create category — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, ICategory.IsCategoryNameDuplicateAsync, ICategory.CreateCategoryAsync, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; request body of type CreateCategoryRequest (inline); passes 5 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Category: INSERT; AuditLog: INSERT",
+        "validations": "ModelState (DTO data-annotation) validation; Invalid data provided.; Category name is required.; Units are required.",
+        "side_effects": "AuditLog CREATE (Settings > Product Settings > Category)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICategory.IsCategoryNameDuplicateAsync",
+          "ICategory.CreateCategoryAsync",
+          "ICommon.ToJsonString",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Category_repo (Repository/Category_repo.cs) via ICategory"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Invalid data provided.",
+            "when": "!ModelState.IsValid"
+          },
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Category name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.category_name)"
+          },
+          {
+            "returns": 400,
+            "message": "Units are required.",
+            "when": "string.IsNullOrWhiteSpace(request.units)"
+          },
+          {
+            "returns": 400,
+            "message": "Category with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "category_update_category",
+      "name": "Update Category",
+      "action_method": "UpdateCategory",
+      "http_method": "PUT",
+      "route": "api/Category/{categoryId}",
+      "business_purpose": "Update category",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "categoryId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateCategoryRequest (inline)",
+        "properties": [
+          {
+            "name": "category_name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "units",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "category_description",
+            "type": "string",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values; each call writes another audit log entry"
+      },
+      "required_permission": "settings/product-settings/category:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update category",
+      "detailed_description": "Update category. It validates the request, then checks for an existing/duplicate record, then calls ICommon.getUserByToken, ICategory.IsCategoryNameDuplicateAsync, ICategory.GetCategoryById, then writes an audit log entry. Persists changes to: Category: UPDATE, AuditLog: INSERT. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid category ID is required. [when categoryId <= 0]; Category name is required. [when string.IsNullOrWhiteSpace(request.category_name)]; Units are required. [when string.IsNullOrWhiteSpace(request.units)]; message returned by the called service/repository (result.Message)",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "Category with this name already exists. [when dupcheck]",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update category",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "categoryId (route)",
+          "request body UpdateCategoryRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/Category/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "category_update_category",
+        "description": "Update category",
+        "http_method": "PUT",
+        "endpoint": "api/Category/{categoryId}",
+        "parameters": {
+          "categoryId": {
+            "type": "int",
+            "required": true,
+            "description": "category Id (route)"
+          },
+          "category_name": {
+            "type": "string",
+            "required": false,
+            "description": "category name (body)"
+          },
+          "units": {
+            "type": "string",
+            "required": false,
+            "description": "units (body)"
+          },
+          "category_description": {
+            "type": "string",
+            "required": false,
+            "description": "category description (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/CategoryController.cs",
+        "action_method": "UpdateCategory",
+        "related_dto_files": [
+          "Controllers/CategoryController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Category_repo.cs",
+          "Interfaces/ICategory.cs"
+        ]
+      },
+      "module": "Master Data - Product",
+      "business_logic": {
+        "operation_summary": "Update category — validates the request, checks for an existing/duplicate record, calls ICommon.getUserByToken, ICategory.IsCategoryNameDuplicateAsync, ICategory.GetCategoryById, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) categoryId; request body of type UpdateCategoryRequest (inline); passes 5 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Category: UPDATE; AuditLog: INSERT",
+        "validations": "Valid category ID is required.; Category name is required.; Units are required.",
+        "side_effects": "AuditLog UPDATE (Settings > Product Settings > Category)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICategory.IsCategoryNameDuplicateAsync",
+          "ICategory.GetCategoryById",
+          "ICommon.ToJsonString",
+          "ICategory.UpdateCategoryAsync",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Category_repo (Repository/Category_repo.cs) via ICategory"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid category ID is required.",
+            "when": "categoryId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Category name is required.",
+            "when": "string.IsNullOrWhiteSpace(request.category_name)"
+          },
+          {
+            "returns": 400,
+            "message": "Units are required.",
+            "when": "string.IsNullOrWhiteSpace(request.units)"
+          },
+          {
+            "returns": 400,
+            "message": "Category with this name already exists.",
+            "when": "dupcheck"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "category_delete_category",
+      "name": "Delete Category",
+      "action_method": "DeleteCategory",
+      "http_method": "DELETE",
+      "route": "api/Category/{categoryId}",
+      "business_purpose": "Delete category",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "categoryId",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "settings/product-settings/category:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete category",
+      "detailed_description": "Delete category. It validates the request, then calls ICommon.getUserByToken, ICategory.GetCategoryById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: Category: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid category ID is required. [when categoryId <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Category not found. [when existingCategory == null]",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete category",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "categoryId (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/Category/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "category_delete_category",
+        "description": "Delete category",
+        "http_method": "DELETE",
+        "endpoint": "api/Category/{categoryId}",
+        "parameters": {
+          "categoryId": {
+            "type": "int",
+            "required": true,
+            "description": "category Id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/CategoryController.cs",
+        "action_method": "DeleteCategory",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/Category_repo.cs",
+          "Interfaces/ICategory.cs"
+        ]
+      },
+      "module": "Master Data - Product",
+      "business_logic": {
+        "operation_summary": "Delete category — validates the request, calls ICommon.getUserByToken, ICategory.GetCategoryById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) categoryId must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "Category: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "validations": "Valid category ID is required.",
+        "side_effects": "AuditLog DELETE (Settings > Product Settings > Category)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ICategory.GetCategoryById",
+          "ICommon.ToJsonString",
+          "ICategory.DeleteCategory",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "Category_repo (Repository/Category_repo.cs) via ICategory"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid category ID is required.",
+            "when": "categoryId <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Category not found.",
+            "when": "existingCategory == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    }
+  ]
+}

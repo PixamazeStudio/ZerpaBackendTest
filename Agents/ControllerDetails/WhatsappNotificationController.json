@@ -1,0 +1,123 @@
+{
+  "controller": "WhatsappNotificationController",
+  "file": "Controllers/WhatsappNotificationController.cs",
+  "module": "Common and Utilities",
+  "base_route": "api/WhatsappNotification",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles whatsapp notification: get whatsapp notification configuration",
+  "menu_permission": {
+    "status": "not referenced by frontend",
+    "menu_keys": [],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "whatsapp_notification_get_whatsapp_notification_configuration",
+      "name": "Get Whatsapp Notification Configuration",
+      "action_method": "GetWhatsappNotificationConfiguration",
+      "http_method": "GET",
+      "route": "api/WhatsappNotification",
+      "business_purpose": "Retrieve whatsapp notification configuration",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404
+        ],
+        "dto_name": "WhatsappReadDTO"
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": null,
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "not referenced by the frontend",
+      "short_description": "Retrieve whatsapp notification configuration",
+      "detailed_description": "Retrieve whatsapp notification configuration. It validates the request, then calls IWhatsapp.GetWhatsappDetails, IWhatsapp.GetInstanceStatusAsync, IWhatsapp.GetInstanceQRCODEAsync. Possible responses: 200, 400, 401, 404.",
+      "error_handling": {
+        "validation_errors": "400: Whatsapp notification configuration is incomplete. [when string.IsNullOrWhiteSpace(whatsappDetails.url) || string.IsNullOrWhiteSpace(whatsappDetail]",
+        "not_found": "404: Whatsapp notification configuration not found. [when whatsappDetails == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve whatsapp notification configuration",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/WhatsappNotification"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "whatsapp_notification_get_whatsapp_notification_configuration",
+        "description": "Retrieve whatsapp notification configuration",
+        "http_method": "GET",
+        "endpoint": "api/WhatsappNotification",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/WhatsappNotificationController.cs",
+        "action_method": "GetWhatsappNotificationConfiguration",
+        "related_dto_files": [
+          "DTO/ReadDTO/WhatsappReadDTO.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/WhatsappRepo.cs",
+          "Interfaces/IWhatsapp.cs"
+        ]
+      },
+      "module": "Common and Utilities",
+      "business_logic": {
+        "operation_summary": "Retrieve whatsapp notification configuration — validates the request, calls IWhatsapp.GetWhatsappDetails, IWhatsapp.GetInstanceStatusAsync, IWhatsapp.GetInstanceQRCODEAsync",
+        "preconditions": "Valid Bearer JWT; passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Whatsapp notification configuration is incomplete.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IWhatsapp.GetWhatsappDetails",
+          "IWhatsapp.GetInstanceStatusAsync",
+          "IWhatsapp.GetInstanceQRCODEAsync"
+        ],
+        "calls_repositories": [
+          "WhatsappRepo (Repository/WhatsappRepo.cs) via IWhatsapp"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 404,
+            "message": "Whatsapp notification configuration not found.",
+            "when": "whatsappDetails == null"
+          },
+          {
+            "returns": 400,
+            "message": "Whatsapp notification configuration is incomplete.",
+            "when": "string.IsNullOrWhiteSpace(whatsappDetails.url) || string.IsNullOrWhiteSpace(whatsappDetails.token)"
+          }
+        ]
+      }
+    }
+  ]
+}

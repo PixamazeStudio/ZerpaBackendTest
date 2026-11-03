@@ -1,0 +1,690 @@
+{
+  "controller": "SchemeRequestApprovalController",
+  "file": "Controllers/SchemeRequestApprovalController.cs",
+  "module": "Scheme Management",
+  "base_route": "api/SchemeRequestApproval",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Handles scheme request approval: get all approved scheme requests, get by id, head approval, head reject",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "crm/branch-approved-scheme-request",
+        "module_code": "crm",
+        "section": "branch-approved-scheme-request",
+        "sub_section": null,
+        "frontend_routes": [
+          "/crm/branch-approved-scheme-request",
+          "/crm/branch-approved-scheme-request/view-branch-approved-scheme-request/:code"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "scheme_request_approval_get_all_approved_scheme_requests",
+      "name": "Get All Approved Scheme Requests",
+      "action_method": "GetAllApprovedSchemeRequests",
+      "http_method": "GET",
+      "route": "api/SchemeRequestApproval",
+      "business_purpose": "Retrieve all approved scheme requests",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "date_range",
+          "type": "string",
+          "required": false,
+          "default": "\"this_month\""
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/branch-approved-scheme-request:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all approved scheme requests",
+      "detailed_description": "Retrieve all approved scheme requests. It validates the request, then calls ICommon.getUserByToken, ISchemeRequest.GetSchemeRequestApprovalData, ISchemeRequest.GetSchemeRequestApprovalActions. Data access uses stored procedure(s): GetSchemeRequestApproval. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: From date and To date are required for custom range [when !fromdate.HasValue || !todate.HasValue]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all approved scheme requests",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/SchemeRequestApproval",
+          "GET api/SchemeRequestApproval/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "scheme_request_approval_get_all_approved_scheme_requests",
+        "description": "Retrieve all approved scheme requests",
+        "http_method": "GET",
+        "endpoint": "api/SchemeRequestApproval",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "date_range": {
+            "type": "string",
+            "required": false,
+            "description": "date range (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "status": {
+            "type": "string",
+            "required": false,
+            "description": "status (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SchemeRequestApprovalController.cs",
+        "action_method": "GetAllApprovedSchemeRequests",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/SchemeRequest_repo.cs",
+          "Interfaces/ISchemeRequest.cs"
+        ]
+      },
+      "module": "Scheme Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all approved scheme requests — validates the request, calls ICommon.getUserByToken, ISchemeRequest.GetSchemeRequestApprovalData, ISchemeRequest.GetSchemeRequestApprovalActions",
+        "preconditions": "Valid Bearer JWT; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "From date and To date are required for custom range",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISchemeRequest.GetSchemeRequestApprovalData",
+          "ISchemeRequest.GetSchemeRequestApprovalActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SchemeRequest_repo (Repository/SchemeRequest_repo.cs) via ISchemeRequest"
+        ],
+        "stored_procedures": [
+          "GetSchemeRequestApproval"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "From date and To date are required for custom range",
+            "when": "!fromdate.HasValue || !todate.HasValue"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scheme_request_approval_get_by_id",
+      "name": "Get By Id",
+      "action_method": "GetById",
+      "http_method": "GET",
+      "route": "api/SchemeRequestApproval/{id}",
+      "business_purpose": "Retrieve a scheme request approval record by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "crm/branch-approved-scheme-request:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve a scheme request approval record by ID",
+      "detailed_description": "Retrieve a scheme request approval record by ID. It validates the request, then calls ICommon.getUserByToken, ISchemeRequest.GetSchemeRequestByIdAsync, ISchemeRequest.GetSchemeRequestApprovalActions. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid scheme request ID is required. [when id <= 0]",
+        "not_found": "404: Scheme request not found. [when schemeRequest == null]",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve a scheme request approval record by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/SchemeRequestApproval",
+          "GET api/SchemeRequestApproval/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "scheme_request_approval_get_by_id",
+        "description": "Retrieve a scheme request approval record by ID",
+        "http_method": "GET",
+        "endpoint": "api/SchemeRequestApproval/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/SchemeRequestApprovalController.cs",
+        "action_method": "GetById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/SchemeRequest_repo.cs",
+          "Interfaces/ISchemeRequest.cs"
+        ]
+      },
+      "module": "Scheme Management",
+      "business_logic": {
+        "operation_summary": "Retrieve a scheme request approval record by ID — validates the request, calls ICommon.getUserByToken, ISchemeRequest.GetSchemeRequestByIdAsync, ISchemeRequest.GetSchemeRequestApprovalActions",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 2 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid scheme request ID is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISchemeRequest.GetSchemeRequestByIdAsync",
+          "ISchemeRequest.GetSchemeRequestApprovalActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SchemeRequest_repo (Repository/SchemeRequest_repo.cs) via ISchemeRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid scheme request ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Scheme request not found.",
+            "when": "schemeRequest == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scheme_request_approval_head_approval",
+      "name": "Head Approval",
+      "action_method": "HeadApproval",
+      "http_method": "POST",
+      "route": "api/SchemeRequestApproval/head-approval",
+      "business_purpose": "Handle head approval",
+      "data_effect": "APPROVAL",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "HeadApprovalRequest (inline)",
+        "properties": [
+          {
+            "name": "IsApproved",
+            "type": "bool",
+            "required": false
+          },
+          {
+            "name": "SchemeRequestId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "SchemeHeaderId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "SchemeMappingId",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "APPROVAL",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "crm/branch-approved-scheme-request:approve",
+      "permission_flags": [
+        "approve"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Handle head approval",
+      "detailed_description": "Handle head approval. It validates the request, then calls ICommon.getUserByToken, ISchemeRequest.GetSchemeRequestByIdAsync, ISchemeRequest.GetSchemeHeaderByIdAsync. Persists changes to: SchemeMapping: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid scheme request ID is required. [when request.SchemeRequestId <= 0]; Scheme header is required to approve and map influencers. [when schemeHeader == null]",
+        "not_found": "404: Scheme request not found [when schemeRequest == null]",
+        "unauthorized": "401/403: Invalid token [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle head approval",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body HeadApprovalRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/SchemeRequestApproval"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "scheme_request_approval_head_approval",
+        "description": "Handle head approval",
+        "http_method": "POST",
+        "endpoint": "api/SchemeRequestApproval/head-approval",
+        "parameters": {
+          "IsApproved": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Approved (body)"
+          },
+          "SchemeRequestId": {
+            "type": "int",
+            "required": false,
+            "description": "Scheme Request Id (body)"
+          },
+          "SchemeHeaderId": {
+            "type": "int",
+            "required": false,
+            "description": "Scheme Header Id (body)"
+          },
+          "SchemeMappingId": {
+            "type": "int",
+            "required": false,
+            "description": "Scheme Mapping Id (body)"
+          }
+        },
+        "operation_type": "APPROVAL",
+        "requires_confirmation": true,
+        "confirmation_reason": "Approves the record and advances its workflow"
+      },
+      "source": {
+        "controller_file": "Controllers/SchemeRequestApprovalController.cs",
+        "action_method": "HeadApproval",
+        "related_dto_files": [
+          "Controllers/SchemeRequestApprovalController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/SchemeRequest_repo.cs",
+          "Interfaces/ISchemeRequest.cs"
+        ]
+      },
+      "module": "Scheme Management",
+      "business_logic": {
+        "operation_summary": "Handle head approval — validates the request, calls ICommon.getUserByToken, ISchemeRequest.GetSchemeRequestByIdAsync, ISchemeRequest.GetSchemeHeaderByIdAsync",
+        "preconditions": "Valid Bearer JWT; request body of type HeadApprovalRequest (inline); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "SchemeMapping: INSERT; sets schemeRequest.is_head_approved, schemeRequest.head_operated_by, schemeRequest.head_operated_date, schemeRequest.status, schemeRequest.scheme, schemeRequest.modified_by and saves changes",
+        "validations": "Valid scheme request ID is required.; Scheme header is required to approve and map influencers.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISchemeRequest.GetSchemeRequestByIdAsync",
+          "ISchemeRequest.GetSchemeHeaderByIdAsync",
+          "ISchemeRequest.GetSchemeMappingByIdAsync",
+          "ISchemeRequest.CreateSchemeMappingAsync",
+          "ISchemeRequest.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SchemeRequest_repo (Repository/SchemeRequest_repo.cs) via ISchemeRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid scheme request ID is required.",
+            "when": "request.SchemeRequestId <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Scheme request not found",
+            "when": "schemeRequest == null"
+          },
+          {
+            "returns": 400,
+            "message": "Scheme header is required to approve and map influencers.",
+            "when": "schemeHeader == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scheme_request_approval_head_reject",
+      "name": "Head Reject",
+      "action_method": "HeadReject",
+      "http_method": "POST",
+      "route": "api/SchemeRequestApproval/head-reject",
+      "business_purpose": "Handle head reject",
+      "data_effect": "REJECTION",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "HeadRejectRequest (inline)",
+        "properties": [
+          {
+            "name": "IsRejected",
+            "type": "bool",
+            "required": false
+          },
+          {
+            "name": "SchemeRequestId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "SchemeHeaderId",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "SchemeMappingId",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "REJECTION",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "crm/branch-approved-scheme-request:reject",
+      "permission_flags": [
+        "reject"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Handle head reject",
+      "detailed_description": "Handle head reject. It validates the request, then calls ICommon.getUserByToken, ISchemeRequest.GetSchemeRequestByIdAsync, ISchemeRequest.GetSchemeHeaderByIdAsync. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid scheme request ID is required. [when request.SchemeRequestId <= 0]; Request body is required. [when request == null]; Valid scheme request ID is required. [when request.SchemeRequestId <= 0]",
+        "not_found": "404: Scheme request not found. [when schemeRequest == null]",
+        "unauthorized": "401/403: Unauthorized: No valid token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle head reject",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body HeadRejectRequest (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/SchemeRequestApproval"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "scheme_request_approval_head_reject",
+        "description": "Handle head reject",
+        "http_method": "POST",
+        "endpoint": "api/SchemeRequestApproval/head-reject",
+        "parameters": {
+          "IsRejected": {
+            "type": "bool",
+            "required": false,
+            "description": "Is Rejected (body)"
+          },
+          "SchemeRequestId": {
+            "type": "int",
+            "required": false,
+            "description": "Scheme Request Id (body)"
+          },
+          "SchemeHeaderId": {
+            "type": "int",
+            "required": false,
+            "description": "Scheme Header Id (body)"
+          },
+          "SchemeMappingId": {
+            "type": "int",
+            "required": false,
+            "description": "Scheme Mapping Id (body)"
+          }
+        },
+        "operation_type": "REJECTION",
+        "requires_confirmation": true,
+        "confirmation_reason": "Rejects the record"
+      },
+      "source": {
+        "controller_file": "Controllers/SchemeRequestApprovalController.cs",
+        "action_method": "HeadReject",
+        "related_dto_files": [
+          "Controllers/SchemeRequestApprovalController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repository/SchemeRequest_repo.cs",
+          "Interfaces/ISchemeRequest.cs"
+        ]
+      },
+      "module": "Scheme Management",
+      "business_logic": {
+        "operation_summary": "Handle head reject — validates the request, calls ICommon.getUserByToken, ISchemeRequest.GetSchemeRequestByIdAsync, ISchemeRequest.GetSchemeHeaderByIdAsync",
+        "preconditions": "Valid Bearer JWT; request body of type HeadRejectRequest (inline); passes 4 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets schemeRequest.is_head_rejected, schemeRequest.is_head_approved, schemeRequest.head_operated_by, schemeRequest.head_operated_date, schemeRequest.status, schemeRequest.modified_by and saves changes",
+        "validations": "Valid scheme request ID is required.; Request body is required.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "ISchemeRequest.GetSchemeRequestByIdAsync",
+          "ISchemeRequest.GetSchemeHeaderByIdAsync",
+          "ISchemeRequest.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "SchemeRequest_repo (Repository/SchemeRequest_repo.cs) via ISchemeRequest"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid scheme request ID is required.",
+            "when": "request.SchemeRequestId <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Request body is required.",
+            "when": "request == null"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: No valid token provided.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid scheme request ID is required.",
+            "when": "request.SchemeRequestId <= 0"
+          },
+          {
+            "returns": 404,
+            "message": "Scheme request not found.",
+            "when": "schemeRequest == null"
+          }
+        ]
+      }
+    }
+  ]
+}

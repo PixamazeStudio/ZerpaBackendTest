@@ -1,0 +1,1495 @@
+{
+  "controller": "MonthlyPlannerController",
+  "file": "Controllers/MonthlyPlannerController.cs",
+  "module": "Planning and Visit Management",
+  "base_route": "api/MonthlyPlanner",
+  "class_level_auth": "[Authorize]",
+  "purpose": "Manages monthly planner records with list, get-by-id, create, update and delete operations",
+  "menu_permission": {
+    "status": "identified",
+    "menu_keys": [
+      {
+        "path": "ims/indents/monthly-planner",
+        "module_code": "ims",
+        "section": "indents",
+        "sub_section": "monthly-planner",
+        "frontend_routes": [
+          "/ims/indents/monthly-planner",
+          "/ims/indents/monthly-planner/create-monthly-planner",
+          "/ims/indents/monthly-planner/edit-monthly-planner/:id"
+        ],
+        "menu_route_confirmed": true
+      }
+    ],
+    "also_called_from_menus": [
+      "planner/monthly-branch-review"
+    ],
+    "section_configuration_keys": [
+      "MonthlyPlanner"
+    ],
+    "audit_log_labels": [
+      {
+        "module": "Planner",
+        "section": "",
+        "sub_section": "Monthly Planner"
+      }
+    ],
+    "permission_format": "{module_code}/{section-slug}/{sub-section-slug}:{flag}; flag is a UserRoleDetailed column (view, add, edit, delete, approve, reject, remarks, close)"
+  },
+  "endpoints": [
+    {
+      "id": "monthly_planner_get_all",
+      "name": "Get All",
+      "action_method": "GetAll",
+      "http_method": "GET",
+      "route": "api/MonthlyPlanner",
+      "business_purpose": "Retrieve all monthly planner records",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [
+        {
+          "name": "fromdate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "todate",
+          "type": "datetime",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "month",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "branchId",
+          "type": "int",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "inputText",
+          "type": "string",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "limit",
+          "type": "int",
+          "required": false,
+          "default": "10"
+        },
+        {
+          "name": "page_no",
+          "type": "int",
+          "required": false,
+          "default": "1"
+        }
+      ],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ims/indents/monthly-planner:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve all monthly planner records",
+      "detailed_description": "Retrieve all monthly planner records. It calls ICommon.getUserByToken, IMonthlyPlanner.GetMonthlyPlannerData, IIndent.GetAllBranches. Data access uses stored procedure(s): GetMonthlyPlanner. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve all monthly planner records",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/MonthlyPlanner",
+          "GET api/MonthlyPlanner/{id}",
+          "GET api/MonthlyPlanner/months"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "monthly_planner_get_all",
+        "description": "Retrieve all monthly planner records",
+        "http_method": "GET",
+        "endpoint": "api/MonthlyPlanner",
+        "parameters": {
+          "fromdate": {
+            "type": "datetime",
+            "required": false,
+            "description": "fromdate (query)"
+          },
+          "todate": {
+            "type": "datetime",
+            "required": false,
+            "description": "todate (query)"
+          },
+          "month": {
+            "type": "string",
+            "required": false,
+            "description": "month (query)"
+          },
+          "branchId": {
+            "type": "int",
+            "required": false,
+            "description": "branch Id (query)"
+          },
+          "inputText": {
+            "type": "string",
+            "required": false,
+            "description": "input Text (query)"
+          },
+          "limit": {
+            "type": "int",
+            "required": false,
+            "description": "limit (query)"
+          },
+          "page_no": {
+            "type": "int",
+            "required": false,
+            "description": "page no (query)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/MonthlyPlannerController.cs",
+        "action_method": "GetAll",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/MonthlyPlanner_repo.cs",
+          "Interfaces/IMonthlyPlanner.cs",
+          "Repository/Indent_repo.cs",
+          "Interfaces/IIndent.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve all monthly planner records — calls ICommon.getUserByToken, IMonthlyPlanner.GetMonthlyPlannerData, IIndent.GetAllBranches",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMonthlyPlanner.GetMonthlyPlannerData",
+          "IIndent.GetAllBranches",
+          "IMonthlyPlanner.GetMonthlyPlannerActions"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MonthlyPlanner_repo (Repositories/MonthlyPlanner_repo.cs) via IMonthlyPlanner",
+          "Indent_repo (Repository/Indent_repo.cs) via IIndent"
+        ],
+        "stored_procedures": [
+          "GetMonthlyPlanner"
+        ],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "monthly_planner_delete_monthly_planner",
+      "name": "Delete Monthly Planner",
+      "action_method": "DeleteMonthlyPlanner",
+      "http_method": "DELETE",
+      "route": "api/MonthlyPlanner/{id}",
+      "business_purpose": "Delete monthly planner",
+      "data_effect": "DELETE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "DELETE",
+        "notes": "Repeating the call after success will typically return not-found or no change"
+      },
+      "required_permission": "ims/indents/monthly-planner:delete",
+      "permission_flags": [
+        "delete"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Delete monthly planner",
+      "detailed_description": "Delete monthly planner. It validates the request, then calls ICommon.getUserByToken, IMonthlyPlanner.GetMonthlyPlannerById, ICommon.ToJsonString, then writes an audit log entry. Persists changes to: IndentPlanningHeader: UPDATE, soft delete (is_deleted flag), AuditLog: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid monthly planner ID is required. [when id <= 0]; message returned by the called service/repository (result.Message)",
+        "not_found": "404: Monthly Planner not found. [when existingMonthlyPlanner == null]",
+        "unauthorized": "401/403: Unauthorized: Invalid or missing token. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to delete monthly planner",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/MonthlyPlanner/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "monthly_planner_delete_monthly_planner",
+        "description": "Delete monthly planner",
+        "http_method": "DELETE",
+        "endpoint": "api/MonthlyPlanner/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "DELETE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Deletes a record"
+      },
+      "source": {
+        "controller_file": "Controllers/MonthlyPlannerController.cs",
+        "action_method": "DeleteMonthlyPlanner",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/MonthlyPlanner_repo.cs",
+          "Interfaces/IMonthlyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Delete monthly planner — validates the request, calls ICommon.getUserByToken, IMonthlyPlanner.GetMonthlyPlannerById, ICommon.ToJsonString, writes an audit log entry",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id must reference existing record(s); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "IndentPlanningHeader: UPDATE; soft delete (is_deleted flag); AuditLog: INSERT",
+        "validations": "Valid monthly planner ID is required.",
+        "side_effects": "AuditLog DELETE (Planner > Monthly Planner)",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMonthlyPlanner.GetMonthlyPlannerById",
+          "ICommon.ToJsonString",
+          "IMonthlyPlanner.DeleteMonthlyPlanner",
+          "ICommon.AddAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MonthlyPlanner_repo (Repositories/MonthlyPlanner_repo.cs) via IMonthlyPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 400,
+            "message": "Valid monthly planner ID is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 401,
+            "message": "Unauthorized: Invalid or missing token.",
+            "when": "current_user == null"
+          },
+          {
+            "returns": 404,
+            "message": "Monthly Planner not found.",
+            "when": "existingMonthlyPlanner == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "monthly_planner_get_monthly_planner_by_id",
+      "name": "Get Monthly Planner By Id",
+      "action_method": "GetMonthlyPlannerById",
+      "http_method": "GET",
+      "route": "api/MonthlyPlanner/{id}",
+      "business_purpose": "Retrieve monthly planner by ID",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ims/indents/monthly-planner:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "planner/monthly-branch-review"
+      ],
+      "short_description": "Retrieve monthly planner by ID",
+      "detailed_description": "Retrieve monthly planner by ID. It validates the request, then calls ICommon.getUserByToken, IMonthlyPlanner.GetMonthlyPlannerById, IMonthlyPlanner.GetCategories. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid scheduler ID is required [when id <= 0]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Invalid token or user not found [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve monthly planner by ID",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)"
+        ],
+        "follow_up_apis": [
+          "GET api/MonthlyPlanner",
+          "GET api/MonthlyPlanner/{id}",
+          "GET api/MonthlyPlanner/months"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "monthly_planner_get_monthly_planner_by_id",
+        "description": "Retrieve monthly planner by ID",
+        "http_method": "GET",
+        "endpoint": "api/MonthlyPlanner/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          }
+        },
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/MonthlyPlannerController.cs",
+        "action_method": "GetMonthlyPlannerById",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/MonthlyPlanner_repo.cs",
+          "Interfaces/IMonthlyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve monthly planner by ID — validates the request, calls ICommon.getUserByToken, IMonthlyPlanner.GetMonthlyPlannerById, IMonthlyPlanner.GetCategories",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "None (read-only)",
+        "validations": "Valid scheduler ID is required",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMonthlyPlanner.GetMonthlyPlannerById",
+          "IMonthlyPlanner.GetCategories",
+          "IMonthlyPlanner.GetDealers"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MonthlyPlanner_repo (Repositories/MonthlyPlanner_repo.cs) via IMonthlyPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Invalid token or user not found",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid scheduler ID is required",
+            "when": "id <= 0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "monthly_planner_get_months",
+      "name": "Get Months",
+      "action_method": "GetMonths",
+      "http_method": "GET",
+      "route": "api/MonthlyPlanner/months",
+      "business_purpose": "Retrieve months",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ims/indents/monthly-planner:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "alternate_permission_menus": [
+        "planner/monthly-branch-review"
+      ],
+      "short_description": "Retrieve months",
+      "detailed_description": "Retrieve months. It calls ICommon.getUserByToken, IMonthlyPlanner.GetMonths. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve months",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/MonthlyPlanner",
+          "GET api/MonthlyPlanner/{id}",
+          "GET api/MonthlyPlanner/months"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "monthly_planner_get_months",
+        "description": "Retrieve months",
+        "http_method": "GET",
+        "endpoint": "api/MonthlyPlanner/months",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/MonthlyPlannerController.cs",
+        "action_method": "GetMonths",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/MonthlyPlanner_repo.cs",
+          "Interfaces/IMonthlyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve months — calls ICommon.getUserByToken, IMonthlyPlanner.GetMonths",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMonthlyPlanner.GetMonths"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MonthlyPlanner_repo (Repositories/MonthlyPlanner_repo.cs) via IMonthlyPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "monthly_planner_get_dealers",
+      "name": "Get Dealers",
+      "action_method": "GetDealers",
+      "http_method": "GET",
+      "route": "api/MonthlyPlanner/dealers",
+      "business_purpose": "Retrieve dealers",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ims/indents/monthly-planner:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve dealers",
+      "detailed_description": "Retrieve dealers. It calls ICommon.getUserByToken, IMonthlyPlanner.GetDealers. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve dealers",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/MonthlyPlanner",
+          "GET api/MonthlyPlanner/{id}",
+          "GET api/MonthlyPlanner/months"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "monthly_planner_get_dealers",
+        "description": "Retrieve dealers",
+        "http_method": "GET",
+        "endpoint": "api/MonthlyPlanner/dealers",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/MonthlyPlannerController.cs",
+        "action_method": "GetDealers",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/MonthlyPlanner_repo.cs",
+          "Interfaces/IMonthlyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve dealers — calls ICommon.getUserByToken, IMonthlyPlanner.GetDealers",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMonthlyPlanner.GetDealers"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MonthlyPlanner_repo (Repositories/MonthlyPlanner_repo.cs) via IMonthlyPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "monthly_planner_get_categories",
+      "name": "Get Categories",
+      "action_method": "GetCategories",
+      "http_method": "GET",
+      "route": "api/MonthlyPlanner/categories",
+      "business_purpose": "Retrieve categories",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ims/indents/monthly-planner:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve categories",
+      "detailed_description": "Retrieve categories. It calls ICommon.getUserByToken, IMonthlyPlanner.GetCategories. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized: No token provided. [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve categories",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/MonthlyPlanner",
+          "GET api/MonthlyPlanner/{id}",
+          "GET api/MonthlyPlanner/months"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "monthly_planner_get_categories",
+        "description": "Retrieve categories",
+        "http_method": "GET",
+        "endpoint": "api/MonthlyPlanner/categories",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/MonthlyPlannerController.cs",
+        "action_method": "GetCategories",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/MonthlyPlanner_repo.cs",
+          "Interfaces/IMonthlyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve categories — calls ICommon.getUserByToken, IMonthlyPlanner.GetCategories",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMonthlyPlanner.GetCategories"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MonthlyPlanner_repo (Repositories/MonthlyPlanner_repo.cs) via IMonthlyPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized: No token provided.",
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "monthly_planner_make_editable",
+      "name": "Make Editable",
+      "action_method": "MakeEditable",
+      "http_method": "POST",
+      "route": "api/MonthlyPlanner/MakeEditable",
+      "business_purpose": "Handle make editable",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "MakeEditableDto (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "ims/indents/monthly-planner:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Handle make editable",
+      "detailed_description": "Handle make editable. It calls IMonthlyPlanner.GetMonthlyPlannerById, IMonthlyPlanner.SaveChangesAsync. Possible responses: 200, 401, 404.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Indent Planning Header not found [when planningHeader == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle make editable",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body MakeEditableDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/MonthlyPlanner",
+          "GET api/MonthlyPlanner/months",
+          "GET api/MonthlyPlanner/dealers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "monthly_planner_make_editable",
+        "description": "Handle make editable",
+        "http_method": "POST",
+        "endpoint": "api/MonthlyPlanner/MakeEditable",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/MonthlyPlannerController.cs",
+        "action_method": "MakeEditable",
+        "related_dto_files": [
+          "Controllers/MonthlyPlannerController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/MonthlyPlanner_repo.cs",
+          "Interfaces/IMonthlyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Handle make editable — calls IMonthlyPlanner.GetMonthlyPlannerById, IMonthlyPlanner.SaveChangesAsync",
+        "preconditions": "Valid Bearer JWT; request body of type MakeEditableDto (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets planningHeader.is_editable and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IMonthlyPlanner.GetMonthlyPlannerById",
+          "IMonthlyPlanner.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "MonthlyPlanner_repo (Repositories/MonthlyPlanner_repo.cs) via IMonthlyPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 404,
+            "message": "Indent Planning Header not found",
+            "when": "planningHeader == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "monthly_planner_disable_editing",
+      "name": "Disable Editing",
+      "action_method": "DisableEditing",
+      "http_method": "POST",
+      "route": "api/MonthlyPlanner/DisableEditing",
+      "business_purpose": "Handle disable editing",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "DisableEditingDto (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          404
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "ims/indents/monthly-planner:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "controller menu (inferred; no direct frontend call found)",
+      "short_description": "Handle disable editing",
+      "detailed_description": "Handle disable editing. It calls IMonthlyPlanner.GetMonthlyPlannerById, IMonthlyPlanner.SaveChangesAsync. Possible responses: 200, 401, 404.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "404: Indent Planning Header not found [when planningHeader == null]",
+        "unauthorized": "401 when JWT is missing/invalid ([Authorize])",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "No explicit 500 handler in controller code"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to handle disable editing",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body DisableEditingDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/MonthlyPlanner",
+          "GET api/MonthlyPlanner/months",
+          "GET api/MonthlyPlanner/dealers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "monthly_planner_disable_editing",
+        "description": "Handle disable editing",
+        "http_method": "POST",
+        "endpoint": "api/MonthlyPlanner/DisableEditing",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/MonthlyPlannerController.cs",
+        "action_method": "DisableEditing",
+        "related_dto_files": [
+          "Controllers/MonthlyPlannerController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repositories/MonthlyPlanner_repo.cs",
+          "Interfaces/IMonthlyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Handle disable editing — calls IMonthlyPlanner.GetMonthlyPlannerById, IMonthlyPlanner.SaveChangesAsync",
+        "preconditions": "Valid Bearer JWT; request body of type DisableEditingDto (inline); passes 1 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "sets planningHeader.is_editable and saves changes",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "IMonthlyPlanner.GetMonthlyPlannerById",
+          "IMonthlyPlanner.SaveChangesAsync"
+        ],
+        "calls_repositories": [
+          "MonthlyPlanner_repo (Repositories/MonthlyPlanner_repo.cs) via IMonthlyPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "No current-user lookup in the controller code",
+        "validation_rules": [
+          {
+            "returns": 404,
+            "message": "Indent Planning Header not found",
+            "when": "planningHeader == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "monthly_planner_create_monthly_planner",
+      "name": "Create Monthly Planner",
+      "action_method": "CreateMonthlyPlanner",
+      "http_method": "POST",
+      "route": "api/MonthlyPlanner",
+      "business_purpose": "Create monthly planner",
+      "data_effect": "CREATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "MonthlyPlannerDto",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Month",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Year",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Categories",
+            "type": "List<CategoryPlanningDto>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          404,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "CREATE",
+        "notes": "Not idempotent; repeating the call may perform the action again"
+      },
+      "required_permission": "ims/indents/monthly-planner:add",
+      "permission_flags": [
+        "add"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Create monthly planner",
+      "detailed_description": "Create monthly planner. It validates the request, then calls ICommon.getUserByToken, IMonthlyPlanner.GetMonthlyPlannerById, IMonthlyPlanner.CreateIndentPlanningHeader. Persists changes to: IndentPlanningHeader: INSERT. Possible responses: 200, 400, 401, 404, 500.",
+      "error_handling": {
+        "validation_errors": "400: Category with ID {categoryDto.CategoryId} not found [when category == null]; Dealer with ID {dealerDto.DealerId} not found [when dealer == null]",
+        "not_found": "404: Monthly plan not found [when monthlyPlan == null]",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to create monthly planner",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "request body MonthlyPlannerDto"
+        ],
+        "follow_up_apis": [
+          "GET api/MonthlyPlanner",
+          "GET api/MonthlyPlanner/months",
+          "GET api/MonthlyPlanner/dealers"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "monthly_planner_create_monthly_planner",
+        "description": "Create monthly planner",
+        "http_method": "POST",
+        "endpoint": "api/MonthlyPlanner",
+        "parameters": {
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "Month": {
+            "type": "string",
+            "required": false,
+            "description": "Month (body)"
+          },
+          "Year": {
+            "type": "int",
+            "required": false,
+            "description": "Year (body)"
+          },
+          "Categories": {
+            "type": "List<CategoryPlanningDto>",
+            "required": false,
+            "description": "Categories (body)"
+          }
+        },
+        "operation_type": "CREATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Creates a new record"
+      },
+      "source": {
+        "controller_file": "Controllers/MonthlyPlannerController.cs",
+        "action_method": "CreateMonthlyPlanner",
+        "related_dto_files": [
+          "DTOs/Response/MonthlyPlannerDto.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/MonthlyPlanner_repo.cs",
+          "Interfaces/IMonthlyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Create monthly planner — validates the request, calls ICommon.getUserByToken, IMonthlyPlanner.GetMonthlyPlannerById, IMonthlyPlanner.CreateIndentPlanningHeader",
+        "preconditions": "Valid Bearer JWT; request body of type MonthlyPlannerDto; passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "IndentPlanningHeader: INSERT",
+        "validations": "Category with ID {categoryDto.CategoryId} not found; Dealer with ID {dealerDto.DealerId} not found",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMonthlyPlanner.GetMonthlyPlannerById",
+          "IMonthlyPlanner.CreateIndentPlanningHeader",
+          "IMonthlyPlanner.SaveChangesAsync",
+          "IMonthlyPlanner.GetCategoryById",
+          "IMonthlyPlanner.GetDealerById"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MonthlyPlanner_repo (Repositories/MonthlyPlanner_repo.cs) via IMonthlyPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 404,
+            "message": "Monthly plan not found",
+            "when": "monthlyPlan == null"
+          },
+          {
+            "returns": 400,
+            "message": "Category with ID {categoryDto.CategoryId} not found",
+            "when": "category == null"
+          },
+          {
+            "returns": 400,
+            "message": "Dealer with ID {dealerDto.DealerId} not found",
+            "when": "dealer == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "monthly_planner_get_dealer_allocation",
+      "name": "Get Dealer Allocation",
+      "action_method": "GetDealerAllocation",
+      "http_method": "GET",
+      "route": "api/MonthlyPlanner/dealer-allocation",
+      "business_purpose": "Retrieve dealer allocation",
+      "data_effect": "READ_ONLY",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [],
+      "query_parameters": [],
+      "response": {
+        "status_codes": [
+          200,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "LOW",
+        "operation_type": "READ_ONLY",
+        "notes": "Read-only; safe to retry"
+      },
+      "required_permission": "ims/indents/monthly-planner:view",
+      "permission_flags": [
+        "view"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Retrieve dealer allocation",
+      "detailed_description": "Retrieve dealer allocation. It calls ICommon.getUserByToken, IMonthlyPlanner.GetDealersByCategory. Possible responses: 200, 401, 500.",
+      "error_handling": {
+        "validation_errors": "None found in controller code",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: (no message) [when current_user == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 with the exception message (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to retrieve dealer allocation",
+        "do_not_use_when": "When the user only wants to change data",
+        "preconditions_needed": [
+          "Valid Bearer JWT"
+        ],
+        "follow_up_apis": [
+          "GET api/MonthlyPlanner",
+          "GET api/MonthlyPlanner/{id}",
+          "GET api/MonthlyPlanner/months"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "monthly_planner_get_dealer_allocation",
+        "description": "Retrieve dealer allocation",
+        "http_method": "GET",
+        "endpoint": "api/MonthlyPlanner/dealer-allocation",
+        "parameters": {},
+        "operation_type": "READ_ONLY",
+        "requires_confirmation": false,
+        "confirmation_reason": ""
+      },
+      "source": {
+        "controller_file": "Controllers/MonthlyPlannerController.cs",
+        "action_method": "GetDealerAllocation",
+        "related_dto_files": [],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/MonthlyPlanner_repo.cs",
+          "Interfaces/IMonthlyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Retrieve dealer allocation — calls ICommon.getUserByToken, IMonthlyPlanner.GetDealersByCategory",
+        "preconditions": "Valid Bearer JWT",
+        "state_changes": "None (read-only)",
+        "validations": "None found in controller code",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMonthlyPlanner.GetDealersByCategory"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MonthlyPlanner_repo (Repositories/MonthlyPlanner_repo.cs) via IMonthlyPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": null,
+            "when": "current_user == null"
+          }
+        ]
+      }
+    },
+    {
+      "id": "monthly_planner_update_monthly_planner",
+      "name": "Update Monthly Planner",
+      "action_method": "UpdateMonthlyPlanner",
+      "http_method": "PUT",
+      "route": "api/MonthlyPlanner/{id}",
+      "business_purpose": "Update monthly planner",
+      "data_effect": "UPDATE",
+      "authentication": {
+        "required": true,
+        "attributes": [
+          "[Authorize]"
+        ]
+      },
+      "route_parameters": [
+        {
+          "name": "id",
+          "type": "int",
+          "required": true
+        }
+      ],
+      "query_parameters": [],
+      "request_body": {
+        "dto_name": "UpdateMonthlyPlannerDto (inline)",
+        "properties": [
+          {
+            "name": "Id",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Month",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Year",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "Categories",
+            "type": "List<UpdateCategoryPlanningDto>",
+            "required": false
+          }
+        ]
+      },
+      "response": {
+        "status_codes": [
+          200,
+          400,
+          401,
+          500
+        ]
+      },
+      "idempotency": {
+        "risk_level": "MEDIUM",
+        "operation_type": "UPDATE",
+        "notes": "Re-sending the same payload sets the same values"
+      },
+      "required_permission": "ims/indents/monthly-planner:edit",
+      "permission_flags": [
+        "edit"
+      ],
+      "permission_basis": "frontend call match",
+      "short_description": "Update monthly planner",
+      "detailed_description": "Update monthly planner. It validates the request, then calls ICommon.getUserByToken, IMonthlyPlanner.UpdateMonthlyPlannerAsync. Persists changes to: IndentPlanningDetails: DELETE, IndentPlanningHeader: UPDATE. Possible responses: 200, 400, 401, 500.",
+      "error_handling": {
+        "validation_errors": "400: Valid planner id is required. [when id <= 0]; Invalid request. [when request == null]; message returned by the called service/repository (result.Message) [when !result.Success]",
+        "not_found": "None found in controller code",
+        "unauthorized": "401/403: Unauthorized [when currentUser == null]",
+        "business_rule_errors": "None found in controller code",
+        "exceptions": "Caught and returned as 500 (catches: Exception)"
+      },
+      "ai_agent_guidance": {
+        "use_when": "When the user wants to update monthly planner",
+        "do_not_use_when": "When the user only wants to view data, or the required inputs are not available yet",
+        "preconditions_needed": [
+          "Valid Bearer JWT",
+          "id (route)",
+          "request body UpdateMonthlyPlannerDto (inline)"
+        ],
+        "follow_up_apis": [
+          "GET api/MonthlyPlanner/{id}"
+        ]
+      },
+      "llm_tool_definition": {
+        "name": "monthly_planner_update_monthly_planner",
+        "description": "Update monthly planner",
+        "http_method": "PUT",
+        "endpoint": "api/MonthlyPlanner/{id}",
+        "parameters": {
+          "id": {
+            "type": "int",
+            "required": true,
+            "description": "id (route)"
+          },
+          "Id": {
+            "type": "int",
+            "required": false,
+            "description": "Id (body)"
+          },
+          "Month": {
+            "type": "string",
+            "required": false,
+            "description": "Month (body)"
+          },
+          "Year": {
+            "type": "int",
+            "required": false,
+            "description": "Year (body)"
+          },
+          "Categories": {
+            "type": "List<UpdateCategoryPlanningDto>",
+            "required": false,
+            "description": "Categories (body)"
+          }
+        },
+        "operation_type": "UPDATE",
+        "requires_confirmation": true,
+        "confirmation_reason": "Modifies an existing record"
+      },
+      "source": {
+        "controller_file": "Controllers/MonthlyPlannerController.cs",
+        "action_method": "UpdateMonthlyPlanner",
+        "related_dto_files": [
+          "Controllers/MonthlyPlannerController.cs"
+        ],
+        "related_service_files": [],
+        "related_repository_files": [
+          "Repository/Common_repo.cs",
+          "Interfaces/ICommon.cs",
+          "Repositories/MonthlyPlanner_repo.cs",
+          "Interfaces/IMonthlyPlanner.cs"
+        ]
+      },
+      "module": "Planning and Visit Management",
+      "business_logic": {
+        "operation_summary": "Update monthly planner — validates the request, calls ICommon.getUserByToken, IMonthlyPlanner.UpdateMonthlyPlannerAsync",
+        "preconditions": "Valid Bearer JWT; route parameter(s) id; request body of type UpdateMonthlyPlannerDto (inline); passes 3 validation/business rule check(s) (see validation_rules)",
+        "state_changes": "IndentPlanningDetails: DELETE; IndentPlanningHeader: UPDATE",
+        "validations": "Valid planner id is required.; Invalid request.",
+        "side_effects": "None found in controller code",
+        "calls_services": [
+          "ICommon.getUserByToken",
+          "IMonthlyPlanner.UpdateMonthlyPlannerAsync"
+        ],
+        "calls_repositories": [
+          "Common_repo (Repository/Common_repo.cs) via ICommon",
+          "MonthlyPlanner_repo (Repositories/MonthlyPlanner_repo.cs) via IMonthlyPlanner"
+        ],
+        "stored_procedures": [],
+        "sends_notifications": false,
+        "depends_on_user_context": "Resolves the current user from the JWT (getUserByToken / claims)",
+        "validation_rules": [
+          {
+            "returns": 401,
+            "message": "Unauthorized",
+            "when": "currentUser == null"
+          },
+          {
+            "returns": 400,
+            "message": "Valid planner id is required.",
+            "when": "id <= 0"
+          },
+          {
+            "returns": 400,
+            "message": "Invalid request.",
+            "when": "request == null"
+          },
+          {
+            "returns": 400,
+            "message": "message returned by the called service/repository (result.Message)",
+            "when": "!result.Success"
+          }
+        ]
+      }
+    }
+  ]
+}
